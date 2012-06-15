@@ -1,0 +1,69 @@
+!*
+
+*~
+
+# linux
+.*
+!.gitignore
+.directory
+
+# OS X
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ethumbs.db
+
+# windows
+thumbs.db
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# vim
+.*.sw[a-z]
+*.un~
+Session.vim
+
+# emacs
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+.elc
+auto-save-list
+tramp
+.\#*
+
+# netbeans files/folders
+build/
+dist/
+nb-configuration.xml
+nbactions.xml
+nbbuild/
+nbdist/
+nbproject/private/
+private/
+projects/*/nbproject/*
+!configurations.xml
+!Makefile
+!project.xml
+
+## GENERATED C FILES ##
+
+# object files
+*.o
+*.o.obj
+*.obj
+
+# libraries
+*.lib
+
+# shared objects
+*.dll
+*.so
+
+# executables
+*.exe
+*.out

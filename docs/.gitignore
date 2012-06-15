@@ -1,0 +1,4 @@
+# Exclude doxygen-generated docs
+html/
+latex/
+rtf/

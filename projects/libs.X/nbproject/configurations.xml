@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="62">
+  <logicalFolder name="root" displayName="root" projectFiles="true">
+    <logicalFolder name="HeaderFiles"
+                   displayName="Header Files"
+                   projectFiles="true">
+      <itemPath>../../libs/include/_mainpage.h</itemPath>
+      <itemPath>../../libs/include/ad7685.h</itemPath>
+      <itemPath>../../libs/include/can.h</itemPath>
+      <itemPath>../../libs/include/can_addresses.h</itemPath>
+      <itemPath>../../libs/include/can_nu.h</itemPath>
+      <itemPath>../../libs/include/can_wavesculptor20.h</itemPath>
+      <itemPath>../../libs/include/can_wavesculptor_broadcast_messages.h</itemPath>
+      <itemPath>../../libs/include/can_wavesculptor_drive_commands.h</itemPath>
+      <itemPath>../../libs/include/crc.h</itemPath>
+      <itemPath>../../libs/include/ds18x20.h</itemPath>
+      <itemPath>../../libs/include/error_reporting.h</itemPath>
+      <itemPath>../../libs/include/errorcodes.h</itemPath>
+      <itemPath>../../libs/include/flash.h</itemPath>
+      <itemPath>../../libs/include/hais50p.h</itemPath>
+      <itemPath>../../libs/include/led.h</itemPath>
+      <itemPath>../../libs/include/ltc6803.h</itemPath>
+      <itemPath>../../libs/include/mppt_race.h</itemPath>
+      <itemPath>../../libs/include/nokia5110.h</itemPath>
+      <itemPath>../../libs/include/nokia5110_debug.h</itemPath>
+      <itemPath>../../libs/include/nu32.h</itemPath>
+      <itemPath>../../libs/include/onewire.h</itemPath>
+      <itemPath>../../libs/include/safestring.h</itemPath>
+      <itemPath>../../libs/include/serial.h</itemPath>
+      <itemPath>../../libs/include/spi.h</itemPath>
+      <itemPath>../../libs/include/timer.h</itemPath>
+      <itemPath>../../libs/include/utility.h</itemPath>
+      <itemPath>../../libs/include/wavesculptor20.h</itemPath>
+    </logicalFolder>
+    <logicalFolder name="LibraryFiles"
+                   displayName="Library Files"
+                   projectFiles="true">
+    </logicalFolder>
+    <logicalFolder name="LinkerScript"
+                   displayName="Linker Files"
+                   projectFiles="true">
+    </logicalFolder>
+    <logicalFolder name="ObjectFiles"
+                   displayName="Object Files"
+                   projectFiles="true">
+    </logicalFolder>
+    <logicalFolder name="SourceFiles"
+                   displayName="Source Files"
+                   projectFiles="true">
+      <itemPath>../../libs/src/ad7685.c</itemPath>
+      <itemPath>../../libs/src/can.c</itemPath>
+      <itemPath>../../libs/src/crc.c</itemPath>
+      <itemPath>../../libs/src/ds18x20.c</itemPath>
+      <itemPath>../../libs/src/error_reporting.c</itemPath>
+      <itemPath>../../libs/src/errorcodes.c</itemPath>
+      <itemPath>../../libs/src/flash.c</itemPath>
+      <itemPath>../../libs/src/hais50p.c</itemPath>
+      <itemPath>../../libs/src/led.c</itemPath>
+      <itemPath>../../libs/src/ltc6803.c</itemPath>
+      <itemPath>../../libs/src/mppt_race.c</itemPath>
+      <itemPath>../../libs/src/nokia5110.c</itemPath>
+      <itemPath>../../libs/src/nokia5110_debug.c</itemPath>
+      <itemPath>../../libs/src/nu32.c</itemPath>
+      <itemPath>../../libs/src/onewire.c</itemPath>
+      <itemPath>../../libs/src/pctime.c</itemPath>
+      <itemPath>../../libs/src/safestring.c</itemPath>
+      <itemPath>../../libs/src/serial.c</itemPath>
+      <itemPath>../../libs/src/spi.c</itemPath>
+      <itemPath>../../libs/src/timer.c</itemPath>
+      <itemPath>../../libs/src/wavesculptor20.c</itemPath>
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false">
+      <itemPath>Makefile</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="default" type="3">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <targetDevice>PIC32MX795F512L</targetDevice>
+        <targetHeader></targetHeader>
+        <platformTool>PICkit3PlatformTool</platformTool>
+        <languageToolchain>C32</languageToolchain>
+        <languageToolchainVersion>2.01</languageToolchainVersion>
+        <platform>3</platform>
+      </toolsSet>
+      <compileType>
+        <archiverTool>
+        </archiverTool>
+      </compileType>
+      <makeCustomizationType>
+        <makeCustomizationPreStepEnabled>false</makeCustomizationPreStepEnabled>
+        <makeCustomizationPreStep></makeCustomizationPreStep>
+        <makeCustomizationPostStepEnabled>false</makeCustomizationPostStepEnabled>
+        <makeCustomizationPostStep></makeCustomizationPostStep>
+        <makeCustomizationAlternativeFileToLoadEnabled>false</makeCustomizationAlternativeFileToLoadEnabled>
+        <makeCustomizationAlternativeFileToLoad></makeCustomizationAlternativeFileToLoad>
+        <makeCustomizationPutChecksumInUserID>false</makeCustomizationPutChecksumInUserID>
+      </makeCustomizationType>
+      <C32>
+        <property key="additional-warnings" value="false"/>
+        <property key="enable-app-io" value="false"/>
+        <property key="enable-omit-frame-pointer" value="false"/>
+        <property key="enable-symbols" value="true"/>
+        <property key="enable-unroll-loops" value="false"/>
+        <property key="exclude-floating-point" value="false"/>
+        <property key="extra-include-directories" value=""/>
+        <property key="generate-16-bit-code" value="false"/>
+        <property key="isolate-each-function" value="false"/>
+        <property key="make-warnings-into-errors" value="false"/>
+        <property key="optimization-level" value=""/>
+        <property key="place-data-into-section" value="false"/>
+        <property key="post-instruction-scheduling" value="default"/>
+        <property key="pre-instruction-scheduling" value="default"/>
+        <property key="preprocessor-macros" value=""/>
+        <property key="strict-ansi" value="false"/>
+        <property key="support-ansi" value="false"/>
+        <property key="use-indirect-calls" value="false"/>
+        <appendMe value="-fshort-enums -fno-common  -Wall -Wextra -Waggregate-return -Wcast-align -Wcast-qual  -Wchar-subscripts  -Wcomment -Wconversion -Wdisabled-optimization -Wfloat-equal -Wformat -Wformat=2 -Wformat-nonliteral -Wformat-security -Wformat-y2k -Wimplicit  -Wimport  -Winit-self  -Winline -Winvalid-pch -Wunsafe-loop-optimizations -Wmissing-declarations -Wmissing-field-initializers -Wmissing-format-attribute -Wmissing-include-dirs -Wmissing-noreturn -Wmissing-prototypes -Wnested-externs -Wold-style-definition -Wparentheses  -Wpointer-arith -Wredundant-decls -Wreturn-type -Wsequence-point  -Wshadow -Wsign-compare  -Wstack-protector -Wstrict-aliasing -Wstrict-aliasing=2 -Wstrict-prototypes -Wswitch  -Wswitch-default -Wswitch-enum -Wtrigraphs -Wunknown-pragmas  -Wunreachable-code -Wunused -Wunused-function  -Wunused-label  -Wunused-parameter -Wunused-value  -Wunused-variable  -Wvariadic-macros -Wvolatile-register-var  -Wwrite-strings "/>
+      </C32>
+      <C32-AS>
+      </C32-AS>
+      <C32-LD>
+      </C32-LD>
+      <C32Global>
+      </C32Global>
+      <PICkit3PlatformTool>
+      </PICkit3PlatformTool>
+    </conf>
+  </confs>
+</configurationDescriptor>
