@@ -62,7 +62,7 @@ nondirectToDirect (unsigned long initVal_nondirect, unsigned int order, unsigned
 int
 generateCrcTable(unsigned long *crcTabDst, enum reverseDataBytes refIn,
         unsigned int order, unsigned long polynom) {
-    unsigned long highbit, mask;
+    unsigned long highBit, mask;
 
     if (crcTabDst == NULL)
         return -ENULPTR;
