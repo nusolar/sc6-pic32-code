@@ -6,7 +6,7 @@ main(void)
     int32_t err = 0;
 
     EnableWDT();
-    nu32_init();
+    nu32_init(SYS_CLK_HZ);
     ClearWDT();
 
     PORTSetPinsAnalogIn(ACCEL_PEDAL_PIN_LTR, ACCEL_PEDAL_PIN_NUM);
