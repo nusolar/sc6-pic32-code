@@ -44,8 +44,8 @@ nbactions.xml
 nbbuild/
 nbdist/
 nbproject/private/
-private/
-projects/*/nbproject/*
+projects/*/nbproject/private/
+projects/*/nbproject/private/*
 !configurations.xml
 !Makefile
 !project.xml

@@ -1,4 +1,5 @@
-*/nbproject/*
+*/nbproject/private/
+*/nbproject/private/*
 !configurations.xml
 !Makefile
 !project.xml
