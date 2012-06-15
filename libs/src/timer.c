@@ -28,13 +28,13 @@ inline double
 ticksToSecs(uint32_t ticks)
 {
     /* 1 core tick = 2 SYS cycles */
-    return (((double)ticks*2.0)/sys_clk_hz);
+    return (((double)ticks*2.0)/(double)sys_clk_hz);
 }
 
 inline uint32_t
 secsToTicks(double secs)
 {
-    return (uint32_t)((secs*sys_clk_hz)/2.0);
+    return (uint32_t)((secs*(double)sys_clk_hz)/2.0);
 }
 
 void

@@ -62,14 +62,16 @@ nondirectToDirect (unsigned long initVal_nondirect, unsigned int order, unsigned
 int
 generateCrcTable(unsigned long *crcTabDst, enum reverseDataBytes refIn,
         unsigned int order, unsigned long polynom) {
+    unsigned long highbit, mask;
+
     if (crcTabDst == NULL)
         return -ENULPTR;
 
     if (order < 8)
         return -EINVAL;
 
-    unsigned long highBit = crcHighBit(order);
-    unsigned long mask = crcMask(order);
+    highBit = crcHighBit(order);
+    mask = crcMask(order);
 
     unsigned long i;
     for (i = 0; i < 256; ++i) {
@@ -102,6 +104,8 @@ crcTableFast (const unsigned long *crcTab, const void *data, size_t len,
         unsigned long polynom, enum reverseDataBytes refIn,
         enum reverseBeforeFinalXor refOut, unsigned long final_xor_value)
 {
+    unsigned long crc;
+
     if (!crcTab || !data)
         return ~0UL;
 
@@ -109,7 +113,6 @@ crcTableFast (const unsigned long *crcTab, const void *data, size_t len,
     if (order < 1 || order > 32 || order%8)
         return ~0UL;
 
-    unsigned long crc;
     if (direct == CRC_DIRECT)
         crc = initVal;
     else

@@ -45,11 +45,11 @@ int32_t
 ad7685_new(struct ad7685 *self, SpiChannel chn, IoPortId cnvPinLtr, uint32_t cnvPinNum, uint32_t numDevices,
             enum WireConfiguration WireConfig, enum BusyIndicator UseBusyIndicator)
 {
+    int32_t err;
+
     if (((WireConfig == FOUR_WIRE && UseBusyIndicator == NO_BUSY_INDICATOR) ||
             (WireConfig == CHAIN_MODE && UseBusyIndicator == USE_BUSY_INDICATOR)))
         return -EINVAL;
-    
-    int32_t err;
 
     if (self == NULL)
         return -ENULPTR;
@@ -122,10 +122,10 @@ example_convertAndReadVolts(void)
     /** [convertAndReadVolts example] */
     struct ad7685 adc;
     struct ad7685 *adcp = &adc;
+    float voltages[2];
     /* setup 2 ad7685 devices on SPI_CHANNEL4 with the convert pin set to G9 */
     ad7685_new(adcp, SPI_CHANNEL4, IOPORT_G, BIT_9, 2, THREE_WIRE,
                 USE_BUSY_INDICATOR);
-    float voltages[2];
     adcp->op->convertAndReadVolts(adcp, voltages);
     /** [convertAndReadVolts example] */
 }
@@ -183,21 +183,21 @@ static int32_t
 readVolts(struct ad7685 *self, float *voltages)
 {
     int32_t err;
+    uint32_t ui;
+    uint16_t data[self->numDevices];
 
     if (self == NULL || voltages == NULL)
         return -ENULPTR;
-
-    uint16_t data[self->numDevices];
+    
     if ((err = self->spiPort.op->rx(&(self->spiPort), &data, sizeof(data))))
         return err;
 
-    uint32_t i;
-    for (i = 0; i < self->numDevices; ++i) {
+    for (ui = 0; ui < self->numDevices; ++ui) {
         /* swap byte order ... */
-        data[i] = (uint16_t) (((data[i] >> 8) & 0xFF) |
-                                    ((data[i] << 8) & 0xFF00));
+        data[ui] = (uint16_t) (((data[ui] >> 8) & 0xFF) |
+                                    ((data[ui] << 8) & 0xFF00));
         /* then compute the actual voltage */
-        voltages[i] = (5 * ((float) data[i])) / (1 << 16);
+        voltages[ui] = (5 * ((float) data[ui])) / (1 << 16);
     }
     
     return 0;

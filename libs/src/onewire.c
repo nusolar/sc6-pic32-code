@@ -518,13 +518,12 @@ static int32_t
 findDevices(struct oneWire *self, union romCode *dst, size_t dstSizeBytes,
             BYTE searchRomCmd)
 {
-    int32_t rc = 0;
+    int32_t i, rc = 0;
     uint32_t arraySize = dstSizeBytes/sizeof(*dst);
 
     if (self == NULL || (dst == NULL && dstSizeBytes != 0))
         return -ENULPTR;
 
-    uint32_t i;
     for (i = 0; i < INT_MAX; i++) {
         union romCode *rcPtr = NULL;
         if (i < arraySize)
@@ -640,6 +639,8 @@ findSkipFamily(struct oneWire *self, union romCode *dst,
                         BYTE familyCode)
 {
     union romCode dummyRomCode;
+    uint32_t i;
+    uint32_t dstArraySize = dstSizeBytes/sizeof(*dst);
 
     if (self == NULL || (dst == NULL && dstSizeBytes != 0))
         return -ENULPTR;
@@ -657,8 +658,6 @@ findSkipFamily(struct oneWire *self, union romCode *dst,
         resetSearchState(self);
     }
 
-    uint32_t i;
-    uint32_t dstArraySize = dstSizeBytes/sizeof(*dst);
     for (i = 0; i < INT_MAX; i++) {
         union romCode currentRomCode;
         int32_t nxtResult = next(self, &currentRomCode, searchRomCmd);
