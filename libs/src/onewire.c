@@ -417,6 +417,7 @@ static int32_t
 searchRom(struct oneWire *self, union romCode *dst, BYTE searchRomCmd)
 {
     int32_t err = 0;
+    BYTE crc;
 
     if (self == NULL)
         return -ENULPTR;
@@ -472,7 +473,7 @@ searchRom(struct oneWire *self, union romCode *dst, BYTE searchRomCmd)
         /* UNCHANGED - no discrepancies occured */
         self->searchState.prevSearchWasLastDevice = TRUE;
 
-    BYTE crc = self->searchState.romCodeAndCrc.crc;
+    crc = self->searchState.romCodeAndCrc.crc;
     if (dst != NULL)
         *dst = self->searchState.romCodeAndCrc.rc;
 
