@@ -180,24 +180,24 @@ init_devices(struct nokia5110 *dp, struct ltc6803 *ltcp,
         struct ad7685 *adp,
         struct ds18x20 *dsp, struct can *canp,
         struct serial *serp,
-        struct led *led0p, struct led *led1p) __attribute__((nonnull));
+        struct led *led0p, struct led *led1p);
 
 int32_t
-sendLastResetCode(struct can *self) __attribute__((nonnull));
+sendLastResetCode(struct can *self);
 
 /** Trip the car, reporting and saving the tripcode as well as the relevant
  *  module (or -1 if no relevant module)
  */
 void
 nu_trip(const struct can *canp, enum tripCode code, uint32_t module)
-__attribute__((noreturn, nonnull));
+__attribute__((noreturn));
 
 void
 trip_nomod(const struct can *canp, int32_t tripCode)
-__attribute__((noreturn, nonnull));
+__attribute__((noreturn));
 
 void
 trip_mod(const struct can *canp, int32_t tripCode, uint32_t module)
-__attribute__((noreturn, nonnull));
+__attribute__((noreturn));
 
 #endif

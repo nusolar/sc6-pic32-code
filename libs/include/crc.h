@@ -79,7 +79,6 @@ unsigned long
 crcTableFast (const unsigned long *crcTab, const void *data, size_t len,
         unsigned int order, enum direct direct, unsigned long initVal,
         unsigned long polynom, enum reverseDataBytes reverseDataBytes,
-        enum reverseBeforeFinalXor, unsigned long final_xor_value)
-__attribute__((nonnull));
+        enum reverseBeforeFinalXor, unsigned long final_xor_value);
 
 #endif
