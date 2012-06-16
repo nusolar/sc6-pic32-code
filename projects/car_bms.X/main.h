@@ -189,21 +189,15 @@ sendLastResetCode(struct can *self) __attribute__((nonnull));
  *  module (or -1 if no relevant module)
  */
 void
-nu_trip(struct can *canp, enum tripCode code, uint32_t module)
+nu_trip(const struct can *canp, enum tripCode code, uint32_t module)
 __attribute__((noreturn, nonnull));
 
-#define TRIP_NOMOD(tripCode)                                            \
-    do {                                                                \
-        REPORT((REP_EMERGENCY, "tripping with code %d (%s)", tripCode,  \
-            tripcodeStr[tripCode]));                                    \
-        nu_trip(canp, (tripCode), 0xFFFFFFFF);                          \
-    } while(0)
-  
-#define TRIP_MOD(tripCode, module)                                      \
-    do {                                                                \
-        REPORT((REP_EMERGENCY, "tripping with code %d (%s), module %d", \
-                tripCode, tripcodeStr[tripCode], module));              \
-        nu_trip(canp, (tripCode), (module));                            \
-    } while(0)
+void
+trip_nomod(const struct can *canp, int32_t tripCode)
+__attribute__((noreturn, nonnull));
+
+void
+trip_mod(const struct can *canp, int32_t tripCode, uint32_t module)
+__attribute__((noreturn, nonnull));
 
 #endif

@@ -70,7 +70,7 @@ main(void)
                     DS18X20_ROMCODES[ui].byteArr[4],
                     DS18X20_ROMCODES[ui].byteArr[5],
                     DS18X20_ROMCODES[ui].byteArr[6]));
-            TRIP_MOD(TRIP_DS18X20_MISSING, ui);
+            trip_mod(canp, TRIP_DS18X20_MISSING, ui);
         }
     }
 
@@ -79,7 +79,7 @@ main(void)
     /* Start first temperature conversion */
     IF_ERR(dsp->op->startTempConversion(dsp, ALL_DEVICES), REP_EMERGENCY,
             nu_errno == -ENODEV ? "OW BUS FAILURE" : "TEMP CONVERT FAILED") {
-        TRIP_NOMOD(nu_errno == -ENODEV ?
+        trip_nomod(canp, nu_errno == -ENODEV ?
             TRIP_DS18X20_MISSING : TRIP_OW_BUS_FAILURE);
     }
 
@@ -106,18 +106,18 @@ main(void)
          * report and trip on error */
         IF_ERR(ltcp->op->startVoltageConversion(ltcp), REP_CRITICAL,
                         "LTC VOLTAGE CONVERSION FAILED")
-            TRIP_NOMOD(TRIP_OTHER);
+            trip_nomod(canp, TRIP_OTHER);
         delay_ms(16);
         IF_ERR(ltcp->op->readVolts(ltcp, voltages), REP_CRITICAL,
                         "LTC GET VOLTS FAILED")
-           TRIP_NOMOD(TRIP_OTHER);
+           trip_nomod(canp, TRIP_OTHER);
 
         ClearWDT();
 
         /* Get current readings */
         IF_ERR(adcp->op->convertAndReadVolts(adcp, rawCurrents),
                         REP_CRITICAL, "Current acquisition failed")
-            TRIP_NOMOD(TRIP_ADC_FAILURE);
+            trip_nomod(canp, TRIP_ADC_FAILURE);
         batteryCurrent  = voltageToCurrent(rawCurrents[I_SENSOR_BATT]);
         arrayCurrent    = voltageToCurrent(rawCurrents[I_SENSOR_ARRAY]);
 
@@ -146,7 +146,7 @@ main(void)
             /* Start next temperature conversion */
             IF_ERR(dsp->op->startTempConversion(dsp, ALL_DEVICES), REP_EMERGENCY,
                     nu_errno == -ENODEV ? "OW BUS FAILURE" : "TEMP CONVERT FAILED")
-                TRIP_NOMOD(nu_errno == -ENODEV ? TRIP_DS18X20_MISSING :
+                trip_nomod(canp, nu_errno == -ENODEV ? TRIP_DS18X20_MISSING :
                     TRIP_OW_BUS_FAILURE);
             temperatureStart = (float)readTimer();
         }
@@ -178,10 +178,10 @@ main(void)
         for (ui = 0; ui < MODULE_COUNT; ui++)
             if (voltages[ui] > OVER_VOLTAGE) {
                 REPORT_ERR((REP_EMERGENCY, -ETRIP, "MODULE %d OVER VOLTAGE", ui));
-                TRIP_MOD(TRIP_OVER_VOLTAGE, ui);
+                trip_mod(canp, TRIP_OVER_VOLTAGE, ui);
             } else if (voltages[ui] < UNDER_VOLTAGE) {
                 REPORT_ERR((REP_EMERGENCY, -ETRIP, "MODULE %d UNDER VOLTAGE", ui));
-                TRIP_MOD(TRIP_UNDER_VOLTAGE, ui);
+                trip_mod(canp, TRIP_UNDER_VOLTAGE, ui);
             }
 
         ClearWDT();
@@ -189,10 +189,10 @@ main(void)
         /* Check for over/under-current */
         if (batteryCurrent < OVER_CURRENT_DISCHARGE_A) {
             REPORT_ERR((REP_EMERGENCY, -ETRIP, "OVER CURRENT DISCHRG"));
-            TRIP_NOMOD(TRIP_OVER_CURRENT_DISCHRG);
+            trip_nomod(canp, TRIP_OVER_CURRENT_DISCHRG);
         } else if (batteryCurrent > OVER_CURRENT_CHARGE_A) {
             REPORT_ERR((REP_EMERGENCY, -ETRIP, "OVER CURRENT CHRG"));
-            TRIP_NOMOD(TRIP_OVER_CURRENT_CHRG);
+            trip_nomod(canp, TRIP_OVER_CURRENT_CHRG);
         }
 
         ClearWDT();
@@ -201,10 +201,10 @@ main(void)
         for (ui = 0; ui < ARRAY_SIZE(DS18X20_ROMCODES); ui++)
             if (temperatures[ui] > OVER_TEMP_C) {
                 REPORT_ERR((REP_EMERGENCY, -ETRIP, "SENSOR %d OVER TEMP", ui));
-                TRIP_MOD(TRIP_OVER_TEMP, ui);
+                trip_mod(canp, TRIP_OVER_TEMP, ui);
             } else if (temperatures[ui] < UNDER_TEMP_C) {
                 REPORT_ERR((REP_EMERGENCY, -ETRIP, "SENSOR %d UNDER TEMP", ui));
-                TRIP_MOD(TRIP_UNDER_TEMP, ui);
+                trip_mod(canp, TRIP_UNDER_TEMP, ui);
             }
 
         ClearWDT();
@@ -439,19 +439,35 @@ init_devices(struct nokia5110 *dp, struct ltc6803 *ltcp,
     REPORT_ON_ERR(init_can(canp),           REP_WARNING, "init_can");
 
     IF_ERR(init_ltcs(ltcp),                 REP_WARNING, "init_ltcs")
-        TRIP_NOMOD(TRIP_OTHER);
+        trip_nomod(canp, TRIP_OTHER);
 
     IF_ERR(init_adcs(adp),                  REP_WARNING, "init_adcs")
-        TRIP_NOMOD(TRIP_OTHER);
+        trip_nomod(canp, TRIP_OTHER);
 
     IF_ERR(init_ds18x20s(dsp),              REP_WARNING, "init_ds18x20s")
-        TRIP_NOMOD(TRIP_OTHER);
+        trip_nomod(canp, TRIP_OTHER);
 
     return 0;
 }
 
 void
-nu_trip(struct can *canp, enum tripCode code, uint32_t module)
+trip_nomod(const struct can *canp, int32_t tripCode)
+{
+    REPORT((REP_EMERGENCY, "tripping with code %d (%s)", tripCode,
+            tripcodeStr[tripCode]));
+    nu_trip(canp, tripCode, 0xFFFFFFFF);
+}
+
+void
+trip_mod(const struct can *canp, int32_t tripCode, uint32_t module)
+{
+    REPORT((REP_EMERGENCY, "tripping with code %d (%s), module %d", tripCode,
+            tripcodeStr[tripCode], module));
+    nu_trip(canp, tripCode, module);
+}
+
+void
+nu_trip(const struct can *canp, enum tripCode code, uint32_t module)
 {
     union can_bms can_bms;
 
