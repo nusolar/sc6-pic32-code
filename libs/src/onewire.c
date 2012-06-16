@@ -195,6 +195,8 @@ readBit(const struct oneWire *self)
 static int32_t
 reset(const struct oneWire *self)
 {
+    BIT devicesPresent;
+
     if (self == NULL)
         return -ENULPTR;
 
@@ -202,7 +204,7 @@ reset(const struct oneWire *self)
     delay_us(480);
     driveHigh(self);
     delay_us(70);
-    BIT devicesPresent = !readBit(self);
+    devicesPresent = !readBit(self);
     delay_us(410);
     driveHigh(self);
 
@@ -246,14 +248,15 @@ txBit(const struct oneWire *self, BIT b)
 static int32_t
 tx(const struct oneWire *self, const void *data, size_t len)
 {
-    if (self == NULL || data == NULL)
+    const BYTE *dataBytes = (const BYTE *)data;
+    uint32_t ui, uj;
+
+    if (!self || !data)
         return -ENULPTR;
 
-    const BYTE *dataBytes = (const BYTE *)data;
-    uint32_t i, j;
-    for (i = 0; i < len; i++)
-        for (j = 0; j < 8; j++)
-            txBit(self, (dataBytes[i]>>j)&1);
+    for (ui = 0; ui < len; ui++)
+        for (uj = 0; uj < 8; uj++)
+            txBit(self, (dataBytes[ui]>>uj)&1);
 
     return 0;
 }
@@ -271,6 +274,7 @@ static int32_t
 txWithCrc(const struct oneWire *self, const void *data, size_t len)
 {
     int32_t err = 0;
+    BYTE crc;
 
     if (self == NULL || data == NULL)
         return -ENULPTR;
@@ -278,7 +282,7 @@ txWithCrc(const struct oneWire *self, const void *data, size_t len)
     if ((err = tx(self, data, len)) < 0)
         return err;
 
-    BYTE crc = (BYTE)owCrc(data, len);
+    crc = (BYTE)owCrc(data, len);
     if ((err = txByte(self, crc)) < 0)
         return err;
 
@@ -288,13 +292,15 @@ txWithCrc(const struct oneWire *self, const void *data, size_t len)
 static int32_t
 rxBit(const struct oneWire *self)
 {
+    BIT result;
+
     if (self == NULL)
         return -ENULPTR;
 
     driveLow(self);
     delay_us(6);
     driveHigh(self);
-    BIT result = readBit(self);
+    result = readBit(self);
     delay_us(55);
     
     return result;
@@ -303,16 +309,17 @@ rxBit(const struct oneWire *self)
 static int32_t
 rx(const struct oneWire *self, void *dst, size_t len)
 {
-    if (self == NULL || dst == NULL)
+    BYTE *dstBytes = (BYTE *)dst;
+    unsigned int ui, uj;
+
+    if (!self || !dst)
         return -ENULPTR;
 
-    BYTE *dstBytes = (BYTE *)dst;
     memset(dstBytes, 0, len);
-
-    unsigned int i, j;
-    for (i = 0; i < len; i++)
-        for (j = 0; j < 8; j++)
-            dstBytes[i] |= (BYTE)(rxBit(self)<<j);
+ 
+    for (ui = 0; ui < len; ui++)
+        for (uj = 0; uj < 8; uj++)
+            dstBytes[ui] |= (BYTE)(rxBit(self)<<uj);
 
     return 0;
 }
@@ -321,14 +328,14 @@ static int32_t
 rxCheckCrc(const struct oneWire *self, void *dst, size_t len)
 {
     int32_t err = 0;
+    BYTE crc = 0x00;
 
-    if (self == NULL || dst == NULL)
+    if (!self || !dst)
         return -ENULPTR;
 
     if ((err = rx(self, dst, len)) < 0)
         return err;
 
-    BYTE crc = 0x00;
     if ((err = rx(self, &crc, sizeof(crc))) < 0)
         return err;
 
@@ -365,21 +372,22 @@ static int32_t
 getNextBit(struct oneWire *self, uint32_t idBitNumber,
             uint32_t *lastZeroDiscrepBit)
 {
+    BIT idBit, idBitComplement, searchDirection;
+
     if (self == NULL || lastZeroDiscrepBit == NULL)
         return -ENULPTR;
 
-    BIT idBit = self->op->rxBit(self);    /* all devices send the bit */
-    BIT idBitComplement = self->op->rxBit(self);    /* ..then send the bit's
-                                                     *  complement
-                                                     */
-    if (idBit == 1 && idBitComplement == 1) {       /* no devices left in
-                                                     * search
-                                                     */
+    idBit = self->op->rxBit(self);    /* all devices send the bit */
+    idBitComplement = self->op->rxBit(self);    /* ..then send the bit's
+                                                 *  complement
+                                                 */
+    if (idBit == 1 && idBitComplement == 1) {   /* no devices left in
+                                                 * search
+                                                 */
         resetSearchState(self);
         return OW_NO_DEVS_LEFT_IN_SEARCH;
     }
 
-    BIT searchDirection;
     if (idBit == 0 && idBitComplement == 0) {
         if (idBitNumber == self->searchState.lastDiscrepancyBit) {
             searchDirection = 1;
@@ -418,6 +426,13 @@ searchRom(struct oneWire *self, union romCode *dst, BYTE searchRomCmd)
 {
     int32_t err = 0;
     BYTE crc;
+    uint32_t    idBitNumber          = 1;    /* 1 to 64 */
+    uint32_t    lastZeroDiscrepBit   = 0;    /* bit posn of last zero written
+                                              * where there was a discrepancy
+                                              * (1-64, unless there was no
+                                              * discrepancy in which case it
+                                              * remains 0).
+                                              */
 
     if (self == NULL)
         return -ENULPTR;
@@ -435,17 +450,11 @@ searchRom(struct oneWire *self, union romCode *dst, BYTE searchRomCmd)
     if ((err = txByte(self, searchRomCmd)))
         return err;
 
-    uint32_t    idBitNumber          = 1;    /* 1 to 64 */
-    uint32_t    lastZeroDiscrepBit   = 0;    /* bit posn of last zero written
-                                              * where there was a discrepancy
-                                              * (1-64, unless there was no
-                                              * discrepancy in which case it
-                                              * remains 0).
-                                              */
-
     while (idBitNumber <= 64) {
         int32_t getNxtBitResult = getNextBit(self, idBitNumber,
                 &lastZeroDiscrepBit);
+        BIT nxtBit;
+        
         if (getNxtBitResult == OW_NO_DEVS_LEFT_IN_SEARCH) {
             resetSearchState(self);
             return 0;
@@ -454,7 +463,7 @@ searchRom(struct oneWire *self, union romCode *dst, BYTE searchRomCmd)
         if (getNxtBitResult < 0)    /* error */
             return getNxtBitResult;
 
-        BIT nxtBit = (BIT)getNxtBitResult;
+        nxtBit = (BIT)getNxtBitResult;
 
         if (nxtBit)
             BIT_SET(self->searchState.romCodeAndCrc.dataBytes[(idBitNumber-1)/8],
@@ -522,7 +531,7 @@ findDevices(struct oneWire *self, union romCode *dst, size_t dstSizeBytes,
     int32_t i, rc = 0;
     uint32_t arraySize = dstSizeBytes/sizeof(*dst);
 
-    if (self == NULL || (dst == NULL && dstSizeBytes != 0))
+    if (!self || (!dst && dstSizeBytes != 0))
         return -ENULPTR;
 
     for (i = 0; i < INT_MAX; i++) {
