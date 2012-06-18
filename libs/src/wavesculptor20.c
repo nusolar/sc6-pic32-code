@@ -107,7 +107,7 @@ driveCmd(const struct wavesculptor20 *self, float motorCurrentPercent,
     if (motorCurrentPercent < 0 || motorCurrentPercent > 1)
         return -EINVAL;
 
-    struct CAN_WS20RX(drive_cmd) frame = {
+    struct CAN_WS20RX(DRIVE_CMD) frame = {
         .motorCurrent = motorCurrentPercent,
         .motorVelocity = motorVelocityMperS,
     };
@@ -121,7 +121,7 @@ powerCmd(const struct wavesculptor20 *self, float busCurrent)
     if (self == NULL)
         return -ENULPTR;
 
-    struct can_wavesculptor20_rx_power_cmd frame = {
+    struct CAN_WS20RX(POWER_CMD) frame = {
         .busCurrent = busCurrent,
         .reserved = 0,
     };
@@ -135,7 +135,7 @@ resetCmd(const struct wavesculptor20 *self)
     if (self == NULL)
         return -ENULPTR;
 
-    struct can_wavesculptor20_rx_reset_cmd frame = {0};
+    struct CAN_WS20RX(RESET_CMD) frame = {0};
 
     return txFrame(self, &frame, sizeof(frame), ADDR_WS20RX(RESET_CMD));
 }
@@ -146,7 +146,7 @@ sendIdFrame(const struct wavesculptor20 *self)
     if (self == NULL)
         return -ENULPTR;
 
-    struct CAN_WS20RX(driver_controls_id) frame = {
+    struct CAN_WS20RX(DRIVER_CONTROLS_ID) frame = {
         .drvId = "TRIb",
         .serialNo = self->driverControlsSerialNo,
     };
