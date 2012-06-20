@@ -1,9 +1,5 @@
 #include "main.h"
 
-//#define MAX(x, y)   ((x) > (y) ? (x) : (y))
-//#define MIN(x, y)   ((x) < (y) ? (x) : (y))
-
-
 const float TRIP_THRESHOLD = 0.95;
 
 int32_t
