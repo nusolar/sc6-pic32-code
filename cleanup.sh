@@ -2,6 +2,9 @@
 
 # Run this to cleanup random files and make some room on Dropbox
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $DIR
+
 rm -vR *~
 rm -vR projects/*/nbproject/private/
 rm -vR projects/*/build/
