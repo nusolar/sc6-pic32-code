@@ -88,20 +88,20 @@ setErrBuf(const char *file, uint32_t line, int32_t err, const char *expr);
 void
 err_clear(enum report_priority maxPriority);
 
-void
+void __attribute__((format(printf,6,7)))
 reportf(const char *file, uint32_t line, enum report_priority priority,
-        int32_t errNum, const char *expr, const char *fmt, ...) __attribute__((format(printf,6,7)));
+        int32_t errNum, const char *expr, const char *fmt, ...);
 
-void
+void __attribute__((format(printf,4,5)))
 reportf_fileLineBuf(enum report_priority priority, int32_t errNum,
-        const char *expr, const char *fmt, ...) __attribute__((format(printf,4,5)));
+        const char *expr, const char *fmt, ...);
 
-void
+void __attribute__((format(printf,3,4)))
 reportf_fileLineExprBuf(enum report_priority priority, int32_t errNum,
-        const char *fmt, ...) __attribute__((format(printf,3,4)));
+        const char *fmt, ...);
 
-void
+void __attribute__((format(printf,2,3)))
 reportf_fileLineExprErrBuf(enum report_priority priority,
-        const char *fmt, ...) __attribute__((format(printf,2,3)));
+        const char *fmt, ...);
 
 #endif

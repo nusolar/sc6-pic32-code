@@ -168,9 +168,8 @@ sendLastResetCode(struct can *self);
 /** Trip the car, reporting and saving the tripcode as well as the relevant
  *  module (or -1 if no relevant module)
  */
-void
-nu_trip(const struct can *canp, enum tripCode code, uint32_t module)
-__attribute__((noreturn));
+void __attribute__((noreturn))
+nu_trip(const struct can *canp, enum tripCode code, uint32_t module);
 
 void
 trip_nomod(const struct can *canp, int32_t tripCode)
