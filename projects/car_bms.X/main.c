@@ -278,16 +278,11 @@ init_leds(struct led *led0p, struct led *led1p)
 {
     int32_t ret = 0;
     
-    if (!led0p) {
+    if (!led0p)
         ret = -ENULPTR;
-    } else {
-        IF_ERR(led_new(led0p, NU32_LED0_PORT, NU32_LED0_PIN),
-                REP_WARNING, "led_new") {
-            ;   /* do nothing */
-        } else {
-            register_reporting_dev(&(led0p->erd), REP_ERROR);
-        }
-    }
+    else IF_NOERR(led_new(led0p, NU32_LED0_PORT, NU32_LED0_PIN),
+                REP_WARNING, "led_new")
+        register_reporting_dev(&(led0p->erd), REP_ERROR);
 
     if (!led1p)
         ret = -ENULPTR;
@@ -306,15 +301,12 @@ init_serial(struct serial *serp)
     if (!serp)
         return -ENULPTR;
 
-    IF_ERR(serial_new(serp, SERIAL_MODULE, SERIAL_BAUD, NO_UART_INTERRUPT,
+    IF_NOERR(serial_new(serp, SERIAL_MODULE, SERIAL_BAUD, NO_UART_INTERRUPT,
             INT_PRIORITY_DISABLED, 0, UART_DATA_SIZE_8_BITS, 0,
             UART_ENABLE|UART_TX|UART_RX, delims, sizeof(delims)),
             REP_WARNING,
-            "serial_new failed") {
-        ;   /* do nothing */
-    } else {
+            "serial_new failed")
         register_reporting_dev(&(serp->erd), REP_DEBUG);
-    }
 
     return 0;
 }
@@ -325,15 +317,12 @@ init_nokia(struct nokia5110 *dp)
     if (!dp)
         return -ENULPTR;
 
-    IF_ERR(nokia5110_new(dp, NOKIA_SPI_CHANNEL,
+    IF_NOERR(nokia5110_new(dp, NOKIA_SPI_CHANNEL,
                                 NOKIA_CS_PIN_LTR, NOKIA_CS_PIN_NUM,
                                 NOKIA_RESET_PIN_LTR, NOKIA_RESET_PIN_NUM,
                                 NOKIA_DC_PIN_LTR, NOKIA_DC_PIN_NUM),
-                            REP_WARNING, "nokia5110_new") {
-        ;   /* do nothing */
-    } else {
+                REP_WARNING, "nokia5110_new")
         register_reporting_dev(&(dp->erd), REP_DEBUG);
-    }
 
     return 0;
 }
@@ -344,10 +333,8 @@ init_can(struct can *canp)
     if (!canp)
         return -ENULPTR;
 
-    IF_ERR(can_new_easy(canp, COMMON_CAN_MOD, 0, INT_PRIORITY_DISABLED),
+    IF_NOERR(can_new_easy(canp, COMMON_CAN_MOD, 0, INT_PRIORITY_DISABLED),
             REP_WARNING, "can_new_easy") {
-        ; /* do nothing */
-    } else {
         canp->error_reporting_can_chn = COMMON_CAN_TX_CHN;
         canp->error_reporting_can_use_extended_id = STANDARD_ID;
         canp->error_reporting_can_std_id = ADDR_BMSTX(ERROR);
