@@ -279,13 +279,13 @@ init_leds(struct led *led0p, struct led *led1p)
     int32_t ret = 0;
     
     if (!led0p)
-        ret = -ENULPTR;
+        ret |= -ENULPTR;
     else IF_NOERR(led_new(led0p, NU32_LED0_PORT, NU32_LED0_PIN),
                 REP_WARNING, "led_new")
         register_reporting_dev(&(led0p->erd), REP_ERROR);
 
     if (!led1p)
-        ret = -ENULPTR;
+        ret |= -ENULPTR;
     else
         REPORT_ON_ERR(led_new(led1p, NU32_LED1_PORT, NU32_LED1_PIN),
             REP_WARNING, "led_new");
@@ -363,7 +363,8 @@ init_ltcs(struct ltc6803 *ltcp)
 
     memset(cfg, 0, sizeof(cfg));
 
-    /* LTC6803 configuration: measurement only mode, 13ms minimum measurement time */
+    /* LTC6803 configuration: measurement only mode,
+     * 13ms minimum measurement time */
     cfg[0].cfgr0 = WDT | LVLPL | GPIO1 | GPIO2 | CDC_MSMTONLY;
     cfg[0].vov = convertOVLimit(OVER_VOLTAGE);
     cfg[0].vuv = convertUVLimit(UNDER_VOLTAGE);
