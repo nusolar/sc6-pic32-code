@@ -45,8 +45,8 @@ main(void)
     /* send cause of last reset over CAN */
     sendLastResetCode(canp);
     /* report last trip */
-    REPORT((REP_INFO, "last trip was code %d, module %d",
-            fd.tripInfo.code, fd.tripInfo.module));
+    REPORT(REP_INFO, "last trip was code %d, module %d", fd.tripInfo.code,
+            fd.tripInfo.module);
 
     /* LTC6803 Power-On Self Test; report and trip on error */
     REPORT_ON_ERR(ltcp->op->post(ltcp), REP_EMERGENCY, "LTC POST FAILED");
@@ -56,11 +56,11 @@ main(void)
     /* DS18x20 Presence Test */
     for (ui = 0; ui < ARRAY_SIZE(DS18X20_ROMCODES); ui++) {
         IF_ERR(dsp->op->verify(dsp, DS18X20_ROMCODES[ui]),
-                REP_EMERGENCY, "DS18X20 verify failed") {
-            /* @TODO Do something if result < 0? */
+                REP_EMERGENCY, "DS18X20 verify failed on romcode %d", ui) {
+            ; /* @TODO Do something if result < 0? */
         } else if (!nu_errno) {
             /* Missing Sensor */
-            REPORT((REP_EMERGENCY,
+            REPORT(REP_EMERGENCY,
                     "TEMP %d, ROMCODE %02X %02X %02X %02X %02X %02X %02X MISSING",
                     ui,
                     DS18X20_ROMCODES[ui].byteArr[0],
@@ -69,7 +69,7 @@ main(void)
                     DS18X20_ROMCODES[ui].byteArr[3],
                     DS18X20_ROMCODES[ui].byteArr[4],
                     DS18X20_ROMCODES[ui].byteArr[5],
-                    DS18X20_ROMCODES[ui].byteArr[6]));
+                    DS18X20_ROMCODES[ui].byteArr[6]);
             trip_mod(canp, TRIP_DS18X20_MISSING, ui);
         }
     }
@@ -177,10 +177,10 @@ main(void)
         /* Check for over-voltage/under-voltage */
         for (ui = 0; ui < MODULE_COUNT; ui++)
             if (voltages[ui] > OVER_VOLTAGE) {
-                REPORT_ERR((REP_EMERGENCY, -ETRIP, "MODULE %d OVER VOLTAGE", ui));
+                REPORT_ERR(REP_EMERGENCY, -ETRIP, "MODULE %d OVER VOLTAGE", ui);
                 trip_mod(canp, TRIP_OVER_VOLTAGE, ui);
             } else if (voltages[ui] < UNDER_VOLTAGE) {
-                REPORT_ERR((REP_EMERGENCY, -ETRIP, "MODULE %d UNDER VOLTAGE", ui));
+                REPORT_ERR(REP_EMERGENCY, -ETRIP, "MODULE %d UNDER VOLTAGE", ui);
                 trip_mod(canp, TRIP_UNDER_VOLTAGE, ui);
             }
 
@@ -188,10 +188,10 @@ main(void)
 
         /* Check for over/under-current */
         if (batteryCurrent < OVER_CURRENT_DISCHARGE_A) {
-            REPORT_ERR((REP_EMERGENCY, -ETRIP, "OVER CURRENT DISCHRG"));
+            REPORT_ERR(REP_EMERGENCY, -ETRIP, "OVER CURRENT DISCHRG");
             trip_nomod(canp, TRIP_OVER_CURRENT_DISCHRG);
         } else if (batteryCurrent > OVER_CURRENT_CHARGE_A) {
-            REPORT_ERR((REP_EMERGENCY, -ETRIP, "OVER CURRENT CHRG"));
+            REPORT_ERR(REP_EMERGENCY, -ETRIP, "OVER CURRENT CHRG");
             trip_nomod(canp, TRIP_OVER_CURRENT_CHRG);
         }
 
@@ -200,10 +200,10 @@ main(void)
         /* Check for over-temperature/under-temperature */
         for (ui = 0; ui < ARRAY_SIZE(DS18X20_ROMCODES); ui++)
             if (temperatures[ui] > OVER_TEMP_C) {
-                REPORT_ERR((REP_EMERGENCY, -ETRIP, "SENSOR %d OVER TEMP", ui));
+                REPORT_ERR(REP_EMERGENCY, -ETRIP, "SENSOR %d OVER TEMP", ui);
                 trip_mod(canp, TRIP_OVER_TEMP, ui);
             } else if (temperatures[ui] < UNDER_TEMP_C) {
-                REPORT_ERR((REP_EMERGENCY, -ETRIP, "SENSOR %d UNDER TEMP", ui));
+                REPORT_ERR(REP_EMERGENCY, -ETRIP, "SENSOR %d UNDER TEMP", ui);
                 trip_mod(canp, TRIP_UNDER_TEMP, ui);
             }
 
@@ -226,13 +226,13 @@ getLastResetCause(void)
         mClearPORFlag();
         mClearBORFlag();
 
-        REPORT((REP_INFO, "POR reset"));
+        REPORT(REP_INFO, "POR reset");
 
         return POWER_ON_RESET;
     } else if (isBOR()) {
         mClearBORFlag();
 
-        REPORT((REP_WARNING, "BOR reset"));
+        REPORT(REP_WARNING, "BOR reset");
         
         return BROWNOUT_RESET;
     } else if (isLVD()) {       /* low voltage detect reset
@@ -241,31 +241,31 @@ getLastResetCause(void)
                                  * definition:
                                  * #define isLVD()							0
                                  */
-        REPORT((REP_WARNING, "LVD reset"));
+        REPORT(REP_WARNING, "LVD reset");
 
         return LOW_VOLTAGE_RESET;
     } else if (isMCLR()) {      /* master clear (reset) pin reset */
         mClearMCLRFlag();
 
-        REPORT((REP_INFO, "MCLR reset"));
+        REPORT(REP_INFO, "MCLR reset");
 
         return MASTER_CLEAR_RESET;
     } else if (isWDTTO()) {     /* watchdog timer reset */
         mClearWDTOFlag();
 
-        REPORT((REP_ERROR, "WDT reset"));
+        REPORT(REP_ERROR, "WDT reset");
 
         return WDT_RESET;
     } else if (mGetSWRFlag()) { /* software reset */
         mClearSWRFlag();
 
-        REPORT((REP_WARNING, "SWR reset"));
+        REPORT(REP_WARNING, "SWR reset");
 
         return SOFTWARE_RESET;
     } else if (mGetCMRFlag()) { /* config mismatch reset */
         mClearCMRFlag();
 
-        REPORT((REP_CRITICAL, "CMR reset"));
+        REPORT(REP_CRITICAL, "CMR reset");
 
         return CONFIG_MISMATCH_RESET;
     };
@@ -415,7 +415,7 @@ init_devices(struct nokia5110 *dp, struct ltc6803 *ltcp,
         struct led *led0p, struct led *led1p)
 {
     if (!dp || !ltcp || !adp || !dsp || !canp || !serp || !led0p || !led1p)
-        REPORT_ERR((REP_WARNING, -ENULPTR, "init_devices passed NULL pointer"));
+        REPORT_ERR(REP_WARNING, -ENULPTR, "init_devices passed NULL pointer");
 
     REPORT_ON_ERR(init_leds(led0p, led1p),  REP_WARNING, "init_leds");
 
@@ -440,16 +440,16 @@ init_devices(struct nokia5110 *dp, struct ltc6803 *ltcp,
 void
 trip_nomod(const struct can *canp, int32_t tripCode)
 {
-    REPORT((REP_EMERGENCY, "tripping with code %d (%s)", tripCode,
-            tripcodeStr[tripCode]));
+    REPORT(REP_EMERGENCY, "tripping with code %d (%s)", tripCode,
+            tripcodeStr[tripCode]);
     nu_trip(canp, tripCode, 0xFFFFFFFF);
 }
 
 void
 trip_mod(const struct can *canp, int32_t tripCode, uint32_t module)
 {
-    REPORT((REP_EMERGENCY, "tripping with code %d (%s), module %d", tripCode,
-            tripcodeStr[tripCode], module));
+    REPORT(REP_EMERGENCY, "tripping with code %d (%s), module %d", tripCode,
+            tripcodeStr[tripCode], module);
     nu_trip(canp, tripCode, module);
 }
 
@@ -461,8 +461,8 @@ nu_trip(const struct can *canp, enum tripCode code, uint32_t module)
     can_bms.tx.trip.module = module;
     can_bms.tx.trip.tripCode = code;
 
-    REPORT((REP_EMERGENCY, "tripping with code %d (%s); module %d",
-        code, tripcodeStr[code], module));
+    REPORT(REP_EMERGENCY, "tripping with code %d (%s); module %d",
+        code, tripcodeStr[code], module);
 
     if (canp)
         canp->op->tx(canp, COMMON_CAN_TX_CHN, STANDARD_ID, ADDR_BMSTX(TRIP), 0,

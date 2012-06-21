@@ -13,45 +13,32 @@
     #define MAX_REPORTING_DEVS  10
 #endif
 
-/* REPORTF((priority, errNum, expr, fmt, ...)) */
-#define REPORTF(x)  do {                                                \
-                        setErrBuf(__FILE__, __LINE__, 0, NULL);         \
-                        reportf_fileLineBuf x;                          \
-                    } while(0)
+#define REPORTF(priority, errNum, expr, fmt...) \
+    do {reportf(__FILE__, __LINE__, (priority), (errNum), (expr), ## fmt);}while(0)
 
-#define REPORT_ERR_EXPR(x) REPORTF(x)
+#define REPORT_ERR_EXPR(priority, errNum, expr, fmt...) \
+    REPORTF(priority, errNum, expr, ## fmt)
 
-/* REPORT_ERR((priority, errNum, fmt, ...)) */
-#define REPORT_ERR(x) \
-                    do {                                                \
-                        setErrBuf(__FILE__, __LINE__, 0, NULL);         \
-                        reportf_fileLineExprBuf x;                      \
-                    } while(0)
+#define REPORT_ERR(priority, errNum, fmt...)    \
+    do {reportf(__FILE__, __LINE__, (priority), (errNum), NULL, ## fmt);}while(0)
 
-/* REPORT((report_pri, fmt, ...)) */
-#define REPORT(x)                                                           \
-                    do {                                                    \
-                        setErrBuf(__FILE__, __LINE__, ENONE, NULL);         \
-                        reportf_fileLineExprErrBuf x;                       \
-                    } while(0)
+#define REPORT(priority, fmt...)   \
+    do {reportf(__FILE__, __LINE__, (priority), ENONE, NULL, ## fmt);}while(0)
 
 extern int32_t nu_errno;
 
-#define IF_ERR(expr, rep_pri, err_msg)                                      \
+#define IF_ERR(expr, priority, fmt...)                                      \
             if ((nu_errno = (int32_t)(expr)) < 0 &&                         \
-                (setErrBuf(__FILE__, __LINE__, 0, NULL),                    \
-                reportf_fileLineBuf(rep_pri, nu_errno, #expr, err_msg), 1))
+                (reportf(__FILE__, __LINE__, (priority), nu_errno, #expr, ## fmt), 1))
 
-#define IF_NOERR(expr, rep_pri, err_msg)                                    \
+#define IF_NOERR(expr, priority, fmt...)                                    \
             if (!((nu_errno = (int32_t)(expr)) < 0 &&                       \
-                (setErrBuf(__FILE__, __LINE__, 0, NULL),                    \
-                reportf_fileLineBuf(rep_pri, nu_errno, #expr, err_msg), 1)))
+                (reportf(__FILE__, __LINE__, (priority), nu_errno, #expr, ## fmt), 1)))
 
-#define REPORT_ON_ERR(expr, rep_pri, err_msg)                               \
+#define REPORT_ON_ERR(expr, priority, fmt...)                               \
             do {                                                            \
-                nu_errno = (int32_t)(expr);                                 \
-                if (nu_errno < 0)                                           \
-                    REPORT_ERR_EXPR((rep_pri, nu_errno, #expr, err_msg));   \
+                if ((nu_errno = (int32_t)(expr)) < 0)                       \
+                    REPORT_ERR_EXPR(priority, nu_errno, #expr, ## fmt);     \
             } while(0)
 
 enum report_priority {
