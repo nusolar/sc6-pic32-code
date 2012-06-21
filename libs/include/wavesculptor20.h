@@ -7,12 +7,15 @@
 #include "can_nu.h"
 
 struct wavesculptor20 {
-    const struct vtbl_wavesculptor20 *op;
-    
     struct can      can;
+    
+    const struct vtbl_wavesculptor20 *op;
+
+    uint32_t        driverControlsSerialNo;
+    
     CAN_CHANNEL     txChn;
     CAN_CHANNEL     rxChn;
-    uint32_t        driverControlsSerialNo;
+    
     uint16_t        driverControlsBaseAddr;
     uint16_t        motorControllerBaseAddr;
 };
