@@ -42,6 +42,11 @@ extern int32_t nu_errno;
                 setErrBuf(__FILE__, __LINE__, 0, NULL),                     \
                 (reportf_fileLineBuf(rep_pri, nu_errno, #expr, err_msg) || 1))
 
+#define IF_NOERR(expr, rep_pri, err_msg)                                    \
+            if (!((nu_errno = (int32_t)(expr)) < 0 &&                       \
+                setErrBuf(__FILE__, __LINE__, 0, NULL),                     \
+                (reportf_fileLineBuf(rep_pri, nu_errno, #expr, err_msg) || 1)))
+
 #define REPORT_ON_ERR(expr, rep_pri, err_msg)                               \
             do {                                                            \
                 nu_errno = (int32_t)(expr);                                 \
