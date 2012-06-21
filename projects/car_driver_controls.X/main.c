@@ -6,11 +6,9 @@ int32_t
 main(void)
 {
     int32_t err = 0;
-    struct can              commonCan, *commonCanp = &commonCan;
-    struct wavesculptor20   ws20, *ws20p = &ws20;
-    union can_anyFrame      CAN  = {.wavesculptor20.rx = ws20p->can.op->rx,
-                                    .wavesculptor20.tx = ws20p->can.op->tx,
-                                    .common.tx = commonCanp->op->tx};
+    struct can              commonCan,  *commonCanp = &commonCan;
+    struct wavesculptor20   ws20,       *ws20p      = &ws20;
+    union can_anyFrame      CAN;
 
 
     EnableWDT();
