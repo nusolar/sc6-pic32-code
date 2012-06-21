@@ -13,3 +13,4 @@ rm -vR docs/html/
 rm -vR docs/latex/
 rm -vR docs/rtf/
 rm -viR "*(conflicted copy)*"
+find . -iname "*conflicted copy*" -exec rm -i {} \;
