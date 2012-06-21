@@ -41,11 +41,11 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/main.o ${OBJECTDIR}/_ext/319723389/can.o ${OBJECTDIR}/_ext/319723389/error_reporting.o ${OBJECTDIR}/_ext/319723389/errorcodes.o ${OBJECTDIR}/_ext/319723389/nu32.o ${OBJECTDIR}/_ext/319723389/timer.o ${OBJECTDIR}/_ext/319723389/wavesculptor20.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/main.o.d ${OBJECTDIR}/_ext/319723389/can.o.d ${OBJECTDIR}/_ext/319723389/error_reporting.o.d ${OBJECTDIR}/_ext/319723389/errorcodes.o.d ${OBJECTDIR}/_ext/319723389/nu32.o.d ${OBJECTDIR}/_ext/319723389/timer.o.d ${OBJECTDIR}/_ext/319723389/wavesculptor20.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/main.o ${OBJECTDIR}/_ext/319723389/can.o ${OBJECTDIR}/_ext/319723389/error_reporting.o ${OBJECTDIR}/_ext/319723389/errorcodes.o ${OBJECTDIR}/_ext/319723389/nu32.o ${OBJECTDIR}/_ext/319723389/timer.o ${OBJECTDIR}/_ext/319723389/wavesculptor20.o ${OBJECTDIR}/_ext/319723389/safestring.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/main.o.d ${OBJECTDIR}/_ext/319723389/can.o.d ${OBJECTDIR}/_ext/319723389/error_reporting.o.d ${OBJECTDIR}/_ext/319723389/errorcodes.o.d ${OBJECTDIR}/_ext/319723389/nu32.o.d ${OBJECTDIR}/_ext/319723389/timer.o.d ${OBJECTDIR}/_ext/319723389/wavesculptor20.o.d ${OBJECTDIR}/_ext/319723389/safestring.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/main.o ${OBJECTDIR}/_ext/319723389/can.o ${OBJECTDIR}/_ext/319723389/error_reporting.o ${OBJECTDIR}/_ext/319723389/errorcodes.o ${OBJECTDIR}/_ext/319723389/nu32.o ${OBJECTDIR}/_ext/319723389/timer.o ${OBJECTDIR}/_ext/319723389/wavesculptor20.o
+OBJECTFILES=${OBJECTDIR}/main.o ${OBJECTDIR}/_ext/319723389/can.o ${OBJECTDIR}/_ext/319723389/error_reporting.o ${OBJECTDIR}/_ext/319723389/errorcodes.o ${OBJECTDIR}/_ext/319723389/nu32.o ${OBJECTDIR}/_ext/319723389/timer.o ${OBJECTDIR}/_ext/319723389/wavesculptor20.o ${OBJECTDIR}/_ext/319723389/safestring.o
 
 
 CFLAGS=
@@ -116,6 +116,11 @@ ${OBJECTDIR}/_ext/319723389/wavesculptor20.o: ../../libs/src/wavesculptor20.c  n
 	@${RM} ${OBJECTDIR}/_ext/319723389/wavesculptor20.o.d 
 	@${FIXDEPS} "${OBJECTDIR}/_ext/319723389/wavesculptor20.o.d" $(SILENT) -c ${MP_CC} $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -x c -c -mprocessor=$(MP_PROCESSOR_OPTION) -I"../../libs/include" -MMD -MF "${OBJECTDIR}/_ext/319723389/wavesculptor20.o.d" -o ${OBJECTDIR}/_ext/319723389/wavesculptor20.o ../../libs/src/wavesculptor20.c  
 	
+${OBJECTDIR}/_ext/319723389/safestring.o: ../../libs/src/safestring.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/_ext/319723389 
+	@${RM} ${OBJECTDIR}/_ext/319723389/safestring.o.d 
+	@${FIXDEPS} "${OBJECTDIR}/_ext/319723389/safestring.o.d" $(SILENT) -c ${MP_CC} $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -x c -c -mprocessor=$(MP_PROCESSOR_OPTION) -I"../../libs/include" -MMD -MF "${OBJECTDIR}/_ext/319723389/safestring.o.d" -o ${OBJECTDIR}/_ext/319723389/safestring.o ../../libs/src/safestring.c  
+	
 else
 ${OBJECTDIR}/main.o: main.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
@@ -152,18 +157,23 @@ ${OBJECTDIR}/_ext/319723389/wavesculptor20.o: ../../libs/src/wavesculptor20.c  n
 	@${RM} ${OBJECTDIR}/_ext/319723389/wavesculptor20.o.d 
 	@${FIXDEPS} "${OBJECTDIR}/_ext/319723389/wavesculptor20.o.d" $(SILENT) -c ${MP_CC} $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION) -I"../../libs/include" -MMD -MF "${OBJECTDIR}/_ext/319723389/wavesculptor20.o.d" -o ${OBJECTDIR}/_ext/319723389/wavesculptor20.o ../../libs/src/wavesculptor20.c  
 	
+${OBJECTDIR}/_ext/319723389/safestring.o: ../../libs/src/safestring.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/_ext/319723389 
+	@${RM} ${OBJECTDIR}/_ext/319723389/safestring.o.d 
+	@${FIXDEPS} "${OBJECTDIR}/_ext/319723389/safestring.o.d" $(SILENT) -c ${MP_CC} $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION) -I"../../libs/include" -MMD -MF "${OBJECTDIR}/_ext/319723389/safestring.o.d" -o ${OBJECTDIR}/_ext/319723389/safestring.o ../../libs/src/safestring.c  
+	
 endif
 
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: link
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
-dist/${CND_CONF}/${IMAGE_TYPE}/car_driver_controls.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}: ${OBJECTFILES}  nbproject/Makefile-${CND_CONF}.mk
+dist/${CND_CONF}/${IMAGE_TYPE}/car_driver_controls.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}: ${OBJECTFILES}  nbproject/Makefile-${CND_CONF}.mk   
 	@${MKDIR} dist/${CND_CONF}/${IMAGE_TYPE} 
-	${MP_CC} $(MP_EXTRA_LD_PRE)  -mdebugger -D__MPLAB_DEBUGGER_PK3=1 -mprocessor=$(MP_PROCESSOR_OPTION)  -o dist/${CND_CONF}/${IMAGE_TYPE}/car_driver_controls.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX} ${OBJECTFILES_QUOTED_IF_SPACED}        -Wl,--defsym=__MPLAB_BUILD=1$(MP_EXTRA_LD_POST)$(MP_LINKER_FILE_OPTION),--defsym=__MPLAB_DEBUG=1,--defsym=__ICD2RAM=1,--defsym=__DEBUG=1,--defsym=__MPLAB_DEBUGGER_PK3=1 
+	${MP_CC} $(MP_EXTRA_LD_PRE)  -mdebugger -D__MPLAB_DEBUGGER_PK3=1 -mprocessor=$(MP_PROCESSOR_OPTION)  -o dist/${CND_CONF}/${IMAGE_TYPE}/car_driver_controls.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX} ${OBJECTFILES_QUOTED_IF_SPACED}       -Wl,--defsym=__MPLAB_BUILD=1$(MP_EXTRA_LD_POST)$(MP_LINKER_FILE_OPTION),--defsym=__MPLAB_DEBUG=1,--defsym=__ICD2RAM=1,--defsym=__DEBUG=1,--defsym=__MPLAB_DEBUGGER_PK3=1 
 else
-dist/${CND_CONF}/${IMAGE_TYPE}/car_driver_controls.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}: ${OBJECTFILES}  nbproject/Makefile-${CND_CONF}.mk
+dist/${CND_CONF}/${IMAGE_TYPE}/car_driver_controls.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}: ${OBJECTFILES}  nbproject/Makefile-${CND_CONF}.mk   
 	@${MKDIR} dist/${CND_CONF}/${IMAGE_TYPE} 
-	${MP_CC} $(MP_EXTRA_LD_PRE)  -mprocessor=$(MP_PROCESSOR_OPTION)  -o dist/${CND_CONF}/${IMAGE_TYPE}/car_driver_controls.X.${IMAGE_TYPE}.${DEBUGGABLE_SUFFIX} ${OBJECTFILES_QUOTED_IF_SPACED}        -Wl,--defsym=__MPLAB_BUILD=1$(MP_EXTRA_LD_POST)$(MP_LINKER_FILE_OPTION)
+	${MP_CC} $(MP_EXTRA_LD_PRE)  -mprocessor=$(MP_PROCESSOR_OPTION)  -o dist/${CND_CONF}/${IMAGE_TYPE}/car_driver_controls.X.${IMAGE_TYPE}.${DEBUGGABLE_SUFFIX} ${OBJECTFILES_QUOTED_IF_SPACED}       -Wl,--defsym=__MPLAB_BUILD=1$(MP_EXTRA_LD_POST)$(MP_LINKER_FILE_OPTION)
 	${MP_CC_DIR}\\pic32-bin2hex dist/${CND_CONF}/${IMAGE_TYPE}/car_driver_controls.X.${IMAGE_TYPE}.${DEBUGGABLE_SUFFIX}  
 endif
 
