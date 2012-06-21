@@ -44,7 +44,7 @@ extern int32_t nu_errno;
 
 #define REPORT_ON_ERR(expr, rep_pri, err_msg)                               \
             do {                                                            \
-                nu_errno = (expr);                                          \
+                nu_errno = (int32_t)(expr);                                 \
                 if (nu_errno < 0)                                           \
                     REPORT_ERR_EXPR((rep_pri, nu_errno, #expr, err_msg));   \
             } while(0)
