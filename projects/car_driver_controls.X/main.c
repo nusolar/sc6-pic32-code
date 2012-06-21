@@ -6,10 +6,12 @@ int32_t
 main(void)
 {
     int32_t err = 0;
-    struct can              commonCan,  *commonCanp = &commonCan;
-    struct wavesculptor20   ws20,       *ws20p      = &ws20;
-    union can_anyFrame      CAN;
 
+    struct can              commonCan,  *commonCanp = &commonCan;
+    struct serial           ser,        *serp       = &ser;
+    struct wavesculptor20   ws20,       *ws20p      = &ws20;
+    
+    union can_anyFrame      canFrame;
 
     EnableWDT();
     nu32_init(SYS_CLK_HZ);
@@ -140,15 +142,15 @@ main(void)
             ws20p->op->driveCmd(ws20p, cruiseCurrentPercent, cruiseVelocityMperS);
         } else if (reverse == TRUE || cruiseState == CRUISE_BACKWARD) {
             ws20p->op->driveCmd(ws20p, accelPedalPercent, -FLT_MAX);
-        } else if (CAN.bms.tx.current_draw.currentDraw >=
-                TRIP_THRESHOLD * CAN.bms.tx.current_trip_pt.currentTripPt) {
+        } else if (canFrame.bms.tx.current_draw.currentDraw >=
+                TRIP_THRESHOLD * canFrame.bms.tx.current_trip_pt.currentTripPt) {
             /* The pedal is at or past the threshold (or was on the previous
              * loop iteration). */
             if ((maxAccel == 0) || (accelPedalPercent < maxAccel))
                 maxAccel = accelPedalPercent;
             ws20p->op->driveCmd(ws20p, maxAccel, FLT_MAX);
-        } else if (CAN.bms.tx.current_draw.currentDraw <
-                TRIP_THRESHOLD * CAN.bms.tx.current_trip_pt.currentTripPt) {
+        } else if (canFrame.bms.tx.current_draw.currentDraw <
+                TRIP_THRESHOLD * canFrame.bms.tx.current_trip_pt.currentTripPt) {
             /* The pedal is beneath the threshold. */
             maxAccel = 0;
             ws20p->op->driveCmd(ws20p, accelPedalPercent, FLT_MAX);
