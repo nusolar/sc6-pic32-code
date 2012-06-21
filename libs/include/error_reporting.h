@@ -38,10 +38,9 @@
 extern int32_t nu_errno;
 
 #define IF_ERR(expr, rep_pri, err_msg)                                      \
-                nu_errno = (expr);                                          \
-                if (nu_errno < 0)                                           \
-                    REPORT_ERR_EXPR((rep_pri, nu_errno, #expr, err_msg));   \
-                if (nu_errno < 0)
+            if ((nu_errno = (int32_t)(expr)) < 0 &&                         \
+                setErrBuf(__FILE__, __LINE__, 0, NULL),                     \
+                (reportf_fileLineBuf(rep_pri, nu_errno, #expr, err_msg) || 1))
 
 #define REPORT_ON_ERR(expr, rep_pri, err_msg)                               \
             do {                                                            \
