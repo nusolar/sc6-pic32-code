@@ -5,19 +5,10 @@
 #include <stdint.h>
 #include "error_reporting.h"
 #include "nu32.h"
+#include "serial.h"
 #include "wavesculptor20.h"
 
-/* config pragmas needed mostly for PICKit3 */
-#pragma config ICESEL   = ICS_PGx2
-#pragma config FPLLMUL  = MUL_20, FPLLIDIV = DIV_2, FPLLODIV = DIV_1
-#pragma config FPBDIV   = DIV_1
-#pragma config POSCMOD  = XT, FNOSC = PRIPLL
-
-/* disable WDT (we'll control it in software) */
-#pragma config FWDTEN   = OFF
-
-/* 2.048s WDT timeout (1:2048 postscaler) */
-#pragma config WDTPS    = PS2048
+#include "common_pragmas.h"
 
 enum CRUISE_STATE {
     CRUISE_DISABLED = 0,
