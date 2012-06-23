@@ -1,4 +1,32 @@
-#include "main.h"
+/** Trip codes that will be reported right before the car trips, and [hopefully]
+ *  right after the car comes back up.
+ */
+#define TRIPCODES               \
+    X(TRIP_NONE)                \
+    X(TRIP_OTHER)               \
+    X(TRIP_OW_BUS_FAILURE)      \
+    X(TRIP_DS18X20_MISSING)     \
+    X(TRIP_LTC_POST_FAILED)     \
+    X(TRIP_ADC_FAILURE)         \
+    X(TRIP_OVER_VOLTAGE)        \
+    X(TRIP_UNDER_VOLTAGE)       \
+    X(TRIP_OVER_CURRENT_DISCHRG)\
+    X(TRIP_OVER_CURRENT_CHRG)   \
+    X(TRIP_OVER_TEMP)           \
+    X(TRIP_UNDER_TEMP)
+
+#define X(x)    x,
+enum tripCode {
+    TRIPCODES
+    NUM_TRIPCODES
+};
+#undef X
+
+#define X(x)    #x,
+static const char *tripcodeStr[NUM_TRIPCODES] = {
+    TRIPCODES
+};
+#undef X
 
 int32_t
 main(void)
