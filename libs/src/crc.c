@@ -62,7 +62,7 @@ nondirectToDirect (unsigned long initVal_nondirect, unsigned int order, unsigned
 int
 generateCrcTable(unsigned long *crcTabDst, enum reverseDataBytes refIn,
         unsigned int order, unsigned long polynom) {
-    unsigned long highBit, mask;
+    unsigned long highBit, mask, ui;
 
     if (crcTabDst == NULL)
         return -ENULPTR;
@@ -73,15 +73,15 @@ generateCrcTable(unsigned long *crcTabDst, enum reverseDataBytes refIn,
     highBit = crcHighBit(order);
     mask = crcMask(order);
 
-    unsigned long i;
-    for (i = 0; i < 256; ++i) {
-        unsigned long crc = i;
+    for (ui = 0; ui < 256; ++ui) {
+        unsigned int uj;
+        unsigned long crc = ui;
+        
         if (refIn == CRC_REVERSE_DATA_BYTES)
             crc = reflect(crc, 8);
         crc<<=(order-8);
 
-        unsigned int j;
-        for (j = 0; j < 8; ++j) {
+        for (uj = 0; uj < 8; ++uj) {
             unsigned long _bit = crc & highBit;
             crc<<=1;
             if (_bit)
@@ -92,7 +92,7 @@ generateCrcTable(unsigned long *crcTabDst, enum reverseDataBytes refIn,
             crc = reflect(crc, order);
 
         crc &= mask;
-        crcTabDst[i] = crc;
+        crcTabDst[ui] = crc;
     }
 
     return 0;
@@ -105,6 +105,7 @@ crcTableFast (const unsigned long *crcTab, const void *data, size_t len,
         enum reverseBeforeFinalXor refOut, unsigned long final_xor_value)
 {
     unsigned long crc;
+    const BYTE *dataBytes = (const BYTE *)data;
 
     if (!crcTab || !data)
         return ~0UL;
@@ -121,7 +122,6 @@ crcTableFast (const unsigned long *crcTab, const void *data, size_t len,
     if (refIn == CRC_REVERSE_DATA_BYTES)
         crc = reflect(crc, order);
 
-    const BYTE *dataBytes = (const BYTE *)data;
     if (refIn == CRC_NO_REVERSE_DATA_BYTES)
         while (len--)
             crc = (crc<<8) ^ crcTab[((crc>>(order-8)) & 0xff) ^ *dataBytes++];
@@ -145,14 +145,16 @@ crcTable (const unsigned long *crcTab, const void *data, size_t len,
         unsigned long polynom, enum reverseDataBytes refIn,
         enum reverseBeforeFinalXor refOut, unsigned long final_xor_value)
 {
-    if (crcTab == NULL || data == NULL)
+    unsigned long crc;
+    const BYTE *dataBytes = (const BYTE *)data;
+
+    if (!crcTab || !data)
         return -ENULPTR;
 
     /* only usable with orders 8, 16, 24, and 32 */
     if (order < 1 || order > 32 || order%8)
         return -EINVAL;
 
-    unsigned long crc;
     if (direct == CRC_NONDIRECT)
         crc = initVal;
     else
@@ -160,8 +162,6 @@ crcTable (const unsigned long *crcTab, const void *data, size_t len,
 
     if (refIn == CRC_REVERSE_DATA_BYTES)
         crc = reflect(crc, order);
-
-    const BYTE *dataBytes = (const BYTE *)data;
 
     if (refIn == CRC_REVERSE_DATA_BYTES)
         while (len--)
@@ -194,7 +194,8 @@ crcBitByBit (const void *data, size_t len,
         unsigned long polynom, enum reverseDataBytes refIn,
         enum reverseBeforeFinalXor refOut, unsigned long final_xor_value)
 {
-    unsigned long j, currentBit;
+    unsigned long ui, uj, currentBit;
+    const BYTE *dataBytes = (const BYTE *)data;
 
     unsigned long crc;
     if (direct == CRC_DIRECT)
@@ -202,9 +203,7 @@ crcBitByBit (const void *data, size_t len,
     else
         crc = initVal;
 
-    const BYTE *dataBytes = (const BYTE *)data;
-    unsigned long i;
-    for (i = 0; i < len; i++) {
+    for (ui = 0; ui < len; ui++) {
         unsigned long c = *dataBytes++;
         if (refIn == CRC_REVERSE_DATA_BYTES)
             c = reflect(c, 8);
