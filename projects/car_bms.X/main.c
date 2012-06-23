@@ -247,7 +247,8 @@ main(void)
             fd.tripInfo.module);
 
     /* LTC6803 Power-On Self Test; report and trip on error */
-    REPORT_ON_ERR(ltcp->op->post(ltcp), REP_EMERGENCY, "LTC POST FAILED");
+    IF_ERR(ltcp->op->post(ltcp), REP_EMERGENCY, "LTC POST FAILED")
+        trip_nomod(TRIP_LTC_POST_FAILED);
 
     ClearWDT();
 
@@ -521,15 +522,19 @@ init_can(struct can *canp)
             REP_WARNING, "can_new_easy")
         return errno;
 
-        canp->op->addChannelTx(canp, COMMON_CAN_TX_CHN,
-            CAN_TX_RX_MESSAGE_SIZE_BYTES, CAN_TX_RTR_DISABLED,
-            CAN_HIGH_MEDIUM_PRIORITY, 0);
+    canp->error_reporting_can_chn = COMMON_CAN_TX_CHN;
+    canp->error_reporting_can_use_extended_id = STANDARD_ID;
+    canp->error_reporting_can_std_id = ADDR_BMSTX(ERROR);
+    canp->error_reporting_can_ext_id = 0;
 
-        canp->op->addChannelRx(canp, COMMON_CAN_RX_CHN,
-                CAN_TX_RX_MESSAGE_SIZE_BYTES, CAN_RX_FULL_RECEIVE, 0);
+    canp->op->addChannelTx(canp, COMMON_CAN_TX_CHN,
+        CAN_TX_RX_MESSAGE_SIZE_BYTES, CAN_TX_RTR_DISABLED,
+        CAN_HIGH_MEDIUM_PRIORITY, 0);
 
-        register_reporting_dev(&(canp->erd), REP_DEBUG);
-    }
+    canp->op->addChannelRx(canp, COMMON_CAN_RX_CHN,
+            CAN_TX_RX_MESSAGE_SIZE_BYTES, CAN_RX_FULL_RECEIVE, 0);
+
+    register_reporting_dev(&(canp->erd), REP_DEBUG);
 
     return 0;
 }
@@ -537,6 +542,7 @@ init_can(struct can *canp)
 static int32_t
 init_ltcs(struct ltc6803 *ltcp)
 {
+    int32_t errno;
     union BpsConfig cfg[LTC6803_COUNT];
 
     if (!ltcp)
@@ -605,9 +611,9 @@ init_devices(struct nokia5110 *dp, struct ltc6803 *ltcp,
 
     REPORT_ON_ERR(init_serial(),    REP_WARNING, "init_serial");
 
-    REPORT_ON_ERR(init_nokia(dp),           REP_WARNING, "init_nokia");
+    REPORT_ON_ERR(init_nokia(dp),   REP_WARNING, "init_nokia");
 
-    REPORT_ON_ERR(init_can(canp),           REP_WARNING, "init_can");
+    REPORT_ON_ERR(init_can(canp),   REP_WARNING, "init_can");
 
     IF_ERR(init_ltcs(ltcp),         REP_WARNING, "init_ltcs")
         trip_nomod(TRIP_OTHER);
