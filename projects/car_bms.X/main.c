@@ -1,3 +1,25 @@
+#ifdef __PIC32MX
+#include <GenericTypeDefs.h>
+#else
+typedef unsigned char BYTE;
+#endif
+
+#include <stdint.h>
+
+#include "ad7685.h"
+#include "can.h"
+#include "can_nu.h"
+#include "ds18x20.h"
+#include "error_reporting.h"
+#include "flash.h"
+#include "hais50p.h"
+#include "ltc6803.h"
+#include "nokia5110.h"
+#include "nu32.h"
+#include "utility.h"
+
+#include "common_pragmas.h"
+
 /** Trip codes that will be reported right before the car trips, and [hopefully]
  *  right after the car comes back up.
  */
@@ -27,6 +49,156 @@ static const char *tripcodeStr[NUM_TRIPCODES] = {
     TRIPCODES
 };
 #undef X
+
+struct flashData {
+    struct {
+        int32_t         module;
+        enum tripCode   code;
+    } tripInfo;
+    uint32_t    currentCount;
+};
+
+static const uint32_t      SYS_CLK_HZ              = 80000000; /* 80 MHz */
+static const uint32_t      LTC6803_COUNT           = 3;
+static const uint32_t      MODULE_COUNT            = 32;
+static const float         OVER_VOLTAGE            = 4.3;
+static const float         UNDER_VOLTAGE           = 3.0;
+/** Open-wire checking interval in seconds */
+static const float         OPEN_WIRE_INTERVAL_S    = 2;
+static const uint32_t      AD7685_COUNT            = 2;
+/** Position of battery current sensor ADC in daisy-chain */
+static const uint32_t      I_SENSOR_BATT           = 0;
+/** Position of array current sensor ADC in daisy-chain */
+static const uint32_t      I_SENSOR_ARRAY          = 1;
+/* Discharging: negative current */
+static const float         OVER_CURRENT_DISCHARGE_A= -60;
+/* Charging: positive current */
+static const float         OVER_CURRENT_CHARGE_A   = 30;
+static const float         TEMP_READ_INTERVAL_S    = 1;
+static const float         OVER_TEMP_C             = 50;
+static const float         UNDER_TEMP_C            = -15;
+
+static const uint32_t      SERIAL_BAUD             = 9600;
+
+static const SpiChannel    NOKIA_SPI_CHANNEL       = SPI_CHANNEL3;
+static const IoPortId      NOKIA_CS_PIN_LTR        = IOPORT_E;
+static const uint32_t      NOKIA_CS_PIN_NUM        = BIT_2;
+static const IoPortId      NOKIA_RESET_PIN_LTR     = IOPORT_E;
+static const uint32_t      NOKIA_RESET_PIN_NUM     = BIT_1;
+static const IoPortId      NOKIA_DC_PIN_LTR        = IOPORT_E;
+static const uint32_t      NOKIA_DC_PIN_NUM        = BIT_0;
+
+static const SpiChannel    LTC6803_SPI_CHN         = SPI_CHANNEL4;
+static const IoPortId      LTC6803_CS_PIN_LTR      = IOPORT_G;
+static const uint32_t      LTC6803_CS_PIN_NUM      = BIT_9;
+
+static const CAN_MODULE    COMMON_CAN_MOD          = CAN2;
+static const CAN_CHANNEL   COMMON_CAN_TX_CHN       = CAN_CHANNEL0;
+static const CAN_CHANNEL   COMMON_CAN_RX_CHN       = CAN_CHANNEL1;
+
+static const SpiChannel    ADC_SPI_CHN             = SPI_CHANNEL2;
+static const IoPortId      ADC_CS_PIN_LTR          = IOPORT_A;
+static const uint32_t      ADC_CS_PIN_NUM          = BIT_0;
+
+static const IoPortId      DS18X20_PIN_LTR         = IOPORT_E;
+static const uint32_t      DS18X20_PIN_NUM         = BIT_0;
+
+/** Lookup table of the ROM codes for all the DS18X20 temp sensors */
+static const union romCode DS18X20_ROMCODES[] = {
+    /* @TODO fill in romcodes */
+#warning "DS18X20 romcodes need to be filled in"
+    /* bar 1 */
+    [0]     = {.byteArr = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+    [1]     = {.byteArr = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+    [2]     = {.byteArr = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+    [3]     = {.byteArr = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+    [4]     = {.byteArr = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+
+    /* bar 2 */
+    [5]     = {.byteArr = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+    [6]     = {.byteArr = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+    [7]     = {.byteArr = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+    [8]     = {.byteArr = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+    [9]     = {.byteArr = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+
+    [10]    = {.byteArr = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+    [11]    = {.byteArr = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+    [12]    = {.byteArr = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+    [13]    = {.byteArr = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+    [14]    = {.byteArr = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+
+    [15]    = {.byteArr = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+    [16]    = {.byteArr = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+    [17]    = {.byteArr = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+    [18]    = {.byteArr = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+    [19]    = {.byteArr = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+
+    [20]    = {.byteArr = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+    [21]    = {.byteArr = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+    [22]    = {.byteArr = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+    [23]    = {.byteArr = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+    [24]    = {.byteArr = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+
+    [25]    = {.byteArr = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+    [26]    = {.byteArr = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+    [27]    = {.byteArr = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+    [28]    = {.byteArr = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+    [29]    = {.byteArr = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+    [30]    = {.byteArr = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+    [31]    = {.byteArr = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+};
+
+/* there must be at least 32 DS18X20 romcodes to correspond with at least 32
+ *      temp sensors (per regulations)
+ */
+STATIC_ASSERT(ARRAY_SIZE(DS18X20_ROMCODES) >= 32, NOT_ENOUGH_DS18X20_ROMCODES);
+
+/** Cause of the last PIC reset to be reported right after the car comes
+ *  back up.
+ */
+enum lastReset {
+    POWER_ON_RESET = 1,
+    BROWNOUT_RESET,
+    LOW_VOLTAGE_RESET,
+    MASTER_CLEAR_RESET,
+    WDT_RESET,
+    SOFTWARE_RESET,
+    CONFIG_MISMATCH_RESET,
+};
+
+/* Function Declarations */
+
+static enum lastReset
+getLastResetCause(void);
+
+/** Initialize all the devices and register error-reporting devices */
+static int32_t
+init_devices(struct nokia5110 *dp, struct ltc6803 *ltcp,
+        struct ad7685 *adp,
+        struct ds18x20 *dsp, struct can *canp);
+
+static int32_t
+sendLastResetCode(struct can *self);
+
+/** Trip the car, reporting and saving the tripcode as well as the relevant
+ *  module (or -1 if no relevant module)
+ */
+static void __attribute__((noreturn))
+nu_trip(struct can *canp, enum tripCode code, uint32_t module);
+
+#define trip_nomod(tripCode)                                                \
+    do {                                                                    \
+        REPORT(REP_EMERGENCY, "main.c: %d: tripping with code %d (%s)",     \
+            __LINE__, tripCode, tripcodeStr[tripCode]);                     \
+        nu_trip(canp, tripCode, 0xFFFFFFFF);                                \
+    } while(0)
+
+#define trip_mod(tripCode, module)                                          \
+    do {                                                                    \
+        REPORT(REP_EMERGENCY, "main.c: %d: tripping with code %d (%s), module %d",  \
+                __LINE__, tripCode, tripcodeStr[tripCode], module);         \
+        nu_trip(canp, tripCode, module);                                    \
+    } while(0)
 
 int32_t
 main(void)
@@ -99,7 +271,7 @@ main(void)
                     DS18X20_ROMCODES[ui].byteArr[4],
                     DS18X20_ROMCODES[ui].byteArr[5],
                     DS18X20_ROMCODES[ui].byteArr[6]);
-            trip_mod(canp, TRIP_DS18X20_MISSING, ui);
+            trip_mod(TRIP_DS18X20_MISSING, ui);
         }
     }
 
@@ -133,18 +305,18 @@ main(void)
          * report and trip on error */
         IF_ERR(ltcp->op->startVoltageConversion(ltcp), REP_CRITICAL,
                         "LTC VOLTAGE CONVERSION FAILED")
-            trip_nomod(canp, TRIP_OTHER);
+            trip_nomod(TRIP_OTHER);
         delay_ms(16);
         IF_ERR(ltcp->op->readVolts(ltcp, voltages), REP_CRITICAL,
                         "LTC GET VOLTS FAILED")
-           trip_nomod(canp, TRIP_OTHER);
+           trip_nomod(TRIP_OTHER);
 
         ClearWDT();
 
         /* Get current readings */
         IF_ERR(adcp->op->convertAndReadVolts(adcp, rawCurrents),
                         REP_CRITICAL, "Current acquisition failed")
-            trip_nomod(canp, TRIP_ADC_FAILURE);
+            trip_nomod(TRIP_ADC_FAILURE);
         batteryCurrent  = voltageToCurrent(rawCurrents[I_SENSOR_BATT]);
         arrayCurrent    = voltageToCurrent(rawCurrents[I_SENSOR_ARRAY]);
 
@@ -205,10 +377,10 @@ main(void)
         for (ui = 0; ui < MODULE_COUNT; ui++)
             if (voltages[ui] > OVER_VOLTAGE) {
                 REPORT_ERR(REP_EMERGENCY, -ETRIP, "MODULE %d OVER VOLTAGE", ui);
-                trip_mod(canp, TRIP_OVER_VOLTAGE, ui);
+                trip_mod(TRIP_OVER_VOLTAGE, ui);
             } else if (voltages[ui] < UNDER_VOLTAGE) {
                 REPORT_ERR(REP_EMERGENCY, -ETRIP, "MODULE %d UNDER VOLTAGE", ui);
-                trip_mod(canp, TRIP_UNDER_VOLTAGE, ui);
+                trip_mod(TRIP_UNDER_VOLTAGE, ui);
             }
 
         ClearWDT();
@@ -216,10 +388,10 @@ main(void)
         /* Check for over/under-current */
         if (batteryCurrent < OVER_CURRENT_DISCHARGE_A) {
             REPORT_ERR(REP_EMERGENCY, -ETRIP, "OVER CURRENT DISCHRG");
-            trip_nomod(canp, TRIP_OVER_CURRENT_DISCHRG);
+            trip_nomod(TRIP_OVER_CURRENT_DISCHRG);
         } else if (batteryCurrent > OVER_CURRENT_CHARGE_A) {
             REPORT_ERR(REP_EMERGENCY, -ETRIP, "OVER CURRENT CHRG");
-            trip_nomod(canp, TRIP_OVER_CURRENT_CHRG);
+            trip_nomod(TRIP_OVER_CURRENT_CHRG);
         }
 
         ClearWDT();
@@ -228,10 +400,10 @@ main(void)
         for (ui = 0; ui < ARRAY_SIZE(DS18X20_ROMCODES); ui++)
             if (temperatures[ui] > OVER_TEMP_C) {
                 REPORT_ERR(REP_EMERGENCY, -ETRIP, "SENSOR %d OVER TEMP", ui);
-                trip_mod(canp, TRIP_OVER_TEMP, ui);
+                trip_mod(TRIP_OVER_TEMP, ui);
             } else if (temperatures[ui] < UNDER_TEMP_C) {
                 REPORT_ERR(REP_EMERGENCY, -ETRIP, "SENSOR %d UNDER TEMP", ui);
-                trip_mod(canp, TRIP_UNDER_TEMP, ui);
+                trip_mod(TRIP_UNDER_TEMP, ui);
             }
 
         ClearWDT();
@@ -240,7 +412,7 @@ main(void)
     exit(EXIT_SUCCESS); /* should never get here */
 }
 
-enum lastReset
+static enum lastReset
 getLastResetCause(void)
 {
     if (isPOR()) {              /*
@@ -300,8 +472,8 @@ getLastResetCause(void)
     return 0;
 }
 
-int32_t
-init_leds(struct led *led0p, struct led *led1p)
+static int32_t
+init_leds(void)
 {
     int32_t ret = 0;
     
@@ -338,7 +510,7 @@ init_serial(struct serial *serp)
     return 0;
 }
 
-int32_t
+static int32_t
 init_nokia(struct nokia5110 *dp)
 {
     if (!dp)
@@ -354,7 +526,7 @@ init_nokia(struct nokia5110 *dp)
     return 0;
 }
 
-int32_t
+static int32_t
 init_can(struct can *canp)
 {
     int32_t errno;
@@ -379,7 +551,7 @@ init_can(struct can *canp)
     return 0;
 }
 
-int32_t
+static int32_t
 init_ltcs(struct ltc6803 *ltcp)
 {
     union BpsConfig cfg[LTC6803_COUNT];
@@ -404,7 +576,7 @@ init_ltcs(struct ltc6803 *ltcp)
     return 0;
 }
 
-int32_t
+static int32_t
 init_adcs(struct ad7685 *adp)
 {
     int32_t errno;
@@ -422,7 +594,7 @@ init_adcs(struct ad7685 *adp)
     return 0;
 }
 
-int32_t
+static int32_t
 init_ds18x20s(struct ds18x20 *dsp)
 {
     int32_t errno;
@@ -438,7 +610,7 @@ init_ds18x20s(struct ds18x20 *dsp)
     return 0;
 }
 
-int32_t
+static int32_t
 init_devices(struct nokia5110 *dp, struct ltc6803 *ltcp,
         struct ad7685 *adp,
         struct ds18x20 *dsp, struct can *canp,
@@ -468,24 +640,8 @@ init_devices(struct nokia5110 *dp, struct ltc6803 *ltcp,
     return 0;
 }
 
-void
-trip_nomod(const struct can *canp, int32_t tripCode)
-{
-    REPORT(REP_EMERGENCY, "tripping with code %d (%s)", tripCode,
-            tripcodeStr[tripCode]);
-    nu_trip(canp, tripCode, 0xFFFFFFFF);
-}
-
-void
-trip_mod(const struct can *canp, int32_t tripCode, uint32_t module)
-{
-    REPORT(REP_EMERGENCY, "tripping with code %d (%s), module %d", tripCode,
-            tripcodeStr[tripCode], module);
-    nu_trip(canp, tripCode, module);
-}
-
-void
-nu_trip(const struct can *canp, enum tripCode code, uint32_t module)
+static void
+nu_trip(struct can *canp, enum tripCode code, uint32_t module)
 {
     union can_bms can_bms;
 
@@ -503,7 +659,7 @@ nu_trip(const struct can *canp, enum tripCode code, uint32_t module)
         ; /* do nothing */
 }
 
-int32_t
+static int32_t
 sendLastResetCode(struct can *self)
 {
     union can_bms can_bms = {0};
