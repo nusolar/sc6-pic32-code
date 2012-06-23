@@ -58,6 +58,7 @@ serial_new(struct serial *self, UART_MODULE serialModule, unsigned int baudrate,
                 UART_ENABLE_MODE EnableModes, const BYTE *delims, size_t numDelims)
 {
     uint32_t ui;
+    const size_t maxDelims = MAX_DELIMS;
 
     if (self == NULL)
         return -ENULPTR;
@@ -67,7 +68,7 @@ serial_new(struct serial *self, UART_MODULE serialModule, unsigned int baudrate,
     self->serialModule = serialModule;
     resetRxBuf(self);
 
-    self->numDelims = MIN(MAX_DELIMS, numDelims);
+    self->numDelims = MIN(maxDelims, numDelims);
     for (ui = 0; ui < self->numDelims; ui++)
         self->delims[ui] = delims[ui];
 
