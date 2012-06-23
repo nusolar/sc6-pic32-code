@@ -27,14 +27,64 @@
 
 #define STATIC_ASSERT_EXISTS(x)     STATIC_ASSERT((x) == (x), x ## _doesnt_exist)
 
-#define ABS(my_val) ((my_val) < 0) ? -(my_val) : (my_val)
-#define MIN(x,y)            ((y) < (x) ? (y) : (x))
-#define MAX(x,y)            ((y) > (x) ? (y) : (x))
-#define CPYARR(dest, src)   memcpy((dest), (src), MIN(sizeof(src), sizeof(dest)))
+#define BUILD_BUG_ON_ZERO(e) (sizeof(struct { int:-!!(e); }))
+
+/*
+ * abs() handles unsigned and signed longs, ints, shorts and chars.  For all
+ * input types abs() returns a signed long.
+ * abs() should not be used for 64-bit types (s64, u64, long long) - use abs64()
+ * for those.
+ */
+#define ABS(x) ({                                               \
+                long ret;                                       \
+                if (sizeof(x) == sizeof(long)) {                \
+                        long __x = (x);                         \
+                        ret = (__x < 0) ? -__x : __x;           \
+                } else {                                        \
+                        int __x = (x);                          \
+                        ret = (__x < 0) ? -__x : __x;           \
+                }                                               \
+                ret;                                            \
+        })
+
+#define ABS64(x) ({                             \
+                s64 __x = (x);                  \
+                (__x < 0) ? -__x : __x;         \
+        })
+
+/* min and max macros do strict type checking via the pointer comparison */
+#undef min
+#define min(x, y) ({                            \
+        typeof(x) _min1 = (x);                  \
+        typeof(y) _min2 = (y);                  \
+        (void) (&_min1 == &_min2);              \
+        _min1 < _min2 ? _min1 : _min2; })
+
+#undef max
+#define max(x, y) ({                            \
+        typeof(x) _max1 = (x);                  \
+        typeof(y) _max2 = (y);                  \
+        (void) (&_max1 == &_max2);              \
+        _max1 > _max2 ? _max1 : _max2; })
+
+#define MIN(x,y)            min(x, y)
+#define MAX(x,y)            max(x, y)
+
 #define ZEROVAR(x)          memset(&(x), 0, sizeof(x))
-#define ZEROARR(x)          memset((x), 0, sizeof(x))
-#define ARRAY_SIZE(a)       (sizeof(a) / sizeof(*a))
-#define SWAP(a, b)          do { a ^= b; b ^= a; a ^= b; } while (0)
+
+# define __same_type(a, b) __builtin_types_compatible_p(typeof(a), typeof(b))
+/* &a[0] degrades to a pointer: a different type from an array */
+#define __must_be_array(a) BUILD_BUG_ON_ZERO(__same_type((a), &(a)[0]))
+
+#define ZEROARR(x)          (__must_be_array(x), memset((x), 0, sizeof(x)))
+#define CPYARR(dest, src)   \
+    (__must_be_array(dest), __must_be_array(src), memcpy((dest), (src), \
+    MIN(sizeof(src), sizeof(dest))))
+#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + __must_be_array(arr))
+/* #define ARRAY_SIZE(a)       (sizeof(a) / sizeof(*a)) */
+#define swap(a, b) \
+	do { typeof(a) __tmp = (a); (a) = (b); (b) = __tmp; } while (0)
+#define SWAP(a, b)  swap(a, b)
 
 /* a=target variable, b=bit number to act upon 0-n */
 #define BIT_SET(a,b)    ((a) |= (1<<(b)))
