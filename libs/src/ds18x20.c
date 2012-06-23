@@ -82,7 +82,7 @@ const struct vtbl_ds18b20 ds18b20_ops = {
 static int32_t
 initSequence(const struct ds18x20 *self)
 {
-    if (self == NULL)
+    if (!self)
         return -ENULPTR;
 
     return self->ow.op->reset(&(self->ow));
@@ -91,7 +91,7 @@ initSequence(const struct ds18x20 *self)
 static int32_t
 ds18x20_init(const struct ds18x20 *self)
 {
-    if (self == NULL)
+    if (!self)
         return -ENULPTR;
 
     return initSequence(self);
@@ -103,7 +103,7 @@ ds18x20_new(struct ds18x20 *self, IoPortId pinLtr, unsigned int pinNum,
 {
     int32_t err;
 
-    if (self == NULL)
+    if (!self)
         return -ENULPTR;
 
     self->op                    = &ds18b20_ops;
@@ -117,7 +117,7 @@ ds18x20_new(struct ds18x20 *self, IoPortId pinLtr, unsigned int pinNum,
 static int32_t
 txCmd(const struct ds18x20 *self, BYTE cmd)
 {
-    if (self == NULL)
+    if (!self)
         return -ENULPTR;
 
     return self->ow.op->txByte(&(self->ow), cmd);
@@ -128,7 +128,7 @@ txRomCmd(const struct ds18x20 *self, enum ds18x20RomCmds cmd)
 {
     int32_t err = 0;
 
-    if (self == NULL)
+    if (!self)
         return -ENULPTR;
 
     if ((err = initSequence(self)) < 0)
@@ -144,14 +144,15 @@ static int32_t
 readRom(const struct ds18x20 *self, union romCode *dst)
 {
     int32_t err = 0;
+    const struct oneWire *owp;
 
-    if (self == NULL || dst == NULL)
+    if (!self || !dst)
         return -ENULPTR;
 
     if ((err = txRomCmd(self, DS_READ_ROM)) < 0)
         return err;
 
-    const struct oneWire *owp = &(self->ow);
+    owp = &(self->ow);
 
     memset(dst, 0, sizeof(*dst));
     if ((err = owp->op->rxCheckCrc(owp, dst, sizeof(*dst))))
@@ -164,14 +165,15 @@ static int32_t
 matchRom(const struct ds18x20 *self, union romCode rc)
 {
     int32_t err = 0;
+    const struct oneWire *owp;
 
-    if (self == NULL)
+    if (!self)
         return -ENULPTR;
 
     if ((err = txRomCmd(self, DS_MATCH_ROM)) < 0)
         return err;
 
-    const struct oneWire *owp = &(self->ow);
+    owp = &(self->ow);
     if ((err = owp->op->txWithCrc(owp, &rc, sizeof(rc))) < 0)
         return err;
 
@@ -182,7 +184,7 @@ static int32_t
 findDevices (struct ds18x20 *self, union romCode *dst,
                 size_t dstSizeBytes)
 {
-    if (self == NULL || (dst == NULL && dstSizeBytes != 0))
+    if (!self || (!dst && dstSizeBytes != 0))
         return -ENULPTR;
     
     return self->ow.op->findDevices(&(self->ow), dst, dstSizeBytes,
@@ -193,7 +195,7 @@ static int32_t
 alarmSearch (struct ds18x20 *self, union romCode *dst,
                 size_t dstSizeBytes)
 {
-    if (self == NULL || (dst == NULL && dstSizeBytes != 0))
+    if (!self || (!dst && dstSizeBytes != 0))
         return -ENULPTR;
 
     return self->ow.op->findDevices(&(self->ow), dst, dstSizeBytes,
@@ -203,7 +205,7 @@ alarmSearch (struct ds18x20 *self, union romCode *dst,
 static int32_t
 skipRom(const struct ds18x20 *self)
 {
-    if (self == NULL)
+    if (!self)
         return -ENULPTR;
 
     return txRomCmd(self, DS_SKIP_ROM);
@@ -224,7 +226,7 @@ romcodeEquals(union romCode rc1, union romCode rc2)
 static int32_t
 addressDevice(struct ds18x20 *self, union romCode rc)
 {
-    if (self == NULL)
+    if (!self)
         return -ENULPTR;
 
     if (romcodeEquals(rc, ALL_DEVICES))
@@ -238,7 +240,7 @@ addressDevice(struct ds18x20 *self, union romCode rc)
 static int32_t
 verify(struct ds18x20 *self, union romCode rc)
 {
-    if (self == NULL)
+    if (!self)
         return -ENULPTR;
 
     if (romcodeEquals(rc, ALL_DEVICES) || romcodeEquals(rc, ALARM_DEVICES))
@@ -252,7 +254,7 @@ startTempConversion(struct ds18x20 *self, union romCode rc)
 {
     int32_t err = 0;
 
-    if (self == NULL)
+    if (!self)
         return -ENULPTR;
 
     if ((err = addressDevice(self, rc)) < 0)
@@ -271,13 +273,15 @@ startTempConversion(struct ds18x20 *self, union romCode rc)
 static int32_t
 pollBusyStatus(struct ds18x20 *self)
 {
-    if (self == NULL)
+    int32_t rxBitResult;
+
+    if (!self)
         return -ENULPTR;
 
     if (self->parasiticPower == PARASITIC_POWER_ENABLE)
         return -EINVALIDOP;
 
-    int32_t rxBitResult = self->ow.op->rxBit(&(self->ow));
+    rxBitResult = self->ow.op->rxBit(&(self->ow));
 
     if (rxBitResult == 0)
         return DEVICE_BUSY;
@@ -292,7 +296,7 @@ scratchpadToEeprom(struct ds18x20 *self, union romCode rc)
 {
     int32_t err = 0;
 
-    if (self == NULL)
+    if (!self)
         return -ENULPTR;
 
     if ((err = addressDevice(self, rc)) < 0)
@@ -313,8 +317,9 @@ writeScratchpad(struct ds18x20 *self, union dsScratchPad sp,
                     union romCode rc)
 {
     int32_t err = 0;
+    const struct oneWire *owp;
 
-    if (self == NULL)
+    if (!self)
         return -ENULPTR;
 
     if ((err = addressDevice(self, rc)) < 0)
@@ -323,7 +328,7 @@ writeScratchpad(struct ds18x20 *self, union dsScratchPad sp,
     if ((err = txCmd(self, DS_WRITE_SCRATCH)) < 0)
         return err;
 
-    const struct oneWire *owp = &(self->ow);
+    owp = &(self->ow);
     if ((err = owp->op->txWithCrc(owp, &sp, sizeof(sp))) < 0)
         return err;
 
@@ -335,8 +340,9 @@ readScratchpad(struct ds18x20 *self, union dsScratchPad *dst,
                 union romCode rc)
 {
     int32_t err;
+    const struct oneWire *owp;
 
-    if (self == NULL || dst == NULL)
+    if (!self || !dst)
         return -ENULPTR;
 
     if (romcodeEquals(rc, ALL_DEVICES) || romcodeEquals(rc, ALARM_DEVICES))
@@ -348,7 +354,7 @@ readScratchpad(struct ds18x20 *self, union dsScratchPad *dst,
     if ((err = txCmd(self, DS_READ_SCRATCH)) < 0)
         return err;
 
-    const struct oneWire *owp = &(self->ow);
+    owp = &(self->ow);
     if ((err = owp->op->rxCheckCrc(owp, dst, sizeof(*dst))) < 0)
         return err;
 
@@ -360,7 +366,7 @@ recallEeprom(struct ds18x20 *self, union romCode rc)
 {
     int32_t err = 0;
 
-    if (self == NULL)
+    if (!self)
         return -ENULPTR;
 
     if ((err = addressDevice(self, rc)) < 0)
@@ -375,7 +381,7 @@ recallEeprom(struct ds18x20 *self, union romCode rc)
 static inline int32_t
 eepromToScratchpad(struct ds18x20 *self, union romCode rc)
 {
-    if (self == NULL)
+    if (!self)
         return -ENULPTR;
 
     return recallEeprom(self, rc);
@@ -384,9 +390,9 @@ eepromToScratchpad(struct ds18x20 *self, union romCode rc)
 static int32_t
 readPowerSupply(struct ds18x20 *self, union romCode rc)
 {
-    int32_t err = 0;
+    int32_t err = 0, rxBitResult;
 
-    if (self == NULL)
+    if (!self)
         return -ENULPTR;
 
     if ((err = addressDevice(self, rc)) < 0)
@@ -395,7 +401,7 @@ readPowerSupply(struct ds18x20 *self, union romCode rc)
     if ((err = txCmd(self, DS_READ_POWER)) < 0)
         return err;
 
-    int32_t rxBitResult = self->ow.op->rxBit(&(self->ow));
+    rxBitResult = self->ow.op->rxBit(&(self->ow));
 
     if (rxBitResult == 0)
         return PARASITIC_POWER_ENABLE;
@@ -421,11 +427,11 @@ static double
 readTemp(struct ds18x20 *self, union romCode rc)
 {
     int32_t err = 0;
+    union dsScratchPad scratch = {0};
 
-    if (self == NULL)
+    if (!self)
         return -ENULPTR;
 
-    union dsScratchPad scratch = {0};
     if ((err = readScratchpad(self, &scratch, rc)) < 0)
         return (double)err;
     
