@@ -143,52 +143,52 @@ struct ltc6803 {
 };
 
 union BpsConfig {
-        union {
-            struct {
-                BYTE cfgr0;
-                BYTE cfgr1;
-                BYTE cfgr2;
-                BYTE cfgr3;
-                BYTE cfgr4;
-                BYTE cfgr5;
-            };
-            struct {
-                unsigned cdc    :3;
-                unsigned cell10 :1;
-                unsigned lvlpl  :1;
-                unsigned gpio1  :1;
-                unsigned gpio2  :1;
-                unsigned wdt    :1;
-                unsigned dcc1   :1;
-                unsigned dcc2   :1;
-                unsigned dcc3   :1;
-                unsigned dcc4   :1;
-                unsigned dcc5   :1;
-                unsigned dcc6   :1;
-                unsigned dcc7   :1;
-                unsigned dcc8   :1;
-                unsigned dcc9   :1;
-                unsigned dcc10  :1;
-                unsigned dcc11  :1;
-                unsigned dcc12  :1;
-                unsigned mc1i   :1;
-                unsigned mc2i   :1;
-                unsigned mc3i   :1;
-                unsigned mc4i   :1;
-                unsigned mc5i   :1;
-                unsigned mc6i   :1;
-                unsigned mc7i   :1;
-                unsigned mc8i   :1;
-                unsigned mc9i   :1;
-                unsigned mc10i  :1;
-                unsigned mc11i  :1;
-                unsigned mc12i  :1;
-                BYTE vuv;
-                BYTE vov;
-            } __attribute__((__packed__));
+    struct {
+        BYTE cfgr0;
+        BYTE cfgr1;
+        BYTE cfgr2;
+        BYTE cfgr3;
+        BYTE cfgr4;
+        BYTE cfgr5;
     };
+    struct {
+        unsigned cdc    :3;
+        unsigned cell10 :1;
+        unsigned lvlpl  :1;
+        unsigned gpio1  :1;
+        unsigned gpio2  :1;
+        unsigned wdt    :1;
+        unsigned dcc1   :1;
+        unsigned dcc2   :1;
+        unsigned dcc3   :1;
+        unsigned dcc4   :1;
+        unsigned dcc5   :1;
+        unsigned dcc6   :1;
+        unsigned dcc7   :1;
+        unsigned dcc8   :1;
+        unsigned dcc9   :1;
+        unsigned dcc10  :1;
+        unsigned dcc11  :1;
+        unsigned dcc12  :1;
+        unsigned mc1i   :1;
+        unsigned mc2i   :1;
+        unsigned mc3i   :1;
+        unsigned mc4i   :1;
+        unsigned mc5i   :1;
+        unsigned mc6i   :1;
+        unsigned mc7i   :1;
+        unsigned mc8i   :1;
+        unsigned mc9i   :1;
+        unsigned mc10i  :1;
+        unsigned mc11i  :1;
+        unsigned mc12i  :1;
+        BYTE vuv;
+        BYTE vov;
+    } __attribute__((__packed__));
     BYTE byteArr[6];
 };
+
+STATIC_ASSERT(sizeof(union BpsConfig) == 6, SIZE_MISMATCH);
 
 struct vtblLtc6803 {
     int32_t (*writeCfgs)                    (struct ltc6803 *self, const union BpsConfig *cfgs);
