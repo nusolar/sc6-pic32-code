@@ -27,20 +27,6 @@ ad7685_init(struct ad7685 *self)
     return 0;
 }
 
-#ifndef NEXAMPLE
-static void
-example_ad7685_new(void)
-{
-    /** [ad7685_new example] */
-    struct ad7685 adc;
-    struct ad7685 *adcp = &adc;
-    /* setup 1 ad7685 device on SPI_CHANNEL3 with convert pin set to G8 */
-    ad7685_new(adcp, SPI_CHANNEL3, IOPORT_G, BIT_8, 1, THREE_WIRE,
-                USE_BUSY_INDICATOR);
-    /** [ad7685_new example] */
-}
-#endif
-
 int32_t
 ad7685_new(struct ad7685 *self, SpiChannel chn, IoPortId cnvPinLtr, uint32_t cnvPinNum, uint32_t numDevices,
             enum WireConfiguration WireConfig, enum BusyIndicator UseBusyIndicator)
@@ -71,22 +57,6 @@ ad7685_new(struct ad7685 *self, SpiChannel chn, IoPortId cnvPinLtr, uint32_t cnv
     return 0;
 }
 
-#ifndef NEXAMPLE
-static void
-example_ad7685_CS_new(void)
-{
-    /** [ad7685_CS_new example] */
-    struct ad7685 adc;
-    struct ad7685 *adcp = &adc;
-    /* setup 2 ad7685 devices on SPI_CHANNEL4 with convert pin set to G9 and
-     *  chip-select pin set to G8
-     */
-    ad7685_CS_new(adcp, SPI_CHANNEL4, IOPORT_G, BIT_9, 2, FOUR_WIRE,
-                USE_BUSY_INDICATOR, IOPORT_G, BIT_8);
-    /** [ad7685_CS_new example] */
-}
-#endif
-
 int32_t
 ad7685_CS_new(struct ad7685 *self, SpiChannel chn, IoPortId cnvPinLtr, uint32_t cnvPinNum, uint32_t numDevices,
             enum WireConfiguration WireConfig, enum BusyIndicator UseBusyIndicator,
@@ -114,22 +84,6 @@ ad7685_CS_new(struct ad7685 *self, SpiChannel chn, IoPortId cnvPinLtr, uint32_t 
 
     return 0;
 }
-
-#ifndef NEXAMPLE
-static void
-example_convertAndReadVolts(void)
-{
-    /** [convertAndReadVolts example] */
-    struct ad7685 adc;
-    struct ad7685 *adcp = &adc;
-    float voltages[2];
-    /* setup 2 ad7685 devices on SPI_CHANNEL4 with the convert pin set to G9 */
-    ad7685_new(adcp, SPI_CHANNEL4, IOPORT_G, BIT_9, 2, THREE_WIRE,
-                USE_BUSY_INDICATOR);
-    adcp->op->convertAndReadVolts(adcp, voltages);
-    /** [convertAndReadVolts example] */
-}
-#endif
 
 /* gets the actual voltage reading(s) (not raw data) */
 static int32_t
