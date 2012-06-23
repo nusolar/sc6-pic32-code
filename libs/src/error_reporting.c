@@ -2,8 +2,6 @@
 
 static struct error_reporting_dev *repDevices[MAX_REPORTING_DEVS] = {NULL};
 
-int32_t nu_errno;
-
 inline static int32_t
 devIsEmpty(uint32_t i)
 {
@@ -19,10 +17,10 @@ clearDev(uint32_t i)
 static int32_t
 getFreeErrDevIndex(void)
 {
-    int32_t i;
-    for (i = 0; i < ARRAY_SIZE(repDevices); i++)
-        if (devIsEmpty(i))
-            return i;
+    uint16_t ui;
+    for (ui = 0; ui < ARRAY_SIZE(repDevices); ui++)
+        if (devIsEmpty(ui))
+            return ui;
     
     return -EREPORTNOFREEDEVS;
 }
