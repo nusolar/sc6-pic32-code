@@ -8,7 +8,23 @@ subdirs: ${SUBDIRS}
 ifneq (${make_lock}, 1)
 
 ${SUBDIRS}:
-	-${MAKE} -j -C $@ make_lock=1
+	@echo -e "\n"
+	@echo -e "========================================================"
+	@echo -e "|\tEntering $@"
+	@echo -e "========================================================"
+	@echo -e "\n"
+	@echo -e "\t~~~~ CLOBBERING... ~~~~"
+	@echo -e "\n"
+	-${MAKE} -C $@ make_lock=1 clobber
+	@echo -e "\n"
+	@echo -e "\t~~~~ BUILDING... ~~~~"
+	@echo -e "\n"
+	-${MAKE} -C $@ make_lock=1 all
+	@echo -e "\n"
+	@echo -e "========================================================"
+	@echo -e "|\tExiting $@"
+	@echo -e "========================================================"
+	@echo -e "\n"
 
 # override rule for the directory we were called from
 # so we don't build that directory twice
