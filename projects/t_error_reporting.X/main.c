@@ -66,7 +66,7 @@ main(void)
     delay(5);
     
     register_reporting_dev(&(led0p->erd), REP_DEBUG);
-    REPORTF((REP_DEBUG, -1, "", "Testing %d", 5)); /* should light led0 */
+    REPORTF(REP_DEBUG, -1, "", "Testing %d", 5); /* should light led0 */
 
     delay(5);
     
@@ -74,11 +74,11 @@ main(void)
 
     delay(5);
 
-    REPORT((REP_WARNING, "Testing %d", 5)); /* should do nothing */
+    REPORT(REP_WARNING, "Testing %d", 5); /* should do nothing */
     unregister_reporting_dev(&(led0p->erd));
     register_reporting_dev(&(led0p->erd), REP_WARNING);
     register_reporting_dev(&(led1p->erd), REP_ERROR);
-    REPORT((REP_WARNING, "Testing %d", 5)); /* should light led0 only */
+    REPORT(REP_WARNING, "Testing %d", 5); /* should light led0 only */
 
     while (1)
         ;   /* do nothing */

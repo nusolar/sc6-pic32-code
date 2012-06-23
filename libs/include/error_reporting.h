@@ -17,26 +17,33 @@
     do {reportf(__FILE__, __LINE__, (priority), (errNum), (expr), ## fmt);}while(0)
 
 #define REPORT_ERR(priority, errNum, fmt...)    \
-    do {reportf(__FILE__, __LINE__, (priority), (errNum), NULL, ## fmt);}while(0)
+    REPORTF(priority, errNum, NULL, ## fmt)
 
 #define REPORT(priority, fmt...)   \
-    do {reportf(__FILE__, __LINE__, (priority), ENONE, NULL, ## fmt);}while(0)
+    REPORTF(priority, ENONE, NULL, ## fmt)
 
-extern int32_t nu_errno;
+#define IF_ERR(expr, priority, fmt...)                  \
+    if (({                                              \
+        int32_t _errno = (int32_t)(expr);               \
+        if (_errno < 0)                                 \
+            REPORTF((priority), _errno, #expr, ## fmt); \
+        _errno < 0;                                     \
+    }))
 
-#define IF_ERR(expr, priority, fmt...)                                      \
-            if ((nu_errno = (int32_t)(expr)) < 0 &&                         \
-                (reportf(__FILE__, __LINE__, (priority), nu_errno, #expr, ## fmt), 1))
+#define IF_NOERR(expr, priority, fmt...)                \
+    if (({                                              \
+        int32_t _errno = (int32_t)(expr);               \
+        if (_errno < 0)                                 \
+            REPORTF((priority), _errno, #expr, ## fmt); \
+        _errno >= 0;                                    \
+    }))
 
-#define IF_NOERR(expr, priority, fmt...)                                    \
-            if (!((nu_errno = (int32_t)(expr)) < 0 &&                       \
-                (reportf(__FILE__, __LINE__, (priority), nu_errno, #expr, ## fmt), 1)))
-
-#define REPORT_ON_ERR(expr, priority, fmt...)                               \
-            do {                                                            \
-                if ((nu_errno = (int32_t)(expr)) < 0)                       \
-                    REPORT_ERR_EXPR(priority, nu_errno, #expr, ## fmt);     \
-            } while(0)
+#define REPORT_ON_ERR(expr, priority, fmt...)           \
+    do {                                                \
+        int32_t _errno = (int32_t)(expr);               \
+        if (_errno < 0)                                 \
+            REPORTF((priority), _errno, #expr, ## fmt); \
+    } while(0)
 
 enum report_priority {
     REP_DEBUG,

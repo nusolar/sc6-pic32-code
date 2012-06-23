@@ -31,6 +31,7 @@ static const char *tripcodeStr[NUM_TRIPCODES] = {
 int32_t
 main(void)
 {
+    int32_t             errno;
     uint32_t            ui;
     uint16_t            openWire[LTC6803_COUNT];
     float               voltages1[12*LTC6803_COUNT], voltages[12*LTC6803_COUNT];
@@ -83,10 +84,10 @@ main(void)
 
     /* DS18x20 Presence Test */
     for (ui = 0; ui < ARRAY_SIZE(DS18X20_ROMCODES); ui++) {
-        IF_ERR(dsp->op->verify(dsp, DS18X20_ROMCODES[ui]),
+        IF_ERR(errno = dsp->op->verify(dsp, DS18X20_ROMCODES[ui]),
                 REP_EMERGENCY, "DS18X20 verify failed on romcode %d", ui) {
-            ; /* @TODO Do something if result < 0? */
-        } else if (!nu_errno) {
+            trip_mod(TRIP_DS18X20_MISSING, ui);
+        } else if (!errno) {
             /* Missing Sensor */
             REPORT(REP_EMERGENCY,
                     "TEMP %d, ROMCODE %02X %02X %02X %02X %02X %02X %02X MISSING",
@@ -105,11 +106,9 @@ main(void)
     ClearWDT();
     
     /* Start first temperature conversion */
-    IF_ERR(dsp->op->startTempConversion(dsp, ALL_DEVICES), REP_EMERGENCY,
-            nu_errno == -ENODEV ? "OW BUS FAILURE" : "TEMP CONVERT FAILED") {
-        trip_nomod(canp, nu_errno == -ENODEV ?
-            TRIP_DS18X20_MISSING : TRIP_OW_BUS_FAILURE);
-    }
+    IF_ERR(errno = dsp->op->startTempConversion(dsp, ALL_DEVICES), REP_EMERGENCY,
+            errno == -ENODEV ? "OW BUS FAILURE" : "TEMP CONVERT FAILED")
+        trip_nomod(errno == -ENODEV ? TRIP_DS18X20_MISSING : TRIP_OW_BUS_FAILURE);
 
     ClearWDT();
 
@@ -172,9 +171,9 @@ main(void)
             for (ui = 0; ui < ARRAY_SIZE(DS18X20_ROMCODES); ui++)
                 temperatures[ui] = dsp->op->readTemp(dsp, DS18X20_ROMCODES[ui]);
             /* Start next temperature conversion */
-            IF_ERR(dsp->op->startTempConversion(dsp, ALL_DEVICES), REP_EMERGENCY,
-                    nu_errno == -ENODEV ? "OW BUS FAILURE" : "TEMP CONVERT FAILED")
-                trip_nomod(canp, nu_errno == -ENODEV ? TRIP_DS18X20_MISSING :
+            IF_ERR(errno = dsp->op->startTempConversion(dsp, ALL_DEVICES), REP_EMERGENCY,
+                    errno == -ENODEV ? "OW BUS FAILURE" : "TEMP CONVERT FAILED")
+                trip_nomod(errno == -ENODEV ? TRIP_DS18X20_MISSING :
                     TRIP_OW_BUS_FAILURE);
             temperatureStart = (float)readTimer();
         }
@@ -358,15 +357,14 @@ init_nokia(struct nokia5110 *dp)
 int32_t
 init_can(struct can *canp)
 {
+    int32_t errno;
+
     if (!canp)
         return -ENULPTR;
 
-    IF_NOERR(can_new_easy(canp, COMMON_CAN_MOD, 0, INT_PRIORITY_DISABLED),
-            REP_WARNING, "can_new_easy") {
-        canp->error_reporting_can_chn = COMMON_CAN_TX_CHN;
-        canp->error_reporting_can_use_extended_id = STANDARD_ID;
-        canp->error_reporting_can_std_id = ADDR_BMSTX(ERROR);
-        canp->error_reporting_can_ext_id = 0;
+    IF_ERR(errno = can_new_easy(canp, COMMON_CAN_MOD, 0, INT_PRIORITY_DISABLED),
+            REP_WARNING, "can_new_easy")
+        return errno;
 
         canp->op->addChannelTx(canp, COMMON_CAN_TX_CHN,
             CAN_TX_RX_MESSAGE_SIZE_BYTES, CAN_TX_RTR_DISABLED,
@@ -398,10 +396,10 @@ init_ltcs(struct ltc6803 *ltcp)
     cfg[0].vuv = convertUVLimit(UNDER_VOLTAGE);
     cfg[2] = cfg[1] = cfg[0];
 
-    IF_ERR(ltc6803_new(ltcp, LTC6803_SPI_CHN, LTC6803_CS_PIN_LTR,
+    IF_ERR(errno = ltc6803_new(ltcp, LTC6803_SPI_CHN, LTC6803_CS_PIN_LTR,
                     LTC6803_CS_PIN_NUM, LTC6803_COUNT, cfg),
                 REP_CRITICAL, "ltc6803_new")
-        return nu_errno;
+        return errno;
 
     return 0;
 }
@@ -409,15 +407,17 @@ init_ltcs(struct ltc6803 *ltcp)
 int32_t
 init_adcs(struct ad7685 *adp)
 {
+    int32_t errno;
+
     if (!adp)
         return -ENULPTR;
 
         /* @TODO check the mode on this */
 #warning Check the mode on this...
-    IF_ERR(ad7685_new(adp, ADC_SPI_CHN, ADC_CS_PIN_LTR,
+    IF_ERR(errno = ad7685_new(adp, ADC_SPI_CHN, ADC_CS_PIN_LTR,
                       ADC_CS_PIN_NUM, 2, THREE_WIRE, NO_BUSY_INDICATOR),
             REP_CRITICAL, "ad7685_new")
-        return nu_errno;
+        return errno;
 
     return 0;
 }
@@ -425,13 +425,15 @@ init_adcs(struct ad7685 *adp)
 int32_t
 init_ds18x20s(struct ds18x20 *dsp)
 {
+    int32_t errno;
+
     if (!dsp)
         return -ENULPTR;
 
-    IF_ERR(ds18x20_new(dsp, DS18X20_PIN_LTR, DS18X20_PIN_NUM,
+    IF_ERR(errno = ds18x20_new(dsp, DS18X20_PIN_LTR, DS18X20_PIN_NUM,
                     PARASITIC_POWER_DISABLE),
                 REP_CRITICAL, "ds18x20_new")
-        return nu_errno;
+        return errno;
 
     return 0;
 }
