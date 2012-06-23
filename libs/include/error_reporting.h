@@ -16,9 +16,6 @@
 #define REPORTF(priority, errNum, expr, fmt...) \
     do {reportf(__FILE__, __LINE__, (priority), (errNum), (expr), ## fmt);}while(0)
 
-#define REPORT_ERR_EXPR(priority, errNum, expr, fmt...) \
-    REPORTF(priority, errNum, expr, ## fmt)
-
 #define REPORT_ERR(priority, errNum, fmt...)    \
     do {reportf(__FILE__, __LINE__, (priority), (errNum), NULL, ## fmt);}while(0)
 
