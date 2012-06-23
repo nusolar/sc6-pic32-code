@@ -225,9 +225,6 @@ main(void)
     struct ltc6803      ltc,        *ltcp   = &ltc;
     struct ds18x20      ds,         *dsp    = &ds;
     struct can          can,        *canp   = &can;
-    struct serial       ser,        *serp   = &ser;
-    struct led          led0,       *led0p  = &led0;
-    struct led          led1,       *led1p  = &led1;
     
     /* timeout setting is in main.h */
     EnableWDT();
@@ -240,7 +237,7 @@ main(void)
     REPORT_ON_ERR(readFlash(&fd,sizeof(fd)), REP_WARNING, "readFlash error");
 
     /* initialize devices and warn on error */
-    REPORT_ON_ERR(init_devices(dp, ltcp, adcp, dsp, canp, serp, led0p, led1p),
+    REPORT_ON_ERR(init_devices(dp, ltcp, adcp, dsp, canp),
             REP_WARNING, "init_devices failed");
 
     /* send cause of last reset over CAN */
@@ -475,37 +472,23 @@ getLastResetCause(void)
 static int32_t
 init_leds(void)
 {
-    int32_t ret = 0;
-    
-    if (!led0p)
-        ret |= -ENULPTR;
-    else IF_NOERR(led_new(led0p, NU32_LED0_PORT, NU32_LED0_PIN),
-                REP_WARNING, "led_new")
-        register_reporting_dev(&(led0p->erd), REP_ERROR);
+    REPORT_ON_ERR(nu32_init_leds(), REP_WARNING, "init_leds");
 
-    if (!led1p)
-        ret |= -ENULPTR;
-    else
-        REPORT_ON_ERR(led_new(led1p, NU32_LED1_PORT, NU32_LED1_PIN),
-            REP_WARNING, "led_new");
+    if (nu32_led0p)
+        nu32_led0p->op->on(nu32_led0p);
 
-    return ret;
+    if (nu32_led1p)
+        register_reporting_dev(&(nu32_led1p->erd), REP_ERROR);
+
+    return 0;
 }
 
-int32_t
-init_serial(struct serial *serp)
+static int32_t
+init_serial(void)
 {
-    BYTE delims[2] = {'\r', '\n'};
-
-    if (!serp)
-        return -ENULPTR;
-
-    IF_NOERR(serial_new(serp, SERIAL_MODULE, SERIAL_BAUD, NO_UART_INTERRUPT,
-            INT_PRIORITY_DISABLED, 0, UART_DATA_SIZE_8_BITS, 0,
-            UART_ENABLE|UART_TX|UART_RX, delims, sizeof(delims)),
-            REP_WARNING,
-            "serial_new failed")
-        register_reporting_dev(&(serp->erd), REP_DEBUG);
+    REPORT_ON_ERR(nu32_init_serial(SERIAL_BAUD), REP_WARNING, "init_serial");
+    if (nu32_serp)
+        register_reporting_dev(&(nu32_serp->erd), REP_DEBUG);
 
     return 0;
 }
@@ -613,29 +596,27 @@ init_ds18x20s(struct ds18x20 *dsp)
 static int32_t
 init_devices(struct nokia5110 *dp, struct ltc6803 *ltcp,
         struct ad7685 *adp,
-        struct ds18x20 *dsp, struct can *canp,
-        struct serial *serp,
-        struct led *led0p, struct led *led1p)
+        struct ds18x20 *dsp, struct can *canp)
 {
-    if (!dp || !ltcp || !adp || !dsp || !canp || !serp || !led0p || !led1p)
+    if (!dp || !ltcp || !adp || !dsp || !canp)
         REPORT_ERR(REP_WARNING, -ENULPTR, "init_devices passed NULL pointer");
 
-    REPORT_ON_ERR(init_leds(led0p, led1p),  REP_WARNING, "init_leds");
+    REPORT_ON_ERR(init_leds(),      REP_WARNING, "init_leds");
 
-    REPORT_ON_ERR(init_serial(serp),        REP_WARNING, "init_serial");
+    REPORT_ON_ERR(init_serial(),    REP_WARNING, "init_serial");
 
     REPORT_ON_ERR(init_nokia(dp),           REP_WARNING, "init_nokia");
 
     REPORT_ON_ERR(init_can(canp),           REP_WARNING, "init_can");
 
-    IF_ERR(init_ltcs(ltcp),                 REP_WARNING, "init_ltcs")
-        trip_nomod(canp, TRIP_OTHER);
+    IF_ERR(init_ltcs(ltcp),         REP_WARNING, "init_ltcs")
+        trip_nomod(TRIP_OTHER);
 
-    IF_ERR(init_adcs(adp),                  REP_WARNING, "init_adcs")
-        trip_nomod(canp, TRIP_OTHER);
+    IF_ERR(init_adcs(adp),          REP_WARNING, "init_adcs")
+        trip_nomod(TRIP_OTHER);
 
-    IF_ERR(init_ds18x20s(dsp),              REP_WARNING, "init_ds18x20s")
-        trip_nomod(canp, TRIP_OTHER);
+    IF_ERR(init_ds18x20s(dsp),      REP_WARNING, "init_ds18x20s")
+        trip_nomod(TRIP_OTHER);
 
     return 0;
 }
