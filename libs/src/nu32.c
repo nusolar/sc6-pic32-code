@@ -1,5 +1,10 @@
 #include "../include/nu32.h"
 
+struct led nu32_led0, *nu32_led0p = NULL;
+struct led nu32_led1, *nu32_led1p = NULL;
+
+struct serial nu32_serial, *nu32_serp = &nu32_serial;
+
 uint32_t sys_clk_hz = 80000000; /* 80 MHz */
 
 int32_t
@@ -23,6 +28,32 @@ nu32_init(uint32_t sysClkHz)
     PORTSetPinsDigitalIn(NU32_SWITCH_PORT, NU32_SWITCH_PIN);
 
     return 0;
+}
+
+int32_t
+nu32_init_leds(void)
+{
+    int32_t ret1, ret2;
+
+    if ((ret1 = led_new(&nu32_led0, NU32_LED0_PORT, NU32_LED0_PIN)) >= 0)
+        nu32_led0p = &nu32_led0;
+    if ((ret2 = led_new(nu32_led1p, NU32_LED1_PORT, NU32_LED1_PIN)) >= 0)
+        nu32_led1p = &nu32_led1;
+
+    return (ret1 < 0) ? ret1 : ret2;
+}
+
+int32_t
+nu32_init_serial(uint32_t baud)
+{
+    int32_t ret;
+    BYTE delims[2] = {'\r', '\n'};
+    if ((ret = serial_new(&nu32_serial, NU32_UART_MODULE, baud, NO_UART_INTERRUPT,
+            INT_PRIORITY_DISABLED, 0, UART_DATA_SIZE_8_BITS, 0,
+            UART_ENABLE|UART_TX|UART_RX, delims, sizeof(delims))) >= 0)
+        nu32_serp = &nu32_serial;
+
+    return ret;
 }
 
 void
