@@ -87,6 +87,7 @@ SPI_init(const struct spiPort *self, uint32_t bitrate, SpiOpenFlags oFlags,
         driveCsHigh(self);
     }
 
+                                /* disable automatic driving of CS */
     SpiChnOpen(self->chn, oFlags & ~SPI_OPEN_MSSEN, pbusFreqHz/bitrate);
 
     return 0;
