@@ -7,19 +7,24 @@ struct serial nu32_serial, *nu32_serp = &nu32_serial;
 
 uint32_t sys_clk_hz = 80000000; /* 80 MHz */
 
+#define busywait(n) do{uint32_t _ui; for (_ui = 0; _ui < n; ++_ui);}while(0)
+
 int32_t
 nu32_init(uint32_t sysClkHz)
 {
     sys_clk_hz = sysClkHz;
 
     SYSTEMConfig(sys_clk_hz, SYS_CFG_ALL);
-	
+
     /* configure for multi-vectored mode */
     INTConfigureSystem(INT_SYSTEM_CONFIG_MULT_VECTOR);
 
     /* enable multi-vector interrupts */
     INTEnableSystemMultiVectoredInt();
-	
+
+    /* disable JTAG to get A4 and A5 back */
+    DDPCONbits.JTAGEN = 0;
+
     /* Configure LED outputs */
     PORTSetPinsDigitalOut(NU32_LED0_PORT, NU32_LED0_PIN);
     PORTSetPinsDigitalOut(NU32_LED1_PORT, NU32_LED1_PIN);
