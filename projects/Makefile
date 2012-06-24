@@ -1,5 +1,5 @@
 SUBDIRS = 	car_bms.X car_can_msg_relay.X car_driver_controls.X \
-			t_error_reporting.X
+			t_error_reporting.X t_flash.X
 .PHONY: subdirs ${SUBDIRS}
 
 subdirs: ${SUBDIRS}
