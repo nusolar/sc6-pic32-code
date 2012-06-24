@@ -6,7 +6,10 @@
 #include <string.h>
 #include "errorcodes.h"
 
-#define CONST_FLASH_SIZE_BYTES 24
+#define CONST_FLASH_SIZE_BYTES BYTE_PAGE_SIZE
+
+STATIC_ASSERT(!(CONST_FLASH_SIZE_BYTES%BYTE_PAGE_SIZE),
+        FLASH_SIZE_MUST_BE_MULTIPLE_OF_BYTE_PAGE_SIZE);
 
 int32_t
 eraseFlash(void);
