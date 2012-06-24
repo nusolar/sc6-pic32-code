@@ -12,6 +12,7 @@
 
 extern uint32_t sys_clk_hz;
 
+#if defined(NU32V2)
 #define NU32_LED0_PORT      IOPORT_G
 #define NU32_LED0_PIN       BIT_12
 #define NU32_LED1_PORT      IOPORT_G
@@ -21,6 +22,24 @@ extern uint32_t sys_clk_hz;
 #define NU32_SWITCH_PIN     BIT_6
 
 #define NU32_UART_MODULE    UART3   /* = UART2A */
+#else
+#define NU32_LED1_PORT      IOPORT_A
+#define NU32_LED1_PIN       BIT_4
+#define NU32_LED2_PORT      IOPORT_A
+#define NU32_LED2_PIN       BIT_5
+
+/* preserve code compatability */
+#define NU32_LED0_PORT      NU32_LED2_PORT
+#define NU32_LED0_PIN       NU32_LED2_PIN
+
+#define NU32_SWITCH_PORT    IOPORT_C
+#define NU32_SWITCH_PIN     BIT_13
+/* new names */
+#define NU32_USER_PORT      NU32_SWITCH_PORT
+#define NU32_USER_PIN       NU32_SWITCH_PIN
+
+#define NU32_UART_MODULE    UART1
+#endif
 
 extern struct led nu32_led0, *nu32_led0p;
 extern struct led nu32_led1, *nu32_led1p;
