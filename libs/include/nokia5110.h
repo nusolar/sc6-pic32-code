@@ -12,10 +12,10 @@
 *  Schematic:
 *  LCD 1-Vcc		----->	NU32v2 3.3V
 *  LCD 2-GND		----->	NU32v2 GND
-*  LCD 3-SCE		----->	NU32v2 E2
+*  LCD 3-SCE/CS         ----->	NU32v2 E2
 *  LCD 4-RST		----->	NU32v2 E1
 *  LCD 5-D/C		----->	NU32v2 E0
-*  LCD 6-DNK(MOSI)	----->	NU32v2 F8
+*  LCD 6-DNK(MOSI)/SDO	----->	NU32v2 F8
 *  LCD 7-SCLK		----->	NU32v2 D15
 *  LCD 8-LED		----->	330 ohm	----->	5V 
 *  (8-LED for backlight only if desired)
