@@ -81,6 +81,9 @@ printContextInfo(char *dst, size_t dstSiz, const char *expr, const char *file,
     return 0;
 }
 
+/*
+ * expr may be NULL if there is no expression to report
+ */
 static void
 __attribute__ ((format (printf, 6, 0)))
 vreportf (const char *file, uint32_t line, enum report_priority priority,
@@ -91,9 +94,13 @@ vreportf (const char *file, uint32_t line, enum report_priority priority,
     uint32_t            ui;
     char                formattedMsg[1024];
     const char          *errName = getErrorName(errNum);
+    const char          *blank = "";
 
-    if (!file || !expr || !fmt)
+    if (!file || !fmt)
         return;
+
+    if (!expr)
+        expr = blank;
 
     vsnprintf(formattedMsg, sizeof(formattedMsg), fmt, arg);   
 

@@ -13,7 +13,7 @@ STATIC_ASSERT(NUM_ERRORS == ARRAY_SIZE(error_names),
 const char *
 getErrorName(int32_t err)
 {
-    if (ABS(err) >= ARRAY_SIZE(error_names))
+    if ((uint16_t)ABS(err) >= ARRAY_SIZE(error_names))
         return error_names[EOTHER];
     else
         return error_names[ABS(err)];
