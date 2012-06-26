@@ -212,7 +212,7 @@ main(void)
     float               temperatures[ARRAY_SIZE(DS18X20_ROMCODES)];
     float               openWireStart, openWireTrigger;
     float               temperatureStart, temperatureTrigger;
-    struct flashData    fd = {0};
+    struct flashData    fd = {0}, fd_ones;
     union can_anyFrame  frame = {0};
     
     /* device driver declarations
@@ -235,6 +235,9 @@ main(void)
     ClearWDT();
 
     REPORT_ON_ERR(readFlash(&fd,sizeof(fd)), REP_WARNING, "readFlash error");
+    memset(&fd_ones, 0xFFFFFFFF, sizeof(fd_ones));
+    if (!memcmp(&fd, &fd_ones, sizeof(fd)))
+        memset(&fd, 0, sizeof(fd));
 
     /* initialize devices and warn on error */
     REPORT_ON_ERR(init_devices(dp, ltcp, adcp, dsp, canp),
