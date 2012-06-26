@@ -44,7 +44,7 @@ nu32_init(uint32_t sysClkHz)
     PORTSetPinsDigitalOut(NU32_LED1_PORT, NU32_LED1_PIN);
 
     /* Configure input for switch */
-    PORTSetPinsDigitalIn(NU32_SWITCH_PORT, NU32_SWITCH_PIN);
+    PORTSetPinsDigitalIn(NU32_USER_PORT, NU32_USER_PIN);
 
     return 0;
 }
