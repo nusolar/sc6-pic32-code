@@ -1,6 +1,8 @@
 #ifndef __NU_UTILITY_H
 #define __NU_UTILITY_H
 
+#define CLAIM_PIN(n) void claimed_pin_##n(void) {}
+
 #define BITFIELD_WIDTHMASK(width) \
     ((width) >= 32 ? ~0x0ul : (1ul << ((width) % 32)) - 1)
 
