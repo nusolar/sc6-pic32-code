@@ -36,6 +36,9 @@ extern uint32_t sys_clk_hz;
 #define NU32_SWITCH_PIN     BIT_13
 
 #define NU32_UART_MODULE    UART1
+
+/* used by bootloader */
+#define NU32_UART_MODULE2   UART4
 #endif
 
 /* new names */
