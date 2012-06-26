@@ -1,6 +1,6 @@
 SUBDIRS = 	car_bms.X car_can_msg_relay.X car_driver_controls.X \
-			t_error_reporting.X t_flash.X t_nokia.X t_serial.X \
-			t_serial_double.X
+			t_error_reporting.X t_flash.X t_ltc6803 t_nokia.X \
+			t_serial.X t_serial_double.X
 .PHONY: subdirs ${SUBDIRS}
 
 subdirs: ${SUBDIRS}
