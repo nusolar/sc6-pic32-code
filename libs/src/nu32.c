@@ -66,10 +66,11 @@ int32_t
 nu32_init_serial(uint32_t baud)
 {
     int32_t ret;
-    BYTE delims[2] = {'\r', '\n'};
+    BYTE delims[] = {'\r', '\n'};
     if ((ret = serial_new(&nu32_serial, NU32_UART_MODULE, baud, NO_UART_INTERRUPT,
-            INT_PRIORITY_DISABLED, 0, UART_DATA_SIZE_8_BITS, 0,
-            UART_ENABLE|UART_TX|UART_RX, delims, sizeof(delims))) >= 0)
+            INT_PRIORITY_DISABLED, 0, UART_DATA_SIZE_8_BITS,
+            UART_ENABLE_PINS_TX_RX_ONLY,
+            UART_PERIPHERAL|UART_TX|UART_RX, delims, sizeof(delims))) >= 0)
         nu32_serp = &nu32_serial;
 
     return ret;
