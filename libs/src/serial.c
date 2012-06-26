@@ -161,22 +161,20 @@ serial_report(struct error_reporting_dev *self,
 static int32_t
 tx (const struct serial *self, const void *data, size_t len)
 {
-    size_t i;
+    size_t ui;
 
     if (self == NULL || data == NULL)
         return -ENULPTR;
     
-    for (i = 0; i < len; i++) {
-        double tStart = readTimer();
+    for (ui = 0; ui < len; ui++) {
         while (!UARTTransmitterIsReady(self->serialModule))
-            if (tStart - readTimer() > 1.0E-3)
-                return -ETIMEOUT;
-        UARTSendDataByte(self->serialModule, ((const BYTE *)data)[i]);
-        tStart = readTimer();
-        while (!UARTTransmissionHasCompleted(self->serialModule))
-            if (tStart - readTimer() > 1.0E-3)
-                return -ETIMEOUT;
+            ;   /* do nothing */
+        UARTSendDataByte(self->serialModule, ((const BYTE *)data)[ui]);
     }
+
+    while (!UARTTransmissionHasCompleted(self->serialModule))
+        ;   /* do nothing */
+
     return 0;
 }
 
@@ -191,13 +189,15 @@ bufDelimCpy (const struct serial *self, uint32_t delimPos, void *dst, size_t len
     ui = (self->rxBufFull == TRUE) ?
         (delimPos+1)%ARRAY_SIZE(self->rxBuf) : 0;
     uj = 0;
-    for ( ; ui != delimPos; ui = (ui+1)%ARRAY_SIZE(self->rxBuf))
-        if (self->rxBuf[ui] != 0) {
+    for ( ; ui != delimPos; ui = (ui+1)%ARRAY_SIZE(self->rxBuf)) {
+        if (self->rxBuf[ui]) {
             if (uj < len)
                 ((BYTE *)dst)[uj++] = self->rxBuf[ui];
             else
                 return -ETRUNCATED;
         }
+    }
+
 
     return 0;
 }
