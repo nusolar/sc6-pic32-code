@@ -25,6 +25,20 @@ nu32_init(uint32_t sysClkHz)
     /* disable JTAG to get A4 and A5 back */
     DDPCONbits.JTAGEN = 0;
 
+    /* disable comparator in attempt to get A9 and A10 back */
+    CVREFOpen(CVREF_DISABLE);
+
+    /* disable ADC in attempt to get A9 and A10 back...possibly only need the
+     * second config to do this
+     */
+    OpenADC10(ADC_MODULE_OFF, ADC_VREF_AVDD_AVSS, 0, 0, 0);
+
+    /* disable ethernet controller */
+    EthEnable(0);
+
+    /* disable parallel port */
+    mPMPDisable();
+
     /* Configure LED outputs */
     PORTSetPinsDigitalOut(NU32_LED0_PORT, NU32_LED0_PIN);
     PORTSetPinsDigitalOut(NU32_LED1_PORT, NU32_LED1_PIN);

@@ -16,6 +16,8 @@
 #pragma config POSCMOD  = XT
 /* Oscillator Selection Bits: Primary Oscillator w/ PLL */
 #pragma config FNOSC = PRIPLL
+/* disable secondary oscillator (enables use of digital inputs rc13 and rc14) */
+#pragma config FSOSCEN = OFF
 
 /* disable WDT (we'll control it in software) */
 #pragma config FWDTEN   = OFF
