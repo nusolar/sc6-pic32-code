@@ -7,6 +7,8 @@
     #include <plib.h>
 #endif
 
+#include <math.h>
+
 #include "nu32.h"
 #include "utility.h"
 

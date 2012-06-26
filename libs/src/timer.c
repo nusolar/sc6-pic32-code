@@ -41,7 +41,7 @@ void
 delay(double seconds)
 {
     /* @TODO: formerly unsigned ints; see if this still works */
-    unsigned int tWait  = (uint32_t)(secsToTicks(ABS(seconds)));
+    unsigned int tWait  = (uint32_t)(secsToTicks(fabs(seconds)));
     unsigned int tStart = ReadCoreTimer();
 
     while ((ReadCoreTimer()-tStart) < tWait)
