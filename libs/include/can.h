@@ -2,7 +2,8 @@
 #define __NU_CAN_H
 
 #include <plib.h>
-#include "can_nu.h"
+#include "can_all.h"
+#include "compiler.h"
 #include "error_reporting.h"
 #include "errorcodes.h"
 #include "nu32.h"

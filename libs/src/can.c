@@ -6,10 +6,10 @@ static int32_t CAN_init(struct can *self, unsigned int canBusSpeed,
                 CAN_BIT_TQ syncJumpWidth, CAN_MODULE_EVENT interruptEvents,
                 INT_PRIORITY intPriority, CAN_MODULE_FEATURES moduleFeatures);
 
-static int32_t
+static ALWAYSINLINE int32_t
 enableFunctions(const struct can *self, CAN_MODULE_FEATURES features);
 
-static int32_t
+static ALWAYSINLINE int32_t
 disableFunctions(const struct can *self, CAN_MODULE_FEATURES features);
 
 static int32_t
@@ -263,13 +263,13 @@ changeFunctions (const struct can *self, CAN_MODULE_FEATURES features, BOOL enab
     return 0;
 }
 
-static int32_t
+static ALWAYSINLINE int32_t
 enableFunctions(const struct can *self, CAN_MODULE_FEATURES features)
 {
     return changeFunctions(self, features, TRUE);
 }
 
-static int32_t
+static ALWAYSINLINE int32_t
 disableFunctions(const struct can *self, CAN_MODULE_FEATURES features)
 {
     return changeFunctions(self, features, FALSE);
