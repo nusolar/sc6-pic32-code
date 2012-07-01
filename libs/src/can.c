@@ -39,11 +39,18 @@ addChannelRx(const struct can *self, CAN_CHANNEL channel,
             unsigned int channelMsgSize, CAN_RX_DATA_MODE dataOnly,
             CAN_CHANNEL_EVENT interruptEvents);
 
+static int32_t
+addFilter(const struct can *self, CAN_CHANNEL chn,
+            CAN_FILTER filter, CAN_ID_TYPE filterType,
+            uint32_t id, CAN_FILTER_MASK mask,
+            CAN_FILTER_MASK_TYPE mide, uint32_t maskBits);
+
 static const struct vtblCANPort CANPortOps = {
     .tx             = &CANTx,
     .rx             = &CANRx,
     .addChannelTx   = &addChannelTx,
     .addChannelRx   = &addChannelRx,
+    .addFilter      = &addFilter,
 };
 
 static int32_t
@@ -434,4 +441,31 @@ CANRx (const struct can *self, CAN_CHANNEL channel, unsigned int *id, void *dst)
     CANUpdateChannel(self->module, channel);
 
     return (long) len;
+}
+
+static int32_t
+addFilter(const struct can *self, CAN_CHANNEL chn,
+            CAN_FILTER filter, CAN_ID_TYPE filterType,
+            uint32_t id, CAN_FILTER_MASK mask,
+            CAN_FILTER_MASK_TYPE mide, uint32_t maskBits)
+{
+    int32_t err;
+
+    if (!self)
+        return -ENULPTR;
+
+    if ((err = putCanInConfigMode(self))) {
+        putCanInNormalMode(self);
+        return err;
+    }
+
+    CANConfigureFilter(self->module, filter, id, filterType);
+    CANConfigureFilterMask(self->module, mask, maskBits, filterType, mide);
+    CANLinkFilterToChannel(self->module, filter, mask, chn);
+    CANEnableFilter(self->module, filter, TRUE);
+
+    if ((err = putCanInNormalMode(self)) < 0)
+        return err;
+
+    return 0;
 }

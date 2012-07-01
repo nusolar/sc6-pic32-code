@@ -51,6 +51,10 @@ struct vtblCANPort {
     int         (*addChannelRx) (const struct can *self, CAN_CHANNEL channel,
                                     unsigned int channelMsgSize, CAN_RX_DATA_MODE dataOnly,
                                     CAN_CHANNEL_EVENT interruptEvents);
+    int32_t     (*addFilter)    (const struct can *self, CAN_CHANNEL chn,
+                                    CAN_FILTER filter, CAN_ID_TYPE filterType,
+                                    uint32_t id, CAN_FILTER_MASK mask,
+                                    CAN_FILTER_MASK_TYPE mide, uint32_t maskBits);
 };
 
 int32_t
