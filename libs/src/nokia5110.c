@@ -489,7 +489,7 @@ static void
 lcdPrintf(const struct nokia5110 *self, const char *fmt, ...)
 {
     va_list fmtargs;
-    char buffer[1024];
+    char buffer[72];
     va_start(fmtargs, fmt);
     vsnprintf(buffer, sizeof(buffer), fmt, fmtargs);
     va_end(fmtargs);
