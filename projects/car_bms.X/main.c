@@ -956,7 +956,7 @@ doCanTx(void)
     if (ticksToSecs(ReadCoreTimer() - last_sendVoltages) > INTERVAL_TX_VOLTAGES &&
             !FEQ(voltages[0],UNINIT)) {
         uint32_t ui;
-        for (ui = 0; ui < ARRAY_SIZE(voltages); ++ui) {
+        for (ui = 0; ui < MODULE_COUNT; ++ui) {
             struct can_bms_tx_voltage v = {
                 .module     = ui,
                 .voltage    = voltages[ui],
@@ -969,7 +969,7 @@ doCanTx(void)
     if (ticksToSecs(ReadCoreTimer() - last_sendOwVoltages) > INTERVAL_TX_OWVOLTAGES &&
             !FEQ(openWireVoltages[0], UNINIT)) {
         uint32_t ui;
-        for (ui = 0; ui < ARRAY_SIZE(openWireVoltages); ++ui) {
+        for (ui = 0; ui < MODULE_COUNT; ++ui) {
             struct can_bms_tx_owVoltage owv = {
                 .module     = ui,
                 .owVoltage  = openWireVoltages[ui],
