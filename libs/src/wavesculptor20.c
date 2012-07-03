@@ -58,13 +58,13 @@ wavesculptor20_new(struct wavesculptor20 *self,
         return err;
 
     if ((err = self->can.op->addChannelTx(&(self->can), self->txChn,
-                                CAN_TX_RX_MESSAGE_SIZE_BYTES,
+                                32,
                                 CAN_TX_RTR_DISABLED, CAN_HIGH_MEDIUM_PRIORITY,
                                 0)) < 0)
         return err;
 
     if ((err = self->can.op->addChannelRx(&(self->can), self->rxChn,
-                                CAN_TX_RX_MESSAGE_SIZE_BYTES,
+                                32,
                                 CAN_RX_FULL_RECEIVE, 0)) < 0)
         return err;
 
@@ -79,8 +79,8 @@ wavesculptor20_new_easy(struct wavesculptor20 *self,
     if (self == NULL)
         return -ENULPTR;
 
-    return wavesculptor20_new(self, module, 1, ADDR_WS20RX(BASE),
-            ADDR_WS20TX(BASE), txChn, rxChn,
+    return wavesculptor20_new(self, module, 1, ADDR_WS20_RX_BASE,
+            ADDR_WS20_TX_BASE, txChn, rxChn,
             WAVESCULPTOR20_BUS_SPEED_DEFAULT, CAN_BIT_3TQ, CAN_BIT_5TQ,
             CAN_BIT_1TQ, AUTO_SET, THREE_TIMES, CAN_BIT_1TQ);
 }
@@ -107,12 +107,12 @@ driveCmd(const struct wavesculptor20 *self, float motorCurrentPercent,
     if (motorCurrentPercent < 0 || motorCurrentPercent > 1)
         return -EINVAL;
 
-    struct CAN_WS20RX(DRIVE_CMD) frame = {
+    struct can_ws20_rx_drive_cmd frame = {
         .motorCurrent = motorCurrentPercent,
         .motorVelocity = motorVelocityMperS,
     };
 
-    return txFrame(self, &frame, sizeof(frame), ADDR_WS20RX(DRIVE_CMD));
+    return txFrame(self, &frame, sizeof(frame), ADDR_WS20_RX_DRIVE_CMD);
 }
 
 static int32_t
@@ -121,12 +121,12 @@ powerCmd(const struct wavesculptor20 *self, float busCurrent)
     if (self == NULL)
         return -ENULPTR;
 
-    struct CAN_WS20RX(POWER_CMD) frame = {
+    struct can_ws20_rx_power_cmd frame = {
         .busCurrent = busCurrent,
         .reserved = 0,
     };
 
-    return txFrame(self, &frame, sizeof(frame), ADDR_WS20RX(POWER_CMD));
+    return txFrame(self, &frame, sizeof(frame), ADDR_WS20_RX_POWER_CMD);
 }
 
 static int32_t
@@ -135,9 +135,9 @@ resetCmd(const struct wavesculptor20 *self)
     if (self == NULL)
         return -ENULPTR;
 
-    struct CAN_WS20RX(RESET_CMD) frame = {0};
+    struct can_ws20_rx_reset_cmd frame = {0};
 
-    return txFrame(self, &frame, sizeof(frame), ADDR_WS20RX(RESET_CMD));
+    return txFrame(self, &frame, sizeof(frame), ADDR_WS20_RX_RESET_CMD);
 }
 
 static int32_t
@@ -146,10 +146,10 @@ sendIdFrame(const struct wavesculptor20 *self)
     if (self == NULL)
         return -ENULPTR;
 
-    struct CAN_WS20RX(DRIVER_CONTROLS_ID) frame = {
+    struct can_ws20_rx_driver_controls_id frame = {
         .drvId = "TRIb",
         .serialNo = self->driverControlsSerialNo,
     };
 
-    return txFrame(self, &frame, sizeof(frame), ADDR_WS20RX(DRIVER_CONTROLS_ID));
+    return txFrame(self, &frame, sizeof(frame), ADDR_WS20_RX_DRIVER_CONTROLS_ID);
 }

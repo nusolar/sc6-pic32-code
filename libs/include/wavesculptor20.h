@@ -3,8 +3,8 @@
 
 #include <stdint.h>
 #include "can.h"
+#include "can_all.h"
 #include "errorcodes.h"
-#include "can_nu.h"
 
 struct wavesculptor20 {
     struct can      can;
