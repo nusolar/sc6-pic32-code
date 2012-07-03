@@ -1178,8 +1178,17 @@ loadFlash(void)
 int32_t
 main(void)
 {
+    PORTSetPinsDigitalOut(MAIN_RELAY_PIN_LTR, MAIN_RELAY_PIN_NUM);
+    PORTSetPinsDigitalOut(ARRAY_RELAY_PIN_LTR, ARRAY_RELAY_PIN_NUM);
+
+    PORTClearBits(MAIN_RELAY_PIN_LTR, MAIN_RELAY_PIN_NUM);
+    PORTClearBits(ARRAY_RELAY_PIN_LTR, ARRAY_RELAY_PIN_NUM);
+
+    delay(.1);
+
     /* timeout setting is in main.h */
     EnableWDT();
+
     /* allow clearing of wdt with CLEARWDT() */
     enableClearWdt();
 
