@@ -141,19 +141,20 @@ serial_report(struct error_reporting_dev *self,
                                 const char *fmtdMsg)
 {
     struct serial *serialSelf;
-    char errInfoBuf[1024], contextBuf[1024];
 
     if (!self || !file || !expr || !errName || !fmtdMsg)
         return -ENULPTR;
 
     serialSelf = error_reporting_dev_to_serial(self);
 
-    printErrInfo(errInfoBuf, sizeof(errInfoBuf), priority, errNum, errName);
-    printContextInfo(contextBuf, sizeof(contextBuf), expr, file, line);
-
-    serialSelf->op->printf(serialSelf, "%s:\n", errInfoBuf);
-    serialSelf->op->printf(serialSelf, "\t%s\n", fmtdMsg);
-    serialSelf->op->printf(serialSelf, "\tat %s\n", contextBuf);
+    serialSelf->op->printf(serialSelf, "%s:%d", file, line);
+    serialSelf->op->printf(serialSelf, "\r\n\t");
+    serialSelf->op->tx(serialSelf, expr, strlen(expr));
+    serialSelf->op->printf(serialSelf, "\r\n\t");
+    serialSelf->op->printf(serialSelf, "%d(%s)", errNum, errName);
+    serialSelf->op->printf(serialSelf, "\r\n\t");
+    serialSelf->op->tx(serialSelf, fmtdMsg, strlen(fmtdMsg));
+    serialSelf->op->printf(serialSelf, "\r\n\r\n");
 
     return 0;
 }
