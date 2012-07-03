@@ -101,10 +101,8 @@ static const uint32_t      SYS_CLK_HZ              = 80000000; /* 80 MHz */
 
 static const float         OVER_VOLTAGE                     = 4.3;
 static const float         UNDER_VOLTAGE                    = 2.75;
-/* @TODO @FIXME @HACK */
-#warning FIXME
-static const float         OVER_CURRENT_ARRAY_DISCHARGE_A   = -100;
-static const float         OVER_CURRENT_ARRAY_CHARGE_A      = 100;
+static const float         UNDER_CURRENT_ARRAY_A            = -1;
+static const float         OVER_CURRENT_ARRAY_A             = 10;
 
 /* Discharging: negative current */
 static const float         OVER_CURRENT_BATT_DISCHARGE_A    = -72.8;
@@ -809,10 +807,10 @@ doCurrents(void)
             trip_nomod(TRIP_OVER_CURRENT_CHRG);
         }
 
-        if (currentArray < OVER_CURRENT_ARRAY_DISCHARGE_A) {
+        if (currentArray < UNDER_CURRENT_ARRAY_A) {
             REPORT_ERR(REP_EMERGENCY, -ETRIP, "OVER CURRENT DISCHRG ARRAY");
             trip_nomod(TRIP_OVER_CURRENT_DISCHRG);
-        } else if (currentArray > OVER_CURRENT_ARRAY_CHARGE_A) {
+        } else if (currentArray > OVER_CURRENT_ARRAY_A) {
             REPORT_ERR(REP_EMERGENCY, -ETRIP, "OVER CURRENT CHRG ARRAY");
             trip_nomod(TRIP_OVER_CURRENT_CHRG);
         }
