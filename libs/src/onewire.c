@@ -182,14 +182,20 @@ driveHigh(const struct oneWire *self)
     return 0;
 }
 
+static inline int32_t __attribute__((always_inline))
+_readBit(const struct oneWire *self)
+{
+    /* PORTSetPinsDigitalIn(self->owPinLetter, self->owPinNum); */
+    return (int32_t)PORTReadBits(self->owPinLetter, self->owPinNum);
+}
+
 static int32_t
 readBit(const struct oneWire *self)
 {
     if (self == NULL)
         return -ENULPTR;
 
-    PORTSetPinsDigitalIn(self->owPinLetter, self->owPinNum);
-    return (int32_t)PORTReadBits(self->owPinLetter, self->owPinNum);
+    return _readBit(self);
 }
 
 static int32_t
@@ -206,7 +212,7 @@ reset(const struct oneWire *self)
     delay_us(70);
     devicesPresent = !readBit(self);
     delay_us(410);
-    driveHigh(self);
+    /* driveHigh(self); */
 
     return devicesPresent ? 1 : -ENODEV;
 }
@@ -289,21 +295,36 @@ txWithCrc(const struct oneWire *self, const void *data, size_t len)
     return 0;
 }
 
-static int32_t
-rxBit(const struct oneWire *self)
+static inline int32_t __attribute__((always_inline))
+_rxBit(const struct oneWire *self)
 {
     BIT result;
-
-    if (self == NULL)
-        return -ENULPTR;
-
     driveLow(self);
     delay_us(6);
     driveHigh(self);
-    result = readBit(self);
+    /*
+     * This should theoretically be a 9us delay according to
+     * http://www.maxim-ic.com/app-notes/index.mvp/id/126. However, using
+     * 9us breaks everything. From trial and error, it seems to work using a
+     * delay anywhere from 0us - 7us, so I've chosen to go with the middle
+     * value out of these to avoid potential catastrophe. This should be
+     * somewhere near the middle of the duration for which the ds18x20 is
+     * asserting a bit.
+     */
+    delay_us(4);
+    result = _readBit(self);
     delay_us(55);
-    
+
     return result;
+}
+
+static int32_t
+rxBit(const struct oneWire *self)
+{
+    if (self == NULL)
+        return -ENULPTR;
+
+    return _rxBit(self);
 }
 
 static int32_t
@@ -319,7 +340,7 @@ rx(const struct oneWire *self, void *dst, size_t len)
  
     for (ui = 0; ui < len; ui++)
         for (uj = 0; uj < 8; uj++)
-            dstBytes[ui] |= (BYTE)(rxBit(self)<<uj);
+            dstBytes[ui] |= (BYTE)(_rxBit(self)<<uj);
 
     return 0;
 }
