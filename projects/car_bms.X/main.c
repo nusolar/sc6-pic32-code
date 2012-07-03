@@ -601,8 +601,8 @@ init_ltcs(void)
     /* LTC6803 configuration: measurement only mode,
      * 13ms minimum measurement time */
     cfg[0].cfgr0 = WDT | LVLPL | GPIO1 | GPIO2 | CDC_MSMTONLY;
-    cfg[0].vov = convertOVLimit(OVER_VOLTAGE+0.1);
-    cfg[0].vuv = convertUVLimit(UNDER_VOLTAGE-0.1);
+    cfg[0].vov = convertOVLimit(OVER_VOLTAGE);
+    cfg[0].vuv = convertUVLimit(UNDER_VOLTAGE);
     cfg[2] = cfg[1] = cfg[0];
 
     IF_ERR(ltc6803_new(ltcp, LTC6803_SPI_CHN, LTC6803_CS_PIN_LTR,
