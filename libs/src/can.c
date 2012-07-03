@@ -347,7 +347,7 @@ addChannelRx (const struct can *self, CAN_CHANNEL channel,
     
     if (interruptEvents)
         CANEnableChannelEvent(self->module, channel, interruptEvents, TRUE);
-    if ((error = putCanInNormalMode(self)))
+    if ((error = putCanInNormalMode(self)) < 0)
         return error;
 
     return 0;
