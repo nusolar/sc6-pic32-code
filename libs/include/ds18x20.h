@@ -52,6 +52,8 @@ struct ds18b20ScratchPad {   /* excludes CRC */
     BYTE reserved[3];
 } __attribute__((packed));
 
+STATIC_ASSERT(sizeof(struct ds18b20ScratchPad) == 8, SIZE_MISMATCH);
+
 struct ds18s20ScratchPad {   /* excludes CRC */
     /* power-up temp value is 85C, 0b0000010101010000, or 0x0550 */
     /* this union corresponds to read-only memory */
@@ -84,6 +86,11 @@ struct ds18s20ScratchPad {   /* excludes CRC */
     BYTE countRemain;
     BYTE countPerDegreeC;
 } __attribute__((packed));
+
+STATIC_ASSERT(sizeof(struct ds18s20ScratchPad) == 8, SIZE_MISMATCH);
+
+STATIC_ASSERT(sizeof(struct ds18b20ScratchPad) == sizeof(struct ds18s20ScratchPad),
+        SIZE_MISMATCH);
 
 union dsScratchPad {
     struct ds18b20ScratchPad ds18b20Scratch;
