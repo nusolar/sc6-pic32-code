@@ -8,6 +8,7 @@
 #include "errorcodes.h"
 #include "nu32.h"
 #include "timer.h"
+#include "utility.h"
 
 #define error_reporting_dev_to_can(erdp)   \
         container_of((erdp), struct can, erd)

@@ -197,8 +197,8 @@ can_report(struct error_reporting_dev *self,
         .common.tx.errPriorityNum.priority = priority,
     };
     uint32_t ui;
-    char txBuf[8], errStrBuf[1024];
-    BYTE finish;
+    char txBuf[128];    /* should be multiple of 8 */
+    STATIC_ASSERT(!(sizeof(txBuf)%8), SIZE_MISMATCH);
 
     if (!self || !file || !expr || !errName || !fmtdMsg)
         return -ENULPTR;
@@ -210,47 +210,16 @@ can_report(struct error_reporting_dev *self,
     sendErrFrame(canSelf, &frame.common.tx.errPriorityNum,
                     sizeof(frame.common.tx.errPriorityNum));
 
-    ui = 0;
-#define ringsend(x)                                                 \
-            do {                                                    \
-                const char *p;                                      \
-                for (p = x; *p; ui=(ui+1)%8, ++p) {                 \
-                    txBuf[ui] = *p;                                 \
-                    if (ui==7)                                      \
-                        sendErrFrame(canSelf, txBuf, 8);            \
-                }                                                   \
-            } while(0)
-/* 
- "%s:\n\t%s\n\tat %s\n",
-                    errInfoBuf, fmtdMsg, contextBuf)
- */
-    printErrInfo(errStrBuf, sizeof(errStrBuf), priority, errNum, errName);
-    ringsend(errStrBuf);
+    snprintf(   txBuf, sizeof(txBuf),
+                "err %d(%s):%s\r\n"
+                "\tat %s:%d with call to\r\n"
+                "\t%s\r\n",
+                errNum, errName, expr, file, line, expr);
 
-    strlcpy(errStrBuf, ":\n\t", sizeof(errStrBuf));
-    ringsend(errStrBuf);
-
-    ringsend(fmtdMsg);
-
-    strlcpy(errStrBuf, "\n\tat ", sizeof(errStrBuf));
-    ringsend(errStrBuf);
-
-    printContextInfo(errStrBuf, sizeof(errStrBuf), expr, file, line);
-    ringsend(errStrBuf);
-
-    strlcpy(errStrBuf, "\n", sizeof(errStrBuf));
-    ringsend(errStrBuf);
-
-#undef ringsend
-    
-    if (ui != 0) {
-        for ( ; ui; ui = (ui+1)%8)
-            txBuf[ui] = '\0';   /* pad txBuf with 0s */
-        sendErrFrame(canSelf, txBuf, 8);
+    for (ui = 0; ui < sizeof(txBuf); ui += 8) {
+        ClearWDT();
+        sendErrFrame(canSelf, txBuf+ui, 8);
     }
-
-    finish = 0xFF;
-    sendErrFrame(canSelf, &finish, sizeof(finish));
 
     return 0;
 }
