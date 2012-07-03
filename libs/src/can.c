@@ -175,6 +175,16 @@ sendErrFrame(const struct can *self, void *data, size_t len)
         self->error_reporting_can_ext_id, 0, data, len);
 }
 
+static ALWAYSINLINE void
+ringSend(struct can *self, const char *msg, uint32_t *iter, char *txBuf)
+{
+    for ( ; *msg; *iter = (*iter+1)%8, ++msg) {
+        txBuf[*iter] = *msg;
+        if (*iter == 7)
+            sendErrFrame(self, txBuf, 8);
+    }
+}
+
 static int32_t
 can_report(struct error_reporting_dev *self,
     const char *file, uint32_t line, const char *expr,
