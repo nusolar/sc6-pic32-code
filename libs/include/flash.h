@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <string.h>
 #include "errorcodes.h"
+#include "wdt.h"
 
 #define CONST_FLASH_SIZE_BYTES BYTE_PAGE_SIZE
 
