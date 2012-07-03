@@ -1217,6 +1217,13 @@ main(void)
         uptime += ticksToSecs(ReadCoreTimer() - last_uptime);
         last_uptime = ReadCoreTimer();
 
+        dp2->op->gotoXY(dp2, 0, 1);
+        dp2->op->printf(dp2, "V:%0.9f", voltages[31]);
+        dp2->op->gotoXY(dp2, 0, 2);
+        dp2->op->printf(dp2, "T:%0.9f", temperatures[31]);
+        dp2->op->gotoXY(dp2, 0, 3);
+        dp2->op->printf(dp2, "I:%0.9f", currentBattery);
+
         battBypass = PORTReadBits(BATT_BYPASS_PIN_LTR, BATT_BYPASS_PIN_NUM);
         if (battBypass != prevBattBypass) {
             dp2->op->clear(dp2);
