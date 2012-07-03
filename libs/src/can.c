@@ -299,8 +299,7 @@ switchModuleOpMode(const struct can *self, CAN_OP_MODE opMode, double waitTimeMs
     CANSetOperatingMode(self->module, opMode);
     tStart = readTimer();
     while (CANGetOperatingMode(self->module) != opMode)
-        if (readTimer() - tStart > 1.0E3 * waitTimeMs)
-            return -ETIMEOUT;
+        ;   /* do nothing */
 
     return 0;
 }
