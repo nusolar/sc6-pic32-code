@@ -293,11 +293,11 @@ nokia_report(struct error_reporting_dev *self,
 
     np->op->clear(np);
     np->op->gotoXY(np, 0,0);
-    np->op->printf(np, "%s:%d             ", file, line);
+    np->op->printf(np, "%.6s:%d", file, line);
+    np->op->gotoXY(np, 0, 1);
+    np->op->printf(np, "%d(%.18s)", errNum, errName);
     np->op->gotoXY(np, 0, 3);
-    np->op->printf(np, "%d(%s)            ", errNum, errName);
-    np->op->gotoXY(np, 0, 4);
-    np->op->printf(np, "%s                ", fmtdMsg);
+    np->op->printf(np, "%.36s", fmtdMsg);
 
     return 0;
 }
