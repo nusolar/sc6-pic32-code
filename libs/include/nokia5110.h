@@ -2,6 +2,7 @@
 #define __NU_NOKIA5110_H
 
 #include <plib.h>
+#include "compiler.h"
 #include "errorcodes.h"
 #include "error_reporting.h"
 #include "nu32.h"

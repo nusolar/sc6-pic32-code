@@ -175,19 +175,19 @@ cmdSetDispMode(const struct nokia5110 *self, enum nokia_displayMode mode);
 static void
 writeChar(const struct nokia5110 *self, char c);
 
-static inline void
-writeString(const struct nokia5110 *self, const char *str) __attribute__((always_inline));
+static INLINE void
+writeString(const struct nokia5110 *self, const char *str);
 
 static void
 lcdPrintf(const struct nokia5110 *self, const char *fmt, ...) __attribute__((format(printf,2,3)));
 
-static inline void
-gotoXY(const struct nokia5110 *self, uint8_t x, uint8_t y) __attribute__((always_inline));
+static ALWAYSINLINE void
+gotoXY(const struct nokia5110 *self, uint8_t x, uint8_t y);
 
 static void
 setPixel(const struct nokia5110 *self, uint8_t x, uint8_t y);
 
-static inline void
+static INLINE void
 clear(const struct nokia5110 *self);
 
 static const struct vtblNokia5110 nokia5110Ops = {
