@@ -849,10 +849,7 @@ doTemperatures(void)
         for (ui = 0; ui < ARRAY_SIZE(DS18B20_ROMCODES); ui++) {
             ClearWDT();
             temperatures[ui] = dsp->op->readTemp(dsp, DS18B20_ROMCODES[ui]);
-        }
-        /* Check for over/under-temperature */
-        for (ui = 0; ui < ARRAY_SIZE(temperatures); ui++) {
-            ClearWDT();
+            /* check for over/under temp */
             if (temperatures[ui] > OVER_TEMP_C) {
                 REPORT_ERR(REP_EMERGENCY, -ETRIP, "SENSOR %d OVER TEMP", ui);
                 trip_mod(TRIP_OVER_TEMP, ui);
