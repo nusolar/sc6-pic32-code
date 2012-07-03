@@ -31,7 +31,7 @@ register_reporting_dev(struct error_reporting_dev *erd,
 {
     int32_t tmp;
 
-    if (erd == NULL)
+    if (!erd)
         return -ENULPTR;
 
     tmp = getFreeErrDevIndex();

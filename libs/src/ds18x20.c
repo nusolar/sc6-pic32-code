@@ -214,9 +214,9 @@ skipRom(const struct ds18x20 *self)
 static int32_t
 romcodeEquals(union romCode rc1, union romCode rc2)
 {
-    uint32_t i;
-    for (i = 0; i < ARRAY_SIZE(rc1.byteArr); i++) {
-        if (rc1.byteArr[i] != rc2.byteArr[i])
+    uint32_t ui;
+    for (ui = 0; ui < ARRAY_SIZE(rc1.byteArr); ui++) {
+        if (rc1.byteArr[ui] != rc2.byteArr[ui])
             return 0;
     }
 

@@ -268,8 +268,8 @@ ltc6803_init (struct ltc6803 *self, const union BpsConfig *cfgs)
 
     for (retryCount = 0; retryCount < 3; retryCount++)
         /* @TODO checkCfgsMatch() is redundant as it is now called by writeCfgs() */
-        if (!(err = writeCfgs(self, cfgs) < 0) &&
-                !(err = checkCfgsMatch(self, cfgs) < 0))
+        if (!((err = writeCfgs(self, cfgs)) < 0) &&
+                !((err = checkCfgsMatch(self, cfgs)) < 0))
             break;
 
     if (err < 0)
