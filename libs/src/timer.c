@@ -12,26 +12,26 @@
     ReadCoreTimer (void);
 #endif
 
-inline void
+INLINE void
 resetTimer(void)
 {
     WriteCoreTimer(0);
 }
 
-inline double
+INLINE double
 readTimer(void)
 {
     return ticksToSecs(ReadCoreTimer());
 }
 
-inline double
+INLINE CONST double
 ticksToSecs(uint32_t ticks)
 {
     /* 1 core tick = 2 SYS cycles */
     return (((double)ticks*2.0)/(double)sys_clk_hz);
 }
 
-inline uint32_t
+INLINE CONST uint32_t
 secsToTicks(double secs)
 {
     return (uint32_t)((secs*(double)sys_clk_hz)/2.0);

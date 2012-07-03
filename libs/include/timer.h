@@ -9,28 +9,29 @@
 
 #include <math.h>
 
+#include "compiler.h"
 #include "nu32.h"
 #include "utility.h"
 
-inline void
+INLINE void
 resetTimer(void);
 
 double
 readTimer(void);
 
-inline double
+INLINE CONST double
 ticksToSecs(uint32_t ticks);
 
-inline uint32_t
+INLINE CONST uint32_t
 secsToTicks(double secs);
 
 void
 delay(double seconds);
 
-void
+INLINE void
 delay_us(double usec);
 
-void
+INLINE void
 delay_ms(double msec);
 
 #endif
