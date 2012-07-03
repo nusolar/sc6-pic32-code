@@ -9,6 +9,7 @@
 #define ALWAYSINLINE
 #endif
 
+#define CONST           __attribute__((const))
 #define NORETURN        __attribute__((noreturn))
 #define PURE            __attribute__((pure))
 #define UNUSED          __attribute__((unused))
