@@ -392,8 +392,10 @@ writeChar(const struct nokia5110 *self, char c)
     uint32_t ui;
 
     writeData(self, 0x00);
-    for (ui = 0; ui < 5; ui++)
+    for (ui = 0; ui < 5; ui++) {
+        ClearWDT();
         writeData(self, (BYTE) ASCII[c - 0x20][ui]);
+    }
 
     writeData(self, 0x00);
 }
@@ -402,15 +404,19 @@ static inline void
 clear(const struct nokia5110 *self)
 {
     uint32_t ui;
-    for (ui = 0; ui < LCD_X * LCD_Y / 8; ++ui)
+    for (ui = 0; ui < LCD_X * LCD_Y / 8; ++ui) {
+        ClearWDT();
         writeData(self, 0x00);
+    }
 }
 
-static inline void
+static INLINE void
 writeString(const struct nokia5110 *self, const char *str)
 {
-    while (*str)
+    while (*str) {
+        ClearWDT();
         writeChar(self, *str++);
+    }
 }
 
 /* x should be in the range 0-83 */
