@@ -18,9 +18,11 @@ static int32_t
 getFreeErrDevIndex(void)
 {
     uint16_t ui;
-    for (ui = 0; ui < ARRAY_SIZE(repDevices); ui++)
+    for (ui = 0; ui < ARRAY_SIZE(repDevices); ui++) {
+        ClearWDT();
         if (devIsEmpty(ui))
             return ui;
+    }
     
     return -EREPORTNOFREEDEVS;
 }
@@ -52,9 +54,11 @@ unregister_reporting_dev(const struct error_reporting_dev *erd)
     if (erd == NULL)
         return -ENULPTR;
 
-    for (ui = 0; ui < ARRAY_SIZE(repDevices); ui++)
+    for (ui = 0; ui < ARRAY_SIZE(repDevices); ui++) {
+        ClearWDT();
         if (repDevices[ui] == erd)
             clearDev(ui);
+    }
 
     return 0;
 }
@@ -109,6 +113,7 @@ vreportf (const char *file, uint32_t line, enum report_priority priority,
     vreportfRecurseLock = 1;
 
     for (ui = 0; ui < ARRAY_SIZE(repDevices); ui++) {
+        ClearWDT();
         if (devIsEmpty(ui) || repDevices[ui]->minPriority > priority ||
                 repDevices[ui]->op->report == NULL)
             continue;
@@ -125,6 +130,7 @@ err_clear(enum report_priority maxPriority)
 {
     uint32_t ui;
     for (ui = 0; ui < ARRAY_SIZE(repDevices); ui++) {
+        ClearWDT();
         if (devIsEmpty(ui) || repDevices[ui]->minPriority > maxPriority ||
                 repDevices[ui]->op->resetErrState == NULL)
             continue;
