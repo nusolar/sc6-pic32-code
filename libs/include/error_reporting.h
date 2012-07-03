@@ -2,6 +2,7 @@
 #define __NU_ERROR_REPORTING_H
 
 #include <limits.h>
+#include <plib.h>
 #include <stdarg.h>
 #include <stdint.h>
 #include <stdio.h>
