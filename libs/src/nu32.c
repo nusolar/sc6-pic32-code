@@ -7,8 +7,6 @@ struct serial nu32_serial, *nu32_serp = &nu32_serial;
 
 uint32_t sys_clk_hz = 80000000; /* 80 MHz */
 
-#define busywait(n) do{uint32_t _ui; for (_ui = 0; _ui < n; ++_ui);}while(0)
-
 int32_t
 nu32_init(uint32_t sysClkHz)
 {
@@ -56,10 +54,10 @@ nu32_init_leds(void)
 
     if ((ret1 = led_new(&nu32_led0, NU32_LED0_PORT, NU32_LED0_PIN)) >= 0)
         nu32_led0p = &nu32_led0;
-    if ((ret2 = led_new(nu32_led1p, NU32_LED1_PORT, NU32_LED1_PIN)) >= 0)
+    if ((ret2 = led_new(&nu32_led1, NU32_LED1_PORT, NU32_LED1_PIN)) >= 0)
         nu32_led1p = &nu32_led1;
 
-    return (ret1 < 0) ? ret1 : ret2;
+    return MIN(ret1, ret2);
 }
 
 int32_t
@@ -76,7 +74,7 @@ nu32_init_serial(uint32_t baud)
     return ret;
 }
 
-void
+void __attribute__((deprecated))
 initSerialNU32v2(uint32_t serialBaudRate)
 {
     uint32_t pbClk = sys_clk_hz/((uint32_t)(1 << OSCCONbits.PBDIV));
@@ -97,7 +95,7 @@ initSerialNU32v2(uint32_t serialBaudRate)
     INTSetVectorSubPriority(INT_UART_3_VECTOR, INT_SUB_PRIORITY_LEVEL_0);
 }
 
-void
+void __attribute__((deprecated))
 WriteString(UART_MODULE id, const char *string)
 {
     for ( ; *string != '\0'; string++) {
@@ -109,7 +107,7 @@ WriteString(UART_MODULE id, const char *string)
     }
 }
 
-void
+void __attribute__((deprecated))
 PutCharacter(UART_MODULE id, char character)
 {
     while(!UARTTransmitterIsReady(id))

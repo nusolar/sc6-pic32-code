@@ -2,6 +2,7 @@
 #define __NU_NU32_H
 
 #include <stdint.h>
+#include "compiler.h"
 #include "led.h"
 #include "serial.h"
 #ifdef PC_BUILD
@@ -67,15 +68,15 @@ nu32_init_serial(uint32_t baud);
 /* Initialize the serial port 
  * Note: the NU32v2 is hard wired to use UART3 (= UART2A)
  */
-void
+void __attribute__((deprecated))
 initSerialNU32v2(uint32_t serialBaudRate);
 
 /* Write a string over the serial port */
-void
+void __attribute__((deprecated))
 WriteString(UART_MODULE id, const char *string);
 
 /* Put a character over the serial port */
-void
+void __attribute__((deprecated))
 PutCharacter(UART_MODULE id, char character);
 
 #endif
