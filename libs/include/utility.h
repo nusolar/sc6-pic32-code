@@ -1,7 +1,12 @@
 #ifndef __NU_UTILITY_H
 #define __NU_UTILITY_H
 
-#define CLAIM_PIN(n) void claimed_pin_##n(void) {}
+#include <stdlib.h>
+#include "compiler.h"
+
+#define CLAIM_PIN(n)                \
+    void claimed_pin_##n(void);     \
+    void claimed_pin_##n(void){}
 
 #define BITFIELD_WIDTHMASK(width) \
     ((width) >= 32 ? ~0x0ul : (1ul << ((width) % 32)) - 1)
@@ -22,19 +27,26 @@
  * #define container_of(ptr, type, member) ((type *)((char *)ptr - offsetof(type, member)))
  */
 
+/*
 #define STATIC_ASSERT_HELPER(expr, msg) \
             (!!sizeof (struct { unsigned int STATIC_ASSERTION__##msg: (expr) ? 1 : -1; }))
 #define STATIC_ASSERT(expr, msg) \
             extern int (*assert_function__(void)) [STATIC_ASSERT_HELPER(expr, msg)]
+ */
+#define STATIC_ASSERT_HELPER(COND,MSG) typedef char MSG[(COND)?1:-1]
+/* token pasting madness: */
+#define STATIC_ASSERT3(X,L,M)   STATIC_ASSERT_HELPER(X,static_assertion_at_line_##L##_##M)
+#define STATIC_ASSERT2(X,L,M)   STATIC_ASSERT3(X,L,M)
+#define STATIC_ASSERT(X,M)      STATIC_ASSERT2(X,__LINE__,M)
 
 #define STATIC_ASSERT_EXISTS(x)     STATIC_ASSERT((x) == (x), x ## _doesnt_exist)
 
 #define BUILD_BUG_ON_ZERO(e) (sizeof(struct { int:-!!(e); }))
 
 /*
- * abs() handles unsigned and signed longs, ints, shorts and chars.  For all
- * input types abs() returns a signed long.
- * abs() should not be used for 64-bit types (s64, u64, long long) - use abs64()
+ * ABS() handles unsigned and signed longs, ints, shorts and chars.  For all
+ * input types ABS() returns a signed long.
+ * ABS() should not be used for 64-bit types (s64, u64, long long) - use ABS64()
  * for those.
  */
 #define ABS(x) ({                                               \
@@ -55,22 +67,61 @@
         })
 
 /* min and max macros do strict type checking via the pointer comparison */
-#undef min
-#define min(x, y) ({                            \
+#define MIN(x, y) ({                            \
         typeof(x) _min1 = (x);                  \
         typeof(y) _min2 = (y);                  \
         (void) (&_min1 == &_min2);              \
         _min1 < _min2 ? _min1 : _min2; })
 
-#undef max
-#define max(x, y) ({                            \
+#define MAX(x, y) ({                            \
         typeof(x) _max1 = (x);                  \
         typeof(y) _max2 = (y);                  \
         (void) (&_max1 == &_max2);              \
         _max1 > _max2 ? _max1 : _max2; })
 
-#define MIN(x,y)            min(x, y)
-#define MAX(x,y)            max(x, y)
+union utility_floatInt {
+    float       f;
+    int32_t     d;
+    uint32_t    ud;
+};
+
+#define likely(x)       __builtin_expect((x),1)
+#define unlikely(x)     __builtin_expect((x),0)
+
+#pragma GCC diagnostic ignored "-Wfloat-equal"
+static ALWAYSINLINE UNUSED PURE unsigned int
+_floatEq(float _x, float _y, int32_t maxUlps)
+{
+    if (likely(_x == _y)) {
+        return 1;
+    } else {
+        union utility_floatInt x, y;
+        int32_t diff;
+        x.f = _x;
+        if (x.d < 0)
+            x.d = (int32_t)(0x80000000 - x.ud);
+        y.f = _y;
+        if (y.d < 0)
+            y.d = (int32_t)(0x80000000 - y.ud);
+        diff = abs(x.d-y.d);
+        if (diff <= maxUlps)
+            return 1;
+        return 0;
+    }
+}
+#pragma GCC diagnostic warning "-Wfloat-equal"
+
+/* maxUlps is the max number of floating point numbers between x and y
+ * 5 may be a good value for it...
+ */
+#define FLOATEQ(x, y, maxUlps)                                                      \
+    ({                                                                              \
+        STATIC_ASSERT((maxUlps) > 0 && (maxUlps) < 4*1024*1024, INVALID_MAXULPS);   \
+        _floatEq((x), (y), (maxUlps));                                              \
+    })
+
+/* shorthand */
+#define FEQ(x, y)   FLOATEQ((x), (y), 4)
 
 #define ZEROVAR(x)          memset(&(x), 0, sizeof(x))
 
