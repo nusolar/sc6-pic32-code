@@ -843,7 +843,7 @@ doTemperatures(void)
         last_tempConvert = ReadCoreTimer();
         tConvertStatus = TEMP_BUSY;
     } else if (tConvertStatus == TEMP_BUSY &&
-            ticksToSecs(ReadCoreTimer() - last_tempConvert) > 750E-3) {
+            ticksToSecs(ReadCoreTimer() - last_tempConvert) > 760E-3) {
         uint32_t ui;
         /* Get temperature readings */
         for (ui = 0; ui < ARRAY_SIZE(DS18B20_ROMCODES); ui++) {
