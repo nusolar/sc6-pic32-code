@@ -14,14 +14,16 @@ typedef unsigned char BYTE;
 #include "can_common.h"
 #include "can_dc.h"
 #include "can_mppt.h"
+#include "can_steering_wheel.h"
 #include "can_ws20.h"
 
 union can_anyFrame {
-    union   can_bms     bms;
-    union   can_common  common;
-    union   can_dc      dc;
-    union   can_mppt    mppt;
-    union   can_ws20    ws20;    
+    union   can_bms             bms;
+    union   can_common          common;
+    union   can_dc              dc;
+    union   can_mppt            mppt;
+    union   can_steering_wheel  steering_wheel;
+    union   can_ws20            ws20;    
 };
 
 STATIC_ASSERT(sizeof(union can_anyFrame) <= 8, SIZE_MISMATCH);
