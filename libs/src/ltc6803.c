@@ -324,7 +324,7 @@ transactionCmdRx (struct ltc6803 *self, enum ltc6803Cmds cmd, void *dst, size_t 
 
 /* data[0] is bottom device */
 static int
-transactionCmdTx (struct ltc6803 *self, enum ltc6803Cmds cmd, const void *data, size_t len)
+transactionCmdTx (struct ltc6803 *self, enum ltc6803Cmds cmd, const void *data, size_t sizeOneElem)
 {
     int err;
 
@@ -339,10 +339,9 @@ transactionCmdTx (struct ltc6803 *self, enum ltc6803Cmds cmd, const void *data, 
     }
 
     const BYTE *dataBytes = (const BYTE *)data;
-    size_t sizeOneElem = len/(self->numDevices);
     long i;
     for (i = self->numDevices - 1; i >= 0; --i)
-        if ((err = sendWithPec(self, &(dataBytes[(unsigned long)i*sizeOneElem]), sizeOneElem)) < 0) {
+        if ((err = sendWithPec(self, dataBytes+i*sizeOneElem, sizeOneElem)) < 0) {
             self->spiPort.op->driveCSHigh(&(self->spiPort));
             return err;
         }
