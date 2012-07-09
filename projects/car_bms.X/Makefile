@@ -58,7 +58,7 @@ build: .build-post
 
 .build-post: .build-impl
 # Add your post 'build' code here...
-	make -C .. make_lock=${make_lock} lastdir=${CURDIR}
+#	make -C .. make_lock=${make_lock} lastdir=${CURDIR}
 
 
 # clean

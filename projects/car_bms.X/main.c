@@ -397,14 +397,16 @@ nu_trip(enum tripCode code, uint32_t module)
     lastTrip_module = module;
     saveFlashNow();
 
+#ifdef __DEBUG
+    REPORT(REP_WARNING, "DEBUG BUILD: IGNORED TRIP %d (%s) on module %d",
+        code, tripcodeStr[code], module);
+    return;
+#else
+
     PORTClearBits(MAIN_RELAY_PIN_LTR, MAIN_RELAY_PIN_NUM);
 
     DisableWDT();
 
-#ifdef __DEBUG
-    REPORT(REP_WARNING, "DEBUG BUILD: IGNORED TRIP %d (%s) on module %d",
-        code, tripcodeStr[code], module);
-#else
     while (1)
         ; /* do nothing */
 #endif
@@ -600,7 +602,7 @@ init_ltcs(void)
 
     /* LTC6803 configuration: measurement only mode,
      * 13ms minimum measurement time */
-    cfg[0].cfgr0 = WDT | LVLPL | GPIO1 | GPIO2 | CDC_MSMTONLY;
+    cfg[0].cfgr0 = WDT | LVLPL | CDC_MSMTONLY;
     cfg[0].vov = convertOVLimit(OVER_VOLTAGE);
     cfg[0].vuv = convertUVLimit(UNDER_VOLTAGE);
     cfg[2] = cfg[1] = cfg[0];
