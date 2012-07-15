@@ -55,7 +55,7 @@ unregister_reporting_dev(const struct error_reporting_dev *erd)
         return -ENULPTR;
 
     for (ui = 0; ui < ARRAY_SIZE(repDevices); ui++) {
-        ClearWDT();
+        CLEARWDT();
         if (repDevices[ui] == erd)
             clearDev(ui);
     }
@@ -113,7 +113,7 @@ vreportf (const char *file, uint32_t line, enum report_priority priority,
     vreportfRecurseLock = 1;
 
     for (ui = 0; ui < ARRAY_SIZE(repDevices); ui++) {
-        ClearWDT();
+        CLEARWDT();
         if (devIsEmpty(ui) || repDevices[ui]->minPriority > priority ||
                 repDevices[ui]->op->report == NULL)
             continue;
@@ -130,7 +130,7 @@ err_clear(enum report_priority maxPriority)
 {
     uint32_t ui;
     for (ui = 0; ui < ARRAY_SIZE(repDevices); ui++) {
-        ClearWDT();
+        CLEARWDT();
         if (devIsEmpty(ui) || repDevices[ui]->minPriority > maxPriority ||
                 repDevices[ui]->op->resetErrState == NULL)
             continue;

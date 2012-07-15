@@ -9,6 +9,7 @@
 #include "errorcodes.h"
 #include "safestring.h"
 #include "utility.h"
+#include "wdt.h"
 
 #ifndef MAX_REPORTING_DEVS
     #define MAX_REPORTING_DEVS  10

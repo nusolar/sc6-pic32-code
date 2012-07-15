@@ -217,7 +217,7 @@ can_report(struct error_reporting_dev *self,
                 errNum, errName, expr, file, line, expr);
 
     for (ui = 0; ui < sizeof(txBuf); ui += 8) {
-        ClearWDT();
+        CLEARWDT();
         sendErrFrame(canSelf, txBuf+ui, 8);
     }
 

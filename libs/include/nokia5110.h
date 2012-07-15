@@ -8,6 +8,7 @@
 #include "nu32.h"
 #include "spi.h"
 #include "utility.h"
+#include "wdt.h"
 
 /***********************************
 *  Schematic:
