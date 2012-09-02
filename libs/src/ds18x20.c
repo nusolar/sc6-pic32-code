@@ -144,18 +144,23 @@ static int32_t
 readRom(const struct ds18x20 *self, union romCode *dst)
 {
     int32_t err = 0;
+    uint32_t maxAttempts = 3;
     const struct oneWire *owp;
 
     if (!self || !dst)
         return -ENULPTR;
 
-    if ((err = txRomCmd(self, DS_READ_ROM)) < 0)
-        return err;
-
     owp = &(self->ow);
-
     memset(dst, 0, sizeof(*dst));
-    if ((err = owp->op->rxCheckCrc(owp, dst, sizeof(*dst))))
+
+    while (maxAttempts--) {
+        if ((err = txRomCmd(self, DS_READ_ROM)) < 0)
+            return err;
+        
+        if ((err = owp->op->rxCheckCrc(owp, dst, sizeof(*dst))) >= 0)
+            break;
+    }
+    if (err < 0)
         return err;
 
     return 0;
@@ -339,7 +344,8 @@ static int32_t
 readScratchpad(struct ds18x20 *self, union dsScratchPad *dst,
                 union romCode rc)
 {
-    int32_t err;
+    int32_t err = 0;
+    uint32_t maxAttempts = 3;
     const struct oneWire *owp;
 
     if (!self || !dst)
@@ -348,17 +354,20 @@ readScratchpad(struct ds18x20 *self, union dsScratchPad *dst,
     if (romcodeEquals(rc, ALL_DEVICES) || romcodeEquals(rc, ALARM_DEVICES))
         return -EINVALIDOP;
 
-    if ((err = addressDevice(self, rc)) < 0)
-        return err;
-
-    if ((err = txCmd(self, DS_READ_SCRATCH)) < 0)
-        return err;
-
     owp = &(self->ow);
-    if ((err = owp->op->rxCheckCrc(owp, dst, sizeof(*dst))) < 0)
-        return err;
+    
+    while (maxAttempts--) {
+        if ((err = addressDevice(self, rc)) < 0)
+            return err;
 
-    return 0;
+        if ((err = txCmd(self, DS_READ_SCRATCH)) < 0)
+            return err;
+
+        if ((err = owp->op->rxCheckCrc(owp, dst, sizeof(*dst))) >= 0)
+            break;
+    }
+
+    return (err < 0) ? err : 0;
 }
 
 static int32_t

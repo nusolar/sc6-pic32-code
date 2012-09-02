@@ -258,7 +258,7 @@ static int32_t
 ltc6803_init (struct ltc6803 *self, const union BpsConfig *cfgs)
 {
     int32_t err;
-    uint32_t retryCount;
+    uint32_t maxAttempts = 3;
 
     if (!self || !cfgs)
         return -ENULPTR;
@@ -266,16 +266,15 @@ ltc6803_init (struct ltc6803 *self, const union BpsConfig *cfgs)
     if ((err = self->spiPort.op->driveCSHigh(&(self->spiPort))) < 0)
         return err;
 
-    for (retryCount = 0; retryCount < 3; retryCount++)
+    while (maxAttempts--) {
         /* @TODO checkCfgsMatch() is redundant as it is now called by writeCfgs() */
-        if (!((err = writeCfgs(self, cfgs)) < 0) &&
-                !((err = checkCfgsMatch(self, cfgs)) < 0))
+        if ((err = writeCfgs(self, cfgs)) < 0)
+            continue;
+        if ((err = checkCfgsMatch(self, cfgs)) >= 0)
             break;
+    }
 
-    if (err < 0)
-        return err;
-
-    return 0;
+    return (err < 0) ? err : 0;
 }
 
 static int
@@ -303,21 +302,31 @@ static int
 transactionCmdRx (struct ltc6803 *self, enum ltc6803Cmds cmd, void *dst, size_t len)
 {
     int32_t err = 0;
+    uint32_t maxAttempts = 3;
 
     if (self == NULL || dst == NULL)
         return -ENULPTR;
 
-    if ((err = self->spiPort.op->driveCSLow(&(self->spiPort))) < 0) {
-        return err;
-    } else if ((err = sendCmdAndPec(self, cmd)) < 0) {
+    while (maxAttempts--) {
+        /* @FIXME @HACK this line may be unneeded or even bad? */
+        if ((err = self->spiPort.op->driveCSHigh(&(self->spiPort))) < 0)
+            return err;
+        
+        if ((err = self->spiPort.op->driveCSLow(&(self->spiPort))) < 0)
+            return err;
+        
+        if ((err = sendCmdAndPec(self, cmd)) < 0)
+            return err;
+        
+        if ((err = rxDataCheckPecs(self, dst, len)) >= 0)
+            break;
+    }
+    if (err < 0) {
         self->spiPort.op->driveCSHigh(&(self->spiPort));
-        return err;
-    } else if ((err = rxDataCheckPecs(self, dst, len)) < 0) {
-        self->spiPort.op->driveCSHigh(&(self->spiPort));
-        return err;
-    } else if ((err = self->spiPort.op->driveCSHigh(&(self->spiPort))) < 0) {
         return err;
     }
+    if ((err = self->spiPort.op->driveCSHigh(&(self->spiPort))) < 0)
+        return err;
 
     return 0;
 }
@@ -521,13 +530,13 @@ static int
 checkCfgsMatch (struct ltc6803 *self, const union BpsConfig *cfgs)
 {
     int err;
+    uint32_t maxAttempts = 3;
 
     if (self == NULL || cfgs == NULL)
         return -ENULPTR;
 
     union BpsConfig rxCfgs[self->numDevices];
-    int retryCount;
-    for (retryCount = 0; retryCount < 3; retryCount++)
+    while (maxAttempts--)
         if (!(err = readCfgs(self, rxCfgs)))
             break;
 
