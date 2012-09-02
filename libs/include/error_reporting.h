@@ -25,17 +25,17 @@
     REPORTF(priority, ENONE, NULL, ## fmt)
 
 #define IF_ERR(expr, priority, fmt...)                  \
-    if (({                                              \
+    if (unlikely({                                      \
         int32_t _errno = (int32_t)(expr);               \
-        if (_errno < 0)                                 \
+        if (unlikely(_errno < 0))                       \
             REPORTF((priority), _errno, #expr, ## fmt); \
         _errno < 0;                                     \
     }))
 
 #define IF_NOERR(expr, priority, fmt...)                \
-    if (({                                              \
+    if (likely({                                        \
         int32_t _errno = (int32_t)(expr);               \
-        if (_errno < 0)                                 \
+        if (unlikely(_errno < 0))                       \
             REPORTF((priority), _errno, #expr, ## fmt); \
         _errno >= 0;                                    \
     }))
