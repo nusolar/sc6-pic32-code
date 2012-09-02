@@ -1,5 +1,5 @@
-#ifndef __NU_AD7685_H
-#define __NU_AD7685_H
+#ifndef NU_AD7685_H
+#define NU_AD7685_H
 
 #include <stdint.h>
 #include "errorcodes.h"
