@@ -192,8 +192,8 @@ static const IoPortId      ADC_CS_PIN_LTR          = IOPORT_F;
 static const uint32_t      ADC_CS_PIN_NUM          = BIT_12;
 CLAIM_PIN(F12);
 
-static const IoPortId      DS18B20_PIN_LTR         = IOPORT_D;
-static const uint32_t      DS18B20_PIN_NUM         = BIT_1;
+static const IoPortId      DS18B20_PIN_LTR         = IOPORT_A;
+static const uint32_t      DS18B20_PIN_NUM         = BIT_0;
 CLAIM_PIN(D1);
 
 static const IoPortId      MAIN_RELAY_PIN_LTR      = IOPORT_D;
