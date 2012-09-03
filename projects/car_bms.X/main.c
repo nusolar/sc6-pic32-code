@@ -49,6 +49,9 @@ static const char * const tripcodeStr[] = {
 struct flashData {
     int32_t         lastTrip_module;
     enum tripCode   lastTrip_code;
+    char            lastTrip_file[20];
+    uint32_t        lastTrip_line;
+    float           lastTrip_temp;
     double          cc_battery;
     double          cc_array;
     double          cc_mppt1;
@@ -309,6 +312,9 @@ static struct can          common_can, *commonCanp  = &common_can;
 static double   uptime              = 0;
 static int32_t  lastTrip_module     = UNINIT;
 static enum tripCode lastTrip_code  = 0;
+static char     lastTrip_file[20]   = {0};
+static uint32_t lastTrip_line       = 0;
+static float    lastTrip_temp       = 0;
 static enum lastReset lastResetCause = 0;
 static uint32_t battBypass          = 0;
 static float    currentBattery      = UNINIT;
@@ -355,6 +361,8 @@ saveFlashNow(void)
         .cc_mppt3           = cc_mppt3,
         .lastTrip_code      = lastTrip_code,
         .lastTrip_module    = lastTrip_module,
+        .lastTrip_line      = lastTrip_line,
+        .lastTrip_temp      = lastTrip_temp,
         .wh_battery         = wh_battery,
         .wh_mppt1in         = wh_mppt1in,
         .wh_mppt1out        = wh_mppt1out,
@@ -363,6 +371,8 @@ saveFlashNow(void)
         .wh_mppt3in         = wh_mppt3in,
         .wh_mppt3out        = wh_mppt3out,
     };
+
+    strncpy(fd.lastTrip_file, lastTrip_file, ARRAY_SIZE(fd.lastTrip_file)-1);
 
     CLEARWDT();
 
@@ -378,7 +388,7 @@ static ALWAYSINLINE void
 #else
 static ALWAYSINLINE void NORETURN
 #endif
-nu_trip(enum tripCode code, uint32_t module)
+nu_trip(const char *file, uint32_t line, enum tripCode code, uint32_t module)
 {
     struct can_bms_tx_trip trip = {
         .module     = module,
@@ -395,6 +405,11 @@ nu_trip(enum tripCode code, uint32_t module)
 
     lastTrip_code   = code;
     lastTrip_module = module;
+    strncpy(lastTrip_file, file, ARRAY_SIZE(lastTrip_file)-1);
+    lastTrip_line = line;
+    lastTrip_temp   = UNINIT;
+    if (code == TRIP_UNDER_TEMP || code == TRIP_OVER_TEMP)
+        lastTrip_temp = temperatures[module];
     saveFlashNow();
 
 #ifdef __DEBUG
@@ -416,7 +431,7 @@ nu_trip(enum tripCode code, uint32_t module)
     do {                                                                    \
         REPORT(REP_EMERGENCY, "tripping with code %d (%s)",                 \
             tripCode, tripcodeStr[tripCode]);                               \
-        nu_trip(tripCode, 0xFFFFFFFF);                                      \
+        nu_trip(__FILE__, __LINE__, tripCode, 0xFFFFFFFF);                  \
     } while(0)
 
 #define trip_mod(tripCode, module)                                  \
@@ -424,7 +439,7 @@ nu_trip(enum tripCode code, uint32_t module)
         REPORT(REP_EMERGENCY,                                       \
             "tripping with code %d (%s), module %d",                \
             tripCode, tripcodeStr[tripCode], module);               \
-        nu_trip(tripCode, module);                                  \
+        nu_trip(__FILE__, __LINE__, tripCode, module);              \
     } while(0)
 
 static void
@@ -1159,6 +1174,9 @@ loadFlash(void)
     } else {
         lastTrip_module = fd.lastTrip_module;
         lastTrip_code   = fd.lastTrip_code;
+        strncpy(lastTrip_file, fd.lastTrip_file, ARRAY_SIZE(lastTrip_file)-1);
+        lastTrip_line   = fd.lastTrip_line;
+        lastTrip_temp   = fd.lastTrip_temp;
         cc_battery      = fd.cc_battery;
         cc_array        = fd.cc_array;
         cc_mppt1        = fd.cc_mppt1;
@@ -1202,9 +1220,17 @@ main(void)
 
     loadFlash();
 
-    /* report last trip */
-    REPORT(REP_INFO, "last trip was code %d, module %d", lastTrip_code,
-            lastTrip_module);
+    /* report last trip
+     * use reportf here so we can give the lastTrip_file and lastTrip_line
+     *  rather than this file and line, which are much less useful in debugging
+     *  trips
+     */
+    reportf(lastTrip_file, lastTrip_line, REP_INFO, ENONE, NULL,
+                (lastTrip_code == TRIP_UNDER_TEMP || lastTrip_code == TRIP_OVER_TEMP) ?
+                    "mod %d,code %d(%s),t%f" : "mod %d,code %d(%s)",
+                lastTrip_module, lastTrip_code,
+                lastTrip_code >= ARRAY_SIZE(tripcodeStr) ? "?" : tripcodeStr[lastTrip_code],
+                lastTrip_temp);
 
     WriteCoreTimer(0);
 
