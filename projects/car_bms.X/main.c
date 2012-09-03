@@ -1152,13 +1152,17 @@ doCanRx(void)
 {
     union can_anyFrame frame;
     uint32_t sid;
+    uint32_t ui;
 
     ClearWDT();
 
-    while (mpptCanp->op->rx(mpptCanp, MPPT_CAN_RX_CHN, &sid, &frame) > 0) {
+    for (ui = 0;
+            ui < 32 && mpptCanp->op->rx(mpptCanp, MPPT_CAN_RX_CHN, &sid, &frame) > 0;
+            ++ui) {
         static uint32_t last_mppt1rx = 0;
         static uint32_t last_mppt2rx = 0;
         static uint32_t last_mppt3rx = 0;
+
         commonCanp->op->tx(commonCanp, COMMON_CAN_TX_CHN, STANDARD_ID,
                 (uint16_t)sid, 0, 0, &frame, sizeof(frame));
         switch (sid) {
@@ -1182,7 +1186,9 @@ doCanRx(void)
 
     ClearWDT();
 
-    while (commonCanp->op->rx(commonCanp, COMMON_CAN_TX_CHN, &sid, &frame) > 0) {
+    for (ui = 0;
+            ui < 32 && commonCanp->op->rx(commonCanp, COMMON_CAN_TX_CHN, &sid, &frame) > 0;
+            ++ui) {
         switch (sid) {
         case ADDR_BMS_RX_TRIP:
             trip_mod(frame.bms.rx.trip.tripCode, frame.bms.rx.trip.module);
