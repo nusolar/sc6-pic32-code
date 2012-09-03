@@ -755,26 +755,14 @@ doVoltages(void)
     CLEARWDT();
     
     /* Start voltage conversion if none in progress */
-    if (vConvertStatus == VCONVERT_NONE) {
-        if (ticksToSecs(ReadCoreTimer() - last_openWireConversion) > INTERVAL_GET_OW_VOLTAGES) {
-            IF_ERR(ltcp->op->startOpenWireConversion(ltcp), REP_CRITICAL,
-                    "LTC OPEN WIRE CONVERSION FAILED")
-                trip_nomod(TRIP_OTHER);
-            last_openWireConversion = ReadCoreTimer();
-            vConvertStatus = VCONVERT_OPENWIRE;
-        } else if (ticksToSecs(ReadCoreTimer() - last_voltageConversion) > INTERVAL_GET_VOLTAGES) {
-            IF_ERR(ltcp->op->startVoltageConversion(ltcp), REP_CRITICAL,
-                    "LTC VOLTAGE CONVERSION FAILED")
-                trip_nomod(TRIP_OTHER);
-            last_voltageConversion = ReadCoreTimer();
-            vConvertStatus = VCONVERT_NORMAL;
-        }
-    }
-
-    if (vConvertStatus == VCONVERT_OPENWIRE &&
-            ticksToSecs(ReadCoreTimer() - last_openWireConversion) > 16E-3) {
+    if (ticksToSecs(ReadCoreTimer() - last_openWireConversion) > INTERVAL_GET_OW_VOLTAGES) {
         uint32_t ui;
-        IF_ERR(ltcp->op->readVolts(ltcp, voltages), REP_CRITICAL,
+        init_ltcs();
+        IF_ERR(ltcp->op->startOpenWireConversion(ltcp), REP_CRITICAL,
+                "LTC OPEN WIRE CONVERSION FAILED")
+            trip_nomod(TRIP_OTHER);
+        delay_ms(16);
+        IF_ERR(ltcp->op->readVolts(ltcp, openWireVoltages), REP_CRITICAL,
                 "LTC READVOLTS FAILED")
            trip_nomod(TRIP_OTHER);
         for (ui = 0; ui < MODULE_COUNT; ui++) {
@@ -788,11 +776,15 @@ doVoltages(void)
                 }
             }
         }
-        vConvertStatus = VCONVERT_NONE;
-    } else if (vConvertStatus == VCONVERT_NORMAL &&
-            ticksToSecs(ReadCoreTimer() - last_voltageConversion) > 16E-3) {
+        last_openWireConversion = ReadCoreTimer();
+    } else if (ticksToSecs(ReadCoreTimer() - last_voltageConversion) > INTERVAL_GET_VOLTAGES) {
         uint32_t ui;
         double sum;
+        init_ltcs();
+        IF_ERR(ltcp->op->startVoltageConversion(ltcp), REP_CRITICAL,
+                "LTC VOLTAGE CONVERSION FAILED")
+            trip_nomod(TRIP_OTHER);
+        delay_ms(16);
         IF_ERR(ltcp->op->readVolts(ltcp, voltages), REP_CRITICAL,
                         "LTC READVOLTS FAILED")
            trip_nomod(TRIP_OTHER);
@@ -813,8 +805,69 @@ doVoltages(void)
             }
         }
         wh_battery += (sum*ticksToSecs(ReadCoreTimer()-last_voltageConversion))/3600;
-        vConvertStatus = VCONVERT_NONE;
+        last_voltageConversion = ReadCoreTimer();
     }
+
+//    if (vConvertStatus == VCONVERT_NONE) {
+//        if (ticksToSecs(ReadCoreTimer() - last_openWireConversion) > INTERVAL_GET_OW_VOLTAGES) {
+//            IF_ERR(ltcp->op->startOpenWireConversion(ltcp), REP_CRITICAL,
+//                    "LTC OPEN WIRE CONVERSION FAILED")
+//                trip_nomod(TRIP_OTHER);
+//            last_openWireConversion = ReadCoreTimer();
+//            vConvertStatus = VCONVERT_OPENWIRE;
+//        } else if (ticksToSecs(ReadCoreTimer() - last_voltageConversion) > INTERVAL_GET_VOLTAGES) {
+//            IF_ERR(ltcp->op->startVoltageConversion(ltcp), REP_CRITICAL,
+//                    "LTC VOLTAGE CONVERSION FAILED")
+//                trip_nomod(TRIP_OTHER);
+//            last_voltageConversion = ReadCoreTimer();
+//            vConvertStatus = VCONVERT_NORMAL;
+//        }
+//    }
+//
+//    if (vConvertStatus == VCONVERT_OPENWIRE &&
+//            ticksToSecs(ReadCoreTimer() - last_openWireConversion) > 16E-3) {
+//        uint32_t ui;
+//        IF_ERR(ltcp->op->readVolts(ltcp, voltages), REP_CRITICAL,
+//                "LTC READVOLTS FAILED")
+//           trip_nomod(TRIP_OTHER);
+//        for (ui = 0; ui < MODULE_COUNT; ui++) {
+//            ClearWDT();
+//            if (openWireVoltages[ui] < 0.5) {
+//                if (ui+1 != battBypass) {
+//                    REPORT_ERR(REP_EMERGENCY, -ETRIP, "MODULE %d DISCONNECTED", ui);
+//                    trip_mod(TRIP_OTHER, ui);
+//                } else {
+//                    REPORT(REP_WARNING, "MODULE %d BYPASSED", ui);
+//                }
+//            }
+//        }
+//        vConvertStatus = VCONVERT_NONE;
+//    } else if (vConvertStatus == VCONVERT_NORMAL &&
+//            ticksToSecs(ReadCoreTimer() - last_voltageConversion) > 16E-3) {
+//        uint32_t ui;
+//        double sum;
+//        IF_ERR(ltcp->op->readVolts(ltcp, voltages), REP_CRITICAL,
+//                        "LTC READVOLTS FAILED")
+//           trip_nomod(TRIP_OTHER);
+//        /* Check for over/under-voltage */
+//        for (ui = 0; ui < MODULE_COUNT; ui++) {
+//            ClearWDT();
+//            sum += voltages[ui];
+//            if (voltages[ui] > OVER_VOLTAGE) {
+//                REPORT_ERR(REP_EMERGENCY, -ETRIP, "MODULE %d OVER VOLTAGE", ui);
+//                trip_mod(TRIP_OVER_VOLTAGE, ui);
+//            } else if (voltages[ui] < UNDER_VOLTAGE) {
+//                if (ui+1 != battBypass) {
+//                    REPORT_ERR(REP_EMERGENCY, -ETRIP, "MODULE %d UNDER VOLTAGE", ui);
+//                    trip_mod(TRIP_UNDER_VOLTAGE, ui);
+//                } else {
+//                    REPORT(REP_WARNING, "MODULE %d BYPASSED", ui);
+//                }
+//            }
+//        }
+//        wh_battery += (sum*ticksToSecs(ReadCoreTimer()-last_voltageConversion))/3600;
+//        vConvertStatus = VCONVERT_NONE;
+//    }
 }
 
 static void
