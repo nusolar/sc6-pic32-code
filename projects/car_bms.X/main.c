@@ -645,6 +645,7 @@ static ALWAYSINLINE int32_t
 init_adcs(void)
 {
     int32_t errno;
+    float tmp[2];
 
     CLEARWDT();
 
@@ -652,6 +653,8 @@ init_adcs(void)
                       ADC_CS_PIN_NUM, 2, CHAIN_MODE, NO_BUSY_INDICATOR),
             REP_CRITICAL, "ad7685_new")
         return errno;
+
+    adcp->op->convertAndReadVolts(adcp, tmp);
 
     return 0;
 }
