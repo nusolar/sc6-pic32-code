@@ -108,10 +108,10 @@ static const float         UNDER_CURRENT_ARRAY_A            = -1;
 static const float         OVER_CURRENT_ARRAY_A             = 10;
 
 /* Discharging: negative current */
-static const float         OVER_CURRENT_BATT_DISCHARGE_A    = -72.8;
+static const float         OVER_CURRENT_BATT_DISCHARGE_A    = 72.8;
 /* Charging: positive current */
-static const float         OVER_CURRENT_BATT_CHARGE_A       = 36.4;
-static const float         OVER_TEMP_C                      = 45;
+static const float         OVER_CURRENT_BATT_CHARGE_A       = -36.4;
+static const float         OVER_TEMP_C                      = 41;
 static const float         UNDER_TEMP_C                     = 0;
 
 /********
@@ -816,14 +816,15 @@ doCurrents(void)
         currentArray    = voltageToCurrent(rawCurrents[I_SENSOR_ARRAY]);
 
         /* Check for over/under-current */
-        if (currentBattery < OVER_CURRENT_BATT_DISCHARGE_A) {
+        if (currentBattery > OVER_CURRENT_BATT_DISCHARGE_A) {
             REPORT_ERR(REP_EMERGENCY, -ETRIP, "OVER CURRENT DISCHRG BATT");
             trip_nomod(TRIP_OVER_CURRENT_DISCHRG);
-        } else if (currentBattery > OVER_CURRENT_BATT_CHARGE_A) {
+        } else if (currentBattery < OVER_CURRENT_BATT_CHARGE_A) {
             REPORT_ERR(REP_EMERGENCY, -ETRIP, "OVER CURRENT CHRG BATT");
             trip_nomod(TRIP_OVER_CURRENT_CHRG);
         }
 
+        /*
         if (currentArray < UNDER_CURRENT_ARRAY_A) {
             REPORT_ERR(REP_EMERGENCY, -ETRIP, "OVER CURRENT DISCHRG ARRAY");
             trip_nomod(TRIP_OVER_CURRENT_DISCHRG);
@@ -831,6 +832,7 @@ doCurrents(void)
             REPORT_ERR(REP_EMERGENCY, -ETRIP, "OVER CURRENT CHRG ARRAY");
             trip_nomod(TRIP_OVER_CURRENT_CHRG);
         }
+         */
         
         cc_battery      += (ticksToSecs(ReadCoreTimer() - last_currents)*currentBattery)/3600;
         cc_array        += (ticksToSecs(ReadCoreTimer() - last_currents)*currentArray)/3600;
