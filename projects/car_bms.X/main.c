@@ -592,7 +592,7 @@ init_cans(void)
             32, CAN_RX_FULL_RECEIVE, 0);
         commonCanp->op->addFilter(commonCanp, COMMON_CAN_RX_CHN, CAN_FILTER0,
             CAN_SID, ADDR_BMS_RX_BASE, CAN_FILTER_MASK0,
-            CAN_FILTER_MASK_IDE_TYPE, 0xFF0);
+            CAN_FILTER_MASK_IDE_TYPE, 0x7F0);
         commonCanp->op->addChannelTx(commonCanp, COMMON_CAN_TX_CHN,
             32, CAN_TX_RTR_DISABLED, CAN_HIGH_MEDIUM_PRIORITY, 0);
         commonCanp->op->addChannelTx(commonCanp, COMMON_CAN_TX_ERR_CHN,
