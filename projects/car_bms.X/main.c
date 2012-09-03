@@ -670,7 +670,7 @@ init_ds18b20s(void)
     IF_ERR(ds18x20_new(dsp, DS18B20_PIN_LTR, DS18B20_PIN_NUM,
                     PARASITIC_POWER_DISABLE),
                 REP_CRITICAL, "ds18x20_new")
-                trip_nomod(TRIP_OTHER);
+        trip_nomod(TRIP_OTHER);
 
     if ((tmp = dsp->op->findDevices(dsp, NULL, 0)) != MODULE_COUNT) {
         REPORT(REP_EMERGENCY, "DS18X20: found %d, expected %d", tmp, MODULE_COUNT);
