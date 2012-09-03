@@ -4,13 +4,8 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
-      <itemPath>main.h</itemPath>
       <itemPath>../../libs/include/can.h</itemPath>
       <itemPath>../../libs/include/can_addresses.h</itemPath>
-      <itemPath>../../libs/include/can_nu.h</itemPath>
-      <itemPath>../../libs/include/can_wavesculptor20.h</itemPath>
-      <itemPath>../../libs/include/can_wavesculptor_broadcast_messages.h</itemPath>
-      <itemPath>../../libs/include/can_wavesculptor_drive_commands.h</itemPath>
       <itemPath>../../libs/include/error_reporting.h</itemPath>
       <itemPath>../../libs/include/errorcodes.h</itemPath>
       <itemPath>../../libs/include/nu32.h</itemPath>
@@ -40,6 +35,12 @@
       <itemPath>../../libs/src/timer.c</itemPath>
       <itemPath>../../libs/src/wavesculptor20.c</itemPath>
       <itemPath>../../libs/src/safestring.c</itemPath>
+      <itemPath>../../libs/src/crc.c</itemPath>
+      <itemPath>../../libs/src/led.c</itemPath>
+      <itemPath>../../libs/src/nokia5110.c</itemPath>
+      <itemPath>../../libs/src/serial.c</itemPath>
+      <itemPath>../../libs/src/spi.c</itemPath>
+      <itemPath>../../libs/src/wdt.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -97,7 +98,7 @@
         <property key="strict-ansi" value="false"/>
         <property key="support-ansi" value="false"/>
         <property key="use-indirect-calls" value="false"/>
-        <appendMe value="-Wno-missing-braces -Wno-missing-field-initializers -Wall -Wextra -fshort-enums -fno-common -Waggregate-return -Wbad-function-cast -Wcast-align -Wcast-qual  -Wchar-subscripts -Wcomment -Wconversion -Wdeclaration-after-statement -Wdisabled-optimization -Wfloat-equal -Wformat=2 -Wimport -Winit-self -Winline -Winvalid-pch -Wjump-misses-init -Wunsafe-loop-optimizations -Wlogical-op -Wlong-long -Wmissing-declarations -Wmissing-format-attribute -Wmissing-include-dirs -Wmissing-noreturn -Wmissing-prototypes -Wnested-externs -Wold-style-definition -Wpadded -Wpointer-arith -Wredundant-decls -Wshadow -Wstack-protector -Wstrict-prototypes -Wswitch-default -Wswitch-enum -Wsync-nand  -Wundef -Wuninitialized -Wunreachable-code -Wvariadic-macros -Wvolatile-register-var  -Wwrite-strings "/>
+        <appendMe value="-fno-common -Wno-missing-braces -Wno-missing-field-initializers -Wall -Wextra -Waggregate-return -Wbad-function-cast -Wcast-align -Wcast-qual  -Wchar-subscripts -Wcomment -Wconversion -Wdeclaration-after-statement -Wdisabled-optimization -Wfloat-equal -Wformat=2 -Wimport -Winit-self -Winline -Winvalid-pch -Wjump-misses-init -Wunsafe-loop-optimizations -Wlogical-op -Wlong-long -Wmissing-declarations -Wmissing-format-attribute -Wmissing-include-dirs -Wmissing-noreturn -Wmissing-prototypes -Wnested-externs -Wold-style-definition -Wpadded -Wpointer-arith -Wredundant-decls -Wshadow -Wstack-protector -Wstrict-prototypes -Wswitch-default -Wswitch-enum -Wsync-nand  -Wundef -Wuninitialized -Wunreachable-code -Wvariadic-macros -Wvolatile-register-var  -Wwrite-strings "/>
       </C32>
       <C32-AS>
         <property key="assembler-symbols" value=""/>
