@@ -164,10 +164,11 @@ tx (const struct serial *self, const void *data, size_t len)
 {
     size_t ui;
 
-    if (self == NULL || data == NULL)
+    if (!self || !data)
         return -ENULPTR;
     
-    for (ui = 0; ui < len; ui++) {
+    for (ui = 0; ui < len; ++ui) {
+        CLEARWDT();
         while (!UARTTransmitterIsReady(self->serialModule))
             ;   /* do nothing */
         UARTSendDataByte(self->serialModule, ((const BYTE *)data)[ui]);
