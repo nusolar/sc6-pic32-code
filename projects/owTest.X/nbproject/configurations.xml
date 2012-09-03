@@ -66,55 +66,59 @@
           <linkerLibItems>
           </linkerLibItems>
         </linkerTool>
+        <loading>
+          <useAlternateLoadableFile>false</useAlternateLoadableFile>
+          <alternateLoadableFile></alternateLoadableFile>
+        </loading>
       </compileType>
       <makeCustomizationType>
         <makeCustomizationPreStepEnabled>false</makeCustomizationPreStepEnabled>
         <makeCustomizationPreStep></makeCustomizationPreStep>
         <makeCustomizationPostStepEnabled>false</makeCustomizationPostStepEnabled>
         <makeCustomizationPostStep></makeCustomizationPostStep>
-        <makeCustomizationAlternativeFileToLoadEnabled>false</makeCustomizationAlternativeFileToLoadEnabled>
-        <makeCustomizationAlternativeFileToLoad></makeCustomizationAlternativeFileToLoad>
         <makeCustomizationPutChecksumInUserID>false</makeCustomizationPutChecksumInUserID>
+        <makeCustomizationEnableLongLines>false</makeCustomizationEnableLongLines>
+        <makeCustomizationNormalizeHexFile>false</makeCustomizationNormalizeHexFile>
       </makeCustomizationType>
       <C32>
-        <property key="optimization-level" value=""/>
-        <property key="generate-16-bit-code" value="false"/>
-        <property key="strict-ansi" value="false"/>
-        <property key="preprocessor-macros" value=""/>
         <property key="additional-warnings" value="false"/>
-        <property key="extra-include-directories" value=""/>
-        <property key="post-instruction-scheduling" value="default"/>
         <property key="enable-app-io" value="false"/>
-        <property key="enable-unroll-loops" value="false"/>
-        <property key="support-ansi" value="false"/>
-        <property key="place-data-into-section" value="false"/>
-        <property key="enable-symbols" value="true"/>
-        <property key="isolate-each-function" value="false"/>
-        <property key="use-indirect-calls" value="false"/>
-        <property key="exclude-floating-point" value="false"/>
         <property key="enable-omit-frame-pointer" value="false"/>
-        <property key="pre-instruction-scheduling" value="default"/>
+        <property key="enable-symbols" value="true"/>
+        <property key="enable-unroll-loops" value="false"/>
+        <property key="exclude-floating-point" value="false"/>
+        <property key="extra-include-directories" value=""/>
+        <property key="generate-16-bit-code" value="false"/>
+        <property key="isolate-each-function" value="false"/>
         <property key="make-warnings-into-errors" value="false"/>
+        <property key="optimization-level" value=""/>
+        <property key="place-data-into-section" value="false"/>
+        <property key="post-instruction-scheduling" value="default"/>
+        <property key="pre-instruction-scheduling" value="default"/>
+        <property key="preprocessor-macros" value=""/>
+        <property key="strict-ansi" value="false"/>
+        <property key="support-ansi" value="false"/>
+        <property key="use-indirect-calls" value="false"/>
         <appendMe value="-fshort-enums -fno-common  -Wall -Wextra -Waggregate-return -Wcast-align -Wcast-qual  -Wchar-subscripts  -Wcomment -Wconversion -Wdisabled-optimization -Wfloat-equal -Wformat -Wformat=2 -Wformat-nonliteral -Wformat-security -Wformat-y2k -Wimplicit  -Wimport  -Winit-self  -Winline -Winvalid-pch -Wunsafe-loop-optimizations -Wmissing-declarations -Wmissing-field-initializers -Wmissing-format-attribute -Wmissing-include-dirs -Wmissing-noreturn -Wmissing-prototypes -Wnested-externs -Wold-style-definition -Wparentheses  -Wpointer-arith -Wredundant-decls -Wreturn-type -Wsequence-point  -Wshadow -Wsign-compare  -Wstack-protector -Wstrict-aliasing -Wstrict-aliasing=2 -Wstrict-prototypes -Wswitch  -Wswitch-default -Wswitch-enum -Wtrigraphs -Wunknown-pragmas  -Wunreachable-code -Wunused -Wunused-function  -Wunused-label  -Wunused-parameter -Wunused-value  -Wunused-variable  -Wvariadic-macros -Wvolatile-register-var  -Wwrite-strings "/>
       </C32>
       <C32-AS>
-        <property key="omit-debug-dirs" value="false"/>
-        <property key="extra-include-directories-for-assembler" value=""/>
-        <property key="preprocessor-macros" value=""/>
-        <property key="exclude-floating-point-library" value="false"/>
-        <property key="list-file" value=""/>
-        <property key="list-source" value="false"/>
-        <property key="list-assembly" value="false"/>
-        <property key="extra-include-directories-for-preprocessor" value=""/>
-        <property key="warning-level" value=""/>
-        <property key="list-section-info" value="false"/>
-        <property key="omit-forms" value="false"/>
-        <property key="list-symbols" value="false"/>
-        <property key="enable-symbols" value="true"/>
-        <property key="keep-locals" value="false"/>
-        <property key="false-conditionals" value="false"/>
-        <property key="expand-macros" value="false"/>
         <property key="assembler-symbols" value=""/>
+        <property key="enable-symbols" value="true"/>
+        <property key="exclude-floating-point-library" value="false"/>
+        <property key="expand-macros" value="false"/>
+        <property key="extra-include-directories-for-assembler" value=""/>
+        <property key="extra-include-directories-for-preprocessor" value=""/>
+        <property key="false-conditionals" value="false"/>
+        <property key="keep-locals" value="false"/>
+        <property key="list-assembly" value="false"/>
+        <property key="list-file" value=""/>
+        <property key="list-section-info" value="false"/>
+        <property key="list-source" value="false"/>
+        <property key="list-symbols" value="false"/>
+        <property key="omit-debug-dirs" value="false"/>
+        <property key="omit-forms" value="false"/>
+        <property key="preprocessor-macros" value=""/>
+        <property key="warning-level" value=""/>
       </C32-AS>
       <C32-LD>
       </C32-LD>
