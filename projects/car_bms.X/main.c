@@ -139,6 +139,7 @@ static const float         INTERVAL_TX_TRIP_PT_CURRENT  = 5;
 static const float         INTERVAL_TX_TRIP_PT_VOLTAGE  = 5;
 static const float         INTERVAL_TX_TRIP_PT_TEMP     = 5;
 static const float         INTERVAL_TX_MPPTREQUESTS     = 1;
+static const float         INTERVAL_SERIAL_TX           = 0;
 static const float         INTERVAL_SAVE_FLASH          = 100;
 
 /*********
@@ -1213,6 +1214,85 @@ loadFlash(void)
     }
 }
 
+static void
+doSerTx(void)
+{
+    static uint32_t last_serTx = 0;
+
+    uint32_t ui;
+    float sum;
+    float min;
+    float max;
+
+    CLEARWDT();
+
+    if (ticksToSecs(ReadCoreTimer() - last_serTx) < INTERVAL_SERIAL_TX)
+        return;
+
+    nu32_serp->op->printf(nu32_serp, "t uptime=         %f\r\n", uptime);
+
+    nu32_serp->op->printf(nu32_serp, "~~~~~LAST TRIP BEGIN~~~~~\r\n");
+    nu32_serp->op->printf(nu32_serp, "\tlastTrip_module=%d\r\n", lastTrip_module);
+    nu32_serp->op->printf(nu32_serp, "\tlastTrip_temp=  %f\r\n", lastTrip_temp);
+    nu32_serp->op->printf(nu32_serp, "~~~~~LAST TRIP END~~~~~\r\n");
+
+    nu32_serp->op->printf(nu32_serp, "t lastResetCause= %d\r\n", lastResetCause);
+    nu32_serp->op->printf(nu32_serp, "t battBypass=     %u\r\n", battBypass);
+    nu32_serp->op->printf(nu32_serp, "t currentBattery= %f\r\n", currentBattery);
+    nu32_serp->op->printf(nu32_serp, "t currentArray=   %f\r\n", currentArray);
+    nu32_serp->op->printf(nu32_serp, "t cc_battery=     %f\r\n", cc_battery);
+    nu32_serp->op->printf(nu32_serp, "t cc_array=       %f\r\n", cc_array);
+    nu32_serp->op->printf(nu32_serp,
+                                     "t cc_mppt1=       %f\r\n"
+                                     "t cc_mppt2=       %f\r\n"
+                                     "t cc_mppt3=       %f\r\n",
+                            cc_mppt1,
+                            cc_mppt2,
+                            cc_mppt3);
+    nu32_serp->op->printf(nu32_serp, "t wh_battery=     %f\r\n", wh_battery);
+    nu32_serp->op->printf(nu32_serp, "t wh_mppt1in=     %f\r\n", wh_mppt1in);
+    nu32_serp->op->printf(nu32_serp, "t wh_mppt1out=    %f\r\n", wh_mppt1out);
+    nu32_serp->op->printf(nu32_serp, "t wh_mppt2in=     %f\r\n", wh_mppt2in);
+    nu32_serp->op->printf(nu32_serp, "t wh_mppt2out=    %f\r\n", wh_mppt2out);
+    nu32_serp->op->printf(nu32_serp, "t wh_mppt3in=     %f\r\n", wh_mppt3in);
+    nu32_serp->op->printf(nu32_serp, "t wh_mppt3out=    %f\r\n", wh_mppt3out);
+
+    nu32_serp->op->printf(nu32_serp, "~~~~~VOLTAGES BEGIN~~~~~\r\n");
+    for (sum = 0, ui = 0; ui < ARRAY_SIZE(voltages); ++ui) {
+        CLEARWDT();
+        nu32_serp->op->printf(nu32_serp, "\t%02u: %f\r\n", ui, voltages[ui]);
+        if (ui < MODULE_COUNT)
+            sum += voltages[ui];
+    }
+    nu32_serp->op->printf(nu32_serp, "\tVOLTAGE TOTAL(0-%u): %f\r\n", MODULE_COUNT-1, sum);
+    nu32_serp->op->printf(nu32_serp, "~~~~~VOLTAGES END~~~~~\r\n");
+
+    nu32_serp->op->printf(nu32_serp, "~~~~~OPEN WIRE VOLTAGES BEGIN~~~~~\r\n");
+    for (sum = 0, ui = 0; ui < ARRAY_SIZE(openWireVoltages); ++ui) {
+        CLEARWDT();
+        nu32_serp->op->printf(nu32_serp, "\t%02u: %f\r\n", ui, openWireVoltages[ui]);
+        if (ui < MODULE_COUNT)
+            sum += openWireVoltages[ui];
+    }
+    nu32_serp->op->printf(nu32_serp, "\tOPEN WIRE VOLTAGE TOTAL(0-%u): %f\r\n", MODULE_COUNT-1, sum);
+    nu32_serp->op->printf(nu32_serp, "~~~~~OPEN WIRE VOLTAGES END~~~~~\r\n");
+
+    nu32_serp->op->printf(nu32_serp, "~~~~~TEMPERATURES BEGIN~~~~~\r\n");
+    for (sum=0, min=UNINIT, max=-UNINIT, ui = 0; ui < ARRAY_SIZE(temperatures); ++ui) {
+        CLEARWDT();
+        nu32_serp->op->printf(nu32_serp, "\t%02u: %f\r\n", ui, temperatures[ui]);
+        min = MIN(min, temperatures[ui]);
+        max = MAX(max, temperatures[ui]);
+        sum += temperatures[ui];
+    }
+    nu32_serp->op->printf(nu32_serp, "\tTEMP MIN: %f\r\n", min);
+    nu32_serp->op->printf(nu32_serp, "\tTEMP AVG: %f\r\n", sum/ARRAY_SIZE(temperatures));
+    nu32_serp->op->printf(nu32_serp, "\tTEMP MAX: %f\r\n", max);
+    nu32_serp->op->printf(nu32_serp, "~~~~~TEMPERATURES END~~~~~\r\n");
+
+    last_serTx = ReadCoreTimer();
+}
+
 int32_t
 main(void)
 {
@@ -1289,6 +1369,7 @@ main(void)
         doSaveFlash();
         doCanTx();
         doCanRx();
+        doSerTx();
     }
 
     exit(EXIT_SUCCESS); /* should never get here */
