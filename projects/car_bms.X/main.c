@@ -877,9 +877,14 @@ doTemperatures(void)
             ticksToSecs(ReadCoreTimer() - last_tempConvert) > 760E-3) {
         uint32_t ui;
         /* Get temperature readings */
-        for (ui = 0; ui < ARRAY_SIZE(DS18B20_ROMCODES); ui++) {
-            ClearWDT();
-            temperatures[ui] = dsp->op->readTemp(dsp, DS18B20_ROMCODES[ui]);
+        for (ui = 0; ui < ARRAY_SIZE(DS18B20_ROMCODES); ++ui) {
+            IF_ERR(temperatures[ui] = dsp->op->readTemp(dsp, DS18B20_ROMCODES[ui]),
+                    REP_EMERGENCY, "FAILED READTEMP %d", ui) {
+                if (likely(temperatures[ui] == -ECRC))
+                    trip_mod(TRIP_OW_BUS_FAILURE, ui);
+                else
+                    trip_mod(TRIP_OTHER, ui);
+            }
             /* check for over/under temp */
             if (temperatures[ui] > OVER_TEMP_C) {
                 REPORT_ERR(REP_EMERGENCY, -ETRIP, "SENSOR %d OVER TEMP", ui);
@@ -887,6 +892,8 @@ doTemperatures(void)
             } else if (temperatures[ui] < UNDER_TEMP_C) {
                 REPORT_ERR(REP_EMERGENCY, -ETRIP, "SENSOR %d UNDER TEMP", ui);
                 trip_mod(TRIP_UNDER_TEMP, ui);
+            } else {
+                break;
             }
         }
         tConvertStatus = TEMP_NONE;
