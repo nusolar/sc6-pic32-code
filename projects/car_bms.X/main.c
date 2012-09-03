@@ -402,7 +402,7 @@ nu_trip(const char *file, uint32_t line, enum tripCode code, uint32_t module)
         .tripCode   = code,
     };
 
-    ClearWDT();
+    CLEARWDT();
     /* disable use of CLEARWDT() function, such as in saveFlashNow(),
      * as to prevent hanging on trip
      */
@@ -452,7 +452,7 @@ nu_trip(const char *file, uint32_t line, enum tripCode code, uint32_t module)
 static void
 loadLastResetCause(void)
 {
-    ClearWDT();
+    CLEARWDT();
 
     if (isPOR()) {              /*
                                  * note that a power-on reset sets BOTH the
@@ -512,7 +512,7 @@ loadLastResetCause(void)
 static ALWAYSINLINE void
 init_relays(void)
 {
-    ClearWDT();
+    CLEARWDT();
 
     PORTSetPinsDigitalOut(MAIN_RELAY_PIN_LTR, MAIN_RELAY_PIN_NUM);
     PORTSetPinsDigitalOut(ARRAY_RELAY_PIN_LTR, ARRAY_RELAY_PIN_NUM);
@@ -526,7 +526,7 @@ init_leds(void)
 {
     int32_t err;
 
-    ClearWDT();
+    CLEARWDT();
 
     REPORT_ON_ERR(err = nu32_init_leds(), REP_WARNING, "nu32_init_leds");
     if (nu32_led0p)
@@ -542,7 +542,7 @@ init_serial(void)
 {
     int32_t err;
 
-    ClearWDT();
+    CLEARWDT();
 
     IF_NOERR(err = nu32_init_serial(SERIAL_BAUD), REP_WARNING,
             "nu32_init_serial error")
@@ -556,7 +556,7 @@ init_serial(void)
 static ALWAYSINLINE int32_t
 init_nokias(void)
 {
-    ClearWDT();
+    CLEARWDT();
 
     IF_NOERR(nokia5110_new(dp1, NOKIA_SPI_CHANNEL,
                                 NOKIA1_CS_PIN_LTR, NOKIA1_CS_PIN_NUM,
@@ -577,7 +577,7 @@ init_nokias(void)
 static ALWAYSINLINE int32_t
 init_cans(void)
 {
-    ClearWDT();
+    CLEARWDT();
 
     IF_NOERR(can_new_easy(commonCanp, COMMON_CAN_MOD, 0, INT_PRIORITY_DISABLED),
             REP_WARNING, "can_new_easy") {
@@ -618,7 +618,7 @@ init_ltcs(void)
 {
     union BpsConfig cfg[LTC6803_COUNT];
 
-    ClearWDT();
+    CLEARWDT();
 
     memset(cfg, 0, sizeof(cfg));
 
@@ -645,7 +645,7 @@ init_adcs(void)
 {
     int32_t errno;
 
-    ClearWDT();
+    CLEARWDT();
 
     IF_ERR(errno = ad7685_new(adcp, ADC_SPI_CHN, ADC_CS_PIN_LTR,
                       ADC_CS_PIN_NUM, 2, CHAIN_MODE, NO_BUSY_INDICATOR),
@@ -661,7 +661,7 @@ init_ds18b20s(void)
     int32_t tmp;
     uint32_t ui;
 
-    ClearWDT();
+    CLEARWDT();
 
     IF_ERR(ds18x20_new(dsp, DS18B20_PIN_LTR, DS18B20_PIN_NUM,
                     PARASITIC_POWER_DISABLE),
@@ -675,7 +675,7 @@ init_ds18b20s(void)
 
     /* DS18b20 Presence Test */
     for (ui = 0; ui < ARRAY_SIZE(DS18B20_ROMCODES); ui++) {
-        ClearWDT();
+        CLEARWDT();
         IF_ERR(tmp = dsp->op->verify(dsp, DS18B20_ROMCODES[ui]),
                 REP_EMERGENCY, "DS18X20 verify failed on romcode %d", ui) {
             trip_mod(TRIP_DS18X20_MISSING, ui);
@@ -701,7 +701,7 @@ init_ds18b20s(void)
 static ALWAYSINLINE int32_t
 init_battery_bypass_in(void)
 {
-    ClearWDT();
+    CLEARWDT();
 
     PORTSetPinsDigitalIn(BATT_BYPASS_PIN_LTR, BATT_BYPASS_PIN_NUM);
 
@@ -711,7 +711,7 @@ init_battery_bypass_in(void)
 static ALWAYSINLINE int32_t
 init_devices(void)
 {
-    ClearWDT();
+    CLEARWDT();
 
     init_relays();
 
@@ -748,7 +748,7 @@ doVoltages(void)
     static uint32_t last_openWireConversion = 0;
     static uint32_t last_voltageConversion = 0;
 
-    ClearWDT();
+    CLEARWDT();
     
     /* Start voltage conversion if none in progress */
     if (vConvertStatus == VCONVERT_NONE) {
@@ -774,7 +774,7 @@ doVoltages(void)
                 "LTC READVOLTS FAILED")
            trip_nomod(TRIP_OTHER);
         for (ui = 0; ui < MODULE_COUNT; ui++) {
-            ClearWDT();
+            CLEARWDT();
             if (openWireVoltages[ui] < 0.5) {
                 if (ui+1 != battBypass) {
                     REPORT_ERR(REP_EMERGENCY, -ETRIP, "MODULE %d DISCONNECTED", ui);
@@ -794,7 +794,7 @@ doVoltages(void)
            trip_nomod(TRIP_OTHER);
         /* Check for over/under-voltage */
         for (ui = 0; ui < MODULE_COUNT; ui++) {
-            ClearWDT();
+            CLEARWDT();
             sum += voltages[ui];
             if (voltages[ui] > OVER_VOLTAGE) {
                 REPORT_ERR(REP_EMERGENCY, -ETRIP, "MODULE %d OVER VOLTAGE", ui);
@@ -1216,6 +1216,14 @@ loadFlash(void)
 int32_t
 main(void)
 {
+    /* timeout setting is in main.h */
+    EnableWDT();
+
+    /* allow clearing of wdt with CLEARWDT() */
+    enableClearWdt();
+
+    CLEARWDT();
+
     PORTSetPinsDigitalOut(MAIN_RELAY_PIN_LTR, MAIN_RELAY_PIN_NUM);
     PORTSetPinsDigitalOut(ARRAY_RELAY_PIN_LTR, ARRAY_RELAY_PIN_NUM);
 
@@ -1224,12 +1232,6 @@ main(void)
 
     delay(.1);
 
-    /* timeout setting is in main.h */
-    EnableWDT();
-
-    /* allow clearing of wdt with CLEARWDT() */
-    enableClearWdt();
-
     /* setup clock, interrupts, NU32 LED pinouts, and switch input */
     nu32_init(SYS_CLK_HZ);
 
@@ -1237,7 +1239,7 @@ main(void)
 
     loadLastResetCause();
 
-    ClearWDT();
+    CLEARWDT();
 
     loadFlash();
 
