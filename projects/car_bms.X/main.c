@@ -41,7 +41,7 @@ enum tripCode {
 #undef X
 
 #define X(x)    #x,
-static const char *tripcodeStr[] = {
+static const char * const tripcodeStr[] = {
     TRIPCODES
 };
 #undef X
