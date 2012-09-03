@@ -668,6 +668,11 @@ init_ds18b20s(void)
                 REP_CRITICAL, "ds18x20_new")
                 trip_nomod(TRIP_OTHER);
 
+    if ((tmp = dsp->op->findDevices(dsp, NULL, 0)) != MODULE_COUNT) {
+        REPORT(REP_EMERGENCY, "DS18X20: found %d, expected %d", tmp, MODULE_COUNT);
+        trip_nomod(TRIP_DS18X20_MISSING);
+    }
+
     /* DS18b20 Presence Test */
     for (ui = 0; ui < ARRAY_SIZE(DS18B20_ROMCODES); ui++) {
         ClearWDT();
