@@ -1,5 +1,15 @@
 *.pdf
 
+*.doc
+*.docx
+*.ppt
+*.pptx
+*.xls
+*.xlsx
+
+*.hex
+*.elf
+
 # linux
 .*
 !.gitignore
