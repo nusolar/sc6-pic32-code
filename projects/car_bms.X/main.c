@@ -111,7 +111,8 @@ static const float         OVER_CURRENT_ARRAY_A             = 10;
 static const float         OVER_CURRENT_BATT_DISCHARGE_A    = 72.8;
 /* Charging: positive current */
 static const float         OVER_CURRENT_BATT_CHARGE_A       = -36.4;
-static const float         OVER_TEMP_C                      = 41;
+/* actually 45, but the reduction is to pass scrutineering */
+static const float         OVER_TEMP_C                      = 35;
 static const float         UNDER_TEMP_C                     = 0;
 
 /********
