@@ -45,9 +45,10 @@
         <developmentServer>localhost</developmentServer>
         <targetDevice>PIC32MX795F512L</targetDevice>
         <targetHeader></targetHeader>
-        <platformTool>PICkit3PlatformTool</platformTool>
-        <languageToolchain>C32</languageToolchain>
-        <languageToolchainVersion></languageToolchainVersion>
+        <targetPluginBoard></targetPluginBoard>
+        <platformTool>Simulator</platformTool>
+        <languageToolchain>XC32</languageToolchain>
+        <languageToolchainVersion>1.11</languageToolchainVersion>
         <platform>3</platform>
       </toolsSet>
       <compileType>
@@ -79,6 +80,7 @@
         <property key="extra-include-directories" value="../../libs/include"/>
         <property key="generate-16-bit-code" value="false"/>
         <property key="isolate-each-function" value="false"/>
+        <property key="keep-inline" value="false"/>
         <property key="make-warnings-into-errors" value="false"/>
         <property key="optimization-level" value=""/>
         <property key="place-data-into-section" value="false"/>
@@ -87,6 +89,7 @@
         <property key="preprocessor-macros" value=""/>
         <property key="strict-ansi" value="false"/>
         <property key="support-ansi" value="false"/>
+        <property key="use-cci" value="false"/>
         <property key="use-indirect-calls" value="false"/>
         <appendMe value="-fno-common -Wall -Wextra -Wno-missing-braces -Wno-missing-field-initializers -Waggregate-return -Wbad-function-cast -Wcast-align -Wcast-qual  -Wchar-subscripts -Wcomment -Wconversion -Wdeclaration-after-statement -Wdisabled-optimization -Wfloat-equal -Wformat=2 -Wimport -Winit-self -Winline -Winvalid-pch -Wjump-misses-init -Wunsafe-loop-optimizations -Wlogical-op -Wlong-long -Wmissing-declarations -Wmissing-format-attribute -Wmissing-include-dirs -Wmissing-noreturn -Wmissing-prototypes -Wnested-externs -Wold-style-definition -Wpointer-arith -Wshadow -Wstack-protector -Wstrict-prototypes -Wswitch-default -Wswitch-enum -Wsync-nand  -Wundef -Wuninitialized -Wunreachable-code -Wvariadic-macros -Wvolatile-register-var  -Wwrite-strings "/>
       </C32>
@@ -100,10 +103,9 @@
         <property key="false-conditionals" value="false"/>
         <property key="keep-locals" value="false"/>
         <property key="list-assembly" value="false"/>
-        <property key="list-file" value=""/>
-        <property key="list-section-info" value="false"/>
         <property key="list-source" value="false"/>
         <property key="list-symbols" value="false"/>
+        <property key="oXC32asm-list-to-file" value="false"/>
         <property key="omit-debug-dirs" value="false"/>
         <property key="omit-forms" value="false"/>
         <property key="preprocessor-macros" value=""/>
@@ -130,11 +132,36 @@
         <property key="trace-symbols" value=""/>
         <property key="warn-section-align" value="false"/>
       </C32-LD>
+      <C32CPP>
+        <property key="additional-warnings" value="false"/>
+        <property key="check-new" value="false"/>
+        <property key="eh-specs" value="true"/>
+        <property key="enable-app-io" value="false"/>
+        <property key="enable-omit-frame-pointer" value="false"/>
+        <property key="enable-symbols" value="true"/>
+        <property key="enable-unroll-loops" value="false"/>
+        <property key="exceptions" value="true"/>
+        <property key="exclude-floating-point" value="false"/>
+        <property key="extra-include-directories" value=""/>
+        <property key="generate-16-bit-code" value="false"/>
+        <property key="isolate-each-function" value="false"/>
+        <property key="keep-inline" value="false"/>
+        <property key="make-warnings-into-errors" value="false"/>
+        <property key="optimization-level" value=""/>
+        <property key="place-data-into-section" value="false"/>
+        <property key="post-instruction-scheduling" value="default"/>
+        <property key="pre-instruction-scheduling" value="default"/>
+        <property key="preprocessor-macros" value=""/>
+        <property key="rtti" value="true"/>
+        <property key="strict-ansi" value="false"/>
+        <property key="use-cci" value="false"/>
+        <property key="use-indirect-calls" value="false"/>
+      </C32CPP>
       <C32Global>
         <property key="legacy-libc" value="false"/>
       </C32Global>
-      <PICkit3PlatformTool>
-      </PICkit3PlatformTool>
+      <Simulator>
+      </Simulator>
     </conf>
   </confs>
 </configurationDescriptor>
