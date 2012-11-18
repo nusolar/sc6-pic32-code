@@ -1,5 +1,5 @@
-#ifndef __NU_COMMON_PRAGMAS_H
-#define __NU_COMMON_PRAGMAS_H
+#ifndef NU_COMMON_PRAGMAS_H
+#define NU_COMMON_PRAGMAS_H
 
 /* config pragmas needed mostly for PICKit3 */
 /* ICE/ICD Comm Channel Select: ICE EMUC2/EMUD2 pins shared with PGC2/PGD2 */
