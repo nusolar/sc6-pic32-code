@@ -1,24 +1,25 @@
-!*
-
-*~
+*.pdf
 
 # linux
 .*
 !.gitignore
+*~
 .directory
 
 # OS X
 .DS_Store
+.AppleDouble
+.LSOverride
 .DS_Store?
 ._*
 .Spotlight-V100
 .Trashes
 Icon?
-ethumbs.db
 
 # windows
 thumbs.db
 Thumbs.db
+ehthumbs.db
 Desktop.ini
 $RECYCLE.BIN/
 
@@ -26,6 +27,7 @@ $RECYCLE.BIN/
 .*.sw[a-z]
 *.un~
 Session.vim
+.netrwhist
 
 # emacs
 \#*\#
@@ -50,20 +52,42 @@ projects/*/nbproject/private/*
 !Makefile
 !project.xml
 
-## GENERATED C FILES ##
-
-# object files
+# C
+## object files
 *.o
 *.o.obj
 *.obj
-
-# libraries
+## libraries
 *.lib
-
-# shared objects
+*.a
+## shared objects
 *.dll
 *.so
-
-# executables
+*.so.*
+*.dylib
+## executables
 *.exe
 *.out
+*.app
+
+# archives
+*.7z
+*.jar
+*.rar
+*.zip
+*.gz
+*.bzip
+*.bz2
+*.xz
+*.lzma
+## packing-only formats
+*.iso
+*.tar
+## package management formats
+*.dmg
+*.xpi
+*.gem
+*.egg
+*.deb
+*.rpm
+
