@@ -168,7 +168,7 @@ tx (const struct serial *self, const void *data, size_t len)
         return -ENULPTR;
     
     for (ui = 0; ui < len; ++ui) {
-        CLEARWDT();
+        clear_wdt();
         while (!UARTTransmitterIsReady(self->serialModule))
             ;   /* do nothing */
         UARTSendDataByte(self->serialModule, ((const BYTE *)data)[ui]);

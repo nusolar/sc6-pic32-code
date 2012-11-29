@@ -23,7 +23,7 @@ eraseFlash(void)
     while (maxAttempts--) {
         size_t ui;
         for (ui = 0, err = 0; ui < CONST_FLASH_SIZE_BYTES/BYTE_PAGE_SIZE; ++ui) {
-            CLEARWDT();
+            clear_wdt();
             NVMErasePage((void *)(_flash+ui*BYTE_PAGE_SIZE));
             if (*((volatile uint32_t *)(_flash + ui*BYTE_PAGE_SIZE)) != 0xFFFFFFFF) {
                 err = -EOTHER;
@@ -61,10 +61,10 @@ writeFlash(const void *src, size_t siz)
         return err;
 
     while (maxAttempts--) {
-        CLEARWDT();
+        clear_wdt();
         for (ui = 0, err = 0; ui*sizeof(int) < siz &&
                 ui < CONST_FLASH_SIZE_BYTES/sizeof(int); ++ui) {
-            CLEARWDT();
+            clear_wdt();
             NVMWriteWord(_flash+ui*sizeof(int), srcWords[ui]);
             if (*((volatile uint32_t *)(_flash+ui*sizeof(int))) != srcWords[ui]) {
                 err = -EOTHER;

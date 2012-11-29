@@ -1,24 +1,24 @@
 #include "../include/wdt.h"
 
 static void
-enabledClearWdt(void)
+enabled_clear_wdt(void)
 {
     ClearWDT();
 }
 
 static void
-disabledClearWdt(void){}
+disabled_clear_wdt(void){}
 
-void (*CLEARWDT) (void) = enabledClearWdt;
+void (*clear_wdt) (void) = enabled_clear_wdt;
 
 void
 enableClearWdt(void)
 {
-    CLEARWDT = enabledClearWdt;
+    clear_wdt = enabled_clear_wdt;
 }
 
 void
 disableClearWdt(void)
 {
-    CLEARWDT = disabledClearWdt;
+    clear_wdt = disabled_clear_wdt;
 }

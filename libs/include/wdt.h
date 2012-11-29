@@ -3,7 +3,7 @@
 
 #include <plib.h>
 
-extern void (*CLEARWDT) (void);
+extern void (*clear_wdt) (void);
 
 void
 enableClearWdt(void);
