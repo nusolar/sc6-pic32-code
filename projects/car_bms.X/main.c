@@ -20,31 +20,31 @@
 /** Trip codes that will be reported right before the car trips, and [hopefully]
  *  right after the car comes back up.
  */
-#define TRIPCODES               \
-    X(TRIP_NONE)                \
-    X(TRIP_OTHER)               \
-    X(TRIP_OW_BUS_FAILURE)      \
-    X(TRIP_DS18X20_MISSING)     \
-    X(TRIP_LTC_POST_FAILED)     \
-    X(TRIP_ADC_FAILURE)         \
-    X(TRIP_OVER_VOLTAGE)        \
-    X(TRIP_UNDER_VOLTAGE)       \
-    X(TRIP_OVER_CURRENT_DISCHRG)\
-    X(TRIP_OVER_CURRENT_CHRG)   \
-    X(TRIP_OVER_TEMP)           \
-    X(TRIP_UNDER_TEMP)
+#define TRIPCODES                       \
+    TRIPCODE(TRIP_NONE)                 \
+    TRIPCODE(TRIP_OTHER)                \
+    TRIPCODE(TRIP_OW_BUS_FAILURE)       \
+    TRIPCODE(TRIP_DS18X20_MISSING)      \
+    TRIPCODE(TRIP_LTC_POST_FAILED)      \
+    TRIPCODE(TRIP_ADC_FAILURE)          \
+    TRIPCODE(TRIP_OVER_VOLTAGE)         \
+    TRIPCODE(TRIP_UNDER_VOLTAGE)        \
+    TRIPCODE(TRIP_OVER_CURRENT_DISCHRG) \
+    TRIPCODE(TRIP_OVER_CURRENT_CHRG)    \
+    TRIPCODE(TRIP_OVER_TEMP)            \
+    TRIPCODE(TRIP_UNDER_TEMP)
 
-#define X(x)    x,
+#define TRIPCODE(x) x,
 enum tripCode {
     TRIPCODES
 };
-#undef X
+#undef TRIPCODE
 
-#define X(x)    #x,
+#define TRIPCODE(x) #x,
 static const char * const tripcodeStr[] = {
     TRIPCODES
 };
-#undef X
+#undef TRIPCODE
 
 struct flashData {
     int32_t         lastTrip_module;
@@ -69,27 +69,27 @@ struct flashData {
 /** Cause of the last PIC reset to be reported right after the car comes
  *  back up.
  */
-#define RESET_CAUSES        \
-    X(OTHER)                \
-    X(POWER_ON_RESET)       \
-    X(BROWNOUT_RESET)       \
-    X(LOW_VOLTAGE_RESET)    \
-    X(MASTER_CLEAR_RESET)   \
-    X(WDT_RESET)            \
-    X(SOFTWARE_RESET)       \
-    X(CONFIG_MISMATCH_RESET)
+#define RESET_CAUSES                    \
+    RESET_CAUSE(OTHER)                  \
+    RESET_CAUSE(POWER_ON_RESET)         \
+    RESET_CAUSE(BROWNOUT_RESET)         \
+    RESET_CAUSE(LOW_VOLTAGE_RESET)      \
+    RESET_CAUSE(MASTER_CLEAR_RESET)     \
+    RESET_CAUSE(WDT_RESET)              \
+    RESET_CAUSE(SOFTWARE_RESET)         \
+    RESET_CAUSE(CONFIG_MISMATCH_RESET)
 
-#define X(x)    x,
+#define RESET_CAUSE(x)  x,
 enum lastReset {
     RESET_CAUSES
 };
-#undef X
+#undef RESET_CAUSE
 
-#define X(x)    #x,
+#define RESET_CAUSE(x)  #x,
 static const char *lastResetStr[] = {
     RESET_CAUSES
 };
-#undef X
+#undef RESET_CAUSE
 
 
 /**************************
