@@ -149,71 +149,41 @@ static const float         INTERVAL_SAVE_FLASH          = 100;
 
 /* NOKIA */
 static const SpiChannel    NOKIA_SPI_CHANNEL       = SPI_CHANNEL2;
-CLAIM_PIN(G6);
-CLAIM_PIN(G7);
-CLAIM_PIN(G8);
 static const IoPortId      NOKIA_DC_PIN_LTR        = IOPORT_E;
 static const uint32_t      NOKIA_DC_PIN_NUM        = BIT_9;
-CLAIM_PIN(E9);
 /* nokia1 */
 static const IoPortId      NOKIA1_CS_PIN_LTR       = IOPORT_G;
 static const uint32_t      NOKIA1_CS_PIN_NUM       = BIT_9;
-CLAIM_PIN(G9);
 static const IoPortId      NOKIA1_RESET_PIN_LTR    = IOPORT_A;
 static const uint32_t      NOKIA1_RESET_PIN_NUM    = BIT_9;
-CLAIM_PIN(A9);
 /* nokia2 */
 static const IoPortId      NOKIA2_CS_PIN_LTR       = IOPORT_E;
 static const uint32_t      NOKIA2_CS_PIN_NUM       = BIT_8;
-CLAIM_PIN(E8);
 static const IoPortId      NOKIA2_RESET_PIN_LTR    = IOPORT_A;
 static const uint32_t      NOKIA2_RESET_PIN_NUM    = BIT_10;
-CLAIM_PIN(A10);
 
 static const SpiChannel    LTC6803_SPI_CHN         = SPI_CHANNEL1;
-CLAIM_PIN(C4);
-CLAIM_PIN(D0);
-CLAIM_PIN(D10);
 static const IoPortId      LTC6803_CS_PIN_LTR      = IOPORT_D;
 static const uint32_t      LTC6803_CS_PIN_NUM      = BIT_9;
-CLAIM_PIN(D9);
 
 static const CAN_MODULE    COMMON_CAN_MOD          = CAN1;
-CLAIM_PIN(F0);
-CLAIM_PIN(F1);
-
 static const CAN_MODULE    MPPT_CAN_MOD            = CAN2;
-CLAIM_PIN(G0);
-CLAIM_PIN(G1);
 
 static const SpiChannel    ADC_SPI_CHN             = SPI_CHANNEL4;
-CLAIM_PIN(F4);
-CLAIM_PIN(F5);
-CLAIM_PIN(F13);
 static const IoPortId      ADC_CS_PIN_LTR          = IOPORT_F;
 static const uint32_t      ADC_CS_PIN_NUM          = BIT_12;
-CLAIM_PIN(F12);
 
 static const IoPortId      DS18B20_PIN_LTR         = IOPORT_A;
 static const uint32_t      DS18B20_PIN_NUM         = BIT_0;
-CLAIM_PIN(D1);
 
 static const IoPortId      MAIN_RELAY_PIN_LTR      = IOPORT_D;
 static const uint32_t      MAIN_RELAY_PIN_NUM      = BIT_2;
-CLAIM_PIN(D2);
 
 static const IoPortId      ARRAY_RELAY_PIN_LTR     = IOPORT_D;
 static const uint32_t      ARRAY_RELAY_PIN_NUM     = BIT_3;
-CLAIM_PIN(D3);
 
 static const IoPortId      BATT_BYPASS_PIN_LTR  = IOPORT_B;
 static const uint32_t      BATT_BYPASS_PIN_NUM  = BIT_0|BIT_1|BIT_2|BIT_3|BIT_4|BIT_5;
-CLAIM_PIN(B0);
-CLAIM_PIN(B1);
-CLAIM_PIN(B2);
-CLAIM_PIN(B3);
-CLAIM_PIN(B4);
-CLAIM_PIN(B5);
 
 /*******
  * peripheral config
