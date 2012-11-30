@@ -12,6 +12,7 @@
 #include "ltc6803.h"
 #include "nokia5110.h"
 #include "nu32.h"
+#include "pinctl.h"
 #include "utility.h"
 #include "wdt.h"
 
@@ -147,43 +148,31 @@ static const float         interval_save_flash          = 100;
  * pins
  */
 
-/* NOKIA */
+#define BMS_PINS                    \
+    BMS_PIN(nokia_dc,       E, 9)   \
+    BMS_PIN(nokia1_cs,      G, 9)   \
+    BMS_PIN(nokia1_reset,   A, 9)   \
+    BMS_PIN(nokia2_cs,      E, 8)   \
+    BMS_PIN(nokia2_reset,   A, 10)  \
+    BMS_PIN(ltc6803_cs,     D, 9)   \
+    BMS_PIN(adc_cs,         F, 12)  \
+    BMS_PIN(ds18b20,        A, 0)   \
+    BMS_PIN(main_relay,     D, 2)   \
+    BMS_PIN(array_relay,    D, 3)
+static const PIN(batt_bypass_pin, IOPORT_B, BIT_0|BIT_1|BIT_2|BIT_3|BIT_4|BIT_5);
+#define BMS_PIN(name,ltr,num)   \
+static const PINX(name##_pin,ltr,num);
+BMS_PINS
+#undef BMS_PIN
+
+/* SPI */
 static const SpiChannel    nokia_spi_channel       = SPI_CHANNEL2;
-static const IoPortId      nokia_dc_pin_ltr        = IOPORT_E;
-static const uint32_t      nokia_dc_pin_num        = BIT_9;
-/* nokia1 */
-static const IoPortId      nokia1_cs_pin_ltr       = IOPORT_G;
-static const uint32_t      nokia1_cs_pin_num       = BIT_9;
-static const IoPortId      nokia1_reset_pin_ltr    = IOPORT_A;
-static const uint32_t      nokia1_reset_pin_num    = BIT_9;
-/* nokia2 */
-static const IoPortId      nokia2_cs_pin_ltr       = IOPORT_E;
-static const uint32_t      nokia2_cs_pin_num       = BIT_8;
-static const IoPortId      nokia2_reset_pin_ltr    = IOPORT_A;
-static const uint32_t      nokia2_reset_pin_num    = BIT_10;
-
 static const SpiChannel    ltc6803_spi_chn         = SPI_CHANNEL1;
-static const IoPortId      ltc6803_cs_pin_ltr      = IOPORT_D;
-static const uint32_t      ltc6803_cs_pin_num      = BIT_9;
+static const SpiChannel    adc_spi_chn             = SPI_CHANNEL4;
 
+/* CAN */
 static const CAN_MODULE    common_can_mod          = CAN1;
 static const CAN_MODULE    mppt_can_mod            = CAN2;
-
-static const SpiChannel    adc_spi_chn             = SPI_CHANNEL4;
-static const IoPortId      adc_cs_pin_ltr          = IOPORT_F;
-static const uint32_t      adc_cs_pin_num          = BIT_12;
-
-static const IoPortId      ds18b20_pin_ltr         = IOPORT_A;
-static const uint32_t      ds18b20_pin_num         = BIT_0;
-
-static const IoPortId      main_relay_pin_ltr      = IOPORT_D;
-static const uint32_t      main_relay_pin_num      = BIT_2;
-
-static const IoPortId      array_relay_pin_ltr     = IOPORT_D;
-static const uint32_t      array_relay_pin_num     = BIT_3;
-
-static const IoPortId      batt_bypass_pin_ltr  = IOPORT_B;
-static const uint32_t      batt_bypass_pin_num  = BIT_0|BIT_1|BIT_2|BIT_3|BIT_4|BIT_5;
 
 /*******
  * peripheral config
@@ -397,7 +386,7 @@ nu_trip(const char *file, uint32_t line, enum tripCode code, uint32_t module)
     return;
 #else
 
-    PORTClearBits(main_relay_pin_ltr, main_relay_pin_num);
+    PIN_CLEAR(main_relay_pin);
 
     DisableWDT();
 
@@ -486,11 +475,10 @@ init_relays(void)
 {
     clear_wdt();
 
-    PORTSetPinsDigitalOut(main_relay_pin_ltr, main_relay_pin_num);
-    PORTSetPinsDigitalOut(array_relay_pin_ltr, array_relay_pin_num);
-
-    PORTSetBits(main_relay_pin_ltr, main_relay_pin_num);
-    PORTSetBits(array_relay_pin_ltr, array_relay_pin_num);
+    PIN_SET_DIGITAL_OUT(main_relay_pin);
+    PIN_SET_DIGITAL_OUT(array_relay_pin);
+    PIN_SET(main_relay_pin);
+    PIN_SET(array_relay_pin);
 }
 
 static ALWAYSINLINE int32_t
@@ -531,16 +519,16 @@ init_nokias(void)
     clear_wdt();
 
     IF_NOERR(nokia5110_new(dp1, nokia_spi_channel,
-                                nokia1_cs_pin_ltr, nokia1_cs_pin_num,
-                                nokia1_reset_pin_ltr, nokia1_reset_pin_num,
-                                nokia_dc_pin_ltr, nokia_dc_pin_num),
+                                nokia1_cs_pin.ltr, nokia1_cs_pin.num,
+                                nokia1_reset_pin.ltr, nokia1_reset_pin.num,
+                                nokia_dc_pin.ltr, nokia_dc_pin.num),
                 REP_WARNING, "nokia5110_new")
         register_reporting_dev(&(dp1->erd), REP_DEBUG);
 
     REPORT_ON_ERR(nokia5110_new(dp2, nokia_spi_channel,
-                                nokia2_cs_pin_ltr, nokia2_cs_pin_num,
-                                nokia2_reset_pin_ltr, nokia2_reset_pin_num,
-                                nokia_dc_pin_ltr, nokia_dc_pin_num),
+                                nokia2_cs_pin.ltr, nokia2_cs_pin.num,
+                                nokia2_reset_pin.ltr, nokia2_reset_pin.num,
+                                nokia_dc_pin.ltr, nokia_dc_pin.num),
                 REP_WARNING, "nokia5110_new");
 
     return 0;
@@ -601,8 +589,8 @@ init_ltcs(void)
     cfg[0].vuv = convertUVLimit(under_voltage);
     cfg[2] = cfg[1] = cfg[0];
 
-    IF_ERR(ltc6803_new(ltcp, ltc6803_spi_chn, ltc6803_cs_pin_ltr,
-                    ltc6803_cs_pin_num, LTC6803_COUNT, cfg),
+    IF_ERR(ltc6803_new(ltcp, ltc6803_spi_chn, ltc6803_cs_pin.ltr,
+                    ltc6803_cs_pin.num, LTC6803_COUNT, cfg),
                 REP_CRITICAL, "ltc6803_new")
         trip_nomod(TRIP_OTHER);
 
@@ -620,8 +608,8 @@ init_adcs(void)
 
     clear_wdt();
 
-    IF_ERR(errno = ad7685_new(adcp, adc_spi_chn, adc_cs_pin_ltr,
-                      adc_cs_pin_num, 2, CHAIN_MODE, NO_BUSY_INDICATOR),
+    IF_ERR(errno = ad7685_new(adcp, adc_spi_chn, adc_cs_pin.ltr,
+                      adc_cs_pin.num, 2, CHAIN_MODE, NO_BUSY_INDICATOR),
             REP_CRITICAL, "ad7685_new")
         return errno;
 
@@ -638,7 +626,7 @@ init_ds18b20s(void)
 
     clear_wdt();
 
-    IF_ERR(ds18x20_new(dsp, ds18b20_pin_ltr, ds18b20_pin_num,
+    IF_ERR(ds18x20_new(dsp, ds18b20_pin.ltr, ds18b20_pin.num,
                     PARASITIC_POWER_DISABLE),
                 REP_CRITICAL, "ds18x20_new")
         trip_nomod(TRIP_OTHER);
@@ -677,9 +665,7 @@ static ALWAYSINLINE int32_t
 init_battery_bypass_in(void)
 {
     clear_wdt();
-
-    PORTSetPinsDigitalIn(batt_bypass_pin_ltr, batt_bypass_pin_num);
-
+    PIN_SET_DIGITAL_IN(batt_bypass_pin);
     return 0;
 }
 
@@ -1337,11 +1323,11 @@ main(void)
 
     clear_wdt();
 
-    PORTSetPinsDigitalOut(main_relay_pin_ltr, main_relay_pin_num);
-    PORTSetPinsDigitalOut(array_relay_pin_ltr, array_relay_pin_num);
+    PIN_SET_DIGITAL_OUT(main_relay_pin);
+    PIN_SET_DIGITAL_OUT(array_relay_pin);
 
-    PORTClearBits(main_relay_pin_ltr, main_relay_pin_num);
-    PORTClearBits(array_relay_pin_ltr, array_relay_pin_num);
+    PIN_CLEAR(main_relay_pin);
+    PIN_CLEAR(array_relay_pin);
 
     delay(.1);
 
@@ -1388,7 +1374,7 @@ main(void)
         dp2->op->gotoXY(dp2, 0, 3);
         dp2->op->printf(dp2, "I:%0.9f", currentBattery);
 
-        battBypass = PORTReadBits(batt_bypass_pin_ltr, batt_bypass_pin_num);
+        battBypass = PIN_READ(batt_bypass_pin);
         if (battBypass != prevBattBypass) {
             dp2->op->clear(dp2);
             dp2->op->gotoXY(dp2, 0, 0);
