@@ -16,7 +16,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "../include/SafeString.h"
+#include "../include/safestring.h"
 
 /*
  * Copy src to string dst of size siz.  At most siz-1 characters

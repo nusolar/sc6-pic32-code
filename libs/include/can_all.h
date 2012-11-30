@@ -2,7 +2,7 @@
 #define NU_CAN_ALL_H
 
 #ifdef __PIC32MX
-#include <GenericTypedefs.h>
+#include <plib.h>
 #else
 typedef unsigned char BYTE;
 #endif
