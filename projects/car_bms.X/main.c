@@ -1,4 +1,3 @@
-#include <plib.h>
 #include <stdint.h>
 
 #include "compiler.h"
@@ -21,31 +20,31 @@
 /** Trip codes that will be reported right before the car trips, and [hopefully]
  *  right after the car comes back up.
  */
-#define TRIPCODES                       \
-    TRIPCODE(TRIP_NONE)                 \
-    TRIPCODE(TRIP_OTHER)                \
-    TRIPCODE(TRIP_OW_BUS_FAILURE)       \
-    TRIPCODE(TRIP_DS18X20_MISSING)      \
-    TRIPCODE(TRIP_LTC_POST_FAILED)      \
-    TRIPCODE(TRIP_ADC_FAILURE)          \
-    TRIPCODE(TRIP_OVER_VOLTAGE)         \
-    TRIPCODE(TRIP_UNDER_VOLTAGE)        \
-    TRIPCODE(TRIP_OVER_CURRENT_DISCHRG) \
-    TRIPCODE(TRIP_OVER_CURRENT_CHRG)    \
-    TRIPCODE(TRIP_OVER_TEMP)            \
-    TRIPCODE(TRIP_UNDER_TEMP)
+#define TRIPCODES                   \
+    TRIPCODE(NONE)                  \
+    TRIPCODE(OTHER)                 \
+    TRIPCODE(OW_BUS_FAILURE)        \
+    TRIPCODE(DS18X20_MISSING)       \
+    TRIPCODE(LTC_POST_FAILED)       \
+    TRIPCODE(ADC_FAILURE)           \
+    TRIPCODE(OVER_VOLTAGE)          \
+    TRIPCODE(UNDER_VOLTAGE)         \
+    TRIPCODE(OVER_CURRENT_DISCHRG)  \
+    TRIPCODE(OVER_CURRENT_CHRG)     \
+    TRIPCODE(OVER_TEMP)             \
+    TRIPCODE(UNDER_TEMP)
 
-#define TRIPCODE(x) x,
 enum tripCode {
+#define TRIPCODE(x) TRIP_##x,
     TRIPCODES
-};
 #undef TRIPCODE
+};
 
-#define TRIPCODE(x) #x,
 static const char * const tripcodeStr[] = {
+#define TRIPCODE(x) #x,
     TRIPCODES
-};
 #undef TRIPCODE
+};
 
 struct flashData {
     int32_t         lastTrip_module;
