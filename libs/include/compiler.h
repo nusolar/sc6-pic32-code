@@ -13,5 +13,6 @@
 #define NORETURN        __attribute__((noreturn))
 #define PURE            __attribute__((pure))
 #define UNUSED          __attribute__((unused))
+#define MAYBE_UNUSED    UNUSED
 
 #endif
