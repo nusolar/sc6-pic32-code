@@ -1,6 +1,10 @@
-#include "../include/onewire.h"
+#include "onewire.h"
+#include "crc.h"
+#include "errorcodes.h"
+#include "timer.h"
+#include "utility.h"
 
-static const uint32_t owCrcTab[] = {
+static const u32 owCrcTab[] = {
    0,94,188,226,97,63,221,131,194,156,126,32,163,253,31,65,
    157,195,33,127,252,162,64,30,95,1,227,189,62,96,130,220,
    35,125,159,193,66,28,254,160,225,191,93,3,128,222,60,98,
@@ -29,279 +33,172 @@ static const uint32_t owCrcTab[] = {
  * YES reverse data bytes
  * YES reverse CRC result before final XOR
  */
-inline uint32_t
-owCrc(const void *data, size_t len)
+u32
+w1_crc(const void *data, size_t n)
 {
     if (!data)
         return 0xFFFFFFFF;
 
-    return crcTableFast(owCrcTab, data, len, 8, CRC_DIRECT, 0x00, CRC_8_DALLAS,
+    return crcTableFast(owCrcTab, data, n, 8, CRC_DIRECT, 0x00, CRC_8_DALLAS,
             CRC_REVERSE_DATA_BYTES, CRC_REVERSE_BEFORE_FINAL_XOR, 0x00);
 }
 
-static int32_t
-reset(const struct oneWire *self);
-
-static int32_t
-tx(const struct oneWire *self, const void *data, size_t len);
-
-static int32_t
-txWithCrc(const struct oneWire *self, const void *data, size_t len);
-
-static int32_t
-rx(const struct oneWire *self, void *dst, size_t len);
-
-static int32_t
-rxCheckCrc(const struct oneWire *self, void *dst, size_t len);
-
-static int32_t
-driveLow(const struct oneWire *self);
-
-static int32_t
-driveHigh(const struct oneWire *self);
-
-static int32_t
-rxBit(const struct oneWire *self);
-
-static int32_t
-txBit(const struct oneWire *self, BIT b);
-
-static int32_t
-txByte(const struct oneWire *self, BYTE b);
-
-static int32_t
-first(struct oneWire *self, union romCode *dst, BYTE searchRomCmd);
-
-static int32_t
-findDevices(struct oneWire *self, union romCode *dst, size_t dstSizeBytes,
-            BYTE searchRomCmd);
-
-static int32_t
-resetSearchState(struct oneWire *self);
-
-static int32_t
-verify(struct oneWire *self, union romCode rc, BYTE searchRomCmd);
-
-static int32_t
-findFamily(struct oneWire *self, union romCode *dst, size_t dstSizeBytes,
-                    BYTE searchRomCmd, BYTE familyCode);
-
-static int32_t
-findSkipFamily(struct oneWire *self, union romCode *dst,
-                        size_t dstSizeBytes, BYTE searchRomCmd,
-                        BYTE familyCode);
-
-static int32_t
-powerBus(const struct oneWire *self);
-
-static const struct vtblOneWire oneWireOps = {
-    .powerBus           = &powerBus,
-    .reset              = &reset,
-    .tx                 = &tx,
-    .txWithCrc          = &txWithCrc,
-    .txBit              = &txBit,
-    .txByte             = &txByte,
-    .rx                 = &rx,
-    .rxCheckCrc         = &rxCheckCrc,
-    .rxBit              = &rxBit,
-    .findDevices        = &findDevices,
-    .findFamily         = &findFamily,
-    .findSkipFamily     = &findSkipFamily,
-    .verify             = &verify,
-};
-
-static int32_t
-oneWire_init(const struct oneWire *self)
+static ALWAYSINLINE NONNULL() void
+drive_low(const struct w1 *w)
 {
-    if (self == NULL)
+    PIN_CLEAR(w->pin);
+    /* manipulate TRIS to pull to ground */
+    PIN_SET_DIGITAL_OUT(w->pin);
+}
+
+static ALWAYSINLINE NONNULL() void
+drive_high(const struct w1 *w)
+{
+    PIN_CLEAR(w->pin);
+    /* manipulate TRIS to make it high impedance */
+    PIN_SET_DIGITAL_IN(w->pin);
+}
+
+static s32
+w1_init(const struct w1 *w)
+{
+    if (NULL == w)
         return -ENULPTR;
 
     /* Set LAT register, and then we'll manipulate TRIS register
      * via PORTSetPinsDigitalIn() and PORTSetPinsDigitalOut() to
      * control the bus, effectively toggling open-drain.
      */
-    driveLow(self);
+    drive_low(w);
 
     return 0;
 }
 
-static int32_t
-powerBus(const struct oneWire *self)
+static ALWAYSINLINE s32
+reset_search_state(struct w1 *w)
 {
-    if (self == NULL)
+    if (NULL == w)
         return -ENULPTR;
 
-    PORTSetBits(self->owPinLetter, self->owPinNum);
-    PORTSetPinsDigitalOut(self->owPinLetter, self->owPinNum);
-    PORTSetBits(self->owPinLetter, self->owPinNum); /* possibly not needed */
+    w->search_state.prev_search_was_last_dev    = false;
+    w->search_state.last_discrep_bit            = 0;
+    w->search_state.last_family_discrep_bit     = 0;
 
     return 0;
 }
 
-int32_t
-oneWire_new(struct oneWire *self, IoPortId pinLtr, uint32_t pinNum)
+s32
+w1_new(struct w1 *w, struct pin pin)
 {
-    int32_t err = 0;
+    s32 err = 0;
 
-    if (self == NULL)
+    if (NULL == w)
         return -ENULPTR;
 
-    self->op            = &oneWireOps;
-    self->owPinLetter   = pinLtr;
-    self->owPinNum      = pinNum;
-    if ((err = resetSearchState(self)) < 0)
+    w->pin = pin;
+
+    if ((err = reset_search_state(w)) < 0)
         return err;
-    memset(self->searchState.romCodeAndCrc.dataBytes, 0, sizeof(self->searchState.romCodeAndCrc.dataBytes));
+    memset(w->search_state.romcode_crc.bytes, 0,
+            sizeof(w->search_state.romcode_crc.bytes));
 
-    return oneWire_init(self);
+    return w1_init(w);
 }
 
-static int32_t
-driveLow(const struct oneWire *self)
+s32
+w1_power_bus(const struct w1 *w)
 {
-    if (self == NULL)
+    if (NULL == w)
         return -ENULPTR;
 
-    PORTClearBits(self->owPinLetter, self->owPinNum);
-    /* manipulate TRIS to pull to ground */
-    PORTSetPinsDigitalOut(self->owPinLetter, self->owPinNum);
+    PIN_SET(w->pin);
+    PIN_SET_DIGITAL_OUT(w->pin);
+    PIN_SET(w->pin); /* possibly not needed */
 
     return 0;
 }
 
-static int32_t
-driveHigh(const struct oneWire *self)
+static ALWAYSINLINE NONNULL() void
+tx_bit_nonnull(const struct w1 *w, bit b)
 {
-    if (self == NULL)
-        return -ENULPTR;
-
-    PORTClearBits(self->owPinLetter, self->owPinNum);
-    /* manipulate TRIS to make it high impedance */
-    PORTSetPinsDigitalIn(self->owPinLetter, self->owPinNum);
-
-    return 0;
-}
-
-static inline int32_t __attribute__((always_inline))
-_readBit(const struct oneWire *self)
-{
-    /* PORTSetPinsDigitalIn(self->owPinLetter, self->owPinNum); */
-    return (int32_t)PORTReadBits(self->owPinLetter, self->owPinNum);
-}
-
-static int32_t
-readBit(const struct oneWire *self)
-{
-    if (self == NULL)
-        return -ENULPTR;
-
-    return _readBit(self);
-}
-
-static int32_t
-reset(const struct oneWire *self)
-{
-    BIT devicesPresent;
-
-    if (self == NULL)
-        return -ENULPTR;
-
-    driveLow(self);
-    delay_us(480);
-    driveHigh(self);
-    delay_us(70);
-    devicesPresent = !readBit(self);
-    delay_us(410);
-    /* driveHigh(self); */
-
-    return devicesPresent ? 1 : -ENODEV;
-}
-
-static int32_t
-presenceDetected(const struct oneWire *self)
-{
-    int32_t err = 0;
-
-    if (self == NULL)
-        return -ENULPTR;
-
-    if ((err = reset(self)) < 0)
-        return err;
-
-    return 1;
-}
-
-static int32_t
-txBit(const struct oneWire *self, BIT b)
-{
-    if (self == NULL)
-        return -ENULPTR;
-
-    driveLow(self);
+    drive_low(w);
     if (b) {
         delay_us(6);
-        driveHigh(self);
+        drive_high(w);
         delay_us(64);
     } else {
         delay_us(60);
-        driveHigh(self);
+        drive_high(w);
         delay_us(10);
     }
+}
+
+s32
+w1_tx_bit(const struct w1 *w, bit b)
+{
+    if (NULL == w)
+        return -ENULPTR;
+    tx_bit_nonnull(w, b);
+    return 0;
+}
+
+static ALWAYSINLINE NONNULL() void
+tx_byte_nonnull(const struct w1 *w, u8 b)
+{
+    u32 ui;
+    for (ui = 0; ui < 8; ++ui)
+        tx_bit_nonnull(w, (b>>ui)&1);
+}
+
+s32
+w1_tx_byte(const struct w1 *w, u8 b)
+{
+    if (!w)
+        return -ENULPTR;
+    tx_byte_nonnull(w, b);
+    return 0;
+}
+
+s32
+w1_tx(const struct w1 *w, const void *src, size_t n)
+{
+    const u8 *bytes = (const u8 *)src;
+    u32 ui;
+
+    if (!w || !src)
+        return -ENULPTR;
+
+    for (ui = 0; ui < n; ui++)
+        tx_byte_nonnull(w, bytes[ui]);
 
     return 0;
 }
 
-static int32_t
-tx(const struct oneWire *self, const void *data, size_t len)
+s32
+w1_tx_with_crc(const struct w1 *w, const void *src, size_t n)
 {
-    const BYTE *dataBytes = (const BYTE *)data;
-    uint32_t ui, uj;
+    s32 err = 0;
+    u8 crc;
 
-    if (!self || !data)
-        return -ENULPTR;
-
-    for (ui = 0; ui < len; ui++)
-        for (uj = 0; uj < 8; uj++)
-            txBit(self, (dataBytes[ui]>>uj)&1);
-
-    return 0;
-}
-
-static int32_t
-txByte(const struct oneWire *self, BYTE b)
-{
-    if (self == NULL)
-        return -ENULPTR;
-
-    return self->op->tx(self, &b, 1);
-}
-
-static int32_t
-txWithCrc(const struct oneWire *self, const void *data, size_t len)
-{
-    int32_t err = 0;
-    BYTE crc;
-
-    if (self == NULL || data == NULL)
-        return -ENULPTR;
-
-    if ((err = tx(self, data, len)) < 0)
+    if ((err = w1_tx(w, src, n)) < 0)
         return err;
 
-    crc = (BYTE)owCrc(data, len);
-    if ((err = txByte(self, crc)) < 0)
+    crc = (u8)w1_crc(src, n);
+    if ((err = w1_tx_byte(w, crc)) < 0)
         return err;
 
     return 0;
 }
 
-static inline int32_t __attribute__((always_inline))
-_rxBit(const struct oneWire *self)
+#define READ_BIT(w)    ((bit)PIN_READ((w)->pin))
+
+static ALWAYSINLINE NONNULL() s32
+rx_bit_nonnull(const struct w1 *w)
 {
-    BIT result;
-    driveLow(self);
+    bit result;
+    drive_low(w);
     delay_us(6);
-    driveHigh(self);
+    drive_high(w);
     /*
      * This should theoretically be a 9us delay according to
      * http://www.maxim-ic.com/app-notes/index.mvp/id/126. However, using
@@ -312,230 +209,207 @@ _rxBit(const struct oneWire *self)
      * asserting a bit.
      */
     delay_us(4);
-    result = _readBit(self);
+    result = READ_BIT(w);
     delay_us(55);
 
     return result;
 }
 
-static int32_t
-rxBit(const struct oneWire *self)
+s32
+w1_rx_bit(const struct w1 *w)
 {
-    if (self == NULL)
+    if (NULL == w)
         return -ENULPTR;
-
-    return _rxBit(self);
+    return rx_bit_nonnull(w);
 }
 
-static int32_t
-rx(const struct oneWire *self, void *dst, size_t len)
+s32
+w1_rx(const struct w1 *w, void *dst, size_t n)
 {
-    BYTE *dstBytes = (BYTE *)dst;
-    unsigned int ui, uj;
+    u8 *dst_bytes = (u8 *)dst;
+    u32 ui, uj;
 
-    if (!self || !dst)
+    if (!w || !dst)
         return -ENULPTR;
 
-    memset(dstBytes, 0, len);
- 
-    for (ui = 0; ui < len; ui++)
+    memset(dst_bytes, 0, n);
+
+    for (ui = 0; ui < n; ui++)
         for (uj = 0; uj < 8; uj++)
-            dstBytes[ui] |= (BYTE)(_rxBit(self)<<uj);
+            dst_bytes[ui] |= (u8)(rx_bit_nonnull(w)<<uj);
 
     return 0;
 }
 
-static int32_t
-rxCheckCrc(const struct oneWire *self, void *dst, size_t len)
+s32
+w1_rx_check_crc(const struct w1 *w, void *dst, size_t len)
 {
-    int32_t err = 0;
-    BYTE crc = 0x00;
+    s32 err = 0;
+    u8 crc = 0x00;
 
-    if (!self || !dst)
-        return -ENULPTR;
-
-    if ((err = rx(self, dst, len)) < 0)
+    if ((err = w1_rx(w, dst, len)) < 0)
         return err;
-
-    if ((err = rx(self, &crc, sizeof(crc))) < 0)
+    if ((err = w1_rx(w, &crc, sizeof(crc))) < 0)
         return err;
-
-    if (crc != (BYTE)owCrc(dst, len))
+    if (crc != (u8)w1_crc(dst, len))
         return -ECRC;
 
     return 0;
 }
 
-static int32_t
-resetSearchState(struct oneWire *self)
+s32
+w1_reset(const struct w1 *w)
 {
-    if (self == NULL)
+    bit devices_present;
+
+    if (NULL == w)
         return -ENULPTR;
 
-    self->searchState.prevSearchWasLastDevice   = FALSE;
-    self->searchState.lastDiscrepancyBit        = 0;
-    self->searchState.lastFamilyDiscrepBit      = 0;
+    drive_low(w);
+    delay_us(480);
+    drive_high(w);
+    delay_us(70);
+    devices_present = !READ_BIT(w);
+    delay_us(410);
+    /* driveHigh(self); */
 
-    return 0;
+    return devices_present ? 1 : -ENODEV;
+}
+
+static s32
+presence_detected(const struct w1 *w)
+{
+    s32 err = 0;
+    if ((err = w1_reset(w)) < 0)
+        return err;
+
+    return 1;
 }
 
 #define OW_NO_DEVS_LEFT_IN_SEARCH   12345
 
-/**
- *
- * @param self
- * @param idBitNumber
- * @param lastZeroDiscrepBit
- * @return                      OW_NO_DEVS_LEFT_IN_SEARCH, error code, or
- *                                  the next bit (0 or 1)
- */
-static int32_t
-getNextBit(struct oneWire *self, uint32_t idBitNumber,
-            uint32_t *lastZeroDiscrepBit)
+static s32
+get_next_bit(struct w1 *w, u32 id_bit_number, u32 *last_zero_discrep_bit)
 {
-    BIT idBit, idBitComplement, searchDirection;
+    bit id_bit, id_bit_complement, search_direction;
 
-    if (self == NULL || lastZeroDiscrepBit == NULL)
+    if (NULL == w || NULL == last_zero_discrep_bit)
         return -ENULPTR;
 
-    idBit = self->op->rxBit(self);    /* all devices send the bit */
-    idBitComplement = self->op->rxBit(self);    /* ..then send the bit's
-                                                 *  complement
-                                                 */
-    if (idBit == 1 && idBitComplement == 1) {   /* no devices left in
-                                                 * search
-                                                 */
-        resetSearchState(self);
+    id_bit = w1_rx_bit(w); /* all devices send the bit */
+    id_bit_complement = w1_rx_bit(w); /* ..then send the bit's complement */
+    if ((1 == id_bit) && (1 == id_bit_complement)) { /* no devices left in search */
+        reset_search_state(w);
         return OW_NO_DEVS_LEFT_IN_SEARCH;
     }
 
-    if (idBit == 0 && idBitComplement == 0) {
-        if (idBitNumber == self->searchState.lastDiscrepancyBit) {
-            searchDirection = 1;
-        } else if (idBitNumber > self->searchState.lastDiscrepancyBit) {
-            searchDirection = 0;
+    if ((0 == id_bit) && (0 == id_bit_complement)) {
+        if (id_bit_number == w->search_state.last_discrep_bit) {
+            search_direction = 1;
+        } else if (id_bit_number > w->search_state.last_discrep_bit) {
+            search_direction = 0;
         } else {
             /* search direction becomes idBitNumber bit in romCodeAndCrc */
-            searchDirection =
-                    self->searchState.romCodeAndCrc.dataBytes[(idBitNumber-1)/8] &
-                    (1<<((idBitNumber-1)%8));
+            search_direction =
+                    w->search_state.romcode_crc.bytes[(id_bit_number-1)/8] &
+                        (1<<((id_bit_number-1)%8));
         }
 
-        if (searchDirection == 0) {
-            *lastZeroDiscrepBit = idBitNumber;
+        if (0 == search_direction) {
+            *last_zero_discrep_bit = id_bit_number;
 
-            if (*lastZeroDiscrepBit <= 8)
-               self->searchState.lastFamilyDiscrepBit = *lastZeroDiscrepBit;
+            if (*last_zero_discrep_bit <= 8)
+               w->search_state.last_family_discrep_bit = *last_zero_discrep_bit;
         }
     } else {
-        searchDirection = idBit;
+        search_direction = id_bit;
     }
 
-    return searchDirection;
+    return search_direction;
 }
 
-/**
- *
- * @param self
- * @param dst           The destination romCode variable.
- * @param searchRomCmd  The command byte to search for ROM codes. Most likely
- *                          either 0x0F or 0xEC.
- * @return              1 if a device was found, 0 or error code otherwise.
- */
-static int32_t
-searchRom(struct oneWire *self, union romCode *dst, BYTE searchRomCmd)
+static s32
+search_rom(struct w1 *w, union romcode *dst, u8 search_rom_cmd)
 {
-    int32_t err = 0;
-    BYTE crc;
-    uint32_t    idBitNumber          = 1;    /* 1 to 64 */
-    uint32_t    lastZeroDiscrepBit   = 0;    /* bit posn of last zero written
-                                              * where there was a discrepancy
-                                              * (1-64, unless there was no
-                                              * discrepancy in which case it
-                                              * remains 0).
-                                              */
+    s32 err = 0;
+    u8  crc;
+    u32 id_bit_number           = 1;    /* 1 to 64 */
+    /* bit posn of last zero written where there was a discrepancy
+     * (1-64, unless there was no discrepancy in which case it remains 0 */
+    u32 last_zero_discrep_bit   = 0; 
 
-    if (self == NULL)
+    if (NULL == w)
         return -ENULPTR;
 
-    if ((err = presenceDetected(self)) <= 0) { /* no presence detected or error */
-        resetSearchState(self);
+    if ((err = presence_detected(w)) <= 0) { /* no presence detected or error */
+        reset_search_state(w);
         return err;
     }
     
-    if (self->searchState.prevSearchWasLastDevice == TRUE) {
-        resetSearchState(self);
+    if (TRUE == w->search_state.prev_search_was_last_dev) {
+        reset_search_state(w);
         return 0;
     }
 
-    if ((err = txByte(self, searchRomCmd)))
+    if ((err = w1_tx_byte(w, search_rom_cmd)))
         return err;
 
-    while (idBitNumber <= 64) {
-        int32_t getNxtBitResult = getNextBit(self, idBitNumber,
-                &lastZeroDiscrepBit);
-        BIT nxtBit;
+    while (id_bit_number <= 64) {
+        s32 next_bit = get_next_bit(w, id_bit_number,
+                &last_zero_discrep_bit);
+        bit nxtBit;
         
-        if (getNxtBitResult == OW_NO_DEVS_LEFT_IN_SEARCH) {
-            resetSearchState(self);
+        if (OW_NO_DEVS_LEFT_IN_SEARCH == next_bit) {
+            reset_search_state(w);
             return 0;
         }
 
-        if (getNxtBitResult < 0)    /* error */
-            return getNxtBitResult;
+        if (next_bit < 0)    /* error */
+            return next_bit;
 
-        nxtBit = (BIT)getNxtBitResult;
-
-        if (nxtBit)
-            BIT_SET(self->searchState.romCodeAndCrc.dataBytes[(idBitNumber-1)/8],
-                    (idBitNumber-1)%8);
+        if (next_bit)
+            BIT_SET(w->search_state.romcode_crc.bytes[(id_bit_number-1)/8],
+                    (id_bit_number-1)%8);
         else
-            BIT_CLEAR(self->searchState.romCodeAndCrc.dataBytes[(idBitNumber-1)/8],
-                    (idBitNumber-1)%8);
+            BIT_CLEAR(w->search_state.romcode_crc.bytes[(id_bit_number-1)/8],
+                    (id_bit_number-1)%8);
 
-        self->op->txBit(self, nxtBit);
+        w1_tx_bit(w, (bit)next_bit);
 
-        idBitNumber++;
+        id_bit_number++;
     }
 
-    self->searchState.lastDiscrepancyBit = lastZeroDiscrepBit;
-    if (self->searchState.lastDiscrepancyBit == 0)
+    w->search_state.last_discrep_bit = last_zero_discrep_bit;
+    if (0 == w->search_state.last_discrep_bit)
         /* UNCHANGED - no discrepancies occured */
-        self->searchState.prevSearchWasLastDevice = TRUE;
+        w->search_state.prev_search_was_last_dev = TRUE;
 
-    crc = self->searchState.romCodeAndCrc.crc;
-    if (dst != NULL)
-        *dst = self->searchState.romCodeAndCrc.rc;
+    crc = w->search_state.romcode_crc.crc;
+    if (NULL != dst)
+        *dst = w->search_state.romcode_crc.rc;
 
-    if (crc != (BYTE)owCrc(&(self->searchState.romCodeAndCrc.rc),
-                                sizeof(self->searchState.romCodeAndCrc.rc)))
+    if (crc != (u8)w1_crc(&(w->search_state.romcode_crc.rc),
+                                sizeof(w->search_state.romcode_crc.rc)))
         return -ECRC;
 
     return 1;
 }
 
-static int32_t
-first(struct oneWire *self, union romCode *dst, BYTE searchRomCmd)
+static s32
+first(struct w1 *w, union romcode *dst, u8 search_rom_cmd)
 {
-    int32_t err = 0;
+    s32 err = 0;
 
-    if (self == NULL)
+    if (NULL == w)
         return -ENULPTR;
-
-    if ((err = resetSearchState(self)) < 0)
+    if ((err = reset_search_state(w)) < 0)
         return err;
     
-    return searchRom(self, dst, searchRomCmd);
+    return search_rom(w, dst, search_rom_cmd);
 }
 
-static int32_t
-next(struct oneWire *self, union romCode *dst, BYTE searchRomCmd)
-{
-    if (self == NULL)
-        return -ENULPTR;
-
-    return searchRom(self, dst, searchRomCmd);
-}
+#define next(w,dst,searchrom)   \
+    (search_rom((w), (dst), (searchrom)))
 
 /**
  *
@@ -545,26 +419,26 @@ next(struct oneWire *self, union romCode *dst, BYTE searchRomCmd)
  * @param searchRomCmd
  * @return              Number of devices found or negative error code.
  */
-static int32_t
-findDevices(struct oneWire *self, union romCode *dst, size_t dstSizeBytes,
-            BYTE searchRomCmd)
+s32
+w1_find_devices(struct w1 *w, union romcode *dst, size_t n,
+            u8 search_rom_cmd)
 {
-    int32_t i, rc = 0;
-    uint32_t arraySize = dstSizeBytes/sizeof(*dst);
+    s32 i, rc = 0;
+    u32 array_size = n/sizeof(*dst);
 
-    if (!self || (!dst && dstSizeBytes != 0))
+    if (!w || (!dst && n != 0))
         return -ENULPTR;
 
     for (i = 0; i < INT_MAX; i++) {
-        union romCode *rcPtr = NULL;
-        if (i < arraySize)
-            rcPtr = &dst[i];
+        union romcode *rc_ptr = NULL;
+        if (i < array_size)
+            rc_ptr = &dst[i];
 
         if (i == 0) {
-            if ((rc = first(self, rcPtr, searchRomCmd)) != 1)
+            if ((rc = first(w, rc_ptr, search_rom_cmd)) != 1)
                 return rc;
         } else {
-            rc = next(self, rcPtr, searchRomCmd);
+            rc = next(w, rc_ptr, search_rom_cmd);
             if (rc == 0)
                 break;
             else if (rc < 0)    /* error */
@@ -572,133 +446,123 @@ findDevices(struct oneWire *self, union romCode *dst, size_t dstSizeBytes,
         }
     }
 
-    return (int32_t)i;
+    return i;
+}
+
+static s32
+target_setup(struct w1 *w, u8 family)
+{
+    if (NULL == w)
+        return -ENULPTR;
+
+    w->search_state.last_discrep_bit            = 64;
+    w->search_state.last_family_discrep_bit     = 0;
+    w->search_state.prev_search_was_last_dev    = false;
+    w->search_state.romcode_crc.rc.family       = family;
+    memset(w->search_state.romcode_crc.rc.serial, 0,
+            sizeof(w->search_state.romcode_crc.rc.serial));
+
+    return 0;
+}
+
+s32
+w1_find_family(struct w1 *w, union romcode *dst, size_t n,
+                    u8 search_rom_cmd, u8 family)
+{
+    u32 ui, array_size = n/sizeof(*dst);
+
+    if (NULL == w || (NULL == dst && n != 0))
+        return -ENULPTR;
+
+    target_setup(w, family);
+
+    for (ui = 0; ui < INT_MAX; ui++) {
+        union romcode rc;
+        s32 next = next(w, &rc, search_rom_cmd);
+        if (0 == next || rc.family != family)
+            break;
+        else if (next < 0)    /* error */
+            return next;
+        else if (ui < array_size)
+            dst[ui] = rc;
+    }
+
+    return (s32)ui;
+}
+
+static s32
+family_skip_setup(struct w1 *w)
+{
+    if (NULL == w)
+        return -ENULPTR;
+
+    w->search_state.last_discrep_bit = w->search_state.last_family_discrep_bit;
+    w->search_state.last_family_discrep_bit = 0;
+    w->search_state.prev_search_was_last_dev = false;
+
+    return 0;
+}
+
+s32
+w1_find_skip_family(struct w1 *w, union romcode *dst, size_t n,
+                    u8 search_rom_cmd, u8 family)
+{
+    union romcode dummy_rc;
+    u32 ui, array_size = n/sizeof(*dst);
+
+    if (NULL == w || (NULL == dst && n != 0))
+        return -ENULPTR;
+
+    reset_search_state(w);
+    target_setup(w, family);
+
+    memset(&dummy_rc, 0, sizeof(dummy_rc));
+    next(w, &dummy_rc, search_rom_cmd);
+
+    if (dummy_rc.family == family) {
+        family_skip_setup(w);
+    } else {
+        reset_search_state(w);
+    }
+
+    for (ui = 0; ui < INT_MAX; ui++) {
+        union romcode current_rc;
+        int32_t nxtResult = next(w, &current_rc, search_rom_cmd);
+        if (nxtResult == 0 || current_rc.family == family)
+            break;
+        else if (nxtResult < 0)    /* error */
+            return nxtResult;
+        else if (ui < array_size)
+            dst[ui] = current_rc;
+    }
+
+    return (s32)ui;
 }
 
 /**
- *
- * @param self
- * @param rc
- * @param searchRomCmd
  * @return              1 if specified romCode 'rc' is found, 0 or error code
  *                          otherwise.
  */
-static int32_t
-verify(struct oneWire *self, union romCode rc, BYTE searchRomCmd)
+s32
+w1_verify(struct w1 *w, union romcode rc, u8 search_rom_cmd)
 {
-    int32_t err = 0;
-    union romCode searchRomResultRc;
+    s32 err = 0;
+    union romcode searhrom_result_rc;
 
-    if (self == NULL)
+    if (NULL == w)
         return -ENULPTR;
 
-    self->searchState.romCodeAndCrc.rc          = rc;
-    self->searchState.romCodeAndCrc.crc         = owCrc(&rc, sizeof(rc));
+    w->search_state.romcode_crc.rc              = rc;
+    w->search_state.romcode_crc.crc             = w1_crc(&rc, sizeof(rc));
 
-    self->searchState.lastDiscrepancyBit        = 64;
-    self->searchState.lastFamilyDiscrepBit      = 0;
-    self->searchState.prevSearchWasLastDevice   = FALSE;
+    w->search_state.last_discrep_bit            = 64;
+    w->search_state.last_family_discrep_bit     = 0;
+    w->search_state.prev_search_was_last_dev    = false;
 
-    if ((err = searchRom(self, &searchRomResultRc, searchRomCmd) <= 0))
+    if ((err = search_rom(w, &searhrom_result_rc, search_rom_cmd) <= 0))
         return err;
-
-    if (!memcmp(&rc, &searchRomResultRc, sizeof(rc)))
+    if (!memcmp(&rc, &searhrom_result_rc, sizeof(rc)))
         return 1;
 
     return 0;
-}
-
-static int32_t
-targetSetup(struct oneWire *self, BYTE familyCode)
-{
-    if (self == NULL)
-        return -ENULPTR;
-
-    self->searchState.lastDiscrepancyBit            = 64;
-    self->searchState.lastFamilyDiscrepBit          = 0;
-    self->searchState.prevSearchWasLastDevice       = FALSE;
-    self->searchState.romCodeAndCrc.rc.familyCode   = familyCode;
-    memset(self->searchState.romCodeAndCrc.rc.serialNum, 0,
-            sizeof(self->searchState.romCodeAndCrc.rc.serialNum));
-
-    return 0;
-}
-
-static int32_t
-findFamily(struct oneWire *self, union romCode *dst, size_t dstSizeBytes,
-                    BYTE searchRomCmd, BYTE familyCode)
-{
-    uint32_t ui;
-    uint32_t arraySize = dstSizeBytes/sizeof(*dst);
-
-    if (self == NULL || (dst == NULL && dstSizeBytes != 0))
-        return -ENULPTR;
-
-    targetSetup(self, familyCode);
-
-    for (ui = 0; ui < INT_MAX; ui++) {
-        union romCode currentRomCode;
-        int32_t nxtResult = next(self, &currentRomCode, searchRomCmd);
-        if (nxtResult == 0 || currentRomCode.familyCode != familyCode)
-            break;
-        else if (nxtResult < 0)    /* error */
-            return nxtResult;
-        else if (ui < arraySize)
-            dst[ui] = currentRomCode;
-    }
-
-    return (int32_t)ui;
-}
-
-static int32_t
-familySkipSetup(struct oneWire *self)
-{
-    if (self == NULL)
-        return -ENULPTR;
-
-    self->searchState.lastDiscrepancyBit =
-            self->searchState.lastFamilyDiscrepBit;
-    self->searchState.lastFamilyDiscrepBit = 0;
-    self->searchState.prevSearchWasLastDevice = FALSE;
-
-    return 0;
-}
-
-static int32_t
-findSkipFamily(struct oneWire *self, union romCode *dst,
-                        size_t dstSizeBytes, BYTE searchRomCmd,
-                        BYTE familyCode)
-{
-    union romCode dummyRomCode;
-    uint32_t i;
-    uint32_t dstArraySize = dstSizeBytes/sizeof(*dst);
-
-    if (self == NULL || (dst == NULL && dstSizeBytes != 0))
-        return -ENULPTR;
-
-    resetSearchState(self);
-
-    targetSetup(self, familyCode);
-
-    memset(&dummyRomCode, 0, sizeof(dummyRomCode));
-    next(self, &dummyRomCode, searchRomCmd);
-
-    if (dummyRomCode.familyCode == familyCode) {
-        familySkipSetup(self);
-    } else {
-        resetSearchState(self);
-    }
-
-    for (i = 0; i < INT_MAX; i++) {
-        union romCode currentRomCode;
-        int32_t nxtResult = next(self, &currentRomCode, searchRomCmd);
-        if (nxtResult == 0 || currentRomCode.familyCode == familyCode)
-            break;
-        else if (nxtResult < 0)    /* error */
-            return nxtResult;
-        else if (i < dstArraySize)
-            dst[i] = currentRomCode;
-    }
-
-    return (int32_t)i;
 }

@@ -1,77 +1,79 @@
-/**
- * NUSolar Object-Oriented 1-Wire Library
- */
+#ifndef NU_ONEWIRE_H
+#define NU_ONEWIRE_H
 
-#ifndef __NU_ONEWIRE_H
-#define __NU_ONEWIRE_H
+#include "nu_types.h"
+#include "pinctl.h"
 
-#include <limits.h>
-#include <plib.h>
-#include <stdint.h>
-#include "crc.h"
-#include "errorcodes.h"
-#include "timer.h"
-#include "utility.h"
-
-union romCode {
+union romcode {
     struct {
-        BYTE familyCode;
-        BYTE serialNum[6];
+        u8 family;
+        u8 serial[6];
     };
-    BYTE byteArr[7];
+    u8 bytes[7];
 };
 
-struct oneWire {
+struct w1 {
     struct {
-        uint32_t    lastDiscrepancyBit;
-        uint32_t    lastFamilyDiscrepBit;
-        BOOL        prevSearchWasLastDevice;
+        u32     last_discrep_bit;
+        u32     last_family_discrep_bit;
+        bool    prev_search_was_last_dev;
         union {
-            BYTE        dataBytes[8];
+            u8 bytes[8];
             struct {
-                union romCode   rc;
-                BYTE            crc;
+                union romcode   rc;
+                u8              crc;
             };
-        } romCodeAndCrc;
-    } searchState;
-
-    const struct vtblOneWire    *op;
-
-    uint32_t                    owPinNum;
-    IoPortId                    owPinLetter;
+        } romcode_crc;
+    } search_state;
+    struct pin pin;
 };
 
-struct vtblOneWire {
-    int32_t (*powerBus)             (const struct oneWire *self);
-    int32_t (*txBit)                (const struct oneWire *self, BIT b);
-    int32_t (*txByte)               (const struct oneWire *self, BYTE b);
-    int32_t (*tx)                   (const struct oneWire *self,
-                                        const void *data, size_t len);
-    int32_t (*txWithCrc)            (const struct oneWire *self,
-                                        const void *data,
-                                        size_t len);
-    int32_t (*rxBit)                (const struct oneWire *self);
-    int32_t (*rx)                   (const struct oneWire *self, void *dst,
-                                        size_t len);
-    int32_t (*rxCheckCrc)           (const struct oneWire *self, void *dst,
-                                        size_t len);
-    int32_t (*reset)                (const struct oneWire *self);
-    int32_t (*findDevices)          (struct oneWire *self, union romCode *dst,
-                                        size_t dstSizeBytes, BYTE searchRomCmd);
-    int32_t (*findFamily)           (struct oneWire *self, union romCode *dst,
-                                        size_t dstSizeBytes, BYTE searchRomCmd,
-                                        BYTE familyCode);
-    int32_t (*findSkipFamily)       (struct oneWire *self, union romCode *dst,
-                                        size_t dstSizeBytes, BYTE searchRomCmd,
-                                        BYTE familyCode);
-    int32_t (*verify)               (struct oneWire *self, union romCode rc,
-                                        BYTE searchRomCmd);
-};
+s32
+w1_power_bus(const struct w1 *w);
 
-inline uint32_t
-owCrc(const void *data, size_t len);
+s32
+w1_tx_bit(const struct w1 *w, bit b);
 
-int32_t
-oneWire_new(struct oneWire *self, IoPortId pinLtr, uint32_t pinNum);
+s32
+w1_tx_byte(const struct w1 *w, u8 b);
+
+s32
+w1_tx(const struct w1 *w, const void *src, size_t n);
+
+s32
+w1_tx_with_crc(const struct w1 *w, const void *src, size_t n);
+
+s32
+w1_rx_bit(const struct w1 *w);
+
+s32
+w1_rx(const struct w1 *w, void *dst, size_t n);
+
+s32
+w1_rx_check_crc(const struct w1 *w, void *dst, size_t n);
+
+s32
+w1_reset(const struct w1 *w);
+
+s32
+w1_find_devices(struct w1 *w, union romcode *dst, size_t n,
+                byte search_rom_cmd);
+
+s32
+w1_find_family(struct w1 *w, union romcode *dst, size_t n,
+               byte search_rom_cmd, byte family);
+
+s32
+w1_find_skip_family(struct w1 *w, union romcode *dst, size_t n_code,
+                    byte search_rom_cmd, byte family);
+
+s32
+w1_verify(struct w1 *self, union romcode rc, byte search_rom_cmd);
+
+u32
+w1_crc(const void *data, size_t n);
+
+s32
+w1_new(struct w1 *w, struct pin pin);
 
 #endif

@@ -1,10 +1,11 @@
-#include "../include/nokia5110.h"
+#include "errorcodes.h"
+#include "nokia5110.h"
+#include "nu32.h"
+#include "spi.h"
+#include "wdt.h"
 
 #define LCD_X     84
 #define LCD_Y     48
-
-#define NOKIA_PREPARE_CMD(a)    do {memset(&a, 0, sizeof(a)); \
-                                        a.fixed = 1;} while(0)
 
 static const char ASCII[96][5] = {
  {0x00, 0x00, 0x00, 0x00, 0x00} /* 20  (space) */
@@ -105,331 +106,261 @@ static const char ASCII[96][5] = {
 ,{0x00, 0x06, 0x09, 0x09, 0x06} /* 7f ? */
 }; /* end char ASCII[96][5] */
 
-union nokia5110Instructions {
+union nokia5110_instructions {
     union {
-        struct {
-            unsigned    useExtended :1;
-            unsigned    addrMode    :1;
-            unsigned    chipActive  :1;
-            unsigned    reserved    :2;
-            unsigned    fixed       :1;  /* should be 1 */
-            unsigned    reserved2   :2;
-        } __attribute__((__packed__)) funcSet ;
+        PACKED struct {
+            unsigned    use_extended    :1;
+            unsigned    addr_mode       :1;
+            unsigned    chip_active     :1;
+            unsigned    reserved        :2;
+            unsigned    fixed           :1;  /* should be 1 */
+            unsigned    reserved2       :2;
+        } func_set;
     };
     union { /* (useExtended = 0) */
-        struct {
-            unsigned    dispMode    :3;
-            unsigned    fixed       :1; /* should be 1 */
-            unsigned    reserved    :4;
-        } __attribute__((__packed__)) dispControl;
-        struct {
-            unsigned    addr        :3;
-            unsigned    reserved    :3;
-            unsigned    fixed       :1; /* should be 1 */
-            unsigned    reserved2   :1;
-        } __attribute__((__packed__)) setRamYAddr;
-        struct {
-            unsigned    addr        :7;
-            unsigned    fixed       :1; /* should be 1*/
-        } __attribute__((__packed__)) setRamXAddr;
+        PACKED struct {
+            unsigned    disp_mode       :3;
+            unsigned    fixed           :1; /* should be 1 */
+            unsigned    reserved        :4;
+        } disp_control;
+        PACKED struct {
+            unsigned    addr            :3;
+            unsigned    reserved        :3;
+            unsigned    fixed           :1; /* should be 1 */
+            unsigned    reserved2       :1;
+        } set_ram_y_addr;
+        PACKED struct {
+            unsigned    addr            :7;
+            unsigned    fixed           :1; /* should be 1*/
+        } set_ram_x_addr;
     } basic;
     union { /* (useExtended = 1 ) */
-        struct {
-            unsigned    tempCoeff   :2;
-            unsigned    fixed       :1; /* should be 1 */
-            unsigned    reserved    :5;
-        } __attribute__((__packed__)) tempControl;
-        struct {
-            unsigned    bias        :3;
-            unsigned    reserved    :1;
-            unsigned    fixed       :1; /* 1 */
-            unsigned    reserved2   :3;
-        } __attribute__((__packed__)) bias;
-        struct {
-            unsigned    vop         :7;
-            unsigned    fixed       :1; /* 1 */
-        } __attribute__((__packed__)) setVop;
+        PACKED struct {
+            unsigned    temp_coeff      :2;
+            unsigned    fixed           :1; /* should be 1 */
+            unsigned    reserved        :5;
+        } temp_control;
+        PACKED struct {
+            unsigned    bias            :3;
+            unsigned    reserved        :1;
+            unsigned    fixed           :1; /* 1 */
+            unsigned    reserved2       :3;
+        } bias;
+        PACKED struct {
+            unsigned    vop             :7;
+            unsigned    fixed           :1; /* 1 */
+        } set_vop;
     } extended;
-    BYTE cmdByte;
+    BYTE cmd_byte;
 };
 
-static void
-cmdFuncSet(const struct nokia5110 *self, enum nokia_addrMode _addrMode, enum nokia_chipActive active,
-            enum nokia_extended useExtended);
+#define NOKIA_PREPARE_CMD(a)    do {memset(&a, 0, sizeof(a)); \
+                                        a.fixed = 1;} while(0)
 
-static void
-cmdSetVop(const struct nokia5110 *self, uint8_t vop);
-
-static inline void
-cmdSetContrast(const struct nokia5110 *self, uint8_t contrast);
-
-static void
-cmdSetTempCoeff(const struct nokia5110 *self, enum nokia_tempCoeff coeff);
-
-static void
-cmdSetBias(const struct nokia5110 *self, uint8_t bias);
-
-static void
-cmdSetDispMode(const struct nokia5110 *self, enum nokia_displayMode mode);
-
-static void
-writeChar(const struct nokia5110 *self, char c);
-
-static INLINE void
-writeString(const struct nokia5110 *self, const char *str);
-
-static void
-lcdPrintf(const struct nokia5110 *self, const char *fmt, ...) __attribute__((format(printf,2,3)));
+#define nokia_drive_reset_low(n)    PIN_CLEAR((n)->pin_reset)
+#define nokia_drive_reset_high(n)   PIN_SET((n)->pin_reset)
+#define nokia_drive_dc_low(n)       PIN_CLEAR((n)->pin_dc)
+#define nokia_drive_dc_high(n)      PIN_SET((n)->pin_dc)
 
 static ALWAYSINLINE void
-gotoXY(const struct nokia5110 *self, uint8_t x, uint8_t y);
+nokia_write_cmd(const struct nokia5110 *self, BYTE cmd)
+{
+    nokia_drive_dc_low(self);
+    self->spi.op->tx(&(self->spi), &cmd, 1);
+}
 
-static void
-setPixel(const struct nokia5110 *self, uint8_t x, uint8_t y);
+void
+nokia_cmd_func_set(const struct nokia5110 *self, enum nokia_addr_mode _addrMode,
+                    enum nokia_chip_active active, enum nokia_extended useExtended)
+{
+    union nokia5110_instructions inst;
+    NOKIA_PREPARE_CMD(inst.func_set);
+    inst.func_set.addr_mode = _addrMode;
+    inst.func_set.chip_active = active;
+    inst.func_set.use_extended = useExtended;
+    nokia_write_cmd(self, inst.cmd_byte);
+}
 
-static INLINE void
-clear(const struct nokia5110 *self);
+/* NOTE: vop setting is 7-bits wide, going from 0-127 */
+void
+nokia_cmd_set_vop(const struct nokia5110 *self, uint8_t vop)
+{
+    union nokia5110_instructions inst;
+    NOKIA_PREPARE_CMD(inst.extended.set_vop);
+    inst.extended.set_vop.vop = BITFIELD_CAST(vop,7);  /* 7 bits */
+    nokia_write_cmd(self, inst.cmd_byte);
+}
 
-static const struct vtblNokia5110 nokia5110Ops = {
-    .cmdFuncSet         = &cmdFuncSet,
-    .cmdSetContrast     = &cmdSetContrast,
-    .cmdSetVop          = &cmdSetVop,
-    .cmdSetTempCoeff    = &cmdSetTempCoeff,
-    .cmdSetBias         = &cmdSetBias,
-    .cmdSetDispMode     = &cmdSetDispMode,
-    
-    .writeChar          = &writeChar,
-    .writeString        = &writeString,
-    .printf             = &lcdPrintf,
-    .gotoXY             = &gotoXY,
-    .setPixel           = &setPixel,
-    .clear              = &clear,
-};
+/* temp coefficient */
+void
+nokia_cmd_set_temp_coeff(const struct nokia5110 *self, enum nokia_temp_coeff coeff)
+{
+    union nokia5110_instructions inst;
+    NOKIA_PREPARE_CMD(inst.extended.temp_control);
+    inst.extended.temp_control.temp_coeff = coeff;
+    nokia_write_cmd(self, inst.cmd_byte);
+}
+
+/* bias, which is 3-bits wide ranging from 0-7 */
+void
+nokia_cmd_set_bias(const struct nokia5110 *self, uint8_t bias)
+{
+    union nokia5110_instructions inst;
+    NOKIA_PREPARE_CMD(inst.extended.bias);
+    inst.extended.bias.bias = BITFIELD_CAST(bias, 3);  /* 3 bits */
+    nokia_write_cmd(self, inst.cmd_byte);
+}
+
+void
+nokia_cmd_set_disp_mode(const struct nokia5110 *self, enum nokia_display_mode mode)
+{
+    union nokia5110_instructions inst;
+    NOKIA_PREPARE_CMD(inst.basic.disp_control);
+    inst.basic.disp_control.disp_mode = mode;
+    nokia_write_cmd(self, inst.cmd_byte);
+}
+
+static ALWAYSINLINE void
+write_data(const struct nokia5110 *self, BYTE data)
+{
+    nokia_drive_dc_high(self);
+    self->spi.op->tx(&(self->spi), &data, 1);
+}
+
+void
+nokia_clear(const struct nokia5110 *self)
+{
+    uint32_t ui;
+    for (ui = 0; ui < LCD_X * LCD_Y / 8; ++ui) {
+        clear_wdt();
+        write_data(self, 0x00);
+    }
+}
+
+static int32_t
+nokia5110_init(const struct nokia5110 *self)
+{
+    PIN_SET_DIGITAL_OUT(self->pin_dc);
+    PIN_SET_DIGITAL_OUT(self->pin_reset);
+
+    nokia_drive_reset_low(self);
+    nokia_drive_reset_high(self);
+
+    nokia_cmd_func_set(self, HORIZONTAL_ADDRESSING, ACTIVE, EXTENDED_INSTRUCTIONS);
+    nokia_cmd_set_contrast(self, 57);
+    nokia_cmd_set_temp_coeff(self, TEMP_COEFF_0);
+    nokia_cmd_set_bias(self, 4);
+    nokia_cmd_func_set(self, HORIZONTAL_ADDRESSING, ACTIVE, BASIC_INSTRUCTIONS);
+    nokia_cmd_set_disp_mode(self, NORMAL);
+
+    nokia_clear(self);
+
+    return 0;
+}
 
 static int32_t
 nokia_report(struct error_reporting_dev *self,
-                                const char *file, uint32_t line,
-                                const char *expr,
-                                enum report_priority priority,
-                                int32_t errNum, const char *errName,
-                                const char *fmtdMsg);
+                const char *file, uint32_t line,
+                const char *expr,
+                UNUSED enum report_priority priority,
+                int32_t errNum, const char *errName,
+                const char *fmtdMsg)
+{
+    struct nokia5110 *np = error_reporting_dev_to_nokia5110(self);
+
+    if (!self || !file || !expr || !errName || !fmtdMsg)
+        return -ENULPTR;
+
+    nokia_clear(np);
+    nokia_goto_xy(np, 0,0);
+    nokia_printf(np, "%.6s:%d", file, line);
+    nokia_goto_xy(np, 0, 1);
+    nokia_printf(np, "%d(%.18s)", errNum, errName);
+    nokia_goto_xy(np, 0, 3);
+    nokia_printf(np, "%.36s", fmtdMsg);
+
+    return 0;
+}
 
 static const struct vtblError_reporting_dev nokia_erd_ops = {
     .report         = &nokia_report,
     .resetErrState  = NULL,
 };
 
-static inline void
-driveResetLow(const struct nokia5110 *self) __attribute__((always_inline));
-
-static inline void
-driveResetHigh(const struct nokia5110 *self) __attribute__((always_inline));
-
-static int32_t
-nokia5110_init(const struct nokia5110 *self);
-
 int32_t
 nokia5110_new(struct nokia5110 *self, SpiChannel _chn,
-        IoPortId _csPinLtr,      uint32_t _csPinNum,
-        IoPortId _resetPinLtr,   uint32_t _resetPinNum,
-        IoPortId _dcPinLtr,      uint32_t _dcPinNum)
+              struct pin pin_cs, struct pin pin_reset,
+              struct pin pin_dc)
 {
-    if (self == NULL)
+    if (NULL == self)
         return -ENULPTR;
 
-    self->erd.op           = &nokia_erd_ops;
+    self->erd.op = &nokia_erd_ops;
     
-    self->op               = &nokia5110Ops;
-    self->resetPinLtr      = _resetPinLtr;
-    self->resetPinNum      = _resetPinNum;
-    self->dcPinLtr         = _dcPinLtr;
-    self->dcPinNum         = _dcPinNum;
+    INIT_PIN(&(self->pin_reset),    pin_reset.ltr,   pin_reset.num);
+    INIT_PIN(&(self->pin_dc),       pin_dc.ltr,      pin_dc.num);
 
-    SPI_CS_new(&(self->spiPort), _chn, 100000,
+    SPI_CS_new(&(self->spi), _chn, 100000,
                         SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON,
-                        AUTO_CS_PIN_ENABLE, _csPinLtr, _csPinNum);
+                        AUTO_CS_PIN_ENABLE, pin_cs.ltr, pin_cs.num);
 
     return nokia5110_init(self);
 }
 
-static int32_t
-nokia5110_init(const struct nokia5110 *self)
-{
-    if (self == NULL)
-        return -ENULPTR;
-
-    PORTSetPinsDigitalOut(self->resetPinLtr, self->resetPinNum);
-    PORTSetPinsDigitalOut(self->dcPinLtr, self->dcPinNum);
-
-    driveResetLow(self);
-    driveResetHigh(self);
-
-    cmdFuncSet(self, HORIZONTAL_ADDRESSING, ACTIVE, EXTENDED_INSTRUCTIONS);
-    cmdSetContrast(self, 57);
-    cmdSetTempCoeff(self, TEMP_COEFF_0);
-    cmdSetBias(self, 4);
-    cmdFuncSet(self, HORIZONTAL_ADDRESSING, ACTIVE, BASIC_INSTRUCTIONS);
-    cmdSetDispMode(self, NORMAL);
-
-    clear(self);
-
-    return 0;
-}
-
-static int32_t
-nokia_report(struct error_reporting_dev *self,
-                                const char *file, uint32_t line,
-                                const char *expr,
-                                enum report_priority priority,
-                                int32_t errNum, const char *errName,
-                                const char *fmtdMsg)
-{
-    struct nokia5110 *np = error_reporting_dev_to_nokia5110(self);
-
-    (void)priority;
-
-    if (!self || !file || !expr || !errName || !fmtdMsg)
-        return -ENULPTR;
-
-    np->op->clear(np);
-    np->op->gotoXY(np, 0,0);
-    np->op->printf(np, "%.6s:%d", file, line);
-    np->op->gotoXY(np, 0, 1);
-    np->op->printf(np, "%d(%.18s)", errNum, errName);
-    np->op->gotoXY(np, 0, 3);
-    np->op->printf(np, "%.36s", fmtdMsg);
-
-    return 0;
-}
-
-static inline void
-writeCmd(const struct nokia5110 *self, BYTE cmd) __attribute__((always_inline));
-
-static inline void
-writeData(const struct nokia5110 *self, BYTE data);
-
-static void
-cmdFuncSet(const struct nokia5110 *self, enum nokia_addrMode _addrMode, enum nokia_chipActive active,
-            enum nokia_extended useExtended)
-{
-    union nokia5110Instructions inst;
-    NOKIA_PREPARE_CMD(inst.funcSet);
-    inst.funcSet.addrMode = _addrMode;
-    inst.funcSet.chipActive = active;
-    inst.funcSet.useExtended = useExtended;
-    writeCmd(self, inst.cmdByte);
-}
-
-/* NOTE: vop setting is 7-bits wide, going from 0-127 */
-static void
-cmdSetVop(const struct nokia5110 *self, UINT8 vop)
-{
-    union nokia5110Instructions inst;
-    NOKIA_PREPARE_CMD(inst.extended.setVop);
-    inst.extended.setVop.vop = BITFIELD_CAST(vop,7);  /* 7 bits */
-    writeCmd(self, inst.cmdByte);
-}
-
-/* alias for cmdSetVop */
-static inline void
-cmdSetContrast(const struct nokia5110 *self, UINT8 contrast)
-{
-    cmdSetVop(self, contrast);
-}
-
-/* temp coefficient */
-static void
-cmdSetTempCoeff(const struct nokia5110 *self, enum nokia_tempCoeff coeff)
-{
-    union nokia5110Instructions inst;
-    NOKIA_PREPARE_CMD(inst.extended.tempControl);
-    inst.extended.tempControl.tempCoeff = coeff;
-    writeCmd(self, inst.cmdByte);
-}
-
-/* bias, which is 3-bits wide ranging from 0-7 */
-static void
-cmdSetBias(const struct nokia5110 *self, uint8_t bias)
-{
-    union nokia5110Instructions inst;
-    NOKIA_PREPARE_CMD(inst.extended.bias);
-    inst.extended.bias.bias = BITFIELD_CAST(bias, 3);  /* 3 bits */
-    writeCmd(self, inst.cmdByte);
-}
-
-static void
-cmdSetDispMode(const struct nokia5110 *self, enum nokia_displayMode mode)
-{
-    union nokia5110Instructions inst;
-    NOKIA_PREPARE_CMD(inst.basic.dispControl);
-    inst.basic.dispControl.dispMode = mode;
-    writeCmd(self, inst.cmdByte);
-}
-
 /* x should be in the range 0-83 */
-static void
-cmdSetRamXAddr(const struct nokia5110 *self, uint8_t x)
+static ALWAYSINLINE void
+nokia_cmd_set_ram_x_addr(const struct nokia5110 *self, uint8_t x)
 {
-    union nokia5110Instructions inst;
-    NOKIA_PREPARE_CMD(inst.basic.setRamXAddr);
-    inst.basic.setRamXAddr.addr = BITFIELD_CAST(x, 7); /* 7 bits */
-    writeCmd(self, inst.cmdByte);
+    union nokia5110_instructions inst;
+    NOKIA_PREPARE_CMD(inst.basic.set_ram_x_addr);
+    inst.basic.set_ram_x_addr.addr = BITFIELD_CAST(x, 7); /* 7 bits */
+    nokia_write_cmd(self, inst.cmd_byte);
 }
 
 /* y should be in the range 0-5 */
-static void
-cmdSetRamYAddr(const struct nokia5110 *self, uint8_t y)
+static ALWAYSINLINE void
+nokia_cmd_set_ram_y_addr(const struct nokia5110 *self, uint8_t y)
 {
-    union nokia5110Instructions inst;
-    NOKIA_PREPARE_CMD(inst.basic.setRamYAddr);
-    inst.basic.setRamYAddr.addr = BITFIELD_CAST(y, 3);
-    writeCmd(self, inst.cmdByte);
+    union nokia5110_instructions inst;
+    NOKIA_PREPARE_CMD(inst.basic.set_ram_y_addr);
+    inst.basic.set_ram_y_addr.addr = BITFIELD_CAST(y, 3);
+    nokia_write_cmd(self, inst.cmd_byte);
 }
 
-static void
-writeChar(const struct nokia5110 *self, char c)
+void
+nokia_putc(const struct nokia5110 *self, char c)
 {
     uint32_t ui;
 
-    writeData(self, 0x00);
+    write_data(self, 0x00);
     for (ui = 0; ui < 5; ui++) {
         clear_wdt();
-        writeData(self, (BYTE) ASCII[c - 0x20][ui]);
+        write_data(self, (BYTE) ASCII[c - 0x20][ui]);
     }
 
-    writeData(self, 0x00);
+    write_data(self, 0x00);
 }
 
-static inline void
-clear(const struct nokia5110 *self)
-{
-    uint32_t ui;
-    for (ui = 0; ui < LCD_X * LCD_Y / 8; ++ui) {
-        clear_wdt();
-        writeData(self, 0x00);
-    }
-}
-
-static INLINE void
-writeString(const struct nokia5110 *self, const char *str)
+void
+nokia_puts(const struct nokia5110 *self, const char *str)
 {
     while (*str) {
         clear_wdt();
-        writeChar(self, *str++);
+        nokia_putc(self, *str++);
     }
 }
 
 /* x should be in the range 0-83 */
 /* y should be in the range 0-5 */
-static inline void
-gotoXY(const struct nokia5110 *self, uint8_t x, uint8_t y)
+void
+nokia_goto_xy(const struct nokia5110 *self, uint8_t x, uint8_t y)
 {
-    cmdSetRamXAddr(self, x);
-    cmdSetRamYAddr(self, y);
+    nokia_cmd_set_ram_x_addr(self, x);
+    nokia_cmd_set_ram_y_addr(self, y);
 }
 
-static void
-setPixel(const struct nokia5110 *self, uint8_t x, uint8_t y)
+void
+nokia_set_pixel(const struct nokia5110 *self, uint8_t x, uint8_t y)
 {
   /* The LCD has 6 rows, with 8 pixels per  row.
    * 'y_mod' is the row that the pixel is in.
@@ -443,55 +374,17 @@ setPixel(const struct nokia5110 *self, uint8_t x, uint8_t y)
       return;
 
   /* Write the updated pixel out to the LCD */
-  gotoXY(self, x, y_mod);
-  writeData(self, val);
+  nokia_goto_xy(self, x, y_mod);
+  write_data(self, val);
 }
 
-static inline void
-driveResetLow(const struct nokia5110 *self)
-{
-    PORTClearBits(self->resetPinLtr, self->resetPinNum);
-}
-
-static inline void
-driveResetHigh(const struct nokia5110 *self)
-{
-    PORTSetBits(self->resetPinLtr, self->resetPinNum);
-}
-
-static inline void __attribute__((always_inline))
-driveDcLow(const struct nokia5110 *self)
-{
-    PORTClearBits(self->dcPinLtr, self->dcPinNum);
-}
-
-static inline void __attribute__((always_inline))
-driveDcHigh(const struct nokia5110 *self)
-{
-    PORTSetBits(self->dcPinLtr, self->dcPinNum);
-}
-
-static inline void
-writeCmd(const struct nokia5110 *self, BYTE cmd)
-{
-    driveDcLow(self);
-    self->spiPort.op->tx(&(self->spiPort), &cmd, 1);
-}
-
-static inline void
-writeData(const struct nokia5110 *self, BYTE data)
-{
-    driveDcHigh(self);
-    self->spiPort.op->tx(&(self->spiPort), &data, 1);
-}
-
-static void
-lcdPrintf(const struct nokia5110 *self, const char *fmt, ...)
+void PRINTF(2,3)
+nokia_printf(const struct nokia5110 *self, const char *fmt, ...)
 {
     va_list fmtargs;
     char buffer[72];
     va_start(fmtargs, fmt);
     vsnprintf(buffer, sizeof(buffer), fmt, fmtargs);
     va_end(fmtargs);
-    writeString(self, buffer);
+    nokia_puts(self, buffer);
 }
