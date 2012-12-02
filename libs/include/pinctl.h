@@ -1,14 +1,19 @@
+#ifndef NU_PINCTL_H
+#define NU_PINCTL_H
+
 #include <peripheral/ports.h>
-#include <stdint.h>
 #include "compiler.h"
+#include "nu_types.h"
 
 struct pin {
     IoPortId ltr;
-    uint32_t num;
+    u32 num;
 };
 
 #define PIN_INIT(ltr,num)   {(ltr), (num)}
 #define PIN_INIX(ltr,num)   PIN_INIT(IOPORT_##ltr, BIT_##num)
+#define INIT_PIN(p,_ltr,_num) \
+    do{(p)->ltr = (_ltr); (p)->num = _num;}while(0)
 # define PIN(name,ltr,num)                  \
     struct pin name = PIN_INIT(ltr, num)
 #define PINX(name,ltr,num)  \
@@ -51,7 +56,7 @@ pin_set_analog_in(const struct pin *p)
 #define PIN_READ(p) \
     PORTReadBits((p).ltr, (p).num)
 
-static ALWAYSINLINE uint32_t
+static ALWAYSINLINE u32
 pin_read(const struct pin *p)
 {
     if (NULL != p)
@@ -85,3 +90,4 @@ pin_toggle(const struct pin *p)
         PORTToggleBits(p->ltr, p->num);
 }
 
+#endif

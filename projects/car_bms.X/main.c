@@ -518,16 +518,13 @@ init_nokias(void)
     clear_wdt();
 
     IF_NOERR(nokia5110_new(dp1, nokia_spi_channel,
-                                pin_nokia1_cs.ltr, pin_nokia1_cs.num,
-                                pin_nokia1_reset.ltr, pin_nokia1_reset.num,
-                                pin_nokia_dc.ltr, pin_nokia_dc.num),
+                                pin_nokia1_cs, pin_nokia1_reset,
+                                pin_nokia_dc),
                 REP_WARNING, "nokia5110_new")
         register_reporting_dev(&(dp1->erd), REP_DEBUG);
-
     REPORT_ON_ERR(nokia5110_new(dp2, nokia_spi_channel,
-                                pin_nokia2_cs.ltr, pin_nokia2_cs.num,
-                                pin_nokia2_reset.ltr, pin_nokia2_reset.num,
-                                pin_nokia_dc.ltr, pin_nokia_dc.num),
+                                pin_nokia2_cs, pin_nokia2_reset,
+                                pin_nokia_dc),
                 REP_WARNING, "nokia5110_new");
 
     return 0;
@@ -1366,18 +1363,18 @@ main(void)
         uptime += ticksToSecs(ReadCoreTimer() - last_uptime);
         last_uptime = ReadCoreTimer();
 
-        dp2->op->gotoXY(dp2, 0, 1);
-        dp2->op->printf(dp2, "V:%0.9f", voltages[31]);
-        dp2->op->gotoXY(dp2, 0, 2);
-        dp2->op->printf(dp2, "T:%0.9f", temperatures[31]);
-        dp2->op->gotoXY(dp2, 0, 3);
-        dp2->op->printf(dp2, "I:%0.9f", currentBattery);
+        nokia_goto_xy(dp2, 0, 1);
+        nokia_printf(dp2, "V:%0.9f", voltages[31]);
+        nokia_goto_xy(dp2, 0, 2);
+        nokia_printf(dp2, "T:%0.9f", temperatures[31]);
+        nokia_goto_xy(dp2, 0, 3);
+        nokia_printf(dp2, "I:%0.9f", currentBattery);
 
         battBypass = PIN_READ(pin_batt_bypass);
         if (battBypass != prevBattBypass) {
-            dp2->op->clear(dp2);
-            dp2->op->gotoXY(dp2, 0, 0);
-            dp2->op->printf(dp2, "batt bypass %d", battBypass);
+            nokia_clear(dp2);
+            nokia_goto_xy(dp2, 0, 0);
+            nokia_printf(dp2, "batt bypass %d", battBypass);
         }
         prevBattBypass = battBypass;
 
