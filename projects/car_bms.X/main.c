@@ -34,24 +34,24 @@
     TRIPCODE(OVER_TEMP)             \
     TRIPCODE(UNDER_TEMP)
 
-enum tripCode {
+enum tripcode {
 #define TRIPCODE(x) TRIP_##x,
     TRIPCODES
 #undef TRIPCODE
 };
 
-static const char * const tripcodeStr[] = {
+static const char * const tripcode_s[] = {
 #define TRIPCODE(x) #x,
     TRIPCODES
 #undef TRIPCODE
 };
 
 struct flashData {
-    int32_t         lastTrip_module;
-    enum tripCode   lastTrip_code;
-    char            lastTrip_file[20];
-    uint32_t        lastTrip_line;
-    float           lastTrip_temp;
+    int32_t         last_trip_module;
+    enum tripcode   last_tripcode;
+    char            last_trip_file[20];
+    uint32_t        last_trip_line;
+    float           last_trip_temp;
     double          cc_battery;
     double          cc_array;
     double          cc_mppt1;
@@ -69,23 +69,23 @@ struct flashData {
 /** Cause of the last PIC reset to be reported right after the car comes
  *  back up.
  */
-#define RESET_CAUSES                    \
-    RESET_CAUSE(OTHER)                  \
-    RESET_CAUSE(POWER_ON_RESET)         \
-    RESET_CAUSE(BROWNOUT_RESET)         \
-    RESET_CAUSE(LOW_VOLTAGE_RESET)      \
-    RESET_CAUSE(MASTER_CLEAR_RESET)     \
-    RESET_CAUSE(WDT_RESET)              \
-    RESET_CAUSE(SOFTWARE_RESET)         \
-    RESET_CAUSE(CONFIG_MISMATCH_RESET)
+#define RESET_CAUSES                \
+    RESET_CAUSE(OTHER)              \
+    RESET_CAUSE(POWER_ON)           \
+    RESET_CAUSE(BROWNOUT)           \
+    RESET_CAUSE(LOW_VOLTAGE)        \
+    RESET_CAUSE(MASTER_CLEAR)       \
+    RESET_CAUSE(WDT)                \
+    RESET_CAUSE(SOFTWARE)           \
+    RESET_CAUSE(CONFIG_MISMATCH)
 
-#define RESET_CAUSE(x)  x,
+#define RESET_CAUSE(x)  x##_RESET,
 enum lastReset {
     RESET_CAUSES
 };
 #undef RESET_CAUSE
 
-#define RESET_CAUSE(x)  #x,
+#define RESET_CAUSE(x)  #x "_RESET",
 static const char *lastResetStr[] = {
     RESET_CAUSES
 };
@@ -96,52 +96,52 @@ static const char *lastResetStr[] = {
  * configuration settings
  **************************/
 
-static const uint32_t      SYS_CLK_HZ              = 80000000; /* 80 MHz */
+static const uint32_t bms_sys_clk_hz = 80000000; /* 80 MHz */
 
 /******
  * limits
  */
 
-static const float         over_voltage                     = 4.3;
-static const float         under_voltage                    = 2.75;
-static const float         under_current_array_a            = -1;
-static const float         over_current_array_a             = 10;
+static const float  over_voltage                    = 4.3;
+static const float  under_voltage                   = 2.75;
+static const float  under_current_array_a           = -1;
+static const float  over_current_array_a            = 10;
 
 /* Discharging: negative current */
-static const float         over_current_batt_discharge_a    = 72.8;
+static const float  over_current_batt_discharge_a   = 72.8;
 /* Charging: positive current */
-static const float         over_current_batt_charge_a       = -36.4;
+static const float  over_current_batt_charge_a      = -36.4;
 /* actually 45, but the reduction is to pass scrutineering */
-static const float         over_temp_c                      = 35;
-static const float         under_temp_c                     = 0;
+static const float  over_temp_c                     = 35;
+static const float  under_temp_c                    = 0;
 
 /********
  * time intervals
  */
 
-static const float         interval_get_voltages        = 0;
+static const float interval_get_voltages        = 0;
 /* open wire takes priority over normal voltage conversion */
-static const float         interval_get_ow_voltages     = 5;
-static const float         interval_get_temps           = 0;
-static const float         interval_get_currents        = 0;
-static const float         interval_tx_heartbeat        = 1;
-static const float         interval_tx_uptime           = 5;
-static const float         interval_tx_lastreset        = 5;
-static const float         interval_tx_lasttrip         = 5;
-static const float         interval_tx_battbypass       = 1;
-static const float         interval_tx_currents         = 1;
-static const float         interval_tx_voltages         = 1;
-static const float         interval_tx_owvoltages       = 5;
-static const float         interval_tx_temps            = 1;
-static const float         interval_tx_cc_array         = 1;
-static const float         interval_tx_cc_battery       = 1;
-static const float         interval_tx_wh_batt          = 1;
-static const float         interval_tx_trip_pt_current  = 5;
-static const float         interval_tx_trip_pt_voltage  = 5;
-static const float         interval_tx_trip_pt_temp     = 5;
-static const float         interval_tx_mpptrequests     = 1;
-static const float         interval_serial_tx           = 0;
-static const float         interval_save_flash          = 100;
+static const float interval_get_ow_voltages     = 5;
+static const float interval_get_temps           = 0;
+static const float interval_get_currents        = 0;
+static const float interval_tx_heartbeat        = 1;
+static const float interval_tx_uptime           = 5;
+static const float interval_tx_lastreset        = 5;
+static const float interval_tx_lasttrip         = 5;
+static const float interval_tx_battbypass       = 1;
+static const float interval_tx_currents         = 1;
+static const float interval_tx_voltages         = 1;
+static const float interval_tx_ow_voltages      = 5;
+static const float interval_tx_temps            = 1;
+static const float interval_tx_cc_array         = 1;
+static const float interval_tx_cc_battery       = 1;
+static const float interval_tx_wh_batt          = 1;
+static const float interval_tx_trip_pt_current  = 5;
+static const float interval_tx_trip_pt_voltage  = 5;
+static const float interval_tx_trip_pt_temp     = 5;
+static const float interval_tx_mpptrequests     = 1;
+static const float interval_serial_tx           = 0;
+static const float interval_save_flash          = 100;
 
 /*********
  * pins
@@ -277,12 +277,12 @@ static struct can          common_can, *commonCanp  = &common_can;
 
 #define UNINIT 12345
 static double   uptime              = 0;
-static int32_t  lastTrip_module     = UNINIT;
-static enum tripCode lastTrip_code  = 0;
+static int32_t  last_trip_module     = UNINIT;
+static enum tripcode last_tripcode  = 0;
 static char     lastTrip_file[20]   = {0};
-static uint32_t lastTrip_line       = 0;
-static float    lastTrip_temp       = 0;
-static enum lastReset lastResetCause = 0;
+static uint32_t last_trip_line       = 0;
+static float    last_trip_temp       = 0;
+static enum lastReset last_reset_cause = 0;
 static uint32_t battBypass          = 0;
 static float    currentBattery      = UNINIT;
 static float    currentArray        = UNINIT;
@@ -326,10 +326,10 @@ saveFlashNow(void)
         .cc_mppt1           = cc_mppt1,
         .cc_mppt2           = cc_mppt2,
         .cc_mppt3           = cc_mppt3,
-        .lastTrip_code      = lastTrip_code,
-        .lastTrip_module    = lastTrip_module,
-        .lastTrip_line      = lastTrip_line,
-        .lastTrip_temp      = lastTrip_temp,
+        .last_tripcode      = last_tripcode,
+        .last_trip_module    = last_trip_module,
+        .last_trip_line      = last_trip_line,
+        .last_trip_temp      = last_trip_temp,
         .wh_battery         = wh_battery,
         .wh_mppt1in         = wh_mppt1in,
         .wh_mppt1out        = wh_mppt1out,
@@ -339,7 +339,7 @@ saveFlashNow(void)
         .wh_mppt3out        = wh_mppt3out,
     };
 
-    strncpy(fd.lastTrip_file, lastTrip_file, ARRAY_SIZE(fd.lastTrip_file)-1);
+    strncpy(fd.last_trip_file, lastTrip_file, ARRAY_SIZE(fd.last_trip_file)-1);
 
     clear_wdt();
 
@@ -355,7 +355,7 @@ static ALWAYSINLINE void
 #else
 static ALWAYSINLINE void NORETURN
 #endif
-nu_trip(const char *file, uint32_t line, enum tripCode code, uint32_t module)
+nu_trip(const char *file, uint32_t line, enum tripcode code, uint32_t module)
 {
     struct can_bms_tx_trip trip = {
         .module     = module,
@@ -370,18 +370,18 @@ nu_trip(const char *file, uint32_t line, enum tripCode code, uint32_t module)
 
     commonCanTx(ADDR_BMS_TX_TRIP, &trip, sizeof(trip));
 
-    lastTrip_code   = code;
-    lastTrip_module = module;
+    last_tripcode       = code;
+    last_trip_module    = module;
     strncpy(lastTrip_file, file, ARRAY_SIZE(lastTrip_file)-1);
-    lastTrip_line = line;
-    lastTrip_temp   = UNINIT;
+    last_trip_line      = line;
+    last_trip_temp      = UNINIT;
     if (code == TRIP_UNDER_TEMP || code == TRIP_OVER_TEMP)
-        lastTrip_temp = temperatures[module];
+        last_trip_temp = temperatures[module];
     saveFlashNow();
 
 #ifdef __DEBUG
     REPORT(REP_WARNING, "DEBUG BUILD: IGNORED TRIP %d (%s) on module %d",
-        code, tripcodeStr[code], module);
+        code, tripcode_s[code], module);
     return;
 #else
 
@@ -397,7 +397,7 @@ nu_trip(const char *file, uint32_t line, enum tripCode code, uint32_t module)
 #define trip_nomod(tripCode)                                                \
     do {                                                                    \
         REPORT(REP_EMERGENCY, "tripping with code %d (%s)",                 \
-            tripCode, tripcodeStr[tripCode]);                               \
+            tripCode, tripcode_s[tripCode]);                                \
         nu_trip(__FILE__, __LINE__, tripCode, 0xFFFFFFFF);                  \
     } while(0)
 
@@ -405,12 +405,12 @@ nu_trip(const char *file, uint32_t line, enum tripCode code, uint32_t module)
     do {                                                            \
         REPORT(REP_EMERGENCY,                                       \
             "tripping with code %d (%s), module %d",                \
-            tripCode, tripcodeStr[tripCode], module);               \
+            tripCode, tripcode_s[tripCode], module);                \
         nu_trip(__FILE__, __LINE__, tripCode, module);              \
     } while(0)
 
 static void
-loadLastResetCause(void)
+get_last_reset_cause(void)
 {
     clear_wdt();
 
@@ -423,16 +423,12 @@ loadLastResetCause(void)
                                  */
         mClearPORFlag();
         mClearBORFlag();
-
         REPORT(REP_INFO, "POR reset");
-
-        lastResetCause = POWER_ON_RESET;
+        last_reset_cause = POWER_ON_RESET;
     } else if (isBOR()) {
         mClearBORFlag();
-
         REPORT(REP_WARNING, "BOR reset");
-
-        lastResetCause = BROWNOUT_RESET;
+        last_reset_cause = BROWNOUT_RESET;
     } else if (isLVD()) {       /* low voltage detect reset
                                  * It seems that the PIC32 libraries don't
                                  * actually support this, as reset.h has this
@@ -440,32 +436,23 @@ loadLastResetCause(void)
                                  * #define isLVD()							0
                                  */
         REPORT(REP_WARNING, "LVD reset");
-
-        lastResetCause = LOW_VOLTAGE_RESET;
+        last_reset_cause = LOW_VOLTAGE_RESET;
     } else if (isMCLR()) {      /* master clear (reset) pin reset */
         mClearMCLRFlag();
-
         REPORT(REP_INFO, "MCLR reset");
-
-        lastResetCause = MASTER_CLEAR_RESET;
+        last_reset_cause = MASTER_CLEAR_RESET;
     } else if (isWDTTO()) {     /* watchdog timer reset */
         mClearWDTOFlag();
-
         REPORT(REP_ERROR, "WDT reset");
-
-        lastResetCause = WDT_RESET;
+        last_reset_cause = WDT_RESET;
     } else if (mGetSWRFlag()) { /* software reset */
         mClearSWRFlag();
-
         REPORT(REP_WARNING, "SWR reset");
-
-        lastResetCause = SOFTWARE_RESET;
+        last_reset_cause = SOFTWARE_RESET;
     } else if (mGetCMRFlag()) { /* config mismatch reset */
         mClearCMRFlag();
-
         REPORT(REP_CRITICAL, "CMR reset");
-
-        lastResetCause = CONFIG_MISMATCH_RESET;
+        last_reset_cause = CONFIG_MISMATCH_RESET;
     };
 }
 
@@ -599,15 +586,15 @@ init_ltcs(void)
 static ALWAYSINLINE int32_t
 init_adcs(void)
 {
-    int32_t errno;
+    int32_t err;
     float tmp[2];
 
     clear_wdt();
 
-    IF_ERR(errno = ad7685_new(adcp, adc_spi_chn, pin_adc_cs.ltr,
+    IF_ERR(err = ad7685_new(adcp, adc_spi_chn, pin_adc_cs.ltr,
                       pin_adc_cs.num, 2, CHAIN_MODE, NO_BUSY_INDICATOR),
             REP_CRITICAL, "ad7685_new")
-        return errno;
+        return err;
 
     adcp->op->convertAndReadVolts(adcp, tmp);
 
@@ -671,23 +658,15 @@ init_devices(void)
     clear_wdt();
 
     init_relays();
-
     init_battery_bypass_in();
-
     REPORT_ON_ERR(init_leds(),      REP_WARNING, "init_leds");
-
     REPORT_ON_ERR(init_serial(),    REP_WARNING, "init_serial");
-
     REPORT_ON_ERR(init_nokias(),    REP_WARNING, "init_nokias");
-
     REPORT_ON_ERR(init_cans(),      REP_WARNING, "init_cans");
-
     IF_ERR(init_ltcs(),             REP_WARNING, "init_ltcs")
         trip_nomod(TRIP_OTHER);
-
     IF_ERR(init_adcs(),             REP_WARNING, "init_adcs")
         trip_nomod(TRIP_OTHER);
-
     IF_ERR(init_ds18b20s(),         REP_WARNING, "init_ds18b20s")
         trip_nomod(TRIP_OTHER);
 
@@ -943,62 +922,64 @@ doCanTx(void)
     static uint32_t last_sendTripPtVoltage  = 0;
     static uint32_t last_sendTripPtTemp     = 0;
 
+    uint32_t core_timer = ReadCoreTimer();
+
     ClearWDT();
 
-    if (ticksToSecs(ReadCoreTimer() - last_sendHeartbeat) > interval_tx_heartbeat) {
+    if (ticksToSecs(core_timer - last_sendHeartbeat) > interval_tx_heartbeat) {
         struct can_bms_tx_heartbeat hb = {
             .bmsStr = "bms0",
         };
         ccTx(ADDR_BMS_TX_HEARTBEAT, hb);
-        last_sendHeartbeat = ReadCoreTimer();
+        last_sendHeartbeat = core_timer;
     }
 
-    if (ticksToSecs(ReadCoreTimer() - last_sendUptime) > interval_tx_uptime) {
+    if (ticksToSecs(core_timer - last_sendUptime) > interval_tx_uptime) {
         struct can_bms_tx_uptime canUptime = {
             .seconds = uptime,
         };
         ccTx(ADDR_BMS_TX_UPTIME, canUptime);
-        last_sendUptime = ReadCoreTimer();
+        last_sendUptime = core_timer;
     }
 
-    if (ticksToSecs(ReadCoreTimer() - last_sendLastReset) > interval_tx_lastreset) {
+    if (ticksToSecs(core_timer - last_sendLastReset) > interval_tx_lastreset) {
         struct can_bms_tx_last_reset lrc = {
-            .lastResetCode  = lastResetCause,
+            .lastResetCode  = last_reset_cause,
             .reserved       = 0,
         };
         ccTx(ADDR_BMS_TX_LAST_RESET, lrc);
-        last_sendLastReset = ReadCoreTimer();
+        last_sendLastReset = core_timer;
     }
 
-    if (ticksToSecs(ReadCoreTimer() - last_sendLastTrip) > interval_tx_lasttrip &&
-            lastTrip_module != UNINIT) {
+    if (ticksToSecs(core_timer - last_sendLastTrip) > interval_tx_lasttrip &&
+            last_trip_module != UNINIT) {
         struct can_bms_tx_last_trip lt = {
-            .module     = lastTrip_module,
-            .tripCode   = lastTrip_code,
+            .module     = last_trip_module,
+            .tripCode   = last_tripcode,
         };
         ccTx(ADDR_BMS_TX_LAST_TRIP, lt);
-        last_sendLastTrip = ReadCoreTimer();
+        last_sendLastTrip = core_timer;
     }
     
-    if (ticksToSecs(ReadCoreTimer() - last_sendBattBypass) > interval_tx_battbypass) {
+    if (ticksToSecs(core_timer - last_sendBattBypass) > interval_tx_battbypass) {
         struct can_bms_tx_batt_bypass bb = {
             .module = battBypass,
         };
         ccTx(ADDR_BMS_TX_BATT_BYPASS, bb);
-        last_sendBattBypass = ReadCoreTimer();
+        last_sendBattBypass = core_timer;
     }
     
-    if (ticksToSecs(ReadCoreTimer() - last_sendCurrents) > interval_tx_currents &&
+    if (ticksToSecs(core_timer - last_sendCurrents) > interval_tx_currents &&
             (!FEQ(currentArray, UNINIT) || !FEQ(currentBattery, UNINIT))) {
         struct can_bms_tx_current cur = {
             .array      = currentArray,
             .battery    = currentBattery,
         };
         ccTx(ADDR_BMS_TX_CURRENT, cur);
-        last_sendCurrents = ReadCoreTimer();
+        last_sendCurrents = core_timer;
     }
 
-    if (ticksToSecs(ReadCoreTimer() - last_sendVoltages) > interval_tx_voltages &&
+    if (ticksToSecs(core_timer - last_sendVoltages) > interval_tx_voltages &&
             !FEQ(voltages[0],UNINIT)) {
         uint32_t ui;
         for (ui = 0; ui < module_count; ++ui) {
@@ -1008,10 +989,10 @@ doCanTx(void)
             };
             ccTx(ADDR_BMS_TX_VOLTAGE, v);
         }
-        last_sendVoltages = ReadCoreTimer();
+        last_sendVoltages = core_timer;
     }
 
-    if (ticksToSecs(ReadCoreTimer() - last_sendOwVoltages) > interval_tx_owvoltages &&
+    if (ticksToSecs(core_timer - last_sendOwVoltages) > interval_tx_ow_voltages &&
             !FEQ(openWireVoltages[0], UNINIT)) {
         uint32_t ui;
         for (ui = 0; ui < module_count; ++ui) {
@@ -1021,10 +1002,10 @@ doCanTx(void)
             };
             ccTx(ADDR_BMS_TX_OWVOLTAGE, owv);
         }
-        last_sendOwVoltages = ReadCoreTimer();
+        last_sendOwVoltages = core_timer;
     }
 
-    if (ticksToSecs(ReadCoreTimer() - last_sendTemps) > interval_tx_temps &&
+    if (ticksToSecs(core_timer - last_sendTemps) > interval_tx_temps &&
             !FEQ(temperatures[0], UNINIT)) {
         uint32_t ui;
         for (ui = 0; ui < ARRAY_SIZE(temperatures); ++ui) {
@@ -1034,61 +1015,61 @@ doCanTx(void)
             };
             ccTx(ADDR_BMS_TX_TEMP, t);
         }
-        last_sendTemps = ReadCoreTimer();
+        last_sendTemps = core_timer;
     }
 
-    if (ticksToSecs(ReadCoreTimer() - last_sendCcArray) > interval_tx_cc_array) {
+    if (ticksToSecs(core_timer - last_sendCcArray) > interval_tx_cc_array) {
         struct can_bms_tx_current_count_array cc = {
             .count = cc_array,
         };
         ccTx(ADDR_BMS_TX_CC_ARRAY, cc);
-        last_sendCcArray = ReadCoreTimer();
+        last_sendCcArray = core_timer;
     }
 
-    if (ticksToSecs(ReadCoreTimer() - last_sendCcBatt) > interval_tx_cc_battery) {
+    if (ticksToSecs(core_timer - last_sendCcBatt) > interval_tx_cc_battery) {
         struct can_bms_tx_current_count_battery cc = {
             .count = cc_battery,
         };
         ccTx(ADDR_BMS_TX_CC_BATT, cc);
-        last_sendCcBatt = ReadCoreTimer();
+        last_sendCcBatt = core_timer;
     }
 
-    if (ticksToSecs(ReadCoreTimer() - last_sendWhBatt) > interval_tx_wh_batt) {
+    if (ticksToSecs(core_timer - last_sendWhBatt) > interval_tx_wh_batt) {
         struct can_bms_tx_wh_batt wh = {
             .Wh = wh_battery,
         };
         ccTx(ADDR_BMS_TX_WH_BATT, wh);
-        last_sendWhBatt = ReadCoreTimer();
+        last_sendWhBatt = core_timer;
     }
 
-    if (ticksToSecs(ReadCoreTimer() - last_sendTripPtCurrent) > interval_tx_trip_pt_current) {
+    if (ticksToSecs(core_timer - last_sendTripPtCurrent) > interval_tx_trip_pt_current) {
         struct can_bms_tx_trip_pt_current tpc = {
             .low    = over_current_batt_discharge_a,
             .high   = over_current_batt_charge_a,
         };
         ccTx(ADDR_BMS_TX_TRIP_PT_CURRENT, tpc);
-        last_sendTripPtCurrent = ReadCoreTimer();
+        last_sendTripPtCurrent = core_timer;
     }
 
-    if (ticksToSecs(ReadCoreTimer() - last_sendTripPtVoltage) > interval_tx_trip_pt_voltage) {
+    if (ticksToSecs(core_timer - last_sendTripPtVoltage) > interval_tx_trip_pt_voltage) {
         struct can_bms_tx_trip_pt_voltage tp = {
             .low    = under_voltage,
             .high   = over_voltage,
         };
         ccTx(ADDR_BMS_TX_TRIP_PT_VOLTAGE, tp);
-        last_sendTripPtVoltage = ReadCoreTimer();
+        last_sendTripPtVoltage = core_timer;
     }
 
-    if (ticksToSecs(ReadCoreTimer() - last_sendTripPtTemp) > interval_tx_trip_pt_temp) {
+    if (ticksToSecs(core_timer - last_sendTripPtTemp) > interval_tx_trip_pt_temp) {
         struct can_bms_tx_trip_pt_temp tp = {
             .low    = under_temp_c,
             .high   = over_temp_c,
         };
         ccTx(ADDR_BMS_TX_TRIP_PT_VOLTAGE, tp);
-        last_sendTripPtTemp = ReadCoreTimer();
+        last_sendTripPtTemp = core_timer;
     }
 
-    if (ticksToSecs(ReadCoreTimer() - last_sendMpptRequests) > interval_tx_mpptrequests) {
+    if (ticksToSecs(core_timer - last_sendMpptRequests) > interval_tx_mpptrequests) {
         mpptCanp->op->tx(mpptCanp, mppt_can_tx_chn, STANDARD_ID,
                 ADDR_MPPT1_RX_BASE, 0, 1, NULL, 0);
         mpptCanp->op->tx(mpptCanp, mppt_can_tx_chn, STANDARD_ID,
@@ -1096,7 +1077,7 @@ doCanTx(void)
         mpptCanp->op->tx(mpptCanp, mppt_can_tx_chn, STANDARD_ID,
                 ADDR_MPPT3_RX_BASE, 0, 1, NULL, 0);
 
-        last_sendMpptRequests = ReadCoreTimer();
+        last_sendMpptRequests = core_timer;
     }
 }
 
@@ -1209,11 +1190,11 @@ loadFlash(void)
         REPORT(REP_DEBUG, "flash uninitialized");
         memset(&fd, 0, sizeof(fd));
     } else {
-        lastTrip_module = fd.lastTrip_module;
-        lastTrip_code   = fd.lastTrip_code;
-        strncpy(lastTrip_file, fd.lastTrip_file, ARRAY_SIZE(lastTrip_file)-1);
-        lastTrip_line   = fd.lastTrip_line;
-        lastTrip_temp   = fd.lastTrip_temp;
+        last_trip_module = fd.last_trip_module;
+        last_tripcode   = fd.last_tripcode;
+        strncpy(lastTrip_file, fd.last_trip_file, ARRAY_SIZE(lastTrip_file)-1);
+        last_trip_line   = fd.last_trip_line;
+        last_trip_temp   = fd.last_trip_temp;
         cc_battery      = fd.cc_battery;
         cc_array        = fd.cc_array;
         cc_mppt1        = fd.cc_mppt1;
@@ -1247,11 +1228,11 @@ doSerTx(void)
     nu32_serp->op->printf(nu32_serp, "t uptime=         %f\r\n", uptime);
 
     nu32_serp->op->printf(nu32_serp, "~~~~~LAST TRIP BEGIN~~~~~\r\n");
-    nu32_serp->op->printf(nu32_serp, "\tlastTrip_module=%d\r\n", lastTrip_module);
-    nu32_serp->op->printf(nu32_serp, "\tlastTrip_temp=  %f\r\n", lastTrip_temp);
+    nu32_serp->op->printf(nu32_serp, "\tlastTrip_module=%d\r\n", last_trip_module);
+    nu32_serp->op->printf(nu32_serp, "\tlastTrip_temp=  %f\r\n", last_trip_temp);
     nu32_serp->op->printf(nu32_serp, "~~~~~LAST TRIP END~~~~~\r\n");
 
-    nu32_serp->op->printf(nu32_serp, "t lastResetCause= %d\r\n", lastResetCause);
+    nu32_serp->op->printf(nu32_serp, "t lastResetCause= %d\r\n", last_reset_cause);
     nu32_serp->op->printf(nu32_serp, "t battBypass=     %u\r\n", battBypass);
     nu32_serp->op->printf(nu32_serp, "t currentBattery= %f\r\n", currentBattery);
     nu32_serp->op->printf(nu32_serp, "t currentArray=   %f\r\n", currentArray);
@@ -1328,11 +1309,11 @@ main(void)
     delay(.1);
 
     /* setup clock, interrupts, NU32 LED pinouts, and switch input */
-    nu32_init(sys_clk_hz);
+    nu32_init(bms_sys_clk_hz);
 
     REPORT_ON_ERR(init_devices(), REP_WARNING, "init_devices failed");
 
-    loadLastResetCause();
+    get_last_reset_cause();
 
     clear_wdt();
 
@@ -1343,12 +1324,12 @@ main(void)
      *  rather than this file and line, which are much less useful in debugging
      *  trips
      */
-    reportf(lastTrip_file, lastTrip_line, REP_INFO, ENONE, NULL,
-                (lastTrip_code == TRIP_UNDER_TEMP || lastTrip_code == TRIP_OVER_TEMP) ?
+    reportf(lastTrip_file, last_trip_line, REP_INFO, ENONE, NULL,
+                (last_tripcode == TRIP_UNDER_TEMP || last_tripcode == TRIP_OVER_TEMP) ?
                     "mod %d,code %d(%s),t%f" : "mod %d,code %d(%s)",
-                lastTrip_module, lastTrip_code,
-                lastTrip_code >= ARRAY_SIZE(tripcodeStr) ? "?" : tripcodeStr[lastTrip_code],
-                lastTrip_temp);
+                last_trip_module, last_tripcode,
+                last_tripcode >= ARRAY_SIZE(tripcode_s) ? "?" : tripcode_s[last_tripcode],
+                last_trip_temp);
 
     WriteCoreTimer(0);
 
