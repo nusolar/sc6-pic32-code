@@ -1,11 +1,16 @@
 #ifndef NU_TYPES_H
 #define NU_TYPES_H
 
-#include <stdint.h>
 #include <GenericTypeDefs.h>
+#include <stdbool.h>
+#include <stdint.h>
 
+#ifndef __bool_true_false_are_defined
 typedef enum { false = 0, true } bool;
+#endif
+
 typedef BIT bit;
+enum { clear = 0, set };
 
 typedef uint8_t     u8;
 typedef uint16_t    u16;

@@ -1,178 +1,66 @@
-#include "../include/ad7685.h"
+#include "ad7685.h"
+#include "byteorder.h"
+#include "errorcodes.h"
+#include "timer.h"
 
-static int32_t
-readVolts(struct ad7685 *self, float *voltages);
+#define SPI_OFLAGS SPI_OPEN_CKE_REV|SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON
+static const u32 spi_bitrate = 100000;
 
-static int32_t
-convertAndReadVolts(struct ad7685 *self, float *voltages);
+#define drive_cnv_high(a)   pin_set(&((a)->convert_pin))
+#define drive_cnv_low(a)    pin_clear(&((a)->convert_pin))
 
-static int32_t
-driveCnvLow(struct ad7685 *self);
-
-static int32_t
-driveCnvHigh(struct ad7685 *self);
-
-const struct vtbl_ad7685 ad7685_ops = {
-    .convertAndReadVolts = &convertAndReadVolts,
-};
-
-static int32_t
-ad7685_init(struct ad7685 *self)
+s32 MUST_CHECK
+ad7685_setup(const struct ad7685 *a)
 {
-    if (self == NULL)
-        return -ENULPTR;
-
-    PORTSetPinsDigitalOut(self->cnvPinLtr, self->cnvPinNum);
-
-    return 0;
-}
-
-int32_t
-ad7685_new(struct ad7685 *self, SpiChannel chn, IoPortId cnvPinLtr, uint32_t cnvPinNum, uint32_t numDevices,
-            enum WireConfiguration WireConfig, enum BusyIndicator UseBusyIndicator)
-{
-    int32_t err;
-
-    if (((WireConfig == FOUR_WIRE && UseBusyIndicator == NO_BUSY_INDICATOR) ||
-            (WireConfig == CHAIN_MODE && UseBusyIndicator == USE_BUSY_INDICATOR)))
+    if (((FOUR_WIRE == wire_config && NO_BUSY_INDICATOR == busy_indic) ||
+        (CHAIN_MODE == wire_config && USE_BUSY_INDICATOR == busy_indic)))
         return -EINVAL;
-
-    if (self == NULL)
-        return -ENULPTR;
-
-    self->op                = &ad7685_ops;
-    self->WireConfig        = WireConfig;
-    self->UseBusyIndicator  = UseBusyIndicator;
-    self->numDevices        = numDevices;
-    self->cnvPinLtr         = cnvPinLtr;
-    self->cnvPinNum         = cnvPinNum;
-
-    if ((err = SPI_new(&(self->spiPort), chn, 100000,
-            SPI_OPEN_CKE_REV|SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON)))
-        return err;
-
-    if ((err = ad7685_init(self)))
-        return err;
-
-    return 0;
+    pin_set_digital_out(&(a->convert_pin));
+    spi_setup(&(a->spi), spi_bitrate, SPI_OFLAGS);
 }
 
-int32_t
-ad7685_CS_new(struct ad7685 *self, SpiChannel chn, IoPortId cnvPinLtr, uint32_t cnvPinNum, uint32_t numDevices,
-            enum WireConfiguration WireConfig, enum BusyIndicator UseBusyIndicator,
-            IoPortId csPinLtr, uint32_t csPinNum)
+static void
+read_uv(const struct ad7685 *a, u32 *dst)
 {
-    int32_t err;
+    u32 ui;
+    u16 buf[a->num_devices];
 
-    if (self == NULL)
-        return -ENULPTR;
-
-    self->op                = &ad7685_ops;
-    self->WireConfig        = WireConfig;
-    self->UseBusyIndicator  = UseBusyIndicator;
-    self->numDevices        = numDevices;
-    self->cnvPinLtr         = cnvPinLtr;
-    self->cnvPinNum         = cnvPinNum;
-
-    if ((err = SPI_CS_new(&(self->spiPort), chn, 100000,
-                SPI_OPEN_CKE_REV|SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON,
-                AUTO_CS_PIN_DISABLE, csPinLtr, csPinNum)))
-        return err;
-
-    if ((err = ad7685_init(self)))
-        return err;
-
-    return 0;
+    spi_rx(&(a->spi), &buf, sizeof(buf));
+    for (ui = 0; ui < a->num_devices; ++ui) {
+        /* swap byte order ... */
+        /* buf[ui] = bswap_u16(buf[ui]); */
+        buf[ui] = betoh16(buf[ui]);
+        /* then compute the actual voltage (microvolts) */
+        dst[ui] = (u32)((5000000 * (u64)buf[ui])>>16);
+    }
 }
 
 /* gets the actual voltage reading(s) (not raw data) */
-static int32_t
-convertAndReadVolts(struct ad7685 *self, float *voltages)
+void
+ad7685_convert_read_uv(const struct ad7685 *a, u32 *dst)
 {
-    int32_t err;
-
-    if (self == NULL || voltages == NULL)
-        return -ENULPTR;
-
-    if (self->WireConfig == FOUR_WIRE &&
-            self->UseBusyIndicator == USE_BUSY_INDICATOR)
-        if ((err = self->spiPort.op->driveCSHigh(&(self->spiPort))))
-            return err;
-
+    if (FOUR_WIRE == a->wire_config && USE_BUSY_INDICATOR == a->busy_indic)
+        spi_drive_cs_high(&(a->spi));
+    
     /* start conversion */
-    if ((err = driveCnvHigh(self)))
-        return err;
+    drive_cnv_high(a);
+    delay_ns(100);  /* .1 us */
 
-    delay_us(.1);
+    if (USE_BUSY_INDICATOR == a->busy_indic) {
+        if (THREE_WIRE == a->wire_config)
+            drive_cnv_low(a);
+        else if (FOUR_WIRE == a->wire_config)
+            spi_drive_cs_low(&(a->spi));
+    }
 
-    if (self->WireConfig == THREE_WIRE &&
-            self->UseBusyIndicator == USE_BUSY_INDICATOR)
-        if ((err = driveCnvLow(self)))
-            return err;
+    delay_ns(2300); /* 2.3 us */
 
-    if (self->WireConfig == FOUR_WIRE &&
-            self->UseBusyIndicator == USE_BUSY_INDICATOR)
-        if ((err = self->spiPort.op->driveCSLow(&(self->spiPort)))) {
-            driveCnvLow(self);
-            return err;
-        }
-
-    delay_us(2.3);
-
-    if (self->WireConfig == THREE_WIRE &&
-            self->UseBusyIndicator == NO_BUSY_INDICATOR)
-        if ((err = driveCnvLow(self)))
-            return err;
+    if (THREE_WIRE == a->wire_config && NO_BUSY_INDICATOR == a->busy_indic)
+        drive_cnv_low(a);
 
     /* read in the actual voltage reading(s) over SPI */
-    readVolts(self, voltages);
+    read_uv(a, dst);
 
-    driveCnvLow(self);
+    drive_cnv_low(a);
     delay_us(5);
-
-    return 0;
-}
-
-static int32_t
-readVolts(struct ad7685 *self, float *voltages)
-{
-    int32_t err;
-    uint32_t ui;
-    uint16_t data[self->numDevices];
-
-    if (self == NULL || voltages == NULL)
-        return -ENULPTR;
-    
-    if ((err = self->spiPort.op->rx(&(self->spiPort), &data, sizeof(data))))
-        return err;
-
-    for (ui = 0; ui < self->numDevices; ++ui) {
-        /* swap byte order ... */
-        data[ui] = (uint16_t) (((data[ui] >> 8) & 0xFF) |
-                                    ((data[ui] << 8) & 0xFF00));
-        /* then compute the actual voltage */
-        voltages[ui] = (5 * ((float) data[ui])) / (1 << 16);
-    }
-    
-    return 0;
-}
-
-static int32_t
-driveCnvHigh(struct ad7685 *self) {
-    if (self == NULL)
-        return -ENULPTR;
-
-    PORTSetBits(self->cnvPinLtr, self->cnvPinNum);
-
-    return 0;
-}
-
-static int32_t
-driveCnvLow(struct ad7685 *self) {
-    if (self == NULL)
-        return -ENULPTR;
-
-    PORTClearBits(self->cnvPinLtr, self->cnvPinNum);
-    
-    return 0;
 }

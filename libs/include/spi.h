@@ -1,61 +1,89 @@
-/**
- * @file    NUSPI_new.h
- * @brief   An object-oriented interface to SPI functionality on the pic32.
- * @author  Chris Yungmann
- */
+#ifndef NU_SPI_H
+#define NU_SPI_H
 
-#ifndef __NU_SPI_H
-#define __NU_SPI_H
-
-#include <plib.h>
-#include <stdint.h>
-#include "errorcodes.h"
-#include "nu32.h"
+#include <peripheral/spi.h>
+#include <string.h>
+#include "compiler.h"
+#include "nu_types.h"
+#include "pinctl.h"
 #include "timer.h"
 
-enum autoCsPin {
-    AUTO_CS_PIN_DISABLE = 0,
-    AUTO_CS_PIN_ENABLE
+/* auto chip select control */
+enum auto_cs {
+    AUTO_CS_DISABLE = 0,
+    AUTO_CS_ENABLE
 };
 
-struct spiPort {
-    const struct vtblSpiPort *op;   /**< A pointer to the static virtual
-                                     *  function table, which in turn holds
-                                     *  pointers to the possible operations
-                                     *  for an spiPort
-                                     */
-    unsigned int csPinNum;          /**< The chip select pin number.
-                                     *  BIT_6 for pin number 6. These can be
-                                     *  found in ports.h
-                                     */
-    SpiChannel chn;                 /**< The SPI channel to use */
-    enum autoCsPin autoCSPinEnable;
-    IoPortId csPinLetter;           /**< The chip select pin letter. Ex:
-                                     *  IOPORT_G. These can be found in
-                                     *  ports.h, part of MicroChip's
-                                     *  peripheral library.
-                                     */
+struct spi {
+    struct pin cs;  /* chip select pin */
+    SpiChannel chn;
+    enum auto_cs auto_cs;
 };
 
-/**
- * A virtual function table, or vtbl, that holds pointers to the functions
- * for an spiPort.
- */
-struct vtblSpiPort {
-    int32_t (*tx)          (const struct spiPort *self, const void *data, size_t len);
-    int32_t (*rx)          (const struct spiPort *self, void *dest, size_t len);
-    int32_t (*txStr)       (const struct spiPort *self, const char *str);
-    int32_t (*driveCSHigh) (const struct spiPort *self);
-    int32_t (*driveCSLow)  (const struct spiPort *self);
-};
+#define SPI_CS_INIT(_cs_ltr, _cs_num, _chn, _auto_cs)   \
+    {                                                   \
+    .cs  = PIN_INIT(_cs_ltr, _cs_num),                  \
+    .chn = (_chn),                                      \
+    .auto_cs = (_auto_cs)                               \
+    }
+#define SPI_INIT(chn)   \
+    SPI_CS_INIT(IOPORT_A, BIT_0, chn, AUTO_CS_DISABLE)
 
-int32_t
-SPI_new(struct spiPort *self, SpiChannel chn, uint32_t bitrate,
-        SpiOpenFlags oFlags);
+#define SPI_CS(name, _cs_ltr, _cs_num, _chn, _auto_cs)  \
+    struct spi name = SPI_CS_INIT(_cs_ltr, _cs_num, _chn, _auto_cs)
+#define SPI(name, chn)  \
+    struct spi name = SPI_INIT(chn)
 
-int32_t
-SPI_CS_new(struct spiPort *self, SpiChannel chn, uint32_t bitrate,
-        SpiOpenFlags oFlags, enum autoCsPin autoCSPinEnable,
-        IoPortId csPinLetter, uint32_t csPinNum);
+static INLINE void
+INIT_SPI_CS(struct spi *s, IoPortId cs_ltr, u32 cs_num, SpiChannel chn, enum auto_cs auto_cs)
+{
+    INIT_PIN(&(s->cs), cs_ltr, cs_num);
+    s->chn = chn;
+    s->auto_cs = auto_cs;
+}
+
+static INLINE void
+INIT_SPI(struct spi *s, SpiChannel chn)
+{
+    INIT_SPI_CS(s, IOPORT_A, BIT_0, chn, AUTO_CS_DISABLE);
+}
+
+#define AUTO_CS_ENABLED(spi)    \
+    (AUTO_CS_ENABLE == (spi)->auto_cs)
+#define AUTO_CS_DISABLED(spi)   \
+    (AUTO_CS_DISABLE == (spi)->auto_cs)
+
+static ALWAYSINLINE void
+spi_drive_cs_high(const struct spi *s)
+{
+    /* delay_us(5); */
+    pin_set(&(s->cs));
+    delay_us(5);
+}
+
+static ALWAYSINLINE void
+spi_drive_cs_low(const struct spi *s)
+{
+    pin_clear(&(s->cs));
+    delay_us(5);
+}
+
+void
+spi_tx(const struct spi *s, const void *src, size_t n);
+
+static ALWAYSINLINE void
+spi_puts(const struct spi *s, const char *str)
+{
+    spi_tx(s, str, strlen(str));
+}
+
+void
+spi_rx(const struct spi *s, void *dst, size_t n);
+
+void
+spi_setup(const struct spi *s, u32 bitrate, SpiOpenFlags oflags);
+
+void
+spi_cs_setup(const struct spi *s, u32 bitrate, SpiOpenFlags oflags);
 
 #endif

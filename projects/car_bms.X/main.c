@@ -1,21 +1,20 @@
-#include <stdint.h>
-
-#include "compiler.h"
+#define HZ (80000000UL)
 
 #include "ad7685.h"
 #include "can.h"
+#include "common_pragmas.h"
+#include "compiler.h"
 #include "ds18x20.h"
 #include "error_reporting.h"
 #include "flash.h"
 #include "hais50p.h"
 #include "ltc6803.h"
 #include "nokia5110.h"
+#include "nu_types.h"
 #include "nu32.h"
 #include "pinctl.h"
 #include "utility.h"
 #include "wdt.h"
-
-#include "common_pragmas.h"
 
 /** Trip codes that will be reported right before the car trips, and [hopefully]
  *  right after the car comes back up.
@@ -47,10 +46,10 @@ static const char * const tripcode_s[] = {
 };
 
 struct flashData {
-    int32_t         last_trip_module;
+    s32             last_trip_module;
     enum tripcode   last_tripcode;
     char            last_trip_file[20];
-    uint32_t        last_trip_line;
+    u32             last_trip_line;
     float           last_trip_temp;
     double          cc_battery;
     double          cc_array;
@@ -79,18 +78,17 @@ struct flashData {
     RESET_CAUSE(SOFTWARE)           \
     RESET_CAUSE(CONFIG_MISMATCH)
 
-#define RESET_CAUSE(x)  x##_RESET,
 enum lastReset {
+#define RESET_CAUSE(x)  x##_RESET,
     RESET_CAUSES
-};
 #undef RESET_CAUSE
+};
 
-#define RESET_CAUSE(x)  #x "_RESET",
 static const char *lastResetStr[] = {
+#define RESET_CAUSE(x)  #x "_RESET",
     RESET_CAUSES
-};
 #undef RESET_CAUSE
-
+};
 
 /**************************
  * configuration settings
@@ -154,20 +152,18 @@ static const float interval_save_flash          = 100;
     BMS_PIN(nokia2_cs,      E, 8)   \
     BMS_PIN(nokia2_reset,   A, 10)  \
     BMS_PIN(ltc6803_cs,     D, 9)   \
-    BMS_PIN(adc_cs,         F, 12)  \
     BMS_PIN(ds18b20,        A, 0)   \
     BMS_PIN(main_relay,     D, 2)   \
     BMS_PIN(array_relay,    D, 3)
-static const PIN(pin_batt_bypass, IOPORT_B, BIT_0|BIT_1|BIT_2|BIT_3|BIT_4|BIT_5);
+static const struct pin pin_batt_bypass = PIN_INIT(IOPORT_B, BIT_0|BIT_1|BIT_2|BIT_3|BIT_4|BIT_5);
 #define BMS_PIN(name,ltr,num)   \
-static const PINX(pin_##name,ltr,num);
+static const struct pin pin_##name = PIN_INIT(IOPORT_##ltr,BIT_##num);
 BMS_PINS
 #undef BMS_PIN
 
 /* SPI */
 static const SpiChannel    nokia_spi_channel       = SPI_CHANNEL2;
 static const SpiChannel    ltc6803_spi_chn         = SPI_CHANNEL1;
-static const SpiChannel    adc_spi_chn             = SPI_CHANNEL4;
 
 /* CAN */
 static const CAN_MODULE    common_can_mod          = CAN1;
@@ -259,17 +255,14 @@ const unsigned min_stack_size = (unsigned int)(&_min_stack_size);
 
 /*****************
  * device driver declarations
- *
- * pointers are for convenience (so all operations can be written in the
- * form pointer->op->function)
  */
-static struct nokia5110    display1,   *dp1         = &display1;
-static struct nokia5110    display2,   *dp2         = &display2;
-static struct ad7685       adc,        *adcp        = &adc;
-static struct ltc6803      ltc,        *ltcp        = &ltc;
-static struct ds18x20      ds,         *dsp         = &ds;
-static struct can          mppt_can,   *mpptCanp    = &mppt_can;
-static struct can          common_can, *commonCanp  = &common_can;
+static struct nokia5110 display1;
+static struct nokia5110 display2;
+static struct ad7685 adc = AD7685_INIT(SPI_CHANNEL4, IOPORT_F, BIT_12, 2, CHAIN_MODE, NO_BUSY_INDICATOR);
+static struct ltc6803 ltc;
+static struct ds18x20 ds;
+static struct can mppt_can;
+static struct can common_can;
 
 /**************
  * car state
@@ -586,17 +579,16 @@ init_ltcs(void)
 static ALWAYSINLINE int32_t
 init_adcs(void)
 {
-    int32_t err;
-    float tmp[2];
+    s32 err;
+    u32 tmp[2];
 
     clear_wdt();
 
-    IF_ERR(err = ad7685_new(adcp, adc_spi_chn, pin_adc_cs.ltr,
-                      pin_adc_cs.num, 2, CHAIN_MODE, NO_BUSY_INDICATOR),
+    IF_ERR(err = ad7685_init(&adc),
             REP_CRITICAL, "ad7685_new")
         return err;
 
-    adcp->op->convertAndReadVolts(adcp, tmp);
+    ad7685_convert_read_uv(&adc, tmp);
 
     return 0;
 }

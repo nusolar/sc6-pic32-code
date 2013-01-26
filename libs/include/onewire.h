@@ -28,6 +28,13 @@ struct w1 {
     struct pin pin;
 };
 
+#define SEARCH_STATE_INIT(last_discrep_bit, last_family_discrep_bit, prev_search_was_last_dev, romcode_bytes)   \
+    {.last_discrep_bit = last_discrep_bit, .last_family_discrep_bit = last_family_discrep_bit, \
+    .prev_search_was_last_dev = prev_search_was_last_dev, .romcode_crc.bytes = romcode_bytes}
+
+#define W1_INIT(pin_ltr, pin_num)   \
+    { .pin = PIN_INIT(pin_ltr, pin_num) }
+
 s32
 w1_power_bus(const struct w1 *w);
 

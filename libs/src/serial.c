@@ -1,183 +1,154 @@
-#include "../include/serial.h"
+#include <alloca.h>
+#include "errorcodes.h"
+#include "nu32.h"
+#include "serial.h"
+#include "utility.h"
+#include "wdt.h"
 
-static int32_t
-serial_init(struct serial *self, unsigned int baudrate, enum ModuleInterrupt UseInterrupt,
-                INT_PRIORITY intPriority, UART_FIFO_MODE InterruptModes,
-                UART_LINE_CONTROL_MODE LineControlModes, UART_CONFIGURATION UARTConfig,
-                UART_ENABLE_MODE EnableModes);
+COLD static void
+serial_report(struct error_reporting_dev *e,
+    const char *file, const char *func, u32 line, const char *expr,
+    UNUSED enum report_priority priority, s32 err, const char *err_s,
+    const char *fmtd_msg)
+{
+    struct serial *s = erd_to_serial(e);
 
-static int32_t
-tx (const struct serial *self, const void *data, size_t len);
+    /*
+    if (s->is_async) {
+        struct serial_async *as = serial_to_async(s);
+        if (as->erd_async) {
+            serial_printf_async()
+        }
+    }
+     */
 
-static int32_t
-rx (struct serial *self, void *dst, size_t len);
+    serial_printf(s,
+        "%s:%s:%d:%s\r\n"
+        "\tERR %d(%s)\r\n"
+        "\t%s\r\n\r\n",
+        file, func, line, expr,
+        err, err_s,
+        fmtd_msg);
+}
 
-static int32_t
-flushRxBuf (struct serial *self, void *dst, size_t len);
-
-static int32_t
-serialprintf (const struct serial *self, const char *fmt, ...) __attribute__((format(printf,2,3)));
-
-const struct vtblSerial serialOps = {
-    .printf     = &serialprintf,
-    .tx         = &tx,
-    .rx         = &rx,
-    .flushRxBuf = &flushRxBuf,
-};
-
-static int32_t
-serial_report(struct error_reporting_dev *self,
-                                const char *file, uint32_t line,
-                                const char *expr,
-                                enum report_priority priority,
-                                int32_t errNum, const char *errName,
-                                const char *fmtdMsg);
-
-static const struct vtblError_reporting_dev serial_erd_ops = {
+const struct vtbl_error_reporting_dev serial_erd_ops = {
     .report         = &serial_report,
-    .resetErrState  = NULL,
+    .reset_err_state= NULL,
 };
 
-static int32_t
-resetRxBuf(struct serial *self)
+void
+serial_setup(struct serial *s, u32 baud, enum module_interrupt use_interrupt,
+        INT_PRIORITY int_priority, UART_FIFO_MODE interrupt_modes,
+        UART_LINE_CONTROL_MODE line_control_modes, UART_CONFIGURATION uart_config,
+        UART_ENABLE_MODE enable_modes)
 {
-    if (self == NULL)
-        return -ENULPTR;
+    INT_VECTOR int_vect;
+    INT_SOURCE int_src;
 
-    memset(self->rxBuf, 0, sizeof(self->rxBuf));
-    self->currentBufPos = 0;
-    self->rxBufFull = FALSE;
+    UARTConfigure(s->module, uart_config);
+    UARTSetFifoMode(s->module, interrupt_modes);
+    UARTSetLineControl(s->module, line_control_modes);
+    UARTSetDataRate(s->module, HZ, baud);
+    UARTEnable(s->module, UART_ENABLE_FLAGS(enable_modes));
 
-    return 0;
-}
-
-int32_t
-serial_new(struct serial *self, UART_MODULE serialModule, unsigned int baudrate, enum ModuleInterrupt UseInterrupt,
-                INT_PRIORITY intPriority, UART_FIFO_MODE InterruptModes,
-                UART_LINE_CONTROL_MODE LineControlModes, UART_CONFIGURATION UARTConfig,
-                UART_ENABLE_MODE EnableModes, const BYTE *delims, size_t numDelims)
-{
-    uint32_t ui;
-    const size_t maxDelims = MAX_DELIMS;
-
-    if (self == NULL)
-        return -ENULPTR;
-
-    self->op        = &serialOps;
-    self->erd.op    = &serial_erd_ops;
-    self->serialModule = serialModule;
-    resetRxBuf(self);
-
-    self->numDelims = MIN(maxDelims, numDelims);
-    for (ui = 0; ui < self->numDelims; ui++)
-        self->delims[ui] = delims[ui];
-
-    return serial_init(self, baudrate, UseInterrupt, intPriority, InterruptModes,
-                        LineControlModes, UARTConfig, EnableModes);
-}
-
-static int32_t
-serial_init(struct serial *self, uint32_t baudrate, enum ModuleInterrupt UseInterrupt,
-                INT_PRIORITY intPriority, UART_FIFO_MODE InterruptModes,
-                UART_LINE_CONTROL_MODE LineControlModes, UART_CONFIGURATION UARTConfig,
-                UART_ENABLE_MODE EnableModes)
-{
-    INT_VECTOR intVect;
-    INT_SOURCE intSrc;
-
-    if (self == NULL)
-        return -ENULPTR;
-
-    UARTConfigure(self->serialModule, UARTConfig);
-    UARTSetFifoMode(self->serialModule, InterruptModes);
-    UARTSetLineControl(self->serialModule, LineControlModes);
-    UARTSetDataRate(self->serialModule, sys_clk_hz, baudrate);
-    UARTEnable(self->serialModule, UART_ENABLE_FLAGS(EnableModes));
-
-    if (UseInterrupt) {
-        switch(self->serialModule) {
+    if (USE_UART_INTERRUPT == use_interrupt) {
+        switch(s->module) {
             case UART1: 
-                intVect = INT_UART_1_VECTOR;
-                intSrc = INT_U1RX;
+                int_vect = INT_UART_1_VECTOR;
+                int_src = INT_U1RX;
                 break;
             case UART2:
-                intVect = INT_UART_2_VECTOR;
-                intSrc = INT_U2RX;
+                int_vect = INT_UART_2_VECTOR;
+                int_src = INT_U2RX;
                 break;
             case UART3:
-                intVect = INT_UART_3_VECTOR;
-                intSrc = INT_U3RX;
+                int_vect = INT_UART_3_VECTOR;
+                int_src = INT_U3RX;
                 break;
             case UART4:
-                intVect = INT_UART_4_VECTOR;
-                intSrc = INT_U4RX;
+                int_vect = INT_UART_4_VECTOR;
+                int_src = INT_U4RX;
                 break;
             case UART5:
-                intVect = INT_UART_5_VECTOR;
-                intSrc = INT_U5RX;
+                int_vect = INT_UART_5_VECTOR;
+                int_src = INT_U5RX;
                 break;
             case UART6:
-                intVect = INT_UART_6_VECTOR;
-                intSrc = INT_U6RX;
+                int_vect = INT_UART_6_VECTOR;
+                int_src = INT_U6RX;
                 break;
             case UART_NUMBER_OF_MODULES: 
             default:
                 break;
         }
-        INTEnable(intSrc, INT_ENABLED);
-        INTSetVectorPriority(intVect, intPriority);
-        INTSetVectorSubPriority(intVect, INT_SUB_PRIORITY_LEVEL_0);
+        INTEnable(int_src, INT_ENABLED);
+        INTSetVectorPriority(int_vect, int_priority);
+        INTSetVectorSubPriority(int_vect, INT_SUB_PRIORITY_LEVEL_0);
     }
-
-    return 0;
 }
 
-static int32_t
-serial_report(struct error_reporting_dev *self,
-                                const char *file, uint32_t line,
-                                const char *expr,
-                                enum report_priority priority,
-                                int32_t errNum, const char *errName,
-                                const char *fmtdMsg)
-{
-    struct serial *serialSelf;
-
-    if (!self || !file || !expr || !errName || !fmtdMsg)
-        return -ENULPTR;
-
-    serialSelf = error_reporting_dev_to_serial(self);
-
-    serialSelf->op->printf(serialSelf, "%s:%d", file, line);
-    serialSelf->op->printf(serialSelf, "\r\n\t");
-    serialSelf->op->tx(serialSelf, expr, strlen(expr));
-    serialSelf->op->printf(serialSelf, "\r\n\t");
-    serialSelf->op->printf(serialSelf, "%d(%s)", errNum, errName);
-    serialSelf->op->printf(serialSelf, "\r\n\t");
-    serialSelf->op->tx(serialSelf, fmtdMsg, strlen(fmtdMsg));
-    serialSelf->op->printf(serialSelf, "\r\n\r\n");
-
-    return 0;
-}
-
-static int32_t
-tx (const struct serial *self, const void *data, size_t len)
+void
+serial_tx(const struct serial *s, const void *src, size_t n)
 {
     size_t ui;
 
-    if (!self || !data)
-        return -ENULPTR;
-    
-    for (ui = 0; ui < len; ++ui) {
+    for (ui = 0; ui < n; ++ui) {
         clear_wdt();
-        while (!UARTTransmitterIsReady(self->serialModule))
+        while (!UARTTransmitterIsReady(s->module))
             ;   /* do nothing */
-        UARTSendDataByte(self->serialModule, ((const BYTE *)data)[ui]);
+        UARTSendDataByte(s->module, ((const BYTE *)src)[ui]);
     }
 
-    while (!UARTTransmissionHasCompleted(self->serialModule))
+    while (!UARTTransmissionHasCompleted(s->module))
         ;   /* do nothing */
+}
 
-    return 0;
+void PRINTF(2,3)
+serial_printf(const struct serial *s, const char *fmt, ...)
+{
+    va_list fmtargs;
+    char *buf;
+    size_t n;
+
+    if (unlikely(!fmt))
+        return;
+
+    va_start(fmtargs, fmt);
+    n = vsnprintf(NULL, 0, fmt, fmtargs);
+    buf = alloca(n);
+    vsprintf(buf, fmt, fmtargs);
+    va_end(fmtargs);
+
+    serial_tx(s, buf, n);
+}
+
+s32
+serial_rx(struct serial *s, void *dst, size_t n)
+{
+    s32 err = 0;
+    BOOL rxMsgSuccess = FALSE;
+
+    while (UARTReceivedDataIsAvailable(s->module)) {
+        s->rxBuf[s->currentBufPos] = UARTGetDataByte(s->module);
+        if (s->currentBufPos == ARRAY_SIZE(self->rxBuf)-1)
+            s->rxBufFull = TRUE;
+
+        if (matchesDelim(self, self->rxBuf[s->currentBufPos])) {
+            rxMsgSuccess = TRUE;
+
+            err = bufDelimCpy(s, s->currentBufPos, dst, len);
+
+            reset_rx_buf(self);
+            break;
+        }
+
+        self->currentBufPos = (self->currentBufPos + 1) % ARRAY_SIZE(self->rxBuf);
+    }
+
+    if (rxMsgSuccess == FALSE)
+        err = -ENODATA;
+
+    return err;
 }
 
 static int32_t
@@ -216,38 +187,6 @@ matchesDelim(const struct serial *self, BYTE val)
 }
 
 static int32_t
-rx (struct serial *self, void *dst, size_t len)
-{
-    int32_t err = 0;
-    BOOL rxMsgSuccess = FALSE;
-
-    if (self == NULL || dst == NULL)
-        return -ENULPTR;
-
-    while (UARTReceivedDataIsAvailable(self->serialModule)) {
-        self->rxBuf[self->currentBufPos] = UARTGetDataByte(self->serialModule);
-        if (self->currentBufPos == ARRAY_SIZE(self->rxBuf)-1)
-            self->rxBufFull = TRUE;
-
-        if (matchesDelim(self, self->rxBuf[self->currentBufPos])) {
-            rxMsgSuccess = TRUE;
-
-            err = bufDelimCpy(self, self->currentBufPos, dst, len);
-
-            resetRxBuf(self);
-            break;
-        }
-
-        self->currentBufPos = (self->currentBufPos + 1) % ARRAY_SIZE(self->rxBuf);
-    }
-
-    if (rxMsgSuccess == FALSE)
-        err = -ENODATA;
-
-    return err;
-}
-
-static int32_t
 flushRxBuf (struct serial *self, void *dst, size_t len)
 {
     if (self == NULL)
@@ -256,21 +195,13 @@ flushRxBuf (struct serial *self, void *dst, size_t len)
     if (dst != NULL && len >= 1)
         memcpy(dst, self->rxBuf, MIN(sizeof(self->rxBuf), len));
     
-    return resetRxBuf(self);
+    return reset_rx_buf(self);
 }
 
-static int32_t
-serialprintf (const struct serial *self, const char *fmt, ...)
+static INLINE void
+reset_rx_buf(struct serial *s)
 {
-    va_list fmtargs;
-    char buffer[1024];
-
-    if (self == NULL || fmt == NULL)
-        return -ENULPTR;
-
-    va_start(fmtargs, fmt);
-    vsnprintf(buffer, sizeof(buffer)-1, fmt, fmtargs);
-    va_end(fmtargs);
-
-    return tx(self, buffer, strlen(buffer));
+    memset(s->rx_buf, 0, sizeof(s->rx_buf));
+    s->buf_pos = 0;
+    s->rx_buf_full = false;
 }

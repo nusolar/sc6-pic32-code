@@ -1,7 +1,7 @@
-#ifndef __NU_ERRORCODES_H
-#define __NU_ERRORCODES_H
+#ifndef NU_ERRORCODES_H
+#define NU_ERRORCODES_H
 
-#include <stdint.h>
+#include "nu_types.h"
 #include "utility.h"
 
 /* "The X Macro" technique from Dr. Dobb's
@@ -10,33 +10,33 @@
  * errorcodes.c
  */
 #define ERRORS \
-    X(ENONE)            /* no error (success) */                            \
-    X(EOTHER)           /* unspecified error */                             \
-    X(EINVALIDOP)       /* invalid operation */                             \
-    X(EINVAL)           /* invalid argument */                              \
-    X(ENULPTR)          /* null pointer (similar to EINVAL) */              \
-    X(ETIMEOUT)         /* operation timed out */                           \
-    X(ENODATA)          /* no data available */                             \
-    X(ECRC)             /* CRC did not match expected CRC */                \
-    X(ENODEV)           /* no device detected */                            \
-    X(EEXCEEDSFLASHSIZ) /* exceeded set flash size on flash read/write */   \
-    X(ETRUNCATED)       /* data/msg too long & truncated on operation */    \
-    X(ETRIP)            /* car is tripping...this is currently unused
-                         * and could potentially be removed */              \
-    X(ELTC6803CFG)      /* LTC6803 cfg did not match expected */            \
-    X(ELTC6803ADC)      /* LTC6803 ADC failure */                           \
-    X(ELTC6803MUX)      /* LTC6803 MUX failure */                           \
-    X(ELTC6803REF)      /* LTC6803 VREF failure */                          \
-    X(EREPORTNOFREEDEVS)
+    ERROR(ENONE)            /* no error (success) */                            \
+    ERROR(EOTHER)           /* unspecified error */                             \
+    ERROR(EINVALIDOP)       /* invalid operation */                             \
+    ERROR(EINVAL)           /* invalid argument */                              \
+    ERROR(ENULPTR)          /* null pointer (similar to EINVAL) */              \
+    ERROR(ETIMEOUT)         /* operation timed out */                           \
+    ERROR(ENODATA)          /* no data available */                             \
+    ERROR(ECRC)             /* CRC did not match expected CRC */                \
+    ERROR(ENODEV)           /* no device detected */                            \
+    ERROR(EEXCEEDSFLASHSIZ) /* exceeded set flash size on flash read/write */   \
+    ERROR(ETRUNCATED)       /* data/msg too long & truncated on operation */    \
+    ERROR(ETRIP)            /* car is tripping...this is currently unused
+                             * and could potentially be removed */              \
+    ERROR(ELTC6803CFG)      /* LTC6803 cfg did not match expected */            \
+    ERROR(ELTC6803ADC)      /* LTC6803 ADC failure */                           \
+    ERROR(ELTC6803MUX)      /* LTC6803 MUX failure */                           \
+    ERROR(ELTC6803REF)      /* LTC6803 VREF failure */                          \
+    ERROR(EREPORTNOFREEDEVS)
 
-#define X(a) a,
 enum errors {
+#define ERROR(x) x,
     ERRORS
+#undef ERROR
     NUM_ERRORS
 };
-#undef X
 
 const char *
-getErrorName(int32_t err);
+get_error_name(s32 err);
 
 #endif

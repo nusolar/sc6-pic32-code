@@ -1,78 +1,48 @@
-#include "../include/nu32.h"
+#include <peripheral/adc10.h>
+#include <peripheral/cvref.h>
+#include <peripheral/eth.h>
+#include <peripheral/pmp.h>
+#include <peripheral/system.h>
+#include "nu32.h"
+#include "nu_types.h"
 
-struct led nu32_led0, *nu32_led0p = NULL;
-struct led nu32_led1, *nu32_led1p = NULL;
-
-struct serial nu32_serial, *nu32_serp = &nu32_serial;
-
-uint32_t sys_clk_hz = 80000000; /* 80 MHz */
-
-int32_t
-nu32_init(uint32_t sysClkHz)
+WEAK CONSTRUCTOR() void
+nu32_setup(void)
 {
-    sys_clk_hz = sysClkHz;
-
-    SYSTEMConfig(sys_clk_hz, SYS_CFG_ALL);
-
+    SYSTEMConfig(HZ, SYS_CFG_ALL);
     /* configure for multi-vectored mode */
     INTConfigureSystem(INT_SYSTEM_CONFIG_MULT_VECTOR);
-
     /* enable multi-vector interrupts */
     INTEnableSystemMultiVectoredInt();
-
     /* disable JTAG to get A4 and A5 back */
     DDPCONbits.JTAGEN = 0;
-
     /* disable comparator in attempt to get A9 and A10 back */
     CVREFOpen(CVREF_DISABLE);
-
     /* disable ADC in attempt to get A9 and A10 back...possibly only need the
      * second config to do this
      */
     OpenADC10(ADC_MODULE_OFF, ADC_VREF_AVDD_AVSS, 0, 0, 0);
-
     /* disable ethernet controller */
     EthEnable(0);
-
     /* disable parallel port */
     mPMPDisable();
 
     /* Configure LED outputs */
-    PORTSetPinsDigitalOut(NU32_LED0_PORT, NU32_LED0_PIN);
-    PORTSetPinsDigitalOut(NU32_LED1_PORT, NU32_LED1_PIN);
+    led_setup(&nu32_led0);
+    led_setup(&nu32_led1);
 
     /* Configure input for switch */
-    PORTSetPinsDigitalIn(NU32_USER_PORT, NU32_USER_PIN);
-
-    return 0;
+    pin_set_digital_in(&nu32_user);
 }
 
-int32_t
-nu32_init_leds(void)
+void
+nu32_setup_leds(void)
 {
-    int32_t ret1, ret2;
-
-    if ((ret1 = led_new(&nu32_led0, NU32_LED0_PORT, NU32_LED0_PIN)) >= 0)
-        nu32_led0p = &nu32_led0;
-    if ((ret2 = led_new(&nu32_led1, NU32_LED1_PORT, NU32_LED1_PIN)) >= 0)
-        nu32_led1p = &nu32_led1;
-
-    return MIN(ret1, ret2);
+    led_setup(&nu32_led0);
+    led_setup(&nu32_led1);
 }
 
-int32_t
-nu32_init_serial(uint32_t baud)
-{
-    int32_t ret;
-    BYTE delims[] = {'\r', '\n'};
-    if ((ret = serial_new(&nu32_serial, NU32_UART_MODULE, baud, NO_UART_INTERRUPT,
-            INT_PRIORITY_DISABLED, 0, UART_DATA_SIZE_8_BITS,
-            UART_ENABLE_PINS_TX_RX_ONLY,
-            UART_PERIPHERAL|UART_TX|UART_RX, delims, sizeof(delims))) >= 0)
-        nu32_serp = &nu32_serial;
-
-    return ret;
-}
+#if 0 /* for posterity... */
 
 void __attribute__((deprecated))
 initSerialNU32v2(uint32_t serialBaudRate)
@@ -116,3 +86,5 @@ PutCharacter(UART_MODULE id, char character)
     while(!UARTTransmissionHasCompleted(id))
         ;   /* do nothing */
 }
+
+#endif

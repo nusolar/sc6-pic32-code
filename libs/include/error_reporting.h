@@ -1,50 +1,45 @@
-#ifndef __NU_ERROR_REPORTING_H
-#define __NU_ERROR_REPORTING_H
+#ifndef NU_ERROR_REPORTING_H
+#define NU_ERROR_REPORTING_H
 
-#include <limits.h>
-#include <plib.h>
 #include <stdarg.h>
-#include <stdint.h>
-#include <stdio.h>
-#include "errorcodes.h"
-#include "safestring.h"
+#include "compiler.h"
+#include "nu_types.h"
 #include "utility.h"
-#include "wdt.h"
 
 #ifndef MAX_REPORTING_DEVS
-    #define MAX_REPORTING_DEVS  10
+# define MAX_REPORTING_DEVS  10
 #endif
 
-#define REPORTF(priority, errNum, expr, fmt...) \
-    do {reportf(__FILE__, __LINE__, (priority), (errNum), (expr), ## fmt);}while(0)
+#define REPORTF(expr, priority, err_num, fmt...)    \
+    reportf(__FILE__, __FUNCTION__, __LINE__, (expr), (priority), (err_num), ## fmt)
 
-#define REPORT_ERR(priority, errNum, fmt...)    \
-    REPORTF(priority, errNum, NULL, ## fmt)
+#define REPORT_ERR(priority, err_num, fmt...)   \
+    REPORTF(NULL, priority, err_num, ## fmt)
 
-#define REPORT(priority, fmt...)   \
-    REPORTF(priority, ENONE, NULL, ## fmt)
+#define REPORT(priority, fmt...)    \
+    REPORTF(NULL, priority, ENONE, ## fmt)
 
 #define IF_ERR(expr, priority, fmt...)                  \
     if (unlikely({                                      \
-        int32_t _errno = (int32_t)(expr);               \
+        s32 _errno = (s32)(expr);                       \
         if (unlikely(_errno < 0))                       \
-            REPORTF((priority), _errno, #expr, ## fmt); \
+            REPORTF(#expr, (priority), _errno, ## fmt); \
         _errno < 0;                                     \
     }))
 
 #define IF_NOERR(expr, priority, fmt...)                \
     if (likely({                                        \
-        int32_t _errno = (int32_t)(expr);               \
+        s32 _errno = (s32)(expr);                       \
         if (unlikely(_errno < 0))                       \
-            REPORTF((priority), _errno, #expr, ## fmt); \
+            REPORTF(#expr, (priority), _errno, ## fmt); \
         _errno >= 0;                                    \
     }))
 
 #define REPORT_ON_ERR(expr, priority, fmt...)           \
     do {                                                \
-        int32_t _errno = (int32_t)(expr);               \
+        s32 _errno = (s32)(expr);                       \
         if (_errno < 0)                                 \
-            REPORTF((priority), _errno, #expr, ## fmt); \
+            REPORTF(#expr, (priority), _errno, ## fmt); \
     } while(0)
 
 enum report_priority {
@@ -55,59 +50,47 @@ enum report_priority {
     REP_ERROR,
     REP_CRITICAL,
     REP_ALERT,
-    REP_EMERGENCY,
+    REP_EMERGENCY
 };
 
 struct error_reporting_dev {
-    const struct vtblError_reporting_dev *op;
-    enum report_priority minPriority;
+    const struct vtbl_error_reporting_dev *op;
+    enum report_priority min_priority;
 };
 
-struct vtblError_reporting_dev {
-    int32_t (*report)          (struct error_reporting_dev *self,
-                                const char *file, uint32_t line,
+struct vtbl_error_reporting_dev {
+    s32 (*report)          (struct error_reporting_dev *self,
+                                const char *file, const char *func, u32 line,
                                 const char *expr,
                                 enum report_priority priority,
-                                int32_t errNum, const char *errName,
+                                s32 errNum, const char *errName,
                                 const char *fmtdMsg);
-    int32_t (*resetErrState)   (struct error_reporting_dev *self);
+    s32 (*reset_err_state) (struct error_reporting_dev *self);
 };
 
-int32_t
-register_reporting_dev(struct error_reporting_dev *erd,
-                        enum report_priority minPriority);
+#define ERD_INIT(priority, _op)  \
+    {.op = _op, .min_priority = priority}
 
-int32_t
+static ALWAYSINLINE void
+INIT_ERD(struct error_reporting_dev *e, enum report_priority min_prior,
+        const struct vtbl_error_reporting_dev *op)
+{
+    e->min_priority = min_prior;
+    e->op = op;
+}
+
+s32
+register_reporting_dev(struct error_reporting_dev *erd,
+                        enum report_priority min_priority);
+
+void
 unregister_reporting_dev(const struct error_reporting_dev *erd);
 
-int32_t
-printErrInfo(char *dst, size_t dstSiz, enum report_priority priority,
-                int32_t errNum, const char *errName);
-
-int32_t
-printContextInfo(char *dst, size_t dstSiz, const char *expr, const char *file,
-                    uint32_t line);
-
 void
-setErrBuf(const char *file, uint32_t line, int32_t err, const char *expr);
+err_clear(enum report_priority max_priority);
 
-void
-err_clear(enum report_priority maxPriority);
-
-void __attribute__((format(printf,6,7)))
-reportf(const char *file, uint32_t line, enum report_priority priority,
-        int32_t errNum, const char *expr, const char *fmt, ...);
-
-void __attribute__((format(printf,4,5)))
-reportf_fileLineBuf(enum report_priority priority, int32_t errNum,
-        const char *expr, const char *fmt, ...);
-
-void __attribute__((format(printf,3,4)))
-reportf_fileLineExprBuf(enum report_priority priority, int32_t errNum,
-        const char *fmt, ...);
-
-void __attribute__((format(printf,2,3)))
-reportf_fileLineExprErrBuf(enum report_priority priority,
-        const char *fmt, ...);
+COLD void PRINTF(7, 8)
+reportf(const char *file, const char *func, u32 line, const char *expr,
+        enum report_priority priority, s32 err, const char *fmt, ...);
 
 #endif

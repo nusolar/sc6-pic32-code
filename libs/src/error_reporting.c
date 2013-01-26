@@ -1,201 +1,111 @@
-#include "../include/error_reporting.h"
+#include <stdarg.h>
+#include <stdio.h>
+#include "error_reporting.h"
+#include "errorcodes.h"
+#include "utility.h"
+#include "wdt.h"
 
-static struct error_reporting_dev *repDevices[MAX_REPORTING_DEVS] = {NULL};
+static struct error_reporting_dev *rep_devices[MAX_REPORTING_DEVS] = {NULL};
 
-inline static int32_t
-devIsEmpty(uint32_t i)
+#define dev_is_empty(i) (NULL == rep_devices[(i)])
+#define clear_dev(i)    rep_devices[(i)] = NULL
+
+static s32 MUST_CHECK
+get_free_err_dev_index(void)
 {
-    return (repDevices[i] == NULL);
-}
-
-inline static void
-clearDev(uint32_t i)
-{
-    repDevices[i] = NULL;
-}
-
-static int32_t
-getFreeErrDevIndex(void)
-{
-    uint16_t ui;
-    for (ui = 0; ui < ARRAY_SIZE(repDevices); ui++) {
-        ClearWDT();
-        if (devIsEmpty(ui))
+    u16 ui;
+    for (ui = 0; ui < ARRAY_SIZE(rep_devices); ++ui)
+        if (dev_is_empty(ui))
             return ui;
-    }
     
     return -EREPORTNOFREEDEVS;
 }
 
-int32_t
+s32
 register_reporting_dev(struct error_reporting_dev *erd,
-                        enum report_priority minPriority)
+                        enum report_priority min_priority)
 {
-    int32_t tmp;
-
-    if (!erd)
-        return -ENULPTR;
-
-    tmp = getFreeErrDevIndex();
+    s32 tmp = get_free_err_dev_index();
     if (tmp < 0)
         return tmp;
 
-    erd->minPriority = minPriority;
-    repDevices[tmp] = erd;
+    erd->min_priority = min_priority;
+    rep_devices[tmp] = erd;
 
     return 0;
 }
 
-int32_t
+COLD void
 unregister_reporting_dev(const struct error_reporting_dev *erd)
 {
-    uint32_t ui;
-
-    if (erd == NULL)
-        return -ENULPTR;
-
-    for (ui = 0; ui < ARRAY_SIZE(repDevices); ui++) {
-        clear_wdt();
-        if (repDevices[ui] == erd)
-            clearDev(ui);
-    }
-
-    return 0;
-}
-
-int32_t
-printErrInfo(char *dst, size_t dstSiz, enum report_priority priority,
-                int32_t errNum, const char *errName)
-{
-    if (dst == NULL || errName == NULL)
-        return -ENULPTR;
-
-    snprintf(dst, dstSiz, "ERR<%d>%d(%s)", priority, errNum, errName);
-    return 0;
-}
-
-int32_t
-printContextInfo(char *dst, size_t dstSiz, const char *expr, const char *file,
-                    uint32_t line)
-{
-    if (dst == NULL || expr == NULL || file == NULL)
-        return -ENULPTR;
-
-    snprintf(dst, sizeof(dstSiz), "%s\n\t@%s:%d", expr, file, line);
-    return 0;
+    u16 ui;
+    for (ui = 0; ui < ARRAY_SIZE(rep_devices); ++ui)
+        if (rep_devices[ui] == erd)
+            clear_dev(ui);
 }
 
 /*
  * expr may be NULL if there is no expression to report
  */
-static void
-__attribute__ ((format (printf, 6, 0)))
-vreportf (const char *file, uint32_t line, enum report_priority priority,
-        int32_t errNum, const char *expr, const char *fmt, va_list arg)
+static INLINE void PRINTF(7, 0)
+vreportf (const char *file, const char *func, u32 line, const char *expr,
+    enum report_priority priority, s32 err, const char *fmt, va_list arg)
 {
     /* prevent recursion (also breaks thread-safeness, unfortunately) */
-    static int32_t      vreportfRecurseLock = 0;
-    uint32_t            ui;
-    char                formattedMsg[1024];
-    const char          *errName = getErrorName(errNum);
+    static volatile s32 recurse_lock = 0;
+    u32                 ui;
+    char                formatted_msg[1024];
+    const char          *err_str = get_error_name(err);
     const char          *blank = "";
 
-    if (!file || !fmt)
-        return;
-
+    if (!file)
+        file = blank;
+    if (!func)
+        func = blank;
     if (!expr)
         expr = blank;
+    if (!fmt)
+        fmt = blank;
 
-    vsnprintf(formattedMsg, sizeof(formattedMsg), fmt, arg);   
+    vsnprintf(formatted_msg, sizeof(formatted_msg), fmt, arg);
 
-    if (vreportfRecurseLock)
+    if (recurse_lock)
         return;
-    vreportfRecurseLock = 1;
+    recurse_lock = 1;
 
-    for (ui = 0; ui < ARRAY_SIZE(repDevices); ui++) {
+    for (ui = 0; ui < ARRAY_SIZE(rep_devices); ++ui) {
         clear_wdt();
-        if (devIsEmpty(ui) || repDevices[ui]->minPriority > priority ||
-                repDevices[ui]->op->report == NULL)
+        if (dev_is_empty(ui) || rep_devices[ui]->min_priority > priority ||
+                rep_devices[ui]->op->report == NULL)
             continue;
 
-        repDevices[ui]->op->report(repDevices[ui], file, line, expr, priority,
-                                    errNum, errName, formattedMsg);
+        rep_devices[ui]->op->report(rep_devices[ui], file, func, line, expr,
+            priority, err, err_str, formatted_msg);
     }
 
-    vreportfRecurseLock = 0;
+    recurse_lock = 0;
 }
 
 void
-err_clear(enum report_priority maxPriority)
+err_clear(enum report_priority max_priority)
 {
-    uint32_t ui;
-    for (ui = 0; ui < ARRAY_SIZE(repDevices); ui++) {
+    u32 ui;
+    for (ui = 0; ui < ARRAY_SIZE(rep_devices); ++ui) {
         clear_wdt();
-        if (devIsEmpty(ui) || repDevices[ui]->minPriority > maxPriority ||
-                repDevices[ui]->op->resetErrState == NULL)
+        if (dev_is_empty(ui) || rep_devices[ui]->min_priority > max_priority ||
+                rep_devices[ui]->op->reset_err_state == NULL)
             continue;
         
-        repDevices[ui]->op->resetErrState(repDevices[ui]);
+        rep_devices[ui]->op->reset_err_state(rep_devices[ui]);
     }
 }
 
-void
-reportf(const char *file, uint32_t line, enum report_priority priority,
-        int32_t errNum, const char *expr, const char *fmt, ...)
+COLD void
+reportf(const char *file, const char *func, u32 line, const char *expr,
+    enum report_priority priority, s32 err, const char *fmt, ...)
 {
     va_list fmtargs;
     va_start(fmtargs, fmt);
-    vreportf(file, line, priority, errNum, expr, fmt, fmtargs);
-    va_end(fmtargs);
-}
-
-static char     filebuf[1000] = {};
-static char     exprbuf[1000] = {};
-static uint32_t linebuf = 0;
-static int32_t  errbuf = 0;
-
-void
-setErrBuf(const char *file, uint32_t line, int32_t err, const char *expr)
-{
-    linebuf = line;
-    errbuf  = err;
-
-    if (!file)
-        filebuf[0] = '\0';
-    else
-        strlcpy(filebuf, file, ARRAY_SIZE(filebuf));
-
-    if (!expr)
-        exprbuf[0] = '\0';
-    else
-        strlcpy(exprbuf, expr, ARRAY_SIZE(exprbuf));
-}
-
-void
-reportf_fileLineBuf(enum report_priority priority, int32_t errNum,
-        const char *expr, const char *fmt, ...)
-{
-    va_list fmtargs;
-    va_start(fmtargs, fmt);
-    vreportf(filebuf, linebuf, priority, errNum, expr, fmt, fmtargs);
-    va_end(fmtargs);
-}
-
-void
-reportf_fileLineExprBuf(enum report_priority priority, int32_t errNum,
-        const char *fmt, ...)
-{
-    va_list fmtargs;
-    va_start(fmtargs, fmt);
-    vreportf(filebuf, linebuf, priority, errNum, exprbuf, fmt, fmtargs);
-    va_end(fmtargs);
-}
-
-void
-reportf_fileLineExprErrBuf(enum report_priority priority, const char *fmt, ...)
-{
-    va_list fmtargs;
-    va_start(fmtargs, fmt);
-    vreportf(filebuf, linebuf, priority, errbuf, exprbuf, fmt, fmtargs);
+    vreportf(file, func, line, expr, priority, err, fmt, fmtargs);
     va_end(fmtargs);
 }

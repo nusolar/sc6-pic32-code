@@ -1,3 +1,31 @@
+#include "can.h"
+#include "common_pragmas.h"
+#include "nokia5110.h"
+#include "pinctl.h"
+
+static const CAN(ws_can,        CAN1);
+static const CAN(common_can,    CAN2);
+static const NOKIA5110(display,
+        SPI_CHANNEL2, IOPORT_E, BIT_9, IOPORT_G, BIT_9, IOPORT_A, BIT_9);
+
+/* analog in */
+static const PIN(regen_pedal,       IOPORT_B, BIT_0);
+static const PIN(accel_pedal,       IOPORT_B, BIT_1);
+static const PIN(airgap_pot,        IOPORT_B, BIT_4);
+
+/* digital in */
+static const PIN(brake_pedal,       IOPORT_B, BIT_2);
+static const PIN(headlight_switch,  IOPORT_B, BIT_3);
+static const PIN(airgap_enable,     IOPORT_B, BIT_5);
+static const PIN(regen_enable,      IOPORT_B, BIT_8);
+static const PIN(reverse_switch,    IOPORT_B, BIT_9);
+
+/* digital out */
+static const PIN(lights_brake,      IOPORT_D, BIT_0);
+static const PIN(lights_l,          IOPORT_D, BIT_1);
+static const PIN(lights_r,          IOPORT_D, BIT_2);
+static const PIN(headlights,        IOPORT_D, BIT_3);
+
 #include <float.h>
 #include <stdint.h>
 
@@ -7,7 +35,7 @@
 #include "nokia5110.h"
 #include "nu32.h"
 #include "serial.h"
-#include "wavesculptor20.h"
+#include "ws20.h"
 
 #include "common_pragmas.h"
 
@@ -27,9 +55,6 @@ static const uint32_t       SYS_CLK_HZ                  = 80000000;
  * pins
  */
 
-static const CAN_MODULE     WS_CAN_MOD                  = CAN1;
-static const CAN_MODULE     COMMON_CAN_MOD              = CAN2;
-
 static const SpiChannel     NOKIA_SPI_CHANNEL           = SPI_CHANNEL2;
 static const IoPortId       NOKIA_DC_PIN_LTR            = IOPORT_E;
 static const uint32_t       NOKIA_DC_PIN_NUM            = BIT_9;
@@ -37,51 +62,6 @@ static const IoPortId       NOKIA_CS_PIN_LTR            = IOPORT_G;
 static const uint32_t       NOKIA_CS_PIN_NUM            = BIT_9;
 static const IoPortId       NOKIA_RESET_PIN_LTR         = IOPORT_A;
 static const uint32_t       NOKIA_RESET_PIN_NUM         = BIT_9;
-
-/* digital in */
-
-static const IoPortId      REVERSE_SWITCH_PIN_LTR       = IOPORT_B;
-static const uint32_t      REVERSE_SWITCH_PIN_NUM       = BIT_9;
-
-static const IoPortId      HEADLIGHT_SWITCH_PIN_LTR     = IOPORT_B;
-static const uint32_t      HEADLIGHT_SWITCH_PIN_NUM     = BIT_3;
-
-static const IoPortId      REGEN_ENABLE_PIN_LTR         = IOPORT_B;
-static const uint32_t      REGEN_ENABLE_PIN_NUM         = BIT_8;
-
-static const IoPortId      AIRGAP_ENABLE_PIN_LTR        = IOPORT_B;
-static const uint32_t      AIRGAP_ENABLE_PIN_NUM        = BIT_5;
-
-static const IoPortId      BRAKE_PEDAL_PIN_LTR          = IOPORT_B;
-static const uint32_t      BRAKE_PEDAL_PIN_NUM          = BIT_2;
-
-/* digital out */
-
-static const IoPortId      LIGHTS_BRAKE_PIN_LTR         = IOPORT_D;
-static const uint32_t      LIGHTS_BRAKE_PIN_NUM         = BIT_0;
-
-static const IoPortId      LIGHTS_L_PIN_LTR             = IOPORT_D;
-static const uint32_t      LIGHTS_L_PIN_NUM             = BIT_1;
-
-static const IoPortId      LIGHTS_R_PIN_LTR             = IOPORT_D;
-static const uint32_t      LIGHTS_R_PIN_NUM             = BIT_2;
-
-static const IoPortId      HEADLIGHTS_PIN_LTR           = IOPORT_D;
-static const uint32_t      HEADLIGHTS_PIN_NUM           = BIT_3;
-
-static const IoPortId      HORN_PIN_LTR                 = IOPORT_D;
-static const uint32_t      HORN_PIN_NUM                 = BIT_4;
-
-/* analog in */
-
-static const IoPortId      ACCEL_PEDAL_PIN_LTR          = IOPORT_B;
-static const uint32_t      ACCEL_PEDAL_PIN_NUM          = BIT_1;
-
-static const IoPortId      REGEN_PEDAL_PIN_LTR          = IOPORT_B;
-static const uint32_t      REGEN_PEDAL_PIN_NUM          = BIT_0;
-
-static const IoPortId      AIRGAP_POT_PIN_LTR           = IOPORT_B;
-static const uint32_t      AIRGAP_POT_PIN_NUM           = BIT_4;
 
 /*********
  * peripheral config
@@ -101,14 +81,6 @@ static const float         AIRGAP_OFFSET                = 0;
 static const float         AIRGAP_DIVIDER               = 1024;
 
 static const float         REGEN_AMOUNT                 = .2;
-
-/*************
- * device driver declarations
- */
-
-static struct can          commonCan,  *commonCanp      = &commonCan;
-static struct can          ws20can,    *ws20canp        = &ws20can;
-static struct nokia5110    display,    *dp              = &display;
 
 /*************
  * state

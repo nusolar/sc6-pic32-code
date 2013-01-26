@@ -1,14 +1,12 @@
 #ifndef NU_WDT_H
 #define NU_WDT_H
 
-#include <plib.h>
-
-extern void (*clear_wdt) (void);
+extern void (*clear_wdt)(void);
 
 void
-enableClearWdt(void);
+enable_clear_wdt(void);
 
 void
-disableClearWdt(void);
+disable_clear_wdt(void);
 
 #endif

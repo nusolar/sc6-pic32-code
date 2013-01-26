@@ -56,13 +56,15 @@ enum nokia_temp_coeff {
 
 struct nokia5110 {
     struct error_reporting_dev erd;
-    struct spiPort spi;
+    struct spi spi;
     struct pin pin_reset;   /* active LOW*/
     struct pin pin_dc;      /* data/command input */
 };
 
 #define error_reporting_dev_to_nokia5110(erdp)   \
         container_of((erdp), struct nokia5110, erd)
+
+#define NOKIA5110_INIT(spichn, pin_cs_ltr, pin_cs_num, )
 
 int32_t
 nokia5110_new(struct nokia5110 *self, SpiChannel _chn,

@@ -1,46 +1,73 @@
-#ifndef __NU_SERIAL_H
-#define __NU_SERIAL_H
+#ifndef NU_SERIAL_H
+#define NU_SERIAL_H
 
-#include <string.h>
-#include <plib.h>
-#include "errorcodes.h"
+#include <peripheral/uart.h>
+#include "compiler.h"
 #include "error_reporting.h"
-#include "nu32.h"
-#include "timer.h"
+#include "nu_types.h"
+/* #include "serial_async.h" */
 
-#define RXBUF_SIZE  50
-#define MAX_DELIMS  5
+#ifndef SERIAL_MAX_DELIMS
+# define SERIAL_MAX_DELIMS  5
+#endif
 
-#define error_reporting_dev_to_serial(erdp)   \
-        container_of((erdp), struct serial, erd)
-
-enum ModuleInterrupt {
+enum module_interrupt {
     NO_UART_INTERRUPT,
     USE_UART_INTERRUPT,
 };
 
 struct serial {
     struct error_reporting_dev erd;
-    BYTE                    rxBuf[RXBUF_SIZE];
-    BYTE                    delims[MAX_DELIMS];
-    BOOL                    rxBufFull;
-    const struct vtblSerial *op;
-    uint32_t                currentBufPos;
-    size_t                  numDelims;
-    UART_MODULE             serialModule;
+    char        delims[SERIAL_MAX_DELIMS];
+    size_t      num_delims;
+    UART_MODULE module;
 };
 
-struct vtblSerial {
-    int32_t (*printf)       (const struct serial *self, const char *fmt, ...) __attribute__((format(printf,2,3)));
-    int32_t (*tx)           (const struct serial *self, const void *data, size_t len);
-    int32_t (*rx)           (struct serial *self, void *dst, size_t len);
-    int32_t (*flushRxBuf)   (struct serial *self, void *dst, size_t len);
-};
+#define erd_to_serial(erdp) \
+    container_of((erdp), struct serial, erd)
 
-int32_t
-serial_new(struct serial *self, UART_MODULE serialModule, unsigned int baudrate, enum ModuleInterrupt UseInterrupt,
-                INT_PRIORITY intPriority, UART_FIFO_MODE InterruptModes,
-                UART_LINE_CONTROL_MODE LineControlModes, UART_CONFIGURATION UARTConfig,
-                UART_ENABLE_MODE EnableModes, const BYTE *delims, size_t numDelims);
+extern const struct vtbl_error_reporting_dev serial_erd_ops;
+
+#define SERIAL_ERD_INIT(min_priority, mod)              \
+    {                                                   \
+    .erd = ERD_INIT(min_priority, &serial_erd_ops),     \
+    .delims = {'\r', '\n'},                             \
+    .num_delims = 2,                                    \
+    .module = mod                                       \
+    }
+#define SERIAL_ERD(name, min_priority, mod)  \
+    struct serial name = SERIAL_ERD_INIT(min_priority, mod)
+#define SERIAL_INIT(mod)    \
+    {                       \
+    .delims = {'\r', '\n'}, \
+    .num_delims = 2,        \
+    .module = mod           \
+    }
+#define SERIAL(name, mod)   \
+    struct serial name = SERIAL_INIT(mod)
+
+void
+serial_setup(struct serial *s, u32 baud, enum module_interrupt use_interrupt,
+        INT_PRIORITY int_priority, UART_FIFO_MODE interrupt_modes,
+        UART_LINE_CONTROL_MODE line_control_modes, UART_CONFIGURATION uart_config,
+        UART_ENABLE_MODE enable_modes);
+
+void PRINTF(2, 3)
+serial_printf(const struct serial *s, const char *fmt, ...);
+
+void
+serial_tx(const struct serial *s, const void *src, size_t n);
+
+static ALWAYSINLINE void
+serial_puts(const struct serial *s, const char *str)
+{
+    serial_tx(s, str, strlen(str));
+}
+
+s32
+serial_rx(struct serial *s, void *dst, size_t n);
+
+s32
+serial_flush_rx_buf(struct serial *s, void *dst, size_t n);
 
 #endif

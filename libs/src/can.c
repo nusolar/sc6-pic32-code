@@ -1,449 +1,283 @@
-#include "../include/can.h"
+#include <string.h>
+#include "can.h"
+#include "errorcodes.h"
+#include "timer.h"
 
-static int32_t CAN_init(struct can *self, unsigned int canBusSpeed,
-                CAN_BIT_TQ phaseSeg2Tq, CAN_BIT_TQ phaseSeg1Tq, CAN_BIT_TQ propSegTq,
-                enum PhaseSeg2TimeSelect selectAutoSet, enum SampleTimes sample3Times,
-                CAN_BIT_TQ syncJumpWidth, CAN_MODULE_EVENT interruptEvents,
-                INT_PRIORITY intPriority, CAN_MODULE_FEATURES moduleFeatures);
-
-static ALWAYSINLINE int32_t
-enableFunctions(const struct can *self, CAN_MODULE_FEATURES features);
-
-static ALWAYSINLINE int32_t
-disableFunctions(const struct can *self, CAN_MODULE_FEATURES features);
-
-static int32_t
-switchModuleOpMode(const struct can *self, CAN_OP_MODE opMode, double waitTimeMs);
-
-static int32_t
-putCanInConfigMode (const struct can *self);
-
-static int32_t
-putCanInNormalMode (const struct can *self);
-
-static int32_t
-CANTx (const struct can *self, CAN_CHANNEL channel, enum IDType IDTypeExtended,
-        uint16_t sid, uint32_t eid, uint32_t rtr, const void *data, size_t len);
-
-static long
-CANRx (const struct can *self, CAN_CHANNEL channel, unsigned int *id,
-        void *dest);
-
-static int
-addChannelTx(const struct can *self, CAN_CHANNEL channel,
-            unsigned int channelMsgSize, CAN_TX_RTR rtrEnabled,
-            CAN_TXCHANNEL_PRIORITY txPriority, CAN_CHANNEL_EVENT interruptEvents);
-
-static int
-addChannelRx(const struct can *self, CAN_CHANNEL channel,
-            unsigned int channelMsgSize, CAN_RX_DATA_MODE dataOnly,
-            CAN_CHANNEL_EVENT interruptEvents);
-
-static int32_t
-addFilter(const struct can *self, CAN_CHANNEL chn,
-            CAN_FILTER filter, CAN_ID_TYPE filterType,
-            uint32_t id, CAN_FILTER_MASK mask,
-            CAN_FILTER_MASK_TYPE mide, uint32_t maskBits);
-
-static const struct vtblCANPort CANPortOps = {
-    .tx             = &CANTx,
-    .rx             = &CANRx,
-    .addChannelTx   = &addChannelTx,
-    .addChannelRx   = &addChannelRx,
-    .addFilter      = &addFilter,
+#define DEFAULT_BUS_SPEED_HZ    1E6
+static const CAN_BIT_CONFIG default_cfg = {
+    .phaseSeg1Tq            = CAN_BIT_3TQ,
+    .phaseSeg2TimeSelect    = AUTO_SET,
+    .phaseSeg2Tq            = CAN_BIT_5TQ,
+    .propagationSegTq       = CAN_BIT_1TQ,
+    .sample3Time            = THREE_TIMES,
+    .syncJumpWidth          = CAN_BIT_1TQ
 };
 
-static int32_t
-can_report(struct error_reporting_dev *self,
-                                const char *file, uint32_t line,
-                                const char *expr,
-                                enum report_priority priority,
-                                int32_t errNum, const char *errName,
-                                const char *fmtdMsg);
-
-static const struct vtblError_reporting_dev can_erd_ops = {
-    .report         = &can_report,
-    .resetErrState  = NULL,
-};
-
-int32_t
-can_new(struct can *self, CAN_MODULE module,
-        uint32_t canBusSpeedHz, CAN_BIT_TQ phaseSeg2Tq,
-        CAN_BIT_TQ phaseSeg1Tq, CAN_BIT_TQ propSegTq, enum PhaseSeg2TimeSelect selectAutoSet,
-        enum SampleTimes sample3Times, CAN_BIT_TQ syncJumpWidth,
-        CAN_MODULE_EVENT interruptEvents, INT_PRIORITY intPriority,
-        CAN_MODULE_FEATURES moduleFeatures)
+static ALWAYSINLINE MUST_CHECK s32
+switch_module_mode(const struct can *c, CAN_OP_MODE op_mode, u32 timeout_ms)
 {
-    if (self == NULL)
-        return -ENULPTR;
-
-    self->op = &CANPortOps;
-    self->erd.op = &can_erd_ops;
-    self->module = module;
-
-    return CAN_init(self, canBusSpeedHz, phaseSeg2Tq, phaseSeg1Tq, propSegTq, selectAutoSet,
-            sample3Times, syncJumpWidth, interruptEvents, intPriority, moduleFeatures);
+    u32 start = timer_us();
+    CANSetOperatingMode(c->module, op_mode);
+    while (timer_us() - start < timeout_ms*1000)
+        if (CANGetOperatingMode(c->module) == op_mode)
+            return 0;
+    return -ETIMEOUT;
 }
 
-int32_t
-can_new_easy (struct can *self, CAN_MODULE module,
-                CAN_MODULE_EVENT interruptEvents, INT_PRIORITY intPriority)
+#define go_config_mode(c)   switch_module_mode((c), CAN_CONFIGURATION, 1)
+#define go_normal_mode(c)   switch_module_mode((c), CAN_NORMAL_OPERATION, 1)
+
+static ALWAYSINLINE MUST_CHECK s32
+change_features(const struct can *c, CAN_MODULE_FEATURES features, BOOL enabled)
 {
-    if (self == NULL)
-        return -ENULPTR;
+    s32 err;
+    if ((err = go_config_mode(c)) < 0) {
+        go_normal_mode(c);
+        return err;
+    }
+    CANEnableFeature(c->module, features, enabled);
 
-    self->op = &CANPortOps;
-    self->erd.op = &can_erd_ops;
-    self->module = module;
-
-    return CAN_init(self, 1E6, CAN_BIT_3TQ, CAN_BIT_5TQ, CAN_BIT_1TQ, AUTO_SET,
-            THREE_TIMES, CAN_BIT_1TQ, interruptEvents, intPriority, 0);
+    return 0;
 }
 
-static int32_t CAN_init(struct can *self, unsigned int canBusSpeedHz,
-                CAN_BIT_TQ phaseSeg2Tq, CAN_BIT_TQ phaseSeg1Tq, CAN_BIT_TQ propSegTq,
-                enum PhaseSeg2TimeSelect selectAutoSet, enum SampleTimes sample3Times,
-                CAN_BIT_TQ syncJumpWidth, CAN_MODULE_EVENT interruptEvents,
-                INT_PRIORITY intPriority, CAN_MODULE_FEATURES moduleFeatures)
+#define enable_features(can, features)  change_features((can), (features), TRUE)
+#define disable_features(can, features) change_features((can), (features), FALSE)
+
+static ALWAYSINLINE MUST_CHECK s32
+can_init(const struct can *c, u32 bus_speed_hz, CAN_BIT_CONFIG *timings,
+        CAN_MODULE_EVENT interrupt_events, INT_PRIORITY int_priority,
+        CAN_MODULE_FEATURES features)
 {
-    int32_t err;
-    CAN_BIT_CONFIG bitCfg = {
-        .phaseSeg2Tq            = phaseSeg2Tq,
-        .phaseSeg1Tq            = phaseSeg1Tq,
-        .propagationSegTq       = propSegTq,
-        .phaseSeg2TimeSelect    = selectAutoSet,
-        .sample3Time            = sample3Times,
-        .syncJumpWidth          = syncJumpWidth,
-    };
+    s32 err;
 
-    if (self == NULL)
-        return -ENULPTR;
+    CANEnableModule(c->module, TRUE);
 
-    CANEnableModule(self->module, TRUE);
-
-    if ((err = putCanInConfigMode(self)) <0) {
-        putCanInNormalMode(self);
+    if ((err = go_config_mode(c)) <0) {
+        go_normal_mode(c);
         return err;
     }
 
-    CANSetSpeed(self->module, &bitCfg, sys_clk_hz, canBusSpeedHz);
+    CANSetSpeed(c->module, timings, HZ, bus_speed_hz);
 
-    CANAssignMemoryBuffer(self->module, self->memoryBuffer, sizeof(self->memoryBuffer));
+    CANAssignMemoryBuffer(c->module, c->buf, sizeof(c->buf));
 
-    if (interruptEvents) {
-        INT_VECTOR intVect;
-        INT_SOURCE intSrc;
-        
-        CANEnableModuleEvent(CAN1, interruptEvents, TRUE);
-        
-        switch (self->module) {
+    if (interrupt_events) {
+        INT_VECTOR int_vec;
+        INT_SOURCE int_src;
+
+        CANEnableModuleEvent(CAN1, interrupt_events, TRUE);
+
+        switch (c->module) {
         case CAN1:
-            intVect = INT_CAN_1_VECTOR;
-            intSrc = INT_CAN1;
+            int_vec = INT_CAN_1_VECTOR;
+            int_src = INT_CAN1;
             break;
         case CAN2:
-            intVect = INT_CAN_2_VECTOR;
-            intSrc = INT_CAN2;
+            int_vec = INT_CAN_2_VECTOR;
+            int_src = INT_CAN2;
             break;
         case CAN_NUMBER_OF_MODULES:
         default:
             break;
         }
 
-        INTSetVectorPriority(intVect, intPriority);
-        INTSetVectorSubPriority(intVect, INT_SUB_PRIORITY_LEVEL_0);
-        INTEnable(intSrc, INT_ENABLED);
+        INTSetVectorPriority(int_vec, int_priority);
+        INTSetVectorSubPriority(int_vec, INT_SUB_PRIORITY_LEVEL_0);
+        INTEnable(int_src, INT_ENABLED);
     }
 
-    enableFunctions(self, moduleFeatures);
+    enable_features(c, features);
 
-    if ((err = putCanInNormalMode(self)) < 0)
+    if ((err = go_normal_mode(c)) < 0)
         return err;
 
     return 0;
 }
 
-static int32_t
-sendErrFrame(const struct can *self, void *data, size_t len)
+MUST_CHECK s32
+can_tx(const struct can *c, CAN_CHANNEL chn, enum id_type id_type,
+        u16 sid, u32 eid, u32 rtr, const void *data, size_t n)
 {
-    if (!self || (!data && len > 0))
-        return -ENULPTR;
+    s32 err;
 
-    return self->op->tx(self, self->error_reporting_can_chn,
-        self->error_reporting_can_use_extended_id,
-        self->error_reporting_can_std_id,
-        self->error_reporting_can_ext_id, 0, data, len);
-}
+    CANTxMessageBuffer *message = CANGetTxMessageBuffer(c->module, chn);
 
-static ALWAYSINLINE void
-ringSend(struct can *self, const char *msg, uint32_t *iter, char *txBuf)
-{
-    for ( ; *msg; *iter = (*iter+1)%8, ++msg) {
-        txBuf[*iter] = *msg;
-        if (*iter == 7)
-            sendErrFrame(self, txBuf, 8);
-    }
-}
-
-static int32_t
-can_report(struct error_reporting_dev *self,
-    const char *file, uint32_t line, const char *expr,
-    enum report_priority priority, int32_t errNum, const char *errName,
-    const char *fmtdMsg)
-{
-    struct can *canSelf;
-    union can_anyFrame frame = {
-        .common.tx.errPriorityNum.errNum = errNum,
-        .common.tx.errPriorityNum.priority = priority,
-    };
-    uint32_t ui;
-    char txBuf[128];    /* should be multiple of 8 */
-    STATIC_ASSERT(!(sizeof(txBuf)%8), SIZE_MISMATCH);
-
-    if (!self || !file || !expr || !errName || !fmtdMsg)
-        return -ENULPTR;
-
-    canSelf = error_reporting_dev_to_can(self);
-
-    sendErrFrame(canSelf, NULL, 0);
-    
-    sendErrFrame(canSelf, &frame.common.tx.errPriorityNum,
-                    sizeof(frame.common.tx.errPriorityNum));
-
-    snprintf(   txBuf, sizeof(txBuf),
-                "err %d(%s):%s\r\n"
-                "\tat %s:%d with call to\r\n"
-                "\t%s\r\n",
-                errNum, errName, expr, file, line, expr);
-
-    for (ui = 0; ui < sizeof(txBuf); ui += 8) {
-        clear_wdt();
-        sendErrFrame(canSelf, txBuf+ui, 8);
-    }
-
-    return 0;
-}
-
-static int
-changeFunctions (const struct can *self, CAN_MODULE_FEATURES features, BOOL enabled)
-{
-    int error;
-
-    if (self == NULL)
-        return -ENULPTR;
-
-    if ((error = putCanInConfigMode(self))) {
-        putCanInNormalMode(self);
-        return error;
-    }
-
-    CANEnableFeature(self->module, features, enabled);
-
-    return 0;
-}
-
-static ALWAYSINLINE int32_t
-enableFunctions(const struct can *self, CAN_MODULE_FEATURES features)
-{
-    return changeFunctions(self, features, TRUE);
-}
-
-static ALWAYSINLINE int32_t
-disableFunctions(const struct can *self, CAN_MODULE_FEATURES features)
-{
-    return changeFunctions(self, features, FALSE);
-}
-
-static int32_t
-switchModuleOpMode(const struct can *self, CAN_OP_MODE opMode, double waitTimeMs)
-{
-    double tStart;
-
-    if (self == NULL)
-        return -ENULPTR;
-
-    if (CANGetOperatingMode(self->module) == opMode)
-        return 0;
-
-    CANSetOperatingMode(self->module, opMode);
-    tStart = readTimer();
-    while (CANGetOperatingMode(self->module) != opMode)
-        ;   /* do nothing */
-
-    return 0;
-}
-
-static int32_t
-putCanInConfigMode (const struct can *self)
-{
-    int32_t err;
-    if (self == NULL)
-        return -ENULPTR;
-
-    if ((err = switchModuleOpMode(self, CAN_CONFIGURATION, 1)) < 0)
-        return err;
-
-    return 0;
-}
-
-static int32_t
-putCanInNormalMode (const struct can *self)
-{
-    int32_t err;
-    if (self == NULL)
-        return -ENULPTR;
-
-    if ((err = switchModuleOpMode(self, CAN_NORMAL_OPERATION, 1)) < 0)
-        return err;
-
-    return 0;
-}
-
-static int
-addChannelTx (const struct can *self, CAN_CHANNEL channel,
-            unsigned int channelMsgSize, CAN_TX_RTR rtrEnabled,
-            CAN_TXCHANNEL_PRIORITY txPriority, CAN_CHANNEL_EVENT interruptEvents)
-{
-    int error;
-
-    if (self == NULL)
-        return -ENULPTR;
-
-    if ((error = putCanInConfigMode(self))) {
-        putCanInNormalMode(self);
-        return error;
-    }
-
-    CANConfigureChannelForTx(self->module, channel, channelMsgSize, rtrEnabled, txPriority);
-    if (interruptEvents)
-        CANEnableChannelEvent(self->module, channel, interruptEvents, TRUE);
-
-    if ((error = putCanInNormalMode(self)))
-        return error;
-
-    return 0;
-}
-
-static int
-addChannelRx (const struct can *self, CAN_CHANNEL channel,
-            unsigned int channelMsgSize, CAN_RX_DATA_MODE dataOnly, CAN_CHANNEL_EVENT interruptEvents)
-{
-    int error;
-
-    if (self == NULL)
-        return -ENULPTR;
-
-    if ((error = putCanInConfigMode(self))) {
-        putCanInNormalMode(self);
-        return error;
-    }
-
-    CANConfigureChannelForRx(self->module, channel, channelMsgSize, dataOnly);
-
-    CANConfigureFilter(self->module, CAN_FILTER0, 0, CAN_SID);
-    CANConfigureFilterMask(self->module, CAN_FILTER_MASK0, 0, CAN_SID, CAN_FILTER_MASK_ANY_TYPE);
-    CANLinkFilterToChannel(self->module, CAN_FILTER0, CAN_FILTER_MASK0, CAN_CHANNEL1);
-    CANEnableFilter(self->module, CAN_FILTER0, TRUE);
-    
-    if (interruptEvents)
-        CANEnableChannelEvent(self->module, channel, interruptEvents, TRUE);
-    if ((error = putCanInNormalMode(self)) < 0)
-        return error;
-
-    return 0;
-}
-
-
-static int32_t
-CANTx (const struct can *self, CAN_CHANNEL channel, enum IDType IDTypeExtended,
-        uint16_t sid, uint32_t eid, uint32_t rtr, const void *data, size_t len)
-{
-    int32_t err;
-
-    CANTxMessageBuffer *message = CANGetTxMessageBuffer(self->module, channel);
-
-    if (!self || !message || (!data && len > 0))
-        return -ENULPTR;
-
-    if (len > 8)
+    if (n > 8)
         return -EINVAL;
 
-    if ((err = putCanInNormalMode(self)) < 0)
+    if ((err = go_normal_mode(self)) < 0)
         return err;
 
     /* clear message data */
     memset(message, 0, sizeof(CANTxMessageBuffer));
 
     /* insert SID/EID information */
-    message->msgEID.IDE = IDTypeExtended;
+    message->msgEID.IDE = (EXTENDED_ID == id_type);
     message->msgSID.SID = BITFIELD_CAST(sid, 11);  /* 11   bits */
     message->msgEID.DLC = BITFIELD_CAST(len, 4);   /* 4    bits */
     message->msgEID.RTR = BITFIELD_CAST(rtr, 1);   /* 1    bit; 1 = remote transmission request enabled */
-    if (IDTypeExtended) /* EID is indicated by IDTypeExtended = 1 */
+    if (EXTENDED_ID == id_type) /* EID is indicated by IDTypeExtended = 1 */
         message->msgEID.EID = BITFIELD_CAST(eid, 18);    /* 18 bits */
 
-    if (len)
-        memcpy(message->data, (const BYTE*)data, len);
+    if (n)
+        memcpy(message->data, (const byte *)data, n);
 
-    CANUpdateChannel(self->module, channel);
-
-    CANFlushTxChannel(self->module, channel);
+    CANUpdateChannel(c->module, chn);
+    CANFlushTxChannel(c->module, chn);
 
     return 0;
 }
 
+#define send_err_frame(can, data, n)                                        \
+    can_tx( (can), (can)->erd_chn, (can)->erd_id_type, (can)->erd_std_id,   \
+            (can)->erd_ext_id, 0, (data), (n))
 
-static long
-CANRx (const struct can *self, CAN_CHANNEL channel, unsigned int *id, void *dst)
+COLD s32
+can_report(struct error_reporting_dev *erd,
+    const char *file, u32 line, const char *expr,
+    enum report_priority priority, s32 err, const char *err_name,
+    const char *fmtd_msg)
 {
-    CANRxMessageBuffer *message;
+    struct can *can;
+    union can_anyFrame frame = {
+        .common.tx.errPriorityNum.errNum = err,
+        .common.tx.errPriorityNum.priority = priority,
+    };
+    u32 ui;
+    char txBuf[128];    /* should be multiple of 8 */
+    STATIC_ASSERT(!(sizeof(txBuf)%8), SIZE_MISMATCH);
+
+    can = erd_to_can(erd);
+
+    send_err_frame(can, NULL, 0);
+    send_err_frame(can, &frame.common.tx.errPriorityNum,
+                    sizeof(frame.common.tx.errPriorityNum));
+
+    snprintf(   txBuf, sizeof(txBuf),
+                "err %d(%s):%s\r\n"
+                "\tat %s:%d with call to\r\n"
+                "\t%s\r\n",
+                err, err_name, fmtd_msg, file, line, expr);
+
+    for (ui = 0; ui < sizeof(txBuf); ui += 8) {
+        clear_wdt();
+        send_err_frame(can, txBuf+ui, 8);
+    }
+
+    return 0;
+}
+
+s32
+can_new(struct can *c, CAN_MODULE mod, u32 bus_speed_hz, CAN_BIT_CONFIG *timings,
+        CAN_MODULE_EVENT interrupt_events, INT_PRIORITY int_priority,
+        CAN_MODULE_FEATURES features)
+{
+    c->erd.op = &can_erd_ops;
+    c->module = mod;
+
+    if (unlikely(!timings))
+        timings = &default_cfg;
+    if (unlikely(!bus_speed_hz))
+        bus_speed_hz = DEFAULT_BUS_SPEED_HZ;
+
+    return can_init(c, bus_speed_hz, timings, interrupt_events, int_priority,
+                    features);
+}
+
+s32
+can_add_channel_tx(const struct can *c, CAN_CHANNEL channel,
+            u32 channel_msg_size, CAN_TX_RTR rtr_enabled,
+            CAN_TXCHANNEL_PRIORITY tx_priority, CAN_CHANNEL_EVENT interrupt_events)
+{
+    s32 err;
+
+    if ((err = go_config_mode(c)) < 0) {
+        go_normal_mode(c);
+        return err;
+    }
+
+    CANConfigureChannelForTx(c->module, channel, channel_msg_size, rtr_enabled, tx_priority);
+    CANEnableChannelEvent(c->module, channel, interrupt_events, TRUE);
+
+    if ((err = go_normal_mode(c)) < 0)
+        return err;
+
+    return 0;
+}
+
+s32
+can_add_channel_rx(const struct can *c, CAN_CHANNEL chn, u32 channel_msg_size,
+                    CAN_RX_DATA_MODE data_only, CAN_CHANNEL_EVENT interrupt_events)
+{
+    s32 err;
+
+    if ((err = go_config_mode(c)) < 0) {
+        go_normal_mode(c);
+        return err;
+    }
+
+    CANConfigureChannelForRx(c->module, chn, channel_msg_size, data_only);
+    CANConfigureFilter(c->module, CAN_FILTER0, 0, CAN_SID);
+    CANConfigureFilterMask(c->module, CAN_FILTER_MASK0, 0, CAN_SID, CAN_FILTER_MASK_ANY_TYPE);
+    CANLinkFilterToChannel(c->module, CAN_FILTER0, CAN_FILTER_MASK0, CAN_CHANNEL1);
+    CANEnableFilter(c->module, CAN_FILTER0, TRUE);
+    CANEnableChannelEvent(c->module, chn, interrupt_events, TRUE);
+    
+    if ((err = go_normal_mode(c)) < 0)
+        return err;
+
+    return 0;
+}
+
+MUST_CHECK long
+can_rx(const struct can *c, CAN_CHANNEL chn, u32 *id, void *dst)
+{
+    CANRxMessageBuffer *buf;
     unsigned long len;
 
-    if (!self || !id || !dst)
-        return -ENULPTR;
-
-    message = (CANRxMessageBuffer *)CANGetRxMessage(self->module, channel);
-    if (message == NULL)
+    buf = (CANRxMessageBuffer *)CANGetRxMessage(c->module, chn);
+    if (NULL == buf)
         return -ENODATA;
 
-    if (message->msgEID.IDE == STANDARD_ID)
-        *id = (int)(message->msgSID.SID);
-    else /* EXTENDED_ID */
+    if (buf->msgEID.IDE == STANDARD_ID) {
+        *id = (int)(buf->msgSID.SID);
+    } else {    /* EXTENDED_ID */
         /* msgEID.EID is 18 bits; msgSID.SID is 11 bits */
-        *id = (unsigned int)(message->msgEID.EID) | (unsigned int)(message->msgSID.SID << 18);
+        *id = (unsigned int)(buf->msgEID.EID) | (unsigned int)(buf->msgSID.SID << 18);
+    }
 
-    len = (unsigned long) message->msgEID.DLC;
+    len = (unsigned long) buf->msgEID.DLC;
 
-    memcpy(dst, message->data, len);
-
-    CANUpdateChannel(self->module, channel);
+    memcpy(dst, buf->data, len);
+    CANUpdateChannel(c->module, chn);
 
     return (long) len;
 }
 
-static int32_t
-addFilter(const struct can *self, CAN_CHANNEL chn,
-            CAN_FILTER filter, CAN_ID_TYPE filterType,
-            uint32_t id, CAN_FILTER_MASK mask,
-            CAN_FILTER_MASK_TYPE mide, uint32_t maskBits)
+MUST_CHECK s32
+can_add_filter(const struct can *c, CAN_CHANNEL chn, CAN_FILTER filter,
+                CAN_ID_TYPE filter_type, u32 id, CAN_FILTER_MASK mask,
+                CAN_FILTER_MASK_TYPE mide, u32 mask_bits)
 {
-    int32_t err;
+    s32 err;
 
-    if (!self)
-        return -ENULPTR;
-
-    if ((err = putCanInConfigMode(self))) {
-        putCanInNormalMode(self);
+    if ((err = go_config_mode(c)) < 0) {
+        go_normal_mode(c);
         return err;
     }
 
-    CANConfigureFilter(self->module, filter, id, filterType);
-    CANConfigureFilterMask(self->module, mask, maskBits, filterType, mide);
-    CANLinkFilterToChannel(self->module, filter, mask, chn);
-    CANEnableFilter(self->module, filter, TRUE);
+    CANConfigureFilter(c->module, filter, id, filter_type);
+    CANConfigureFilterMask(c->module, mask, mask_bits, filter_type, mide);
+    CANLinkFilterToChannel(c->module, filter, mask, chn);
+    CANEnableFilter(c->module, filter, TRUE);
 
-    if ((err = putCanInNormalMode(self)) < 0)
+    if ((err = go_normal_mode(c)) < 0)
         return err;
 
     return 0;
 }
+
+const struct vtbl_error_reporting_dev can_erd_ops = {
+    .report         = &can_report,
+    .reset_err_state= NULL,
+};
