@@ -59,7 +59,7 @@ enum can_addresses {
 
 #warning "fixme"
     /* @TODO @HACK @FIXME */
-    ADDR_WS20_RX_BASE               = 0x500,
+    ADDR_WS20_RX_BASE               = 0x400,
     ADDR_WS20_RX_DRIVER_CONTROLS_ID = ADDR_WS20_RX_BASE,
     ADDR_WS20_RX_DRIVE_CMD,
     ADDR_WS20_RX_POWER_CMD,
