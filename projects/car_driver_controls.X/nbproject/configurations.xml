@@ -4,13 +4,6 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
-      <itemPath>../../libs/include/can.h</itemPath>
-      <itemPath>../../libs/include/can_addresses.h</itemPath>
-      <itemPath>../../libs/include/error_reporting.h</itemPath>
-      <itemPath>../../libs/include/errorcodes.h</itemPath>
-      <itemPath>../../libs/include/nu32.h</itemPath>
-      <itemPath>../../libs/include/timer.h</itemPath>
-      <itemPath>../../libs/include/wavesculptor20.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LibraryFiles"
                    displayName="Library Files"
@@ -86,7 +79,8 @@
         <property key="enable-symbols" value="true"/>
         <property key="enable-unroll-loops" value="false"/>
         <property key="exclude-floating-point" value="false"/>
-        <property key="extra-include-directories" value="..\..\libs\include"/>
+        <property key="extra-include-directories"
+                  value="..\..\libs\include;../../libs/include"/>
         <property key="generate-16-bit-code" value="false"/>
         <property key="isolate-each-function" value="false"/>
         <property key="make-warnings-into-errors" value="false"/>
@@ -97,8 +91,9 @@
         <property key="preprocessor-macros" value=""/>
         <property key="strict-ansi" value="false"/>
         <property key="support-ansi" value="false"/>
+        <property key="use-cci" value="false"/>
         <property key="use-indirect-calls" value="false"/>
-        <appendMe value="-fno-common -Wno-missing-braces -Wno-missing-field-initializers -Wall -Wextra -Waggregate-return -Wbad-function-cast -Wcast-align -Wcast-qual  -Wchar-subscripts -Wcomment -Wconversion -Wdeclaration-after-statement -Wdisabled-optimization -Wfloat-equal -Wformat=2 -Wimport -Winit-self -Winline -Winvalid-pch -Wjump-misses-init -Wunsafe-loop-optimizations -Wlogical-op -Wlong-long -Wmissing-declarations -Wmissing-format-attribute -Wmissing-include-dirs -Wmissing-noreturn -Wmissing-prototypes -Wnested-externs -Wold-style-definition -Wpadded -Wpointer-arith -Wredundant-decls -Wshadow -Wstack-protector -Wstrict-prototypes -Wswitch-default -Wswitch-enum -Wsync-nand  -Wundef -Wuninitialized -Wunreachable-code -Wvariadic-macros -Wvolatile-register-var  -Wwrite-strings "/>
+        <appendMe value="-ggdb3 -pedantic-errors -std=c89 -Werror -Wall -Wextra -Waggregate-return -Wbad-function-cast -Wcast-align -Wcast-qual -Wc++-compat -Wconversion -Wdeclaration-after-statement -Wdouble-promotion -Wfloat-equal -Wformat=2 -Winit-self -Winline -Wlogical-op -Wmissing-include-dirs -Wmissing-prototypes -Wnested-externs -Wpadded -Wpacked -Wpointer-arith -Wredundant-decls -Wshadow -Wstrict-aliasing=2 -Wstrict-overflow=5 -Wstrict-prototypes -Wswitch-default -Wswitch-enum -Wundef -Wuninitialized -Wunreachable-code -Wwrite-strings"/>
       </C32>
       <C32-AS>
         <property key="assembler-symbols" value=""/>
@@ -121,6 +116,8 @@
       </C32-AS>
       <C32-LD>
       </C32-LD>
+      <C32CPP>
+      </C32CPP>
       <C32Global>
         <property key="legacy-libc" value="false"/>
       </C32Global>
@@ -166,7 +163,10 @@
         <property key="UART6" value="true"/>
         <property key="hwtoolclock.frcindebug" value="false"/>
         <property key="memories.aux" value="false"/>
+        <property key="memories.bootflash" value="false"/>
+        <property key="memories.configurationmemory" value="false"/>
         <property key="memories.eeprom" value="false"/>
+        <property key="memories.flashdata" value="true"/>
         <property key="memories.id" value="false"/>
         <property key="memories.programmemory" value="true"/>
         <property key="memories.programmemory.end" value="0x1d07ffff"/>
@@ -174,6 +174,7 @@
         <property key="poweroptions.powerenable" value="false"/>
         <property key="programmertogo.imagename" value=""/>
         <property key="programoptions.eraseb4program" value="true"/>
+        <property key="programoptions.pgmspeed" value="2"/>
         <property key="programoptions.preserveeeprom" value="false"/>
         <property key="programoptions.preserveprogramrange" value="false"/>
         <property key="programoptions.preserveprogramrange.end" value="0x1d0001ff"/>

@@ -1,0 +1,81 @@
+/*
+Can be one of:
+    CAN_FRAMEE(name, fmt)
+        Empty can frame with auto-incremented ID like in an enum
+    CAN_FRAMEA(name, layout, fmt)
+        Aggregate can frame containing data with auto-incremented ID
+    CAN_FRAMEE_ID(name, id, fmt)
+        Empty can frame with an explicit ID
+    CAN_FRAMEA_ID(name, id, layout, fmt)
+        Aggregate can frame with an explicit ID
+
+Where the arguments are as follows:
+    name:   The frame name
+    fmt:    A printf format string that can be used to print the frame
+    id:     The frame's id
+    layout: The member data definitions that makes up the can frame
+*/
+
+/* note: BMS RX filter mask currently limits RX addresses to 16 addresses:
+ * ADDR_BMS_RX_BASE to ADDR_BMS_RX_BASE+15
+ */
+CAN_FRAMEE_ID   (bms_rx_base,                   0x200,  (CAN_FMT ""))
+CAN_FRAMEA_ID   (bms_rx_trip,                   0x200,
+    s32 trip_code;
+    u32 module;,
+    (CAN_FMT "code: %d\nmodule: %d\n", CAN_MEMBER code, CAN_MEMBER module))
+CAN_FRAMEE      (bms_rx_reset_cc_batt,                  (CAN_FMT ""))
+CAN_FRAMEE      (bms_rx_reset_cc_array,                 (CAN_FMT ""))
+CAN_FRAMEE      (bms_rx_reset_cc_mppt1,                 (CAN_FMT ""))
+CAN_FRAMEE      (bms_rx_reset_cc_mppt2,                 (CAN_FMT ""))
+CAN_FRAMEE      (bms_rx_reset_cc_mppt3,                 (CAN_FMT ""))
+CAN_FRAMEE      (bms_rx_reset_wh,                       (CAN_FMT ""))
+CAN_FRAMEE      (bms_rx_reset_all,                      (CAN_FMT ""))
+CAN_FRAMEE_ID   (bms_rx_max,                    0x20F,  (CAN_FMT ""))
+
+CAN_FRAMEE_ID   (bms_tx_base,                   0x210,  (CAN_FMT ""))
+CAN_FRAMEE_ID   (bms_tx_hearbeat,               0x210,  (CAN_FMT ""))
+CAN_FRAMEE      (bms_tx_error,                          (CAN_FMT ""))
+CAN_FRAMEE      (bms_tx_uptime,                         (CAN_FMT ""))
+CAN_FRAMEA      (bms_tx_last_reset,
+    s32 last_reset_code;
+    s32 reserved;,
+    (CAN_FMT "last reset code: %d\n", CAN_MEMBER last_reset_code))
+CAN_FRAMEA      (bms_tx_batt_bypass,
+    u32 module;
+    s32 reserved;,
+    (CAN_FMT "batt bypass module: %d\n", CAN_MEMBER module))
+CAN_FRAMEA      (bms_tx_current,
+    s32 array;
+    s32 battery;,
+    (CAN_FMT ""))
+CAN_FRAMEE      (bms_tx_cc_array,                       (CAN_FMT ""))
+CAN_FRAMEE      (bms_tx_cc_batt,                        (CAN_FMT ""))
+CAN_FRAMEE      (bms_tx_cc_mppt1,                       (CAN_FMT ""))
+CAN_FRAMEE      (bms_tx_cc_mppt2,                       (CAN_FMT ""))
+CAN_FRAMEE      (bms_tx_cc_mppt3,                       "")
+CAN_FRAMEE      (bms_tx_wh_batt,                        "")
+CAN_FRAMEE      (bms_tx_wh_mppt1,                       "")
+CAN_FRAMEE      (bms_tx_wh_mppt2,                       "")
+CAN_FRAMEE      (bms_tx_wh_mppt3,                       "")
+CAN_FRAMEE      (bms_tx_voltage,                        "")
+CAN_FRAMEE      (bms_tx_owvoltage,                      "")
+CAN_FRAMEE      (bms_tx_temp,                           "")
+CAN_FRAMEE      (bms_tx_trip,                           "")
+CAN_FRAMEE      (bms_tx_last_trip,                      "")
+CAN_FRAMEE      (bms_tx_trip_pt_current,                "")
+CAN_FRAMEE      (bms_tx_trip_pt_voltage,                "")
+CAN_FRAMEE      (bms_tx_trip_pt_temp,                   "")
+
+CAN_FRAMEE_ID   (steering_wheel_rx_base,        0x300,  "")
+CAN_FRAMEE_ID   (steering_wheel_rx_lights,      0x300,  "")
+
+CAN_FRAMEE_ID   (steering_wheel_tx_base,        0x310,  "")
+CAN_FRAMEE_ID   (steering_wheel_tx_heartbeat,   0x310,  "")
+CAN_FRAMEE      (steering_wheel_tx_error,               "")
+CAN_FRAMEE      (steering_wheel_tx_buttons,             "")
+CAN_FRAMEE      (steering_wheel_tx_lights,              "")
+
+CAN_FRAMEE_ID   (ws20_rx_base,                  0x500,  "")
+CAN_FRAMEE_ID   (ws20_rx_driver_controls_id,    0x500,  "")
+CAN_FRAMEE      (ws20_rx_drive_cmd,                     "")

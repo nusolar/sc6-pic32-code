@@ -1,94 +1,58 @@
-//#include <stdint.h>
-//
-//#include "can_all.h"
-//#include "compiler.h"
-//#include "error_reporting.h"
-//#include "nu32.h"
-//#include "serial.h"
-//#include "wavesculptor20.h"
-//#include "wdt.h"
-//
-//#include "common_pragmas.h"
-//
-//static const uint32_t SYS_CLK_HZ = 80000000;
-//
-//static const CAN_MODULE     COMMON_CAN_MOD          = CAN1;
-//static const CAN_CHANNEL    COMMON_CAN_RX_CHN       = CAN_CHANNEL0;
-//static const CAN_CHANNEL    COMMON_CAN_TX_CHN       = CAN_CHANNEL1;
-//static const CAN_CHANNEL    COMMON_CAN_TX_ERR_CHN   = CAN_CHANNEL2;
-//
-//static struct can commonCan, *commonCanp = &commonCan;
-//
-//int32_t
-//main(void)
-//{
-//    nu32_init(SYS_CLK_HZ);
-//
-////#define DIGITAL_IN_PINS         \
-////    X(left,         D, 6)       \
-////    X(right,        D, 3)       \
-////    X(yes,          E, 0)       \
-////    X(no,           G, 12)      \
-////    X(maybe,        E, 2)       \
-////    X(hazard,       D, 12)      \
-////    X(horn,         D, 4)       \
-////    X(cruise_en,    D, 0)       \
-////    X(cruise_mode,  D, 8)       \
-////    X(cruise_up,    D, 10)      \
-////    X(cruise_down,  A, 15)
-//
-//    if (PORTReadBits(IOPORT_D, BIT_6))
-//        Nop();
-//    if (PORTReadBits(IOPORT_D, BIT_3))
-//        Nop();
-//    if (PORTReadBits(IOPORT_E, BIT_0))
-//        Nop();
-//    if (PORTReadBits(IOPORT_G, BIT_12))
-//        Nop();
-//    if (PORTReadBits(IOPORT_E, BIT_2))
-//        Nop();
-//    if (PORTReadBits(IOPORT_D, BIT_12))
-//        Nop();
-//    if (PORTReadBits(IOPORT_D, BIT_4))
-//        Nop();
-//    if (PORTReadBits(IOPORT_D, BIT_0))
-//        Nop();
-//    if (PORTReadBits(IOPORT_D, BIT_8))
-//        Nop();
-//    if (PORTReadBits(IOPORT_D, BIT_10))
-//        Nop();
-//    if (PORTReadBits(IOPORT_A, BIT_15))
-//        Nop();
-//
-//    can_new_easy(commonCanp, COMMON_CAN_MOD, 0, INT_PRIORITY_DISABLED);
-//    commonCanp->error_reporting_can_chn = COMMON_CAN_TX_ERR_CHN;
-//    commonCanp->error_reporting_can_use_extended_id = STANDARD_ID;
-//    commonCanp->error_reporting_can_std_id = ADDR_STEERING_WHEEL_TX_ERROR;
-//    commonCanp->error_reporting_can_ext_id = 0;
-//
-//    commonCanp->op->addChannelRx(commonCanp, COMMON_CAN_RX_CHN,
-//        32, CAN_RX_FULL_RECEIVE, 0);
-//    commonCanp->op->addFilter(commonCanp, COMMON_CAN_RX_CHN, CAN_FILTER0,
-//        CAN_SID, ADDR_STEERING_WHEEL_RX_BASE, CAN_FILTER_MASK0,
-//        CAN_FILTER_MASK_IDE_TYPE, 0xFF0);
-//    commonCanp->op->addChannelTx(commonCanp, COMMON_CAN_TX_CHN,
-//        32, CAN_TX_RTR_DISABLED, CAN_HIGH_MEDIUM_PRIORITY, 0);
-//    commonCanp->op->addChannelTx(commonCanp, COMMON_CAN_TX_ERR_CHN,
-//        32, CAN_TX_RTR_DISABLED, CAN_LOWEST_PRIORITY, 0);
-//
-//    register_reporting_dev(&(commonCanp->erd), REP_DEBUG);
-//
-//    while (1) {
-//        struct can_dc_rx_horn h = {
-//            .enabled = 1,
-//        };
-//        commonCanp->op->tx(commonCanp, COMMON_CAN_TX_CHN, STANDARD_ID,
-//            ADDR_DC_RX_HORN, 0, 0, &h, sizeof(h));
-//        delay(2);
-//    }
-//
-//    return 0;
-//}
+#include "button.h"
+#include "common_pragmas.h"
+#include "compiler.h"
+#include "nu32.h"
+#include "nu_types.h"
+#include "pinctl.h"
+#include "utility.h"
+
+/* buttons */
+/* might be better to use change notification (CN) pins with interrupts */
+#define DIGITAL_IN_PINS         \
+    _PIN(yes,          E, 0)    \
+    _PIN(no,           G, 12)   \
+    _PIN(maybe,        E, 2)    \
+    _PIN(cruise_en,    D, 0)    \
+    _PIN(cruise_mode,  D, 8)    \
+    _PIN(cruise_up,    D, 10)   \
+    _PIN(cruise_down,  A, 15)
+#define _PIN(name, ltr, num)    \
+    static BTN(name, IOPORT_##ltr, BIT_##num, 10, 5);
+DIGITAL_IN_PINS
+#undef _PIN
+
+#define LED_PINS                \
+    _LED(left,         D, 7)    \
+    _LED(right,        D, 3)    \
+    _LED(radio,        E, 5)    \
+    _LED(yes,          E, 1)    \
+    _LED(hazard,       D, 13)   \
+    _LED(cruise_en,    D, 1)    \
+    _LED(cruise_up,    D, 11)   \
+    _LED(maybe,        E, 2)    \
+    _LED(no,           G, 13)   \
+    _LED(horn,         D, 5)    \
+    _LED(cruise_mode,  D, 9)    \
+    _LED(cruise_down,  A, 15)
+#define _LED(name, ltr, num)    \
+    static const PIN(led_##name, IOPORT_##ltr, BIT_##num);
+LED_PINS
+#undef _LED
+
+s32
+main(void)
+{
+    while (1) {
+        /* update button debounce values */
+#define _PIN(name, ltr, num)    \
+        btn_update(&name);
+        DIGITAL_IN_PINS
+#undef _PIN
+    }
+    return 0;
+}
+
+#if 0
 
 #include <stdint.h>
 
@@ -97,7 +61,7 @@
 #include "error_reporting.h"
 #include "nu32.h"
 #include "serial.h"
-#include "wavesculptor20.h"
+#include "ws20.h"
 #include "wdt.h"
 
 #include "common_pragmas.h"
@@ -399,3 +363,5 @@ main(void)
 
     return 0;
 }
+
+#endif

@@ -1,31 +1,33 @@
 #include "ad7685.h"
-#include "byteorder.h"
 #include "errorcodes.h"
 #include "timer.h"
+#include <sys/endian.h>
+#include <alloca.h>
 
-#define SPI_OFLAGS SPI_OPEN_CKE_REV|SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON
+#define SPI_OFLAGS (SPI_OPEN_CKE_REV|SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON)
 static const u32 spi_bitrate = 100000;
 
-#define drive_cnv_high(a)   pin_set(&((a)->convert_pin))
-#define drive_cnv_low(a)    pin_clear(&((a)->convert_pin))
+#define drive_cnv_high(a)   nu_pin_set(&((a)->convert_pin))
+#define drive_cnv_low(a)    nu_pin_clear(&((a)->convert_pin))
 
 s32 MUST_CHECK
-ad7685_setup(const struct ad7685 *a)
+nu_ad7685_setup(const struct nu_ad7685 *a)
 {
-    if (((FOUR_WIRE == wire_config && NO_BUSY_INDICATOR == busy_indic) ||
-        (CHAIN_MODE == wire_config && USE_BUSY_INDICATOR == busy_indic)))
+    if ((NU_AD7685_FOUR_WIRE & a->opt && NU_AD7685_NO_BUSY_INDICATOR & a->opt) ||
+            (NU_AD7685_CHAIN_MODE & a->opt && NU_AD7685_BUSY_INDICATOR & a->opt))
         return -EINVAL;
-    pin_set_digital_out(&(a->convert_pin));
-    spi_setup(&(a->spi), spi_bitrate, SPI_OFLAGS);
+    nu_pin_set_digital_out(&(a->convert_pin));
+    nu_spi_setup(&(a->spi), spi_bitrate, (SpiOpenFlags) SPI_OFLAGS);
+    return 0;
 }
 
 static void
-read_uv(const struct ad7685 *a, u32 *dst)
+read_uv(const struct nu_ad7685 *a, u32 *dst)
 {
     u32 ui;
-    u16 buf[a->num_devices];
+    u16 *buf = (u16 *)alloca(sizeof(*buf) * a->num_devices);
 
-    spi_rx(&(a->spi), &buf, sizeof(buf));
+    nu_spi_rx(&(a->spi), &buf, sizeof(*buf) * a->num_devices);
     for (ui = 0; ui < a->num_devices; ++ui) {
         /* swap byte order ... */
         /* buf[ui] = bswap_u16(buf[ui]); */
@@ -37,25 +39,25 @@ read_uv(const struct ad7685 *a, u32 *dst)
 
 /* gets the actual voltage reading(s) (not raw data) */
 void
-ad7685_convert_read_uv(const struct ad7685 *a, u32 *dst)
+nu_ad7685_convert_read_uv(const struct nu_ad7685 *a, u32 *dst)
 {
-    if (FOUR_WIRE == a->wire_config && USE_BUSY_INDICATOR == a->busy_indic)
-        spi_drive_cs_high(&(a->spi));
-    
+    if (NU_AD7685_FOUR_WIRE & a->opt && NU_AD7685_BUSY_INDICATOR & a->opt)
+        nu_spi_drive_cs_high(&(a->spi));
+
     /* start conversion */
     drive_cnv_high(a);
     delay_ns(100);  /* .1 us */
 
-    if (USE_BUSY_INDICATOR == a->busy_indic) {
-        if (THREE_WIRE == a->wire_config)
+    if (NU_AD7685_BUSY_INDICATOR & a->opt) {
+        if (NU_AD7685_THREE_WIRE & a->opt)
             drive_cnv_low(a);
-        else if (FOUR_WIRE == a->wire_config)
-            spi_drive_cs_low(&(a->spi));
+        else if (NU_AD7685_FOUR_WIRE & a->opt)
+            nu_spi_drive_cs_low(&(a->spi));
     }
 
     delay_ns(2300); /* 2.3 us */
 
-    if (THREE_WIRE == a->wire_config && NO_BUSY_INDICATOR == a->busy_indic)
+    if (NU_AD7685_THREE_WIRE & a->opt && NU_AD7685_NO_BUSY_INDICATOR & a->opt)
         drive_cnv_low(a);
 
     /* read in the actual voltage reading(s) over SPI */

@@ -1,4 +1,4 @@
-#include "../include/hais50p.h"
+#include "hais50p.h"
 
 inline float
 voltageToCurrent(float voltage)

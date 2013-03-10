@@ -1,62 +1,85 @@
-#include <stdarg.h>
-#include <stdio.h>
 #include "error_reporting.h"
-#include "errorcodes.h"
+#include "list.h"
+#include "lock.h"
 #include "utility.h"
 #include "wdt.h"
+#include <alloca.h>
+#include <stdarg.h>
+#include <stdio.h>
+#include <xc.h>
 
-static struct error_reporting_dev *rep_devices[MAX_REPORTING_DEVS] = {NULL};
+static LIST_HEAD(erd_list);
 
-#define dev_is_empty(i) (NULL == rep_devices[(i)])
-#define clear_dev(i)    rep_devices[(i)] = NULL
+static nu_reporting_prehook  warn_prehook   = NULL;
+static nu_reporting_posthook warn_posthook  = NULL;
+static nu_reporting_prehook  panic_prehook  = NULL;
+static nu_reporting_posthook panic_posthook = NULL;
 
-static s32 MUST_CHECK
-get_free_err_dev_index(void)
+MAYBE_UNUSED s32 _nu_ret_warn_on;
+
+static volatile u8 warn_recurse_lock = 0;
+
+static bool
+warn_enter(void)
 {
-    u16 ui;
-    for (ui = 0; ui < ARRAY_SIZE(rep_devices); ++ui)
-        if (dev_is_empty(ui))
-            return ui;
-    
-    return -EREPORTNOFREEDEVS;
+    return nu_lock_acquire(&warn_recurse_lock);
 }
 
-s32
-register_reporting_dev(struct error_reporting_dev *erd,
-                        enum report_priority min_priority)
+static void
+warn_exit(void)
 {
-    s32 tmp = get_free_err_dev_index();
-    if (tmp < 0)
-        return tmp;
-
-    erd->min_priority = min_priority;
-    rep_devices[tmp] = erd;
-
-    return 0;
+    nu_lock_release(&warn_recurse_lock);
 }
 
 COLD void
-unregister_reporting_dev(const struct error_reporting_dev *erd)
+nu_reporting_register_warn_prehook(nu_reporting_prehook func)
 {
-    u16 ui;
-    for (ui = 0; ui < ARRAY_SIZE(rep_devices); ++ui)
-        if (rep_devices[ui] == erd)
-            clear_dev(ui);
+    warn_prehook = func;
 }
 
-/*
- * expr may be NULL if there is no expression to report
- */
-static INLINE void PRINTF(7, 0)
-vreportf (const char *file, const char *func, u32 line, const char *expr,
-    enum report_priority priority, s32 err, const char *fmt, va_list arg)
+COLD void
+nu_reporting_register_warn_posthook(nu_reporting_posthook func)
 {
-    /* prevent recursion (also breaks thread-safeness, unfortunately) */
-    static volatile s32 recurse_lock = 0;
-    u32                 ui;
-    char                formatted_msg[1024];
-    const char          *err_str = get_error_name(err);
-    const char          *blank = "";
+    warn_posthook = func;
+}
+
+COLD void
+nu_reporting_register_panic_prehook(nu_reporting_prehook func)
+{
+    panic_prehook = func;
+}
+
+COLD void
+nu_reporting_register_panic_posthook(nu_reporting_posthook func)
+{
+    panic_posthook = func;
+}
+
+void
+nu_reporting_register(struct nu_error_reporting_dev *erd)
+{
+     list_add(&(erd->list), &erd_list);
+}
+
+void
+nu_reporting_unregister(struct nu_error_reporting_dev *erd)
+{
+    list_del(&(erd->list));
+}
+
+COLD void PRINTF(6,7)
+nu_warn(const char *file, const char *func, u32 line, const char *expr,
+    enum nu_report_priority priority, const char *fmt, ...)
+{
+    const char *blank = "";
+    char *buf;
+    const char *fmtd_msg;
+    s32 n;
+    va_list fmtargs;
+    struct nu_error_reporting_dev *pos;
+
+    if (!warn_enter())
+        return;
 
     if (!file)
         file = blank;
@@ -64,48 +87,84 @@ vreportf (const char *file, const char *func, u32 line, const char *expr,
         func = blank;
     if (!expr)
         expr = blank;
-    if (!fmt)
-        fmt = blank;
 
-    vsnprintf(formatted_msg, sizeof(formatted_msg), fmt, arg);
+    va_start(fmtargs, fmt);
 
-    if (recurse_lock)
-        return;
-    recurse_lock = 1;
+    if (warn_prehook)
+        warn_prehook(file, func, line, expr, priority, fmt, fmtargs);
 
-    for (ui = 0; ui < ARRAY_SIZE(rep_devices); ++ui) {
-        clear_wdt();
-        if (dev_is_empty(ui) || rep_devices[ui]->min_priority > priority ||
-                rep_devices[ui]->op->report == NULL)
-            continue;
-
-        rep_devices[ui]->op->report(rep_devices[ui], file, func, line, expr,
-            priority, err, err_str, formatted_msg);
+    if ((n = vsnprintf(NULL, 0, fmt, fmtargs)) >= 0) {
+        buf = (char *)alloca((size_t)n);
+        vsprintf(buf, fmt, fmtargs);
+        va_end(fmtargs);
+        fmtd_msg = buf;
+    } else {
+        fmtd_msg = "No msg...vsnprintf() error inside reporting library";
     }
 
-    recurse_lock = 0;
+    list_for_each_entry(pos, &erd_list, list) {
+        clear_wdt();
+        if (pos->min_priority <= priority)
+            pos->op->report(pos, file, func, line, expr, priority, fmtd_msg);
+    }
+
+    if (warn_posthook)
+        warn_posthook(file, func, line, expr, priority, fmtd_msg);
+
+    warn_exit();
+}
+
+COLD NORETURN void PRINTF(5,6)
+nu_panic(const char *file, const char *func, u32 line, const char *expr,
+    const char *fmt, ...)
+{
+    const char *blank = "";
+    char *buf;
+    const char *fmtd_msg;
+    s32 n;
+    va_list fmtargs;
+    struct nu_error_reporting_dev *pos;
+
+    warn_enter();
+
+    disable_clear_wdt();
+
+    if (!file)
+        file = blank;
+    if (!func)
+        func = blank;
+    if (!expr)
+        expr = blank;
+
+    va_start(fmtargs, fmt);
+
+    if (panic_prehook)
+        panic_prehook(file, func, line, expr, NU_REP_PANIC, fmt, fmtargs);
+
+    if ((n = vsnprintf(NULL, 0, fmt, fmtargs)) >= 0) {
+        buf = (char *)alloca((size_t)n);
+        vsprintf(buf, fmt, fmtargs);
+        va_end(fmtargs);
+        fmtd_msg = buf;
+    } else {
+        fmtd_msg = "No msg...vsnprintf() error inside reporting library";
+    }
+
+    list_for_each_entry(pos, &erd_list, list)
+        pos->op->report(pos, file, func, line, expr, NU_REP_PANIC, fmtd_msg);
+
+    if (panic_posthook)
+        panic_posthook(file, func, line, expr, NU_REP_PANIC, fmtd_msg);
+
+    while (1)
+        Nop();
 }
 
 void
-err_clear(enum report_priority max_priority)
+nu_reporting_clear(enum nu_report_priority max_priority)
 {
-    u32 ui;
-    for (ui = 0; ui < ARRAY_SIZE(rep_devices); ++ui) {
-        clear_wdt();
-        if (dev_is_empty(ui) || rep_devices[ui]->min_priority > max_priority ||
-                rep_devices[ui]->op->reset_err_state == NULL)
-            continue;
-        
-        rep_devices[ui]->op->reset_err_state(rep_devices[ui]);
-    }
-}
-
-COLD void
-reportf(const char *file, const char *func, u32 line, const char *expr,
-    enum report_priority priority, s32 err, const char *fmt, ...)
-{
-    va_list fmtargs;
-    va_start(fmtargs, fmt);
-    vreportf(file, func, line, expr, priority, err, fmt, fmtargs);
-    va_end(fmtargs);
+    struct nu_error_reporting_dev *pos;
+    list_for_each_entry(pos, &erd_list, list)
+        if (pos->min_priority <= max_priority)
+            pos->op->reset_err_state(pos);
 }

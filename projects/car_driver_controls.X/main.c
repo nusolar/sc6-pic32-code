@@ -1,30 +1,62 @@
 #include "can.h"
 #include "common_pragmas.h"
 #include "nokia5110.h"
+#include "nu32.h"
 #include "pinctl.h"
+#include "ws20.h"
 
 static const CAN(ws_can,        CAN1);
 static const CAN(common_can,    CAN2);
-static const NOKIA5110(display,
-        SPI_CHANNEL2, IOPORT_E, BIT_9, IOPORT_G, BIT_9, IOPORT_A, BIT_9);
+static const NOKIA(display, SPI_CHANNEL2, IOPORT_E, BIT_9, IOPORT_G, BIT_9, IOPORT_A, BIT_9);
 
-/* analog in */
-static const PIN(regen_pedal,       IOPORT_B, BIT_0);
-static const PIN(accel_pedal,       IOPORT_B, BIT_1);
-static const PIN(airgap_pot,        IOPORT_B, BIT_4);
+#define ANALOG_INS                          \
+    ANA_IN(regen_pedal,  IOPORT_B, BIT_0)   \
+    ANA_IN(accel_pedal,  IOPORT_B, BIT_1)   \
+    ANA_IN(airgap_pot,   IOPORT_B, BIT_4)
+#define ANA_IN(name, ltr, num)   static const PIN(name, ltr, num);
+ANALOG_INS
+#undef ANA_IN
 
-/* digital in */
-static const PIN(brake_pedal,       IOPORT_B, BIT_2);
-static const PIN(headlight_switch,  IOPORT_B, BIT_3);
-static const PIN(airgap_enable,     IOPORT_B, BIT_5);
-static const PIN(regen_enable,      IOPORT_B, BIT_8);
-static const PIN(reverse_switch,    IOPORT_B, BIT_9);
+#define DIGITAL_INS                                 \
+    DIGI_IN(brake_pedal,         IOPORT_B, BIT_2)   \
+    DIGI_IN(headlight_switch,    IOPORT_B, BIT_3)   \
+    DIGI_IN(airgap_enable,       IOPORT_B, BIT_5)   \
+    DIGI_IN(regen_enable,        IOPORT_B, BIT_8)   \
+    DIGI_IN(reverse_switch,      IOPORT_B, BIT_9)
+#define DIGI_IN(name, ltr, num)  static const PIN(name, ltr, num);
+DIGITAL_INS
+#undef DIGI_IN
 
-/* digital out */
-static const PIN(lights_brake,      IOPORT_D, BIT_0);
-static const PIN(lights_l,          IOPORT_D, BIT_1);
-static const PIN(lights_r,          IOPORT_D, BIT_2);
-static const PIN(headlights,        IOPORT_D, BIT_3);
+#define DIGITAL_OUTS    \
+    DIGI_OUT(lights_brake,   IOPORT_D, BIT_0)    \
+    DIGI_OUT(lights_l,       IOPORT_D, BIT_1)    \
+    DIGI_OUT(lights_r,       IOPORT_D, BIT_2)    \
+    DIGI_OUT(headlights,     IOPORT_D, BIT_3)
+#define DIGI_OUT(name, ltr, num) static const PIN(name, ltr, num);
+DIGITAL_OUTS
+#undef DIGI_OUT
+
+static void
+setup_pins(void)
+{
+#define ANA_IN(name, ltr, num)   pin_set_analog_in(&name);
+    ANALOG_INS
+#undef ANA_IN
+#define DIGI_IN(name, ltr, num)  pin_set_digital_in(&name);
+    DIGITAL_INS
+#undef DIGI_IN
+#define DIGI_OUT(name, ltr, num) pin_set_digital_out(&name); pin_clear(&name);
+    DIGITAL_OUTS
+#undef DIGI_OUT
+}
+
+s32
+main(void)
+{
+    setup_pins();
+}
+
+#if 0
 
 #include <float.h>
 #include <stdint.h>
@@ -545,3 +577,5 @@ main(void)
 
     return 0;
 }
+
+#endif

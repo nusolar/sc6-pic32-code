@@ -1,6 +1,6 @@
-#include "../include/ltc6803.h"
+#include "ltc6803.h"
 
-enum ltc6803Cmds {
+enum ltc6803_cmds {
     WRITECFGS   = 0x01,
     RDCFGS,
     RDCV        = 0x04,
@@ -76,7 +76,7 @@ enum ltc6803Cmds {
     STOW_DISCHRG12,
 };
 
-static const unsigned char crctab[] =
+static const u8 crctab[] =
    {0x00, 0x07, 0x0E, 0x09, 0x1C, 0x1B, 0x12, 0x15, 0x38, 0x3F, 0x36, 0x31,
     0x24, 0x23, 0x2A, 0x2D, 0x70, 0x77, 0x7E, 0x79, 0x6C, 0x6B, 0x62, 0x65,
     0x48, 0x4F, 0x46, 0x41, 0x54, 0x53, 0x5A, 0x5D, 0xE0, 0xE7, 0xEE, 0xE9,
@@ -100,39 +100,37 @@ static const unsigned char crctab[] =
     0xDE, 0xD9, 0xD0, 0xD7, 0xC2, 0xC5, 0xCC, 0xCB, 0xE6, 0xE1, 0xE8, 0xEF,
     0xFA, 0xFD, 0xF4, 0xF3};
 
-union Diagnostic {
-    struct {
-        BYTE dgnr0;
-        BYTE dgnr1;
-    };
-    struct {
+union diagnostic {
+    struct dgn_bytes {
+        u8 dgnr0;
+        u8 dgnr1;
+    } byte;
+    PACKED struct dgn_bits {
         unsigned ref        :12;
         unsigned unused     :1;
         unsigned muxfail    :1;
         unsigned rev        :2;
-    } __attribute__ ((__packed__));
-    BYTE byteArr[2];
+    } bits;
+    u8 bytes[2];
 };
 
-typedef union {
-    struct {
-        unsigned val :24;
-    } __attribute__((__packed__));
-    struct {
-        unsigned voltage1 :12;
-        unsigned voltage2 :12;
-    } __attribute__((__packed__));
-    struct {
-        BYTE lb;
-        BYTE mb;
-        BYTE hb;
-    };
-} RawCellVoltagePair;
+typedef PACKED union voltage_pair {
+    u32 val :24;
+    PACKED struct voltages {
+        u32 v1 :12;
+        u32 v2 :12;
+    } voltages;
+    struct bytes {
+        u8 lb;
+        u8 mb;
+        u8 hb;
+    } bytes;
+} raw_voltage_pair;
 
 union RawVoltages {
     union {
-        BYTE data[18];
-        RawCellVoltagePair voltagePair[6];
+        u8 data[18];
+        raw_voltage_pair voltagePair[6];
     };
     BYTE byteArr[18];
 };
@@ -412,7 +410,7 @@ convertVoltages(struct ltc6803 *self, union RawVoltages *cvrs, float *cellVoltag
     for (i = 0; i < self->numDevices; ++i) {
         unsigned int j;
         for (j = 0; j < voltagePairsPerDevice; ++j) {
-            RawCellVoltagePair currentVPair = cvrs[i].voltagePair[j];
+            raw_voltage_pair currentVPair = cvrs[i].voltagePair[j];
             cellVoltages[i*cellsPerDevice+j*2]      = convertVoltage(currentVPair.voltage1);
             cellVoltages[i*cellsPerDevice+j*2+1]    = convertVoltage(currentVPair.voltage2);
         }
@@ -439,7 +437,7 @@ startOpenWireConversion (struct ltc6803 *self)
 }
 
 static int
-readDagn (struct ltc6803 *self, union Diagnostic *dagn)
+readDagn (struct ltc6803 *self, union diagnostic *dagn)
 {
     int err;
 
@@ -603,34 +601,32 @@ sendWithPec (struct ltc6803 *self, const void *data, size_t len)
     return 0;
 }
 
-static int
-post (struct ltc6803 *self)
+s32
+post (struct ltc6803 *l)
 {
     int err = 0;
-    if (self == NULL)
-        return -ENULPTR;
-
-    if ((err = transactionCmd(self, STCVAD_SELFTEST1)))
+    
+    if ((err = transactionCmd(l, STCVAD_SELFTEST1)) < 0)
         return err;
 
     delay_ms(25);
 
-    union RawVoltages rxRv[(self->numDevices)];
+    union RawVoltages rxRv[(l->numDevices)];
     memset(rxRv, 0, sizeof(rxRv));
-    if ((err = readRawVolts(self, rxRv)))
+    if ((err = readRawVolts(l, rxRv)))
         return err;
 
-    union RawVoltages expected[(self->numDevices)];
+    union RawVoltages expected[(l->numDevices)];
     memset(expected, 0x55, sizeof(expected));
     if (memcmp(rxRv, expected, sizeof(rxRv)))
         return -ELTC6803ADC;
 
-    union Diagnostic dagn[self->numDevices];
-    if ((err = readDagn(self, dagn)))
+    union diagnostic dagn[l->numDevices];
+    if ((err = readDagn(l, dagn)))
         return err;
 
     unsigned int i;
-    for (i = 0; i < self->numDevices; ++i) {
+    for (i = 0; i < l->numDevices; ++i) {
         if (dagn[i].muxfail == 1)
             return -ELTC6803MUX;
         if (convertRefToVolts(dagn[i].ref) < 2.1 || convertRefToVolts(dagn[i].ref) > 2.9)
@@ -640,18 +636,15 @@ post (struct ltc6803 *self)
     return 0;
 }
 
-static int32_t
-checkOpenWire(struct ltc6803 *self, uint16_t *openWire, const float *voltages)
+static s32
+checkOpenWire(struct ltc6803 *self, u16 *openWire, const float *voltages)
 {
-    if (self == NULL || openWire == NULL || voltages == NULL)
-        return -ENULPTR;
-
-    uint32_t i;
-    for (i = 0; i < self->numDevices; i++) {
-        uint32_t j;
-        for(j = 0; j < 12; j++) {
-            if (voltages[i+j] < 0.5)
-                openWire[i] |= 1<<j;
+    u32 ui;
+    for (ui = 0; ui < self->numDevices; ++ui) {
+        u32 uj;
+        for(uj = 0; uj < 12; uj++) {
+            if (voltages[ui+uj] < 0.5)
+                openWire[ui] |= 1<<uj;
         }
     }
 
