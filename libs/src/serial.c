@@ -6,12 +6,12 @@
 #include <alloca.h>
 
 static COLD void
-serial_report(struct error_reporting_dev *e,
+nu_serial_report(struct nu_error_reporting_dev *e,
     const char *file, const char *func, u32 line, const char *expr,
-    UNUSED enum report_priority priority, s32 err, const char *err_s,
+    UNUSED enum nu_report_priority priority, s32 err, const char *err_s,
     const char *fmtd_msg)
 {
-    struct serial *s = erd_to_serial(e);
+    struct serial *s = nu_erd_to_serial(e);
 
     serial_printf(s,
         "%s:%s:%d:%s\r\n"
@@ -22,13 +22,13 @@ serial_report(struct error_reporting_dev *e,
         fmtd_msg);
 }
 
-const struct vtbl_error_reporting_dev serial_erd_ops = {
-    .report         = &serial_report,
-    .reset_err_state= NULL,
+const struct nu_vtbl_error_reporting_dev nu_serial_erd_ops = {
+    &nu_serial_report,
+    NULL
 };
 
 void
-serial_setup(struct serial *s, u32 baud, enum module_interrupt use_interrupt,
+nu_serial_setup(struct nu_serial *s, u32 baud, enum nu_serial_module_interrupt use_interrupt,
         INT_PRIORITY int_priority, UART_FIFO_MODE interrupt_modes,
         UART_LINE_CONTROL_MODE line_control_modes, UART_CONFIGURATION uart_config,
         UART_ENABLE_MODE enable_modes)
@@ -42,7 +42,7 @@ serial_setup(struct serial *s, u32 baud, enum module_interrupt use_interrupt,
     UARTSetDataRate(s->module, HZ, baud);
     UARTEnable(s->module, UART_ENABLE_FLAGS(enable_modes));
 
-    if (USE_UART_INTERRUPT == use_interrupt) {
+    if (NU_USE_UART_INTERRUPT == use_interrupt) {
         switch(s->module) {
             case UART1: 
                 int_vect = INT_UART_1_VECTOR;
@@ -79,7 +79,7 @@ serial_setup(struct serial *s, u32 baud, enum module_interrupt use_interrupt,
 }
 
 void
-serial_tx(const struct serial *s, const void *src, size_t n)
+nu_serial_tx(const struct nu_serial *s, const void *src, size_t n)
 {
     size_t ui;
     for (ui = 0; ui < n; ++ui) {
@@ -91,7 +91,7 @@ serial_tx(const struct serial *s, const void *src, size_t n)
 }
 
 void
-serial_printf(const struct serial *s, const char *fmt, ...)
+nu_serial_printf(const struct nu_serial *s, const char *fmt, ...)
 {
     char *buf;
     size_t n;
@@ -101,11 +101,11 @@ serial_printf(const struct serial *s, const char *fmt, ...)
     buf = alloca(n);
     vsprintf(buf, fmt, fmtargs);
     va_end(fmtargs);
-    serial_tx(s, buf, n);
+    nu_serial_tx(s, buf, n);
 }
 
 void
-serial_rx(const struct serial *s, void *dst, size_t n)
+nu_serial_rx(const struct nu_serial *s, void *dst, size_t n)
 {
     size_t ui;
     for (ui = 0; ui < n && UARTReceivedDataIsAvailable(s->module); ++ui)

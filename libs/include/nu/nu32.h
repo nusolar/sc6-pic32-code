@@ -16,41 +16,38 @@
 #include "pinctl.h"
 #include "serial.h"
 
-#if NU32_V == 1
-static const NU_LED(nu32_led1,    IOPORT_A, BIT_4);
-static const NU_LED(nu32_led2,    IOPORT_A, BIT_5);
-#define nu32_led0   nu32_led2   /* preserve code compatability */
-static const NU_PIN(nu32_switch,  IOPORT_C, BIT_13);
-static const SERIAL(nu32_serial, UART1);
-#define nu32_serial1 nu32_serial
-static const SERIAL(nu32_serial2, UART4);  /* used by bootloader */
-#elif NU32_V == 2
-static const NU_LED(nu32_led0,    IOPORT_G, BIT_12);
-static const NU_LED(nu32_led1,    IOPORT_G, BIT_13);
-#define nu32_led2   nu32_led0       /* preserve code compatability */
-static const NU_PIN(nu32_switch,  IOPORT_G, BIT_6);
-static const SERIAL(nu32_serial2, UART3);    /* UART2A */
-static const SERIAL(nu32_serial, UART1);
-#define nu32_serial1 nu32_serial    /* preserve code compatability */
-#endif
+#define NU_NU32_VERSIONS \
+    NU_NU32_VERSION(NU_NU32_V1) \
+    NU_NU32_VERSION(NU_NU32_V2)
 
-#define nu32_user   nu32_switch
+enum nu_nu32_version {
+#define NU_NU32_VERSION(v) v,
+    NU_NU32_VERSIONS
+#undef NU_NU32_VERSION
+    NU_NUM_NU32_VERSIONS
+};
+
+extern enum nu_nu32_version nu_nu32_version;
+extern const char *nu_nu32_versions[];
+
+/* recommendation: DON'T use the combination nu_nu32_led0 and nu_nu32_led2 */
+DEPRECATED extern struct nu_led *nu_nu32_led0;
+extern struct nu_led *nu_nu32_led1;
+extern struct nu_led *nu_nu32_led2;
+extern struct nu_pin *nu_nu32_switch;
+#define nu_nu32_user nu_nu32_switch
+/* recommendation: DON'T use combination nu_nu32_serial and nu_nu32_serial1 */
+DEPRECATED extern struct nu_serial *nu_nu32_serial;
+extern struct nu_serial *nu_nu32_serial1;
+extern struct nu_serial *nu_nu32_serial2;
 
 /**
  * @brief Sets up the clock, leds, and serial ports on the NU32 board
- *
- * Due to the constructor attribute, this setup function is called automatically
- * before main(). Because it is weakly linked, it may be overriden by creating
- * a custom implementation with the same function signature.
- *
- * @warning If nu32.c is not compiled (included in the MPLAB X project), then
- * nu32_setup() will <b>not</b> be automatically called. In other words, if the
- * linker does not find the symbol it will silently omit the constructor call.
  */
-WEAK CONSTRUCTOR(()) void
-nu32_setup(void);
+void
+nu_nu32_setup(enum nu_nu32_version version, unsigned long hz);
 
 void
-nu32_setup_leds(void);
+nu_nu32_setup_leds(void);
 
 #endif

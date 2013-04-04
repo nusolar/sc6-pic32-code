@@ -72,17 +72,17 @@
         <makeCustomizationNormalizeHexFile>false</makeCustomizationNormalizeHexFile>
       </makeCustomizationType>
       <C32>
-        <property key="additional-warnings" value="false"/>
+        <property key="additional-warnings" value="true"/>
         <property key="enable-app-io" value="false"/>
-        <property key="enable-omit-frame-pointer" value="false"/>
+        <property key="enable-omit-frame-pointer" value="true"/>
         <property key="enable-symbols" value="true"/>
-        <property key="enable-unroll-loops" value="false"/>
-        <property key="exclude-floating-point" value="false"/>
+        <property key="enable-unroll-loops" value="true"/>
+        <property key="exclude-floating-point" value="true"/>
         <property key="extra-include-directories" value="../../libs/include"/>
         <property key="generate-16-bit-code" value="false"/>
         <property key="isolate-each-function" value="false"/>
-        <property key="make-warnings-into-errors" value="false"/>
-        <property key="optimization-level" value=""/>
+        <property key="make-warnings-into-errors" value="true"/>
+        <property key="optimization-level" value="-O1"/>
         <property key="place-data-into-section" value="false"/>
         <property key="post-instruction-scheduling" value="default"/>
         <property key="pre-instruction-scheduling" value="default"/>
@@ -124,6 +124,7 @@
         <property key="linker-symbols" value=""/>
         <property key="map-file" value=""/>
         <property key="no-startup-files" value="false"/>
+        <property key="oXC32ld-extra-opts" value=""/>
         <property key="optimization-level" value=""/>
         <property key="preprocessor-macros" value=""/>
         <property key="remove-unused-sections" value="false"/>
@@ -159,6 +160,7 @@
       </C32CPP>
       <C32Global>
         <property key="legacy-libc" value="false"/>
+        <property key="save-temps" value="false"/>
       </C32Global>
       <PICkit3PlatformTool>
         <property key="ADC 1" value="true"/>

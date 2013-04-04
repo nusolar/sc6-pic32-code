@@ -1,11 +1,7 @@
 #include "async_io.h"
 
-const char *default_rx_delims = "\r\n";
-
-s32 async_io_setup(struct async_io *a) { a->op->setup(a); }
-
-s32
-async_io_tx(struct async_io *a, const void *src, size_t n, bool overrun, bool *overrun_out)
+size_t
+async_io_tx_enqueue(struct nu_async_io *a, const void *src, size_t n, bool overrun)
 {
     struct circ_buf *tx_buf = &(a->tx_buf);
     size_t ui;
@@ -15,16 +11,27 @@ async_io_tx(struct async_io *a, const void *src, size_t n, bool overrun, bool *o
         if (CIRC_SPACE(tx_buf->head, tx_buf->tail, a->tx_buf_size) < 1) {
             if (!overrun)
                 break;
-            if (overrun_out)
-                *overrun_out = true;
             tx_buf->tail = (tx_buf->head - 1) & (a->tx_buf_size - 1);
         }
     }
     return ui;
 }
 
-s32
-async_io_rx(struct async_io *a, void *dst, size_t n)
+size_t
+nu_async_io_rx_dequeue(struct nu_async_io *a, void *dst, size_t n)
 {
     return 0;
 }
+
+s32
+nu_async_io_tx(struct async_io *a)
+{
+    return 0;
+}
+
+s32
+nu_async_io_rx(struct async_io *a)
+{
+    return 0;
+}
+

@@ -19,7 +19,7 @@ struct nu_pin {
 #define NU_PIN(name, ltr, num)  \
     struct nu_pin name = NU_PIN_INIT(ltr, num)
 
-static INLINE void
+static ALWAYSINLINE void
 NU_INIT_PIN(struct nu_pin *p, IoPortId ltr, u32 num)
 {
     p->ltr = ltr;

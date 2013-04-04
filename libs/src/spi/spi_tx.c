@@ -6,7 +6,7 @@ static ALWAYSINLINE u32
 spi_chn_get_bitrate(SpiChannel chn)
 {
     u32 clk_div = (_SpiMapTbl[chn]->brg+1)*2;
-    u32 bitrate = PBUS_FREQ_HZ/clk_div;
+    u32 bitrate = NU_PBUS_FREQ_HZ/clk_div;
     return bitrate;
 
     /*

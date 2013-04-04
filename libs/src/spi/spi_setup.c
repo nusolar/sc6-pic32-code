@@ -4,7 +4,7 @@
 void
 nu_spi_setup(const struct nu_spi *s, u32 bitrate, SpiOpenFlags oflags)
 {
-    SpiChnOpen(s->chn, oflags, PBUS_FREQ_HZ/bitrate);
+    SpiChnOpen(s->chn, oflags, NU_PBUS_FREQ_HZ/bitrate);
 }
 
 void

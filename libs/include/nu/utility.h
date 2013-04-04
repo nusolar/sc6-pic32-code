@@ -1,5 +1,5 @@
 #ifndef NU_UTILITY_H
-#define NU_UTILITY_H
+#define NU_UTILITY_H 1
 
 #include <stdlib.h>
 #include "compiler.h"

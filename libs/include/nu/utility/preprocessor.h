@@ -1,5 +1,5 @@
 #ifndef NU_UTIL_PREPROCESSOR_H
-#define NU_UTIL_PREPROCESSOR_H
+#define NU_UTIL_PREPROCESSOR_H 1
 
 /* useful preprocessor/macro things */
 

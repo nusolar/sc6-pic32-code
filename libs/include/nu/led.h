@@ -43,6 +43,12 @@ WEAK extern const struct nu_vtbl_error_reporting_dev nu_led_erd_ops;
 #define nu_led_on(l)        nu_pin_clear(&((l)->pin))
 #define nu_led_toggle(l)    nu_pin_toggle(&((l)->pin))
 
+static ALWAYSINLINE void
+NU_INIT_LED(struct nu_led *l, IoPortId ltr, unsigned int num)
+{
+    NU_INIT_PIN(&(l->pin), ltr, num);
+}
+
 static INLINE void
 nu_led_setup(const struct nu_led *l)
 {
