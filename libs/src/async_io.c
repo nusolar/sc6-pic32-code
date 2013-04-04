@@ -24,13 +24,13 @@ nu_async_io_rx_dequeue(struct nu_async_io *a, void *dst, size_t n)
 }
 
 s32
-nu_async_io_tx(struct async_io *a)
+nu_async_io_tx(struct nu_async_io *a)
 {
     return 0;
 }
 
 s32
-nu_async_io_rx(struct async_io *a)
+nu_async_io_rx(struct nu_async_io *a)
 {
     return 0;
 }
