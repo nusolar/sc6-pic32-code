@@ -33,19 +33,19 @@ struct nu_vtbl_async_io {
 
 /* returns # of bytes enqueued */
 size_t
-nu_async_io_tx_enqueue(struct async_io *a, const void *src, size_t n, bool overrun);
+nu_async_io_tx_enqueue(struct nu_async_io *a, const void *src, size_t n, bool overrun);
 
 /* returns # of bytes dequeued */
 size_t
-nu_async_io_rx_dequeue(struct async_io *a, void *dst, size_t n);
+nu_async_io_rx_dequeue(struct nu_async_io *a, void *dst, size_t n);
 
 /* to be done inside ISRs; negative return indicates error */
 
 s32
-nu_async_io_tx(struct async_io *a);
+nu_async_io_tx(struct nu_async_io *a);
 
 s32
-nu_async_io_rx(struct async_io *a);
+nu_async_io_rx(struct nu_async_io *a);
 
 #endif
 
