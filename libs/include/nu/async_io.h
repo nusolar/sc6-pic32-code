@@ -21,12 +21,12 @@ struct nu_async_io {
 	}
 
 struct nu_vtbl_async_io {
-    /* positive return indicates # of additional bytes that can still be added/removed to/from hardware tx/rx buffer
+    /* positive return indicates # of bytes that were added/removed to/from hardware tx/rx buffer
      * return of 0 indicates that no additional bytes can be added/removed to/from hardware tx/rx buffer
      * negative return indicates error
      */
-    ssize_t (*tx_callback) (struct nu_async_io *a, const void *src, size_t n);
-    ssize_t (*rx_callback) (struct nu_async_io *a, void *dst, size_t n);
+    ssize_t (*tx_callback) (const void *src, size_t n);
+    ssize_t (*rx_callback) (void *dst, size_t n);
 };
 
 /* to be done outside ISRs */
