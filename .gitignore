@@ -67,6 +67,10 @@ Makefile-impl.mk
 !Makefile
 !project.xml
 
+#Sublime Text 2
+*.sublime-project
+*.sublime-workspace
+
 # C
 ## object files
 *.o
