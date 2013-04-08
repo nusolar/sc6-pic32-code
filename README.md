@@ -62,33 +62,55 @@ Headers
 
 `nu32.h` — setup NU32 LEDs and UARTs. Possibly does some ADC initialization.
 
+`led.h` — control NU32 LEDs
+
 ### Hardware objects
 
-`button.h` — abstracts steering wheel buttons
+`pinctl.h` — wraps PIC32 pins as NU_PIN.
+
+* declaring, setting digital/analog in/out, reading/setting bits, clearing, toggling.
+
+`button.h` — abstracts declaring buttons, updating value, and checking value
+
+* `struct btn` holds NU_PIN, and current button value. `btn_update(b)` updates `b->debounce`.
+
+`can.h` — Wrap CAN, abstracting adding channels and TX/RX
+
+`serial.h` — Wraps PIC32 UART_MODULE for serial comm
 
 `spi.h` — SPI functions. Abstracts declaring SPI pins, setting up, reading, and writing.
 
 `ltc6803.h` — SPI Voltage monitoring chip
 
- `ad7685.h` — SPI Analog-to-Digital Converter used on the BMS current sensor
+`ad7685.h` — SPI Analog-to-Digital Converter used on the BMS current sensor
 
- `nokia5110.h` — SPI LCD interface
+`nokia5110.h` — SPI LCD.
 
 `wdt.h` — no idea
 
 ### Useful functions
 
-`arith.h` — inline arithmetic operations
+`errorcodes.h` — our error codes
+
+`error_reporting.h` — report errors, presumably to CAN
+
+`list.h` — provides doubly linked list
+
+`safestring.h` — provides `strlcpy` and `strlcat` for our Cstrings
+
+`arith.h` — some (inline) arithmetic functions
 
 `nu_types.h` — our ridiculous "quicker to type" aliases to primitive types
 
-`compiler.h` — equally ridiculous aliases to GCC extension
+`compiler.h` — equally ridiculous aliases to GCC extensions
 
-`utility.h` — BUSY_FOR and CLAIM_PIN
+`utility.h` — BUSY_FOR, CLAIM_PIN, other useful functions
 
 * Includes bits, data, and preprocessor utility functions. And static assertions
 
 * Includes `stdlib.h` and `compiler.h`
+
+`crc.h` — cyclic redundancy checks, for network data
 
 
 
