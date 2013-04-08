@@ -56,6 +56,7 @@ nbactions.xml
 nbbuild/
 nbdist/
 nbproject/private/
+libs/*/nbproject/
 projects/*/nbproject/private/
 projects/*/nbproject/private/*
 *.mk
