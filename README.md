@@ -90,6 +90,8 @@ Headers
 
 ### Useful functions
 
+`can_all.h` — Define all CAN packets
+
 `errorcodes.h` — our error codes
 
 `error_reporting.h` — report errors, presumably to CAN
