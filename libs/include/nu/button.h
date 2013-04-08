@@ -5,7 +5,7 @@
 #include "pinctl.h"
 
 struct btn {
-    struct pin pin;
+    struct nu_pin pin;
     u8 debounce;
     u8 debounce_max;
     u8 thresh;
