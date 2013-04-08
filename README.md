@@ -74,6 +74,7 @@ Headers
 
  `nokia5110.h` — SPI LCD interface
 
+`wdt.h` — no idea
 
 ### Useful functions
 
