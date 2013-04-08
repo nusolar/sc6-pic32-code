@@ -14,6 +14,7 @@
                    projectFiles="true">
       <itemPath>main.c</itemPath>
       <itemPath>../../libs/src/nu32.c</itemPath>
+      <itemPath>../../libs/src/param.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

@@ -24,7 +24,7 @@ struct btn {
 #define btn_pressed(b)  ((b)->debounce >= (b)->thresh)
 #define btn_update(b)                                               \
     (b)->debounce =                                                 \
-        clamp((b)->debounce + pin_read(&((b)->pin)) ? 1 : -1,       \
+        clamp((b)->debounce + nu_pin_read(&((b)->pin)) ? 1 : -1,       \
             0,                                                      \
             min(__MAX(typeof((b)->debounce)), (b)->debounce_max))
 

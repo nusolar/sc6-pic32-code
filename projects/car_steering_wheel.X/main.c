@@ -35,7 +35,7 @@ DIGITAL_IN_PINS
     _LED(cruise_mode,  D, 9)    \
     _LED(cruise_down,  A, 15)
 #define _LED(name, ltr, num)    \
-    static const PIN(led_##name, IOPORT_##ltr, BIT_##num);
+    static const NU_PIN(led_##name, IOPORT_##ltr, BIT_##num);
 LED_PINS
 #undef _LED
 
