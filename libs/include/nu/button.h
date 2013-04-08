@@ -22,6 +22,12 @@ struct btn {
     struct btn name = BTN_INIT(ltr, num, debounce_max, thresh)
 
 #define btn_pressed(b)  ((b)->debounce >= (b)->thresh)
+
+/**
+ * Shift b->debounce +/- 1, depending on whether b->pin is HIGH.
+ * @param  b [in, out] the `struct btn`
+ * @return
+ */
 #define btn_update(b)                                               \
     (b)->debounce =                                                 \
         clamp((b)->debounce + nu_pin_read(&((b)->pin)) ? 1 : -1,       \

@@ -6,8 +6,12 @@
 #include "nu/pinctl.h"
 #include "nu/utility.h"
 
-/* buttons */
-/* might be better to use change notification (CN) pins with interrupts */
+
+/**
+ * buttons - collection of Digital-In Pins
+ * @todo: add all buttons
+ * @note: might be better to use change notification (CN) pins with interrupts
+ */
 #define DIGITAL_IN_PINS         \
     _PIN(yes,          E, 0)    \
     _PIN(no,           G, 12)   \

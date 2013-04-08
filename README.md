@@ -58,15 +58,21 @@ Peruse with caution.
 Headers
 ----
 
+### NU32
+
+`nu32.h` — setup NU32 LEDs and UARTs. Possibly does some ADC initialization.
+
 ### Hardware objects
 
 `button.h` — abstracts steering wheel buttons
 
-`ltc6803.h` — Voltage monitoring chip, via SPI
+`spi.h` — SPI functions. Abstracts declaring SPI pins, setting up, reading, and writing.
 
- `ad7685.h` — Analog-to-Digital Converter used on the BMS current sensor, via SPI
+`ltc6803.h` — SPI Voltage monitoring chip
 
- `nokia5110.h` — LCD interface, via SPI
+ `ad7685.h` — SPI Analog-to-Digital Converter used on the BMS current sensor
+
+ `nokia5110.h` — SPI LCD interface
 
 
 ### Useful functions
@@ -76,5 +82,12 @@ Headers
 `nu_types.h` — our ridiculous "quicker to type" aliases to primitive types
 
 `compiler.h` — equally ridiculous aliases to GCC extension
+
+`utility.h` — BUSY_FOR and CLAIM_PIN
+
+* Includes bits, data, and preprocessor utility functions. And static assertions
+
+* Includes `stdlib.h` and `compiler.h`
+
 
 
