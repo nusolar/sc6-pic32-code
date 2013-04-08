@@ -13,7 +13,7 @@ struct btn {
 
 #define BTN_INIT(ltr,num,_debounce_max,_thresh) \
     {                                           \
-    .pin = PIN_INIT(ltr,num),                   \
+    .pin = NU_PIN_INIT(ltr,num),                   \
     .debounce = 0,                              \
     .debounce_max = (_debounce_max),            \
     .thresh = (_thresh)                         \

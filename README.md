@@ -62,4 +62,19 @@ Headers
 
 `button.h` — abstracts steering wheel buttons
 
-`ltc6803.h` — our Voltage monitoring chips
+`ltc6803.h` — Voltage monitoring chip, via SPI
+
+ `ad7685.h` — Analog-to-Digital Converter used on the BMS current sensor, via SPI
+
+ `nokia5110.h` — LCD interface, via SPI
+
+
+### Useful functions
+
+`arith.h` — inline arithmetic operations
+
+`nu_types.h` — our ridiculous "quicker to type" aliases to primitive types
+
+`compiler.h` — equally ridiculous aliases to GCC extension
+
+
