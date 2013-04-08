@@ -61,6 +61,7 @@ projects/*/nbproject/private/*
 *.mk
 *.properties
 Makefile-default.mk
+Makefile-local-default.mk
 Makefile-genesis.properties
 Makefile-impl.mk
 !configurations.xml
