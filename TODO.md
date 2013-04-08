@@ -17,3 +17,8 @@ steering wheel
 * Implement LEDs
 
 * Implement LCD with Speed
+
+wavesculptor20
+----
+
+* fix ws20.c
