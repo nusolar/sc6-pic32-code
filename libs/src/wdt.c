@@ -1,5 +1,5 @@
 #include <peripheral/wdt.h>
-#include "wdt.h"
+#include "nu/wdt.h"
 
 static void enabled_clear_wdt (void) { /* ClearWDT(); */}
 static void disabled_clear_wdt(void) {}
