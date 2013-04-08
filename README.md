@@ -3,31 +3,35 @@ sc6-pic32-code
 
 NUSolar SC6 PIC32 code
 
+
 Prerequisites
--------------
+----
 MPLAB X IDE ≥ 1.0
 
 PICkit 2 or 3
 
+
 Installation
-------------
+----
 Clone repository
 
 Open and compile in MPLAB X
 
 Upload binaries to PICs with MPLAB X's IPE
 
+
 Usage
------
+----
 Turn on boards
 
 Projects
---------
+----
 
-I have no idea why but Chris implemented <i>absolutely everything</i> in
-preprocessor commands. Peruse with caution.
+Unfortunately Chris implemented <i>absolutely everything</i> in
+<a href="http://en.wikipedia.org/wiki/X_Macro">X macros</a>.
+Peruse with caution.
 
-<b>Project names beginning with `car_` go on the car.</b>
+### Project names beginning with `car_` go on the car.
 
 `car_bms` — lots of BMS
 
@@ -37,7 +41,7 @@ preprocessor commands. Peruse with caution.
 
 * We primarily call `btn_update` from `button.h`. We also define `_PIN` in `_LED`
 
-<b>These are utility projects.</b>
+### Otherwise-named projects are development utilities.
 
 `get_tempSensors` — Utility to get temperature serial numbers, to populate the table in the BMS code.
 
@@ -52,6 +56,10 @@ preprocessor commands. Peruse with caution.
 * Requires an MPPT hex blob, which the company sends us.
 
 Headers
--------
+----
+
+### Hardware objects
 
 `button.h` — abstracts steering wheel buttons
+
+`ltc6803.h` — our Voltage monitoring chips

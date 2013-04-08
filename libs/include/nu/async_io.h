@@ -3,6 +3,7 @@
 
 #include "circ_buf.h"
 #include "nu_types.h"
+#include <sys/types.h>
 
 struct nu_async_io {
     struct circ_buf tx_buf;

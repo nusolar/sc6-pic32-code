@@ -1,7 +1,7 @@
 #include "async_io.h"
 
 size_t
-async_io_tx_enqueue(struct nu_async_io *a, const void *src, size_t n, bool overrun)
+nu_async_io_tx_enqueue(struct nu_async_io *a, const void *src, size_t n, bool overrun)
 {
     struct circ_buf *tx_buf = &(a->tx_buf);
     size_t ui;
