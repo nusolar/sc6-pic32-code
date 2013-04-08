@@ -1,4 +1,4 @@
-#include "../include/crc.h"
+#include "../include/nu/crc.h"
 
 static inline unsigned long
 crcMask (unsigned int order)

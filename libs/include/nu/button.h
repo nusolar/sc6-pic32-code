@@ -24,8 +24,9 @@ struct btn {
 #define btn_pressed(b)  ((b)->debounce >= (b)->thresh)
 
 /**
- * Add or subtract 1 to b->debounce, depending on whether b->pin is HIGH.
+ * Add or subtract 1 to b->debounce, if b->pin is HIGH or LOW
  * @param  b [in, out] the `struct btn` button to be updated
+ * @note If clock lags, 10 cycles needed until button normalizes!
  */
 #define btn_update(b)                                               \
     (b)->debounce =                                                 \

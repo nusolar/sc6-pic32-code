@@ -1,4 +1,5 @@
-#include "errorcodes.h"
+#include "nu/errorcodes.h"
+#include "nu/arith.h"
 
 const char *error_names[] = {
 #define ERROR(x) #x,

@@ -1,7 +1,7 @@
 #include <string.h>
-#include "can.h"
-#include "errorcodes.h"
-#include "timer.h"
+#include "nu/can.h"
+#include "nu/errorcodes.h"
+#include "nu/timer.h"
 
 #define DEFAULT_BUS_SPEED_HZ    1E6
 static const CAN_BIT_CONFIG default_cfg = {
@@ -277,7 +277,7 @@ can_add_filter(const struct can *c, CAN_CHANNEL chn, CAN_FILTER filter,
     return 0;
 }
 
-const struct vtbl_error_reporting_dev can_erd_ops = {
+const struct nu_vtbl_error_reporting_dev can_erd_ops = {
     .report         = &can_report,
     .reset_err_state= NULL,
 };

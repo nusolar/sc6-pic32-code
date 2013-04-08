@@ -1,4 +1,4 @@
-#include "led.h"
+#include "nu/led.h"
 
 static s32
 led_resetErrState(struct nu_error_reporting_dev *erd)
@@ -10,7 +10,7 @@ led_resetErrState(struct nu_error_reporting_dev *erd)
 static s32
 led_report(struct nu_error_reporting_dev *erd,
             UNUSED const char *file, UNUSED const char *func, UNUSED u32 line,
-            UNUSED const char *expr, UNUSED enum report_priority priority,
+            UNUSED const char *expr, UNUSED enum nu_report_priority priority,
             UNUSED s32 err, UNUSED const char *err_str,
             UNUSED const char *fmtd_msg)
 {
