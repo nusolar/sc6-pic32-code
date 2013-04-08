@@ -13,18 +13,31 @@ Installation
 ------------
 Clone repository
 
-Open in MPLAB X
+Open and compile in MPLAB X
 
-Load onto PICs
+Upload binaries to PICs with MPLAB X's IPE
+
+Usage
+-----
+Turn on boards
 
 Projects
 --------
 
+I have no idea why but Chris implemented <i>absolutely everything</i> in
+preprocessor commands. Peruse with caution.
+
 <b>Project names beginning with `car_` go on the car.</b>
 
-`car_bms` —
+`car_bms` — lots of BMS
+
+`car_driver_controls` — setup pins: analog in, digital in, digital out.
 
 `car_steering_wheel` — indefinitely update Button values. Should also Animate buttons. Should also draw LCD.
+
+* We primarily call `btn_update` from `button.h`. We also define `_PIN` in `_LED`
+
+<b>These are utility projects.</b>
 
 `get_tempSensors` — Utility to get temperature serial numbers, to populate the table in the BMS code.
 
@@ -36,6 +49,9 @@ Projects
 
 `mppt_upload` — Utility to upload the MPPT binary.
 
-Usage
------
-Turn on PICs
+* Requires an MPPT hex blob, which the company sends us.
+
+Headers
+-------
+
+`button.h` — abstracts steering wheel buttons
