@@ -1,10 +1,10 @@
-#include "button.h"
-#include "common_pragmas.h"
-#include "compiler.h"
-#include "nu32.h"
-#include "nu_types.h"
-#include "pinctl.h"
-#include "utility.h"
+#include "nu/button.h"
+#include "nu/common_pragmas.h"
+#include "nu/compiler.h"
+#include "nu/nu32.h"
+#include "nu/nu_types.h"
+#include "nu/pinctl.h"
+#include "nu/utility.h"
 
 /* buttons */
 /* might be better to use change notification (CN) pins with interrupts */
