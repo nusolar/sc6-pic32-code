@@ -58,7 +58,7 @@ wavesculptor20_new(struct ws20 *w, u32 driverControlsSerialNo,
                     enum SampleTimes sample3Times, CAN_BIT_TQ syncJumpWidth);
 
 s32
-wavesculptor20_new_easy(struct wavesculptor20 *self, CAN_MODULE module,
+wavesculptor20_new_easy(struct ws20 *self, CAN_MODULE module,
                     CAN_CHANNEL txChn, CAN_CHANNEL rxChn);
 
 #endif
