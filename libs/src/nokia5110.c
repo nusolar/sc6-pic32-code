@@ -1,5 +1,5 @@
-#include "nokia5110.h"
-#include "wdt.h"
+#include "nu/nokia5110.h"
+#include "nu/wdt.h"
 
 #define LCD_X     84
 #define LCD_Y     48

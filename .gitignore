@@ -56,16 +56,22 @@ nbactions.xml
 nbbuild/
 nbdist/
 nbproject/private/
+libs/*/nbproject/
 projects/*/nbproject/private/
 projects/*/nbproject/private/*
 *.mk
 *.properties
 Makefile-default.mk
+Makefile-local-default.mk
 Makefile-genesis.properties
 Makefile-impl.mk
 !configurations.xml
 !Makefile
 !project.xml
+
+#Sublime Text 2
+*.sublime-project
+*.sublime-workspace
 
 # C
 ## object files

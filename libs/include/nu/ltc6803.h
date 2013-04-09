@@ -6,6 +6,9 @@
 #include "spi.h"
 #include "utility.h"
 
+/**
+ *  The Battery Voltage chip
+ */
 enum ltc6803_cfgr0 {
     /** watchdog timer */
     LTC6803_WDT         = 1<<7,
@@ -21,7 +24,7 @@ enum ltc6803_cfgr0 {
 
     /** 0 = 12-cell mode (default), 1 = 10-cell mode */
     LTC6803_CELL10      = 1<<3,
-    
+
     LTC6803_CDC2        = 1<<2,
     LTC6803_CDC1        = 1<<1,
     LTC6803_CDC0        = 1,

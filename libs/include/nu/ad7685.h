@@ -10,6 +10,9 @@
 extern "C" {
 #endif
 
+/**
+ *  The Analog-to-Digital Converter used on the BMS current sensor
+ */
 enum nu_ad7685_options {
     NU_AD7685_NONE = 0,
     /* wire config */

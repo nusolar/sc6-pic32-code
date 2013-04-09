@@ -1,19 +1,19 @@
-#include "can.h"
-#include "common_pragmas.h"
-#include "nokia5110.h"
-#include "nu32.h"
-#include "pinctl.h"
-#include "ws20.h"
+#include "nu/can.h"
+#include "nu/common_pragmas.h"
+#include "nu/nokia5110.h"
+#include "nu/nu32.h"
+#include "nu/pinctl.h"
+#include "nu/ws20.h"
 
 static const CAN(ws_can,        CAN1);
 static const CAN(common_can,    CAN2);
-static const NOKIA(display, SPI_CHANNEL2, IOPORT_E, BIT_9, IOPORT_G, BIT_9, IOPORT_A, BIT_9);
+static const NU_NOKIA(display, SPI_CHANNEL2, IOPORT_E, BIT_9, IOPORT_G, BIT_9, IOPORT_A, BIT_9);
 
 #define ANALOG_INS                          \
     ANA_IN(regen_pedal,  IOPORT_B, BIT_0)   \
     ANA_IN(accel_pedal,  IOPORT_B, BIT_1)   \
     ANA_IN(airgap_pot,   IOPORT_B, BIT_4)
-#define ANA_IN(name, ltr, num)   static const PIN(name, ltr, num);
+#define ANA_IN(name, ltr, num)   static const NU_PIN(name, ltr, num);
 ANALOG_INS
 #undef ANA_IN
 
@@ -23,7 +23,7 @@ ANALOG_INS
     DIGI_IN(airgap_enable,       IOPORT_B, BIT_5)   \
     DIGI_IN(regen_enable,        IOPORT_B, BIT_8)   \
     DIGI_IN(reverse_switch,      IOPORT_B, BIT_9)
-#define DIGI_IN(name, ltr, num)  static const PIN(name, ltr, num);
+#define DIGI_IN(name, ltr, num)  static const NU_PIN(name, ltr, num);
 DIGITAL_INS
 #undef DIGI_IN
 
@@ -32,20 +32,24 @@ DIGITAL_INS
     DIGI_OUT(lights_l,       IOPORT_D, BIT_1)    \
     DIGI_OUT(lights_r,       IOPORT_D, BIT_2)    \
     DIGI_OUT(headlights,     IOPORT_D, BIT_3)
-#define DIGI_OUT(name, ltr, num) static const PIN(name, ltr, num);
+#define DIGI_OUT(name, ltr, num) static const NU_PIN(name, ltr, num);
 DIGITAL_OUTS
 #undef DIGI_OUT
 
+
+/**
+ * Setup Driver Control inputs via pinctl
+ */
 static void
 setup_pins(void)
 {
-#define ANA_IN(name, ltr, num)   pin_set_analog_in(&name);
+#define ANA_IN(name, ltr, num)   nu_pin_set_analog_in(&name);
     ANALOG_INS
 #undef ANA_IN
-#define DIGI_IN(name, ltr, num)  pin_set_digital_in(&name);
+#define DIGI_IN(name, ltr, num)  nu_pin_set_digital_in(&name);
     DIGITAL_INS
 #undef DIGI_IN
-#define DIGI_OUT(name, ltr, num) pin_set_digital_out(&name); pin_clear(&name);
+#define DIGI_OUT(name, ltr, num) nu_pin_set_digital_out(&name); nu_pin_clear(&name);
     DIGITAL_OUTS
 #undef DIGI_OUT
 }
@@ -54,6 +58,13 @@ s32
 main(void)
 {
     setup_pins();
+    // read pins
+    // assemble DC CAN struct
+    // send
+    // send acceleration / power CAN pkt to motor controller
+    // Draw status on Nokia
+    // Listen for commands, implement them
+    return 0;
 }
 
 #if 0
@@ -145,7 +156,7 @@ setDigitalOut(IoPortId ltr, uint32_t num)
 
 static ALWAYSINLINE void
 init_ios(void)
-{    
+{
     ClearWDT();
 
     CloseADC10();
@@ -234,7 +245,7 @@ init_cans(void)
     can_new_easy(ws20canp, WS_CAN_MOD, 0, INT_PRIORITY_DISABLED);
     ws20canp->op->addChannelTx(ws20canp, WAVESCULPTOR_CAN_TX_CHN,
             32, CAN_TX_RTR_DISABLED, CAN_HIGH_MEDIUM_PRIORITY, 0);
-    
+
     return 0;
 }
 
@@ -445,7 +456,7 @@ main(void)
         doDrive();
         doHorn();
         doLights();
-        
+
         dp->op->clear(dp);
         dp->op->gotoXY(dp,0,0);
         dp->op->printf(dp, "%f", accelPedalPercent);

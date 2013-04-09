@@ -22,7 +22,7 @@ enum sample_times {
 };
 
 struct can {
-    struct error_reporting_dev  erd;
+    struct nu_error_reporting_dev  erd;
     CAN_CHANNEL                 erd_chn;
     enum id_type                erd_id_type;
     u16                         erd_std_id;
@@ -43,7 +43,7 @@ struct can {
     }
 #define erd_to_can(erdp)    container_of((erdp), struct can, erd)
 
-extern const struct vtbl_error_reporting_dev can_erd_ops;
+extern const struct nu_vtbl_error_reporting_dev can_erd_ops;
 
 #define CAN_ERD(name, min_priority, erd_chn, erd_id_type, erd_std_id, erd_ext_id, mod)  \
     struct can name = CAN_ERD_INIT(name, min_priority, erd_chn, erd_id_type, erd_std_id, erd_ext_id, mod)
@@ -83,9 +83,10 @@ can_new_easy (struct can *self, CAN_MODULE module,
                 INT_PRIORITY intPriority);
 
 COLD s32
-can_report(struct error_reporting_dev *erd,
+can_report(struct nu_error_reporting_dev *erd,
     const char *file, u32 line, const char *expr,
-    enum report_priority priority, s32 err, const char *err_name,
-    const char *fmtd_msg)
+    enum nu_report_priority priority, s32 err, const char *err_name,
+    const char *fmtd_msg);
 
 #endif
+

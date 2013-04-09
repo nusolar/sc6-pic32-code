@@ -1,13 +1,17 @@
-#include "button.h"
-#include "common_pragmas.h"
-#include "compiler.h"
-#include "nu32.h"
-#include "nu_types.h"
-#include "pinctl.h"
-#include "utility.h"
+#include "nu/button.h"
+#include "nu/common_pragmas.h"
+#include "nu/compiler.h"
+#include "nu/nu32.h"
+#include "nu/nu_types.h"
+#include "nu/pinctl.h"
+#include "nu/utility.h"
 
-/* buttons */
-/* might be better to use change notification (CN) pins with interrupts */
+
+/**
+ * buttons - list of Digital-In Pins
+ * @todo: add all buttons
+ * @note: might be better to use change notification (CN) pins with interrupts
+ */
 #define DIGITAL_IN_PINS         \
     _PIN(yes,          E, 0)    \
     _PIN(no,           G, 12)   \
@@ -21,6 +25,9 @@
 DIGITAL_IN_PINS
 #undef _PIN
 
+/**
+ * leds - list of LED Pins
+ */
 #define LED_PINS                \
     _LED(left,         D, 7)    \
     _LED(right,        D, 3)    \
@@ -35,7 +42,7 @@ DIGITAL_IN_PINS
     _LED(cruise_mode,  D, 9)    \
     _LED(cruise_down,  A, 15)
 #define _LED(name, ltr, num)    \
-    static const PIN(led_##name, IOPORT_##ltr, BIT_##num);
+    static const NU_PIN(led_##name, IOPORT_##ltr, BIT_##num);
 LED_PINS
 #undef _LED
 
@@ -48,6 +55,14 @@ main(void)
         btn_update(&name);
         DIGITAL_IN_PINS
 #undef _PIN
+        // check each btn_pressed
+        // assemble CAN buttons packet
+        // send
+        // check each LED
+        // assemble CAN LED packet
+        // send
+        // receive any CAN LED rx packets, implement
+        // draw Status on Nokia
     }
     return 0;
 }

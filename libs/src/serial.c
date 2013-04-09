@@ -1,8 +1,8 @@
-#include "serial.h"
-#include "errorcodes.h"
-#include "nu32.h"
-#include "utility.h"
-#include "wdt.h"
+#include "nu/serial.h"
+#include "nu/errorcodes.h"
+#include "nu/nu32.h"
+#include "nu/utility.h"
+#include "nu/wdt.h"
 #include <alloca.h>
 
 static COLD void
@@ -11,9 +11,9 @@ nu_serial_report(struct nu_error_reporting_dev *e,
     UNUSED enum nu_report_priority priority, s32 err, const char *err_s,
     const char *fmtd_msg)
 {
-    struct serial *s = nu_erd_to_serial(e);
+    struct nu_serial *s = nu_erd_to_serial(e);
 
-    serial_printf(s,
+    nu_serial_printf(s,
         "%s:%s:%d:%s\r\n"
         "\tERR %d(%s)\r\n"
         "\t%s\r\n\r\n",

@@ -1,17 +1,17 @@
-#include "../include/wavesculptor20.h"
+#include "../include/nu/ws20.h"
 
 static int32_t
-driveCmd(const struct wavesculptor20 *self, float motorCurrentPercent,
+driveCmd(const struct ws20 *self, float motorCurrentPercent,
             float motorVelocityMperS);
             
 static int32_t
-powerCmd(const struct wavesculptor20 *self, float busCurrent);
+powerCmd(const struct ws20 *self, float busCurrent);
 
 static int32_t
-resetCmd(const struct wavesculptor20 *self);
+resetCmd(const struct ws20 *self);
 
 static int32_t
-sendIdFrame(const struct wavesculptor20 *self);
+sendIdFrame(const struct ws20 *self);
 
 static const struct vtbl_wavesculptor20 wavesculptor20_ops = {
     .driveCmd       = &driveCmd,
@@ -21,7 +21,7 @@ static const struct vtbl_wavesculptor20 wavesculptor20_ops = {
 };
 
 static int32_t
-wavesculptor20_init(struct wavesculptor20 *self)
+wavesculptor20_init(struct ws20 *self)
 {
     if (self == NULL)
         return -ENULPTR;
@@ -30,7 +30,7 @@ wavesculptor20_init(struct wavesculptor20 *self)
 }
 
 int32_t
-wavesculptor20_new(struct wavesculptor20 *self,
+wavesculptor20_new(struct ws20 *self,
                     uint32_t driverControlsSerialNo,
                     uint16_t driverControlsBaseAddr,
                     uint16_t motorControllerBaseAddr, CAN_MODULE module,
@@ -72,7 +72,7 @@ wavesculptor20_new(struct wavesculptor20 *self,
 }
 
 int32_t
-wavesculptor20_new_easy(struct wavesculptor20 *self,
+wavesculptor20_new_easy(struct ws20 *self,
                     CAN_MODULE module,
                     CAN_CHANNEL txChn, CAN_CHANNEL rxChn)
 {
@@ -86,7 +86,7 @@ wavesculptor20_new_easy(struct wavesculptor20 *self,
 }
 
 static int32_t
-txFrame(const struct wavesculptor20 *self, const void *src, size_t siz,
+txFrame(const struct ws20 *self, const void *src, size_t siz,
             uint32_t addr)
 {
     if (self == NULL || src == NULL)
@@ -98,7 +98,7 @@ txFrame(const struct wavesculptor20 *self, const void *src, size_t siz,
 }
 
 static int32_t
-driveCmd(const struct wavesculptor20 *self, float motorCurrentPercent,
+driveCmd(const struct ws20 *self, float motorCurrentPercent,
             float motorVelocityMperS)
 {
     if (self == NULL)
@@ -116,7 +116,7 @@ driveCmd(const struct wavesculptor20 *self, float motorCurrentPercent,
 }
 
 static int32_t
-powerCmd(const struct wavesculptor20 *self, float busCurrent)
+powerCmd(const struct ws20 *self, float busCurrent)
 {
     if (self == NULL)
         return -ENULPTR;
@@ -130,7 +130,7 @@ powerCmd(const struct wavesculptor20 *self, float busCurrent)
 }
 
 static int32_t
-resetCmd(const struct wavesculptor20 *self)
+resetCmd(const struct ws20 *self)
 {
     if (self == NULL)
         return -ENULPTR;
@@ -141,7 +141,7 @@ resetCmd(const struct wavesculptor20 *self)
 }
 
 static int32_t
-sendIdFrame(const struct wavesculptor20 *self)
+sendIdFrame(const struct ws20 *self)
 {
     if (self == NULL)
         return -ENULPTR;
