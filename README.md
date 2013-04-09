@@ -110,6 +110,21 @@ Headers
 * Includes `stdlib.h` and `compiler.h`
 
 `crc.h` — cyclic redundancy checks, for network data
+Coding Conventions
+----
+Remember: There is no <del>spoon</del> heap.
+
+Many interfaces are implemented with X Macros for speed and modularity.
+Some use X Macros to implement Object-Oriented behavior around structs, like so:
+* (NU_)*_INIT are struct initialization blobs. Set a struct equal to their return value.
+* (NU_)* accompanying these INITs are full declarations, using corresponding (NU_)*_INIT
+* (NU_)INIT_* are function-like, accepting a struct argument and initializing it.
+
+For example, for `struct nu_pin`:
+* `NU_PIN_INIT(ltr,num)` is a struct initializer `{(ltr), (num)}`
+* `NU_PIN(name, ltr, num)` is a full struct declaration, `struct nu_pin name = NU_PIN_INIT(ltr, num)`.
+* `NU_INIT_PIN(struct nu_pin *p, IoPortId ltr, u32 num)` is a function
+
 
 
 
