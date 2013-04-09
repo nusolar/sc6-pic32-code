@@ -1,6 +1,6 @@
 #include "hais50p.h"
 
-inline float
+static ALWAYSINLINE float
 voltageToCurrent(float voltage)
 {
     /* V_out = V_ref + (0.625*I_p/(I_pn))
