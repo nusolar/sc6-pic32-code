@@ -99,7 +99,11 @@ are written over our wrappings. Projects utilize these interfaces.
 `error_reporting.h` — generalized error reporting, to multiple devices
 * Attach error reporting devices, broadcast error to all devices
 
+`mppt_race.h` — unknown, possibly spam MPPTs with requests
+
 `async_io.h` — asynchronously queue messages to circular buffer
+
+#### basic types
 
 `list.h` — provides doubly linked list
 
@@ -107,41 +111,43 @@ are written over our wrappings. Projects utilize these interfaces.
 
 `crc.h` — cyclic redundancy checks, necessary for network data
 
-`mppt_race.h` — unknown, possibly spam MPPTs with requests
-
-### Math functions & aliases
+### Inline Math and aliases
 `hais50p.h` — Convert HAIS-50P (via `ad7685.h`) reported voltage to current
 
 `arith.h` — some (inline) arithmetic functions
 
 `byteorder.h` — byteswapping facilities
 
-`nu_types.h` — our ridiculous "quicker to type" aliases to primitive types
+`compiler.h` — our ridiculous aliases to GCC extensions
 
 `lock.h` — wrap atomic memory access GCC extensions
 
-`compiler.h` — equally ridiculous aliases to GCC extensions
+`nu_types.h` — equally ridiculous "faster to type" aliases to primitive types
 
 `utility.h` — BUSY_FOR, CLAIM_PIN, other useful functions
 * Includes bits, data, and preprocessor utility functions. And static assertions
 * Includes `stdlib.h` and `compiler.h`
+
+### Testing
+
+`minunit.h` — unit testing framework
 
 Coding Conventions
 ----
 Remember: There is no <del>spoon</del> heap.
 
 Many interfaces are implemented with X Macros for speed and modularity.
-Some use X Macros to implement Object-Oriented behavior around structs, like so:
-* `struct nu_*` — the wrapped struct
-* `(NU_)*_INIT` are struct initialization blobs. Set a struct equal to their return value.
+Some implement object-oriented behavior around structs. This is done with 4 DEFINEs:
+* `struct nu_*` — the struct to be wrapped
+* `(NU_)*_INIT` are struct initialization blobs. Set a struct equal to the return value.
 * `(NU_)*` accompanying these INITs are full declarations, using corresponding (NU_)*_INIT
 * `(NU_)INIT_*` are function-like, accepting a struct argument and initializing it.
 
 For example:
 * `struct nu_pin` is a 2-field struct
-* `NU_PIN_INIT(ltr,num)` is a struct initializer `{(ltr), (num)}`
-* `NU_PIN(name, ltr, num)` is a full struct declaration, `struct nu_pin name = NU_PIN_INIT(ltr, num)`.
-* `NU_INIT_PIN(struct nu_pin *p, IoPortId ltr, u32 num)` is a function
+* `NU_PIN_INIT(ltr,num)` expands to a struct initializer, `{(ltr), (num)}`
+* `NU_PIN(name, ltr, num)` is a full struct declaration, `struct nu_pin name = NU_PIN_INIT(ltr, num)`
+* `NU_INIT_PIN(struct nu_pin *p, IoPortId ltr, u32 num)` is just a function.
 
 
 
