@@ -118,6 +118,8 @@ are written over our wrappings. Projects utilize these interfaces.
 
 `nu_types.h` — our ridiculous "quicker to type" aliases to primitive types
 
+`lock.h` — wrap atomic memory access GCC extensions
+
 `compiler.h` — equally ridiculous aliases to GCC extensions
 
 `utility.h` — BUSY_FOR, CLAIM_PIN, other useful functions
