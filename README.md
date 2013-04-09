@@ -74,6 +74,8 @@ Headers
 
 `serial.h` — Wraps PIC32 UART_MODULE for serial comm
 
+`serial_async.h` — Same as above, but somehow async
+
 `spi.h` — SPI functions. Abstracts declaring SPI pins, setting up, reading, and writing.
 
 `ltc6803.h` — SPI Voltage monitoring chip
@@ -92,6 +94,8 @@ Headers
 `error_reporting.h` — generalized error reporting, to multiple devices
 
 * Attach error reporting devices, broadcast error to all devices
+
+`async_io.h` —
 
 `list.h` — provides doubly linked list
 
