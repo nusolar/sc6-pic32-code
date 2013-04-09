@@ -1,6 +1,10 @@
 #include <peripheral/wdt.h>
 #include "nu/wdt.h"
 
+/**
+ * Clear WatchDogTimer
+ * @todo implement this
+ */
 static void enabled_clear_wdt (void) { /* ClearWDT(); */}
 static void disabled_clear_wdt(void) {}
 

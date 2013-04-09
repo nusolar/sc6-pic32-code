@@ -32,7 +32,6 @@ Unfortunately Chris implemented <i>absolutely everything</i> in
 Peruse with caution.
 
 ### Project names beginning with `car_` go on the car.
-
 `car_bms` — lots of BMS
 
 `car_driver_controls` — setup pins: analog in, digital in, digital out.
@@ -42,7 +41,6 @@ Peruse with caution.
 * We primarily call `btn_update` from `button.h`. We also define `_PIN` in `_LED`
 
 ### Otherwise-named projects are development utilities.
-
 `get_tempSensors` — Utility to get temperature serial numbers, to populate the table in the BMS code.
 
 * The temperature sensors are on a 1-wire bus. We need to know which sensor corresponds to which module.
@@ -59,13 +57,11 @@ Headers
 ----
 
 ### NU32
-
 `nu32.h` — setup NU32 LEDs and UARTs. Possibly does some ADC initialization.
 
 `led.h` — control NU32 LEDs
 
 ### Hardware objects
-
 `pinctl.h` — wraps PIC32 pins as NU_PIN.
 
 * declaring, setting digital/analog in/out, reading/setting bits, clearing, toggling.
@@ -86,15 +82,16 @@ Headers
 
 `nokia5110.h` — SPI LCD.
 
-`wdt.h` — no idea
+`wdt.h` — disable clearing the WatchDogTimer. Used to prevent canceling trips
 
 ### Useful functions
-
 `can_all.h` — Define all CAN packets
 
 `errorcodes.h` — our error codes
 
-`error_reporting.h` — report errors, presumably to CAN
+`error_reporting.h` — generalized error reporting, to multiple devices
+
+* Attach error reporting devices, broadcast error to all devices
 
 `list.h` — provides doubly linked list
 

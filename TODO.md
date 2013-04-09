@@ -18,7 +18,19 @@ steering wheel
 
 * Implement LCD with Speed
 
-wavesculptor20
+wavesculptor20 and CAN
 ----
 
 * fix ws20.c
+
+* fix CAN
+
+Error reporting
+----
+
+* implement wdt.c
+
+SPI Hardware
+----
+
+* fix nokia5110.h enum errors
