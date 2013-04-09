@@ -60,9 +60,11 @@ are written over our wrappings. Projects utilize these interfaces.
 `led.h` — control NU32 LEDs
 
 ### Internal & Pin-communication abstractions
-`wdt.h` — enable/disable clearing internal WatchDogTimer. We disable during trips
+`wdt.h` — wrap enable/disable clearing internal WatchDogTimer. We disable during trips
 
-`flash.h` — programming microcontroller flash memory
+`flash.h` — wrap programming microcontroller flash memory
+
+`timer.h` — wrap timer, and delay functions
 
 `pinctl.h` — wraps PIC32 pins as NU_PIN.
 * declaring, setting digital/analog in/out, reading/setting bits, clearing, toggling.
@@ -148,6 +150,16 @@ For example:
 * `NU_PIN_INIT(ltr,num)` expands to a struct initializer, `{(ltr), (num)}`
 * `NU_PIN(name, ltr, num)` is a full struct declaration, `struct nu_pin name = NU_PIN_INIT(ltr, num)`
 * `NU_INIT_PIN(struct nu_pin *p, IoPortId ltr, u32 num)` is just a function.
+
+For whitespace, Linux style is used:
+```C
+static ALWAYSINLINE void
+NU_INIT_PIN(struct nu_pin *p, IoPortId ltr, u32 num)
+{
+    p->ltr = ltr;
+    p->num = num;
+}
+```
 
 
 
