@@ -59,8 +59,11 @@ main(void)
 {
     setup_pins();
     // read pins
-    // assemble CAN struct
+    // assemble DC CAN struct
     // send
+    // send acceleration / power CAN pkt to motor controller
+    // Draw status on Nokia
+    // Listen for commands, implement them
     return 0;
 }
 

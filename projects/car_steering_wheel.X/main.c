@@ -62,6 +62,7 @@ main(void)
         // assemble CAN LED packet
         // send
         // receive any CAN LED rx packets, implement
+        // draw Status on Nokia
     }
     return 0;
 }
