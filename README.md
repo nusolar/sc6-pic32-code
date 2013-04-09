@@ -107,6 +107,8 @@ are written over our wrappings. Projects utilize these interfaces.
 
 `crc.h` — cyclic redundancy checks, necessary for network data
 
+`mppt_race.h` — unknown, possibly spam MPPTs with requests
+
 ### Math functions & aliases
 `hais50p.h` — Convert HAIS-50P (via `ad7685.h`) reported voltage to current
 
