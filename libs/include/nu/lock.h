@@ -7,4 +7,8 @@
 #define nu_lock_release(lock) \
     __sync_lock_release(lock)
 
+typedef struct {
+    volatile unsigned int lock;
+} spinlock_t;
+
 #endif

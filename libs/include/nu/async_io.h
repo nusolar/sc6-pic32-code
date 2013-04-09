@@ -3,22 +3,24 @@
 
 #include "circ_buf.h"
 #include "nu_types.h"
+#include "utility/arith.h"
+#include <sys/types.h>
 
 struct nu_async_io {
     struct circ_buf tx_buf;
-    size_t tx_buf_size;
+    int tx_buf_size;
     struct circ_buf rx_buf;
-    size_t rx_buf_size;
+    int rx_buf_size;
     const struct nu_vtbl_async_io *op;
 };
 #define NU_ASYNC_IO_INIT(tx_buf, tx_buf_siz, rx_buf, rx_buf_siz, op) \
-	{ \
-	CIRC_BUF_INIT(tx_buf, 0, 0), \
-	(tx_buf_siz), \
-	CIRC_BUF_INIT(rx_buf, 0, 0), \
-	(rx_buf_siz), \
-	(op) \
-	}
+    { \
+    CIRC_BUF_INIT(tx_buf, 0, 0), \
+    round_down(tx_buf_siz, 2), \
+    CIRC_BUF_INIT(rx_buf, 0, 0), \
+    round_down(rx_buf_siz, 2), \
+    (op) \
+    }
 
 struct nu_vtbl_async_io {
     /* positive return indicates # of bytes that were added/removed to/from hardware tx/rx buffer
@@ -41,11 +43,10 @@ nu_async_io_rx_dequeue(struct nu_async_io *a, void *dst, size_t n);
 
 /* to be done inside ISRs; negative return indicates error */
 
-s32
+ssize_t
 nu_async_io_tx(struct nu_async_io *a);
 
-s32
+ssize_t
 nu_async_io_rx(struct nu_async_io *a);
 
 #endif
-

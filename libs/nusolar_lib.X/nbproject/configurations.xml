@@ -34,10 +34,9 @@
           <itemPath>../include/nu/utility/data.h</itemPath>
           <itemPath>../include/nu/utility/preprocessor.h</itemPath>
           <itemPath>../include/nu/utility/static.h</itemPath>
+          <itemPath>../include/nu/utility/arith.h</itemPath>
         </logicalFolder>
         <itemPath>../include/nu/ad7685.h</itemPath>
-        <itemPath>../include/nu/arith.h</itemPath>
-        <itemPath>../include/nu/async_io.h</itemPath>
         <itemPath>../include/nu/button.h</itemPath>
         <itemPath>../include/nu/byteorder.h</itemPath>
         <itemPath>../include/nu/can.def</itemPath>
@@ -84,6 +83,7 @@
         <itemPath>../include/nu/utility.h</itemPath>
         <itemPath>../include/nu/wdt.h</itemPath>
         <itemPath>../include/nu/ws20.h</itemPath>
+        <itemPath>../include/nu/async_io.h</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="LinkerScript"

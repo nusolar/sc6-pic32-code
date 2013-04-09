@@ -2,11 +2,12 @@
 #define NU_UTILITY_H 1
 
 #include <stdlib.h>
-#include "compiler.h"
+#include "utility/arith.h"
 #include "utility/bits.h"
 #include "utility/data.h"
 #include "utility/preprocessor.h"
 #include "utility/static.h"
+#include "compiler.h"
 
 /* for loop that shouldn't be optimized away
  * it wouldn't hurt to also declare the iteration variable

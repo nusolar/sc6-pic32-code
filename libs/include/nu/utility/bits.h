@@ -1,5 +1,5 @@
 #ifndef NU_UTIL_BITS_H
-#define NU_UTIL_BITS_H
+#define NU_UTIL_BITS_H 1
 
 #define BITFIELD_WIDTHMASK(width) \
     ((width) >= 32 ? ~0x0ul : (1ul << ((width) % 32)) - 1)

@@ -34,10 +34,26 @@ struct circ_buf {
 	  int n = ((head) + end) & ((size)-1); \
 	  n < end ? n : end;})
 
+static inline int
+CIRC_CNT_TO_END2(int head, int tail, int size)
+{
+    int end = size - tail;
+    int n = (head + end) & (size-1);
+    return n < end ? n : end;
+}
+
 /* Return space available up to the end of the buffer.  */
 #define CIRC_SPACE_TO_END(head,tail,size) \
 	({int end = (size) - 1 - (head); \
 	  int n = (end + (tail)) & ((size)-1); \
 	  n <= end ? n : end+1;})
+
+static inline int
+CIRC_SPACE_TO_END2(int head, int tail, int size)
+{
+    int end = size - 1 - head;
+    int n = (end + tail) & (size - 1);
+    return n <= end ? n : end + 1;
+}
 
 #endif /* _LINUX_CIRC_BUF_H  */
