@@ -1,6 +1,5 @@
 sc6-pic32-code
 ==============
-
 NUSolar SC6 PIC32 code
 
 Prerequisites
@@ -25,7 +24,6 @@ Turn on boards
 
 Projects
 ----
-
 Unfortunately Chris implemented <i>absolutely everything</i> in
 <a href="http://en.wikipedia.org/wiki/X_Macro">X macros</a>. Understanding their
 syntax is required for reading any code. Peruse with caution.
@@ -106,7 +104,6 @@ are written over our wrappings. Projects utilize these interfaces.
 `async_io.h` — asynchronously queue messages to circular buffer
 
 #### basic types
-
 `list.h` — provides doubly linked list
 
 `safestring.h` — provides `strlcpy` and `strlcat` for our Cstrings
