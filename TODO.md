@@ -16,7 +16,15 @@ steering wheel
 
 * Implement LEDs
 
-* Implement LCD with Speed
+* Draw speed on LCD
+
+driver controls
+----
+* read pins
+* send CAN status updates
+* send CAN motor controller commands
+* Draw LCD
+* listen for commands, implement
 
 wavesculptor20 and CAN
 ----
