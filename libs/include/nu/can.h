@@ -1,10 +1,11 @@
 #ifndef NU_CAN_H
 #define NU_CAN_H
 
-#include <peripheral/CAN.h>
+#include "nu_types.h"
 #include "compiler.h"
 #include "error_reporting.h"
-#include "nu_types.h"
+#include <peripheral/CAN.h>
+#include <peripheral/int.h>
 
 enum id_type {
     STANDARD_ID,

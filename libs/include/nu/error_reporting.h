@@ -5,6 +5,7 @@
 #include "list.h"
 #include "nu_types.h"
 #include "utility.h"
+#include "boost/preprocessor.hpp"
 
 #include <stdarg.h>
 

@@ -1,17 +1,19 @@
 #include <string.h>
-#include "nu/can.h"
-#include "nu/errorcodes.h"
-#include "nu/timer.h"
+#include "can.h"
+#include "errorcodes.h"
+#include "timer.h"
 
 #define DEFAULT_BUS_SPEED_HZ    1E6
+#if 0
 static const CAN_BIT_CONFIG default_cfg = {
-    .phaseSeg1Tq            = CAN_BIT_3TQ,
-    .phaseSeg2TimeSelect    = AUTO_SET,
-    .phaseSeg2Tq            = CAN_BIT_5TQ,
-    .propagationSegTq       = CAN_BIT_1TQ,
-    .sample3Time            = THREE_TIMES,
-    .syncJumpWidth          = CAN_BIT_1TQ
+    /* .phaseSeg1Tq            = */ CAN_BIT_3TQ,
+    /* .phaseSeg2TimeSelect    = */ AUTO_SET,
+    /* .phaseSeg2Tq            = */ CAN_BIT_5TQ,
+    /* .propagationSegTq       = */ CAN_BIT_1TQ,
+    /* .sample3Time            = */ THREE_TIMES,
+    /* .syncJumpWidth          = */ CAN_BIT_1TQ
 };
+#endif
 
 static ALWAYSINLINE MUST_CHECK s32
 switch_module_mode(const struct can *c, CAN_OP_MODE op_mode, u32 timeout_ms)
@@ -44,7 +46,7 @@ change_features(const struct can *c, CAN_MODULE_FEATURES features, BOOL enabled)
 #define disable_features(can, features) change_features((can), (features), FALSE)
 
 static ALWAYSINLINE MUST_CHECK s32
-can_init(const struct can *c, u32 bus_speed_hz, CAN_BIT_CONFIG *timings,
+can_init(struct can *c, u32 bus_speed_hz, CAN_BIT_CONFIG *timings,
         CAN_MODULE_EVENT interrupt_events, INT_PRIORITY int_priority,
         CAN_MODULE_FEATURES features)
 {
@@ -105,7 +107,7 @@ can_tx(const struct can *c, CAN_CHANNEL chn, enum id_type id_type,
     if (n > 8)
         return -EINVAL;
 
-    if ((err = go_normal_mode(self)) < 0)
+    if ((err = go_normal_mode(c)) < 0)
         return err;
 
     /* clear message data */
@@ -114,7 +116,7 @@ can_tx(const struct can *c, CAN_CHANNEL chn, enum id_type id_type,
     /* insert SID/EID information */
     message->msgEID.IDE = (EXTENDED_ID == id_type);
     message->msgSID.SID = BITFIELD_CAST(sid, 11);  /* 11   bits */
-    message->msgEID.DLC = BITFIELD_CAST(len, 4);   /* 4    bits */
+    message->msgEID.DLC = BITFIELD_CAST(n, 4);   /* 4    bits */
     message->msgEID.RTR = BITFIELD_CAST(rtr, 1);   /* 1    bit; 1 = remote transmission request enabled */
     if (EXTENDED_ID == id_type) /* EID is indicated by IDTypeExtended = 1 */
         message->msgEID.EID = BITFIELD_CAST(eid, 18);    /* 18 bits */
@@ -133,9 +135,9 @@ can_tx(const struct can *c, CAN_CHANNEL chn, enum id_type id_type,
             (can)->erd_ext_id, 0, (data), (n))
 
 COLD s32
-can_report(struct error_reporting_dev *erd,
+can_report(struct nu_error_reporting_dev *erd,
     const char *file, u32 line, const char *expr,
-    enum report_priority priority, s32 err, const char *err_name,
+    enum nu_report_priority priority, s32 err, const char *err_name,
     const char *fmtd_msg)
 {
     struct can *can;
