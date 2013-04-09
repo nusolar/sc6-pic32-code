@@ -36,6 +36,10 @@ DIGITAL_INS
 DIGITAL_OUTS
 #undef DIGI_OUT
 
+
+/**
+ * Setup Driver Control inputs via pinctl
+ */
 static void
 setup_pins(void)
 {
@@ -54,6 +58,9 @@ s32
 main(void)
 {
     setup_pins();
+    // read pins
+    // assemble CAN struct
+    // send
     return 0;
 }
 
@@ -146,7 +153,7 @@ setDigitalOut(IoPortId ltr, uint32_t num)
 
 static ALWAYSINLINE void
 init_ios(void)
-{    
+{
     ClearWDT();
 
     CloseADC10();
@@ -235,7 +242,7 @@ init_cans(void)
     can_new_easy(ws20canp, WS_CAN_MOD, 0, INT_PRIORITY_DISABLED);
     ws20canp->op->addChannelTx(ws20canp, WAVESCULPTOR_CAN_TX_CHN,
             32, CAN_TX_RTR_DISABLED, CAN_HIGH_MEDIUM_PRIORITY, 0);
-    
+
     return 0;
 }
 
@@ -446,7 +453,7 @@ main(void)
         doDrive();
         doHorn();
         doLights();
-        
+
         dp->op->clear(dp);
         dp->op->gotoXY(dp,0,0);
         dp->op->printf(dp, "%f", accelPedalPercent);

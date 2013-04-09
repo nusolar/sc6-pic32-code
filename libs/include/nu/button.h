@@ -21,6 +21,10 @@ struct btn {
 #define BTN(name, ltr, num, debounce_max, thresh)   \
     struct btn name = BTN_INIT(ltr, num, debounce_max, thresh)
 
+/**
+ * compute whether button is pressed
+ * @param  b [in, out] `struct btn` to check
+ */
 #define btn_pressed(b)  ((b)->debounce >= (b)->thresh)
 
 /**

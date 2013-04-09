@@ -26,6 +26,10 @@ NU_INIT_PIN(struct nu_pin *p, IoPortId ltr, u32 num)
     p->num = num;
 }
 
+/**
+ * Set a nu_pin to Digital Out
+ * @param  p [in,out] `struct nu_pin` to set
+ */
 #define nu_pin_set_digital_out(p)  \
     PORTSetPinsDigitalOut((p)->ltr, (p)->num)
 #define nu_pin_set_digital_in(p)   \

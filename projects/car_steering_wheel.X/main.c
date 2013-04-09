@@ -8,7 +8,7 @@
 
 
 /**
- * buttons - collection of Digital-In Pins
+ * buttons - list of Digital-In Pins
  * @todo: add all buttons
  * @note: might be better to use change notification (CN) pins with interrupts
  */
@@ -25,6 +25,9 @@
 DIGITAL_IN_PINS
 #undef _PIN
 
+/**
+ * leds - list of LED Pins
+ */
 #define LED_PINS                \
     _LED(left,         D, 7)    \
     _LED(right,        D, 3)    \
@@ -52,6 +55,13 @@ main(void)
         btn_update(&name);
         DIGITAL_IN_PINS
 #undef _PIN
+        // check each btn_pressed
+        // assemble CAN buttons packet
+        // send
+        // check each LED
+        // assemble CAN LED packet
+        // send
+        // receive any CAN LED rx packets, implement
     }
     return 0;
 }
