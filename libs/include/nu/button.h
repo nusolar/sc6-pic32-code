@@ -1,7 +1,7 @@
 #ifndef NU_BUTTON_H
 #define NU_BUTTON_H
 
-#include "arith.h"
+#include "utility/arith.h"
 #include "pinctl.h"
 
 struct btn {

@@ -113,8 +113,6 @@ are written over our wrappings. Projects utilize these interfaces.
 ### Inline Math and aliases
 `hais50p.h` — Convert HAIS-50P (via `ad7685.h`) reported voltage to current
 
-`arith.h` — some (inline) arithmetic functions
-
 `byteorder.h` — byteswapping facilities
 
 `compiler.h` — our ridiculous aliases to GCC extensions
@@ -124,7 +122,7 @@ are written over our wrappings. Projects utilize these interfaces.
 `nu_types.h` — equally ridiculous "faster to type" aliases to primitive types
 
 `utility.h` — BUSY_FOR, CLAIM_PIN, other useful functions
-* Includes bits, data, and preprocessor utility functions. And static assertions
+* Includes (inline) arithmetic, bits, data, and preprocessor utility functions. And static assertions
 * Includes `stdlib.h` and `compiler.h`
 
 ### Testing
