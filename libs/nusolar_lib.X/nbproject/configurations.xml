@@ -102,6 +102,7 @@
       <itemPath>../src/param.c</itemPath>
       <itemPath>../src/async_io.c</itemPath>
       <itemPath>../src/wdt.c</itemPath>
+      <itemPath>../src/errorcodes.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

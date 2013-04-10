@@ -1,5 +1,5 @@
 #ifndef NU_UTIL_STATIC_H
-#define NU_UTIL_STATIC_H
+#define NU_UTIL_STATIC_H 1
 
 /* static (compile-time) checks */
 

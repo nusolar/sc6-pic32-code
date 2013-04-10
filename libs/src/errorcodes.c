@@ -1,20 +1,25 @@
 #include "errorcodes.h"
-#include "utility/arith.h"
+#include "utility/static.h"
+#include "utility/data.h"
+#include <stdlib.h>
 
-const char *error_names[] = {
-#define ERROR(x) #x,
-    ERRORS
-#undef ERROR
+static const char *nu_error_names[] = {
+#define NU_ERROR(x) #x,
+    NU_ERRORS
+#undef NU_ERROR
 };
 
+#undef __must_be_array
+#define __must_be_array(a) 0
+
 /* error_names must contain a string descriptor for each error in the errors enum */
-STATIC_ASSERT(NUM_ERRORS == ARRAY_SIZE(error_names),
+STATIC_ASSERT(NUM_ERRORS == ARRAY_SIZE(nu_error_names),
                 ERROR_NAMES_SIZE_MISMATCH_WITH_NUM_ERRORS);
 
 const char *
-get_error_name(s32 err)
+nu_error_get_name(s32 err)
 {
-    if ((u16)ABS(err) >= ARRAY_SIZE(error_names))
-        return error_names[EOTHER];
-    return error_names[ABS(err)];
+    if ((u16)abs(err) >= ARRAY_SIZE(nu_error_names))
+        return nu_error_names[EOTHER];
+    return nu_error_names[abs(err)];
 }
