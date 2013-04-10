@@ -1,7 +1,7 @@
-#include "nu/nu32.h"
-#include "nu/nu_types.h"
-#include "nu/param.h"
-#include "nu/utility.h"
+#include "nu32.h"
+#include "nu_types.h"
+#include "param.h"
+#include "utility.h"
 #include <peripheral/adc10.h>
 #include <peripheral/cvref.h>
 #include <peripheral/eth.h>
