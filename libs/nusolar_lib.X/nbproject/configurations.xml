@@ -101,7 +101,7 @@
       <itemPath>../src/nu32.c</itemPath>
       <itemPath>../src/param.c</itemPath>
       <itemPath>../src/async_io.c</itemPath>
-      <itemPath>../src/error_reporting.c</itemPath>
+      <itemPath>../src/wdt.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -120,7 +120,7 @@
         <platformTool>PICkit3PlatformTool</platformTool>
         <languageToolchain>XC32</languageToolchain>
         <languageToolchainVersion>1.20</languageToolchainVersion>
-        <platform>4</platform>
+        <platform>2</platform>
       </toolsSet>
       <compileType>
         <archiverTool>

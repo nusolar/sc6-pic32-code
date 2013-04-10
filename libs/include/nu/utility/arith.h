@@ -1,8 +1,8 @@
 #ifndef NU_ARITH_H
 #define NU_ARITH_H 1
 
-#include "../compiler.h"
-#include "../nu_types.h"
+#include "compiler.h"
+#include "nu_types.h"
 #include <stdlib.h>
 
 /*
