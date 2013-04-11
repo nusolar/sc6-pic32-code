@@ -2,10 +2,14 @@
 #include "nu/common_pragmas.h"
 #include "nu/compiler.h"
 #include "nu/nu32.h"
+#include "nu/can.h"
 #include "nu/nu_types.h"
+#include "nu/serial.h"
 #include "nu/pinctl.h"
 #include "nu/utility.h"
 
+static const NU_CAN(common_can, CAN1);
+static const NU_SERIAL(display, UART2);
 
 /**
  * buttons - list of Digital-In Pins
@@ -55,6 +59,7 @@ main(void)
         btn_update(&name);
         DIGITAL_IN_PINS
 #undef _PIN
+        /* nu_serial_printf(&display, "Speed %i", 25); */
         // check each btn_pressed
         // assemble CAN buttons packet
         // send

@@ -22,6 +22,9 @@ struct nu_async_io {
     (op) \
     }
 
+/**
+ * Virtual function table
+ */
 struct nu_vtbl_async_io {
     /* positive return indicates # of bytes that were added/removed to/from hardware tx/rx buffer
      * return of 0 indicates that no additional bytes can be added/removed to/from hardware tx/rx buffer

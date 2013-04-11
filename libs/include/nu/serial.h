@@ -7,8 +7,8 @@
 #include <peripheral/uart.h>
 
 enum nu_serial_module_interrupt {
-    UART_INT_ENABLE,
-    UART_INT_DISABLE
+    NU_USE_UART_INTERRUPT,
+    NU_NOT_USE_UART_INTERRUPT
 };
 
 struct nu_serial {
@@ -17,13 +17,13 @@ struct nu_serial {
 };
 
 #define nu_erd_to_serial(erdp) \
-    container_of((erdp), struct serial, erd)
+    container_of((erdp), struct nu_serial, erd)
 
 WEAK extern const struct nu_vtbl_error_reporting_dev nu_serial_erd_ops;
 
 #define NU_SERIAL_ERD_INIT(min_priority, mod) \
     { \
-    NU_ERD_INIT(min_priority, &serial_erd_ops), \
+    NU_ERD_INIT(min_priority, &nu_serial_erd_ops), \
     (mod) \
     }
 #define NU_SERIAL_ERD(name, min_priority, mod) \

@@ -75,7 +75,7 @@ enum ltc6803_cfgr1 {
     LTC6803_DCC4 = 1<<3,
     LTC6803_DCC3 = 1<<2,
     LTC6803_DCC2 = 1<<1,
-    LTC6803_DCC1 = 1,
+    LTC6803_DCC1 = 1
 };
 
 enum ltc6803_cfgr2 {
@@ -89,7 +89,7 @@ enum ltc6803_cfgr2 {
     LTC6803_DCC12   = 1<<3,
     LTC6803_DCC11   = 1<<2,
     LTC6803_DCC10   = 1<<1,
-    LTC6803_DCC9    = 1,
+    LTC6803_DCC9    = 1
 };
 
 enum ltc6803_cfgr3 {
@@ -100,7 +100,7 @@ enum ltc6803_cfgr3 {
     LTC6803_MC8I    = 1<<3,
     LTC6803_MC7I    = 1<<2,
     LTC6803_MC6I    = 1<<1,
-    LTC6803_MC5I    = 1,
+    LTC6803_MC5I    = 1
 };
 
 enum ltc6803_cfgr4 {
@@ -116,7 +116,7 @@ enum ltc6803_cfgr4 {
     LTC6803_VUV3    = 1<<3,
     LTC6803_VUV2    = 1<<2,
     LTC6803_VUV1    = 1<<1,
-    LTC6803_VUV0    = 1,
+    LTC6803_VUV0    = 1
 };
 
 enum ltc6803_cfgr5 {
@@ -131,11 +131,11 @@ enum ltc6803_cfgr5 {
     LTC6803_VOV3    = 1<<3,
     LTC6803_VOV2    = 1<<2,
     LTC6803_VOV1    = 1<<1,
-    LTC6803_VOV0    = 1,
+    LTC6803_VOV0    = 1
 };
 
 struct ltc6803 {
-    struct spi spi;
+    struct nu_spi spi;
     u32 num_devices;
     struct ltc6803_flags {
         u32 mismatch_cfgs;

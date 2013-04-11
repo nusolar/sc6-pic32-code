@@ -40,7 +40,7 @@ nu_serial_setup(struct nu_serial *s, u32 baud, enum nu_serial_module_interrupt u
     UARTSetFifoMode(s->module, interrupt_modes);
     UARTSetLineControl(s->module, line_control_modes);
     UARTSetDataRate(s->module, HZ, baud);
-    UARTEnable(s->module, UART_ENABLE_FLAGS(enable_modes));
+    UARTEnable(s->module, (s32) UART_ENABLE_FLAGS(enable_modes));
 
     if (NU_USE_UART_INTERRUPT == use_interrupt) {
         switch(s->module) {
