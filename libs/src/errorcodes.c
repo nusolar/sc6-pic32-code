@@ -3,6 +3,7 @@
 #include "utility/data.h"
 #include <stdlib.h>
 
+
 static const char *nu_error_names[] = {
 #define NU_ERROR(x) #x,
     NU_ERRORS
@@ -19,7 +20,8 @@ STATIC_ASSERT(NUM_ERRORS == ARRAY_SIZE(nu_error_names),
 const char *
 nu_error_get_name(s32 err)
 {
-    if ((u16)abs(err) >= ARRAY_SIZE(nu_error_names))
+    err = (u16)abs(err);
+    if ((u16)err >= ARRAY_SIZE(nu_error_names))
         return nu_error_names[EOTHER];
-    return nu_error_names[abs(err)];
+    return nu_error_names[err];
 }
