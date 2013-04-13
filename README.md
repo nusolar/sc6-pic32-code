@@ -24,9 +24,9 @@ Turn on boards
 
 Projects
 ----
-Unfortunately Chris implemented <i>absolutely everything</i> in
+Chris implemented <i>absolutely everything</i> in
 <a href="http://en.wikipedia.org/wiki/X_Macro">X macros</a>. Understanding their
-syntax is required for reading any code. Peruse with caution.
+syntax is necessary to read our code. Peruse with caution.
 
 ### Project names beginning with `car_` go on the car.
 `car_bms` — lots of BMS
