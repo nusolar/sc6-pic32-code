@@ -1,0 +1,25 @@
+//
+//  nusolar_lib-Prefix.pch
+//  nusolar_lib
+//
+//  Created by Al Chandel on 4/13/13.
+//  Copyright (c) 2013 Alex Chandel. All rights reserved.
+//
+
+#ifndef nusolar_lib_nusolar_lib_Prefix_pch
+#define nusolar_lib_nusolar_lib_Prefix_pch
+
+#define __XC32
+#define __32MX795F512L__
+#define __PIC32_FEATURE_SET__ 795
+
+#define __LANGUAGE_C_PLUS_PLUS
+#define __LANGUAGE_C_PLUS_PLUS__
+
+#define section(arg) section(".rlogseg,RLOG_DATA")
+#define nomips16 used
+
+#define Nop()
+//#define UART1 UART2
+
+#endif

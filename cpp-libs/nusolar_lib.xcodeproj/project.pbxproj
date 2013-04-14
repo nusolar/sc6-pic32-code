@@ -1,0 +1,346 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		FA98C2B4171ACF790054C089 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA98C2B2171ACF790054C089 /* main.cpp */; };
+		FA98C2B7171ACF970054C089 /* main.h in Headers */ = {isa = PBXBuildFile; fileRef = FA98C2B6171ACF960054C089 /* main.h */; };
+		FAD0127A171A4F3500E56EAC /* common_pragmas.h in Headers */ = {isa = PBXBuildFile; fileRef = FAD01279171A4F3500E56EAC /* common_pragmas.h */; };
+		FAD0127D171A52CC00E56EAC /* nu32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAD0127B171A52CC00E56EAC /* nu32.cpp */; };
+		FAD01280171A52FD00E56EAC /* nu32.h in Headers */ = {isa = PBXBuildFile; fileRef = FAD0127F171A52FD00E56EAC /* nu32.h */; };
+		FAD01283171A561F00E56EAC /* led.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAD01281171A561F00E56EAC /* led.cpp */; };
+		FAD01286171A563800E56EAC /* led.h in Headers */ = {isa = PBXBuildFile; fileRef = FAD01285171A563800E56EAC /* led.h */; };
+		FAEDA041171A0FA600637470 /* button.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAEDA03D171A0FA600637470 /* button.cpp */; };
+		FAEDA042171A0FA600637470 /* pinctl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAEDA03E171A0FA600637470 /* pinctl.cpp */; };
+		FAEDA043171A0FA600637470 /* serial.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAEDA03F171A0FA600637470 /* serial.cpp */; };
+		FAEDA044171A0FA600637470 /* spi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAEDA040171A0FA600637470 /* spi.cpp */; };
+		FAEDA056171A0FB400637470 /* button.h in Headers */ = {isa = PBXBuildFile; fileRef = FAEDA046171A0FB400637470 /* button.h */; };
+		FAEDA057171A0FB400637470 /* compiler.h in Headers */ = {isa = PBXBuildFile; fileRef = FAEDA047171A0FB400637470 /* compiler.h */; };
+		FAEDA058171A0FB400637470 /* nu_types.h in Headers */ = {isa = PBXBuildFile; fileRef = FAEDA048171A0FB400637470 /* nu_types.h */; };
+		FAEDA059171A0FB400637470 /* nusolar_lib-Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = FAEDA049171A0FB400637470 /* nusolar_lib-Prefix.pch */; };
+		FAEDA05A171A0FB400637470 /* param.h in Headers */ = {isa = PBXBuildFile; fileRef = FAEDA04A171A0FB400637470 /* param.h */; };
+		FAEDA05B171A0FB400637470 /* pinctl.h in Headers */ = {isa = PBXBuildFile; fileRef = FAEDA04B171A0FB400637470 /* pinctl.h */; };
+		FAEDA05C171A0FB400637470 /* serial.h in Headers */ = {isa = PBXBuildFile; fileRef = FAEDA04C171A0FB400637470 /* serial.h */; };
+		FAEDA05D171A0FB400637470 /* spi.h in Headers */ = {isa = PBXBuildFile; fileRef = FAEDA04D171A0FB400637470 /* spi.h */; };
+		FAEDA05E171A0FB400637470 /* timer.h in Headers */ = {isa = PBXBuildFile; fileRef = FAEDA04E171A0FB400637470 /* timer.h */; };
+		FAEDA05F171A0FB400637470 /* arith.h in Headers */ = {isa = PBXBuildFile; fileRef = FAEDA050171A0FB400637470 /* arith.h */; };
+		FAEDA060171A0FB400637470 /* bits.h in Headers */ = {isa = PBXBuildFile; fileRef = FAEDA051171A0FB400637470 /* bits.h */; };
+		FAEDA061171A0FB400637470 /* data.h in Headers */ = {isa = PBXBuildFile; fileRef = FAEDA052171A0FB400637470 /* data.h */; };
+		FAEDA062171A0FB400637470 /* preprocessor.h in Headers */ = {isa = PBXBuildFile; fileRef = FAEDA053171A0FB400637470 /* preprocessor.h */; };
+		FAEDA063171A0FB400637470 /* static.h in Headers */ = {isa = PBXBuildFile; fileRef = FAEDA054171A0FB400637470 /* static.h */; };
+		FAEDA064171A0FB400637470 /* utility.h in Headers */ = {isa = PBXBuildFile; fileRef = FAEDA055171A0FB400637470 /* utility.h */; };
+		FAEDA066171A119900637470 /* wdt.h in Headers */ = {isa = PBXBuildFile; fileRef = FAEDA065171A119900637470 /* wdt.h */; };
+		FAEDA068171A1A9A00637470 /* wdt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAEDA067171A1A9A00637470 /* wdt.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		FA98C2B2171ACF790054C089 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		FA98C2B6171ACF960054C089 /* main.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = main.h; sourceTree = "<group>"; };
+		FAD01279171A4F3500E56EAC /* common_pragmas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = common_pragmas.h; sourceTree = "<group>"; };
+		FAD0127B171A52CC00E56EAC /* nu32.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = nu32.cpp; sourceTree = "<group>"; };
+		FAD0127F171A52FD00E56EAC /* nu32.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = nu32.h; sourceTree = "<group>"; };
+		FAD01281171A561F00E56EAC /* led.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = led.cpp; sourceTree = "<group>"; };
+		FAD01285171A563800E56EAC /* led.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = led.h; sourceTree = "<group>"; };
+		FAE27FDD1718EC0D00FEF03C /* libnusolar_lib.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libnusolar_lib.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		FAEDA03D171A0FA600637470 /* button.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = button.cpp; sourceTree = "<group>"; };
+		FAEDA03E171A0FA600637470 /* pinctl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pinctl.cpp; sourceTree = "<group>"; };
+		FAEDA03F171A0FA600637470 /* serial.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = serial.cpp; sourceTree = "<group>"; };
+		FAEDA040171A0FA600637470 /* spi.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spi.cpp; sourceTree = "<group>"; };
+		FAEDA046171A0FB400637470 /* button.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = button.h; sourceTree = "<group>"; };
+		FAEDA047171A0FB400637470 /* compiler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = compiler.h; sourceTree = "<group>"; };
+		FAEDA048171A0FB400637470 /* nu_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = nu_types.h; sourceTree = "<group>"; };
+		FAEDA049171A0FB400637470 /* nusolar_lib-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "nusolar_lib-Prefix.pch"; sourceTree = "<group>"; };
+		FAEDA04A171A0FB400637470 /* param.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = param.h; sourceTree = "<group>"; };
+		FAEDA04B171A0FB400637470 /* pinctl.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = pinctl.h; sourceTree = "<group>"; };
+		FAEDA04C171A0FB400637470 /* serial.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = serial.h; sourceTree = "<group>"; };
+		FAEDA04D171A0FB400637470 /* spi.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = spi.h; sourceTree = "<group>"; };
+		FAEDA04E171A0FB400637470 /* timer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = timer.h; sourceTree = "<group>"; };
+		FAEDA050171A0FB400637470 /* arith.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = arith.h; sourceTree = "<group>"; };
+		FAEDA051171A0FB400637470 /* bits.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = bits.h; sourceTree = "<group>"; };
+		FAEDA052171A0FB400637470 /* data.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = data.h; sourceTree = "<group>"; };
+		FAEDA053171A0FB400637470 /* preprocessor.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = preprocessor.h; sourceTree = "<group>"; };
+		FAEDA054171A0FB400637470 /* static.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = static.h; sourceTree = "<group>"; };
+		FAEDA055171A0FB400637470 /* utility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utility.h; sourceTree = "<group>"; };
+		FAEDA065171A119900637470 /* wdt.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = wdt.h; sourceTree = "<group>"; };
+		FAEDA067171A1A9A00637470 /* wdt.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = wdt.cpp; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		FAE27FDA1718EC0D00FEF03C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		FAE27FD41718EC0D00FEF03C = {
+			isa = PBXGroup;
+			children = (
+				FAEDA045171A0FB400637470 /* include */,
+				FAEDA03C171A0FA600637470 /* src */,
+				FAE27FDE1718EC0D00FEF03C /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		FAE27FDE1718EC0D00FEF03C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FAE27FDD1718EC0D00FEF03C /* libnusolar_lib.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FAEDA03C171A0FA600637470 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				FAD0127B171A52CC00E56EAC /* nu32.cpp */,
+				FAEDA03E171A0FA600637470 /* pinctl.cpp */,
+				FAEDA03D171A0FA600637470 /* button.cpp */,
+				FAD01281171A561F00E56EAC /* led.cpp */,
+				FAEDA03F171A0FA600637470 /* serial.cpp */,
+				FAEDA040171A0FA600637470 /* spi.cpp */,
+				FAEDA067171A1A9A00637470 /* wdt.cpp */,
+				FA98C2B2171ACF790054C089 /* main.cpp */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		FAEDA045171A0FB400637470 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				FAEDA049171A0FB400637470 /* nusolar_lib-Prefix.pch */,
+				FAD01279171A4F3500E56EAC /* common_pragmas.h */,
+				FAEDA047171A0FB400637470 /* compiler.h */,
+				FAEDA048171A0FB400637470 /* nu_types.h */,
+				FAEDA04A171A0FB400637470 /* param.h */,
+				FAEDA04E171A0FB400637470 /* timer.h */,
+				FAEDA055171A0FB400637470 /* utility.h */,
+				FAEDA04F171A0FB400637470 /* utility */,
+				FAD0127F171A52FD00E56EAC /* nu32.h */,
+				FAEDA04B171A0FB400637470 /* pinctl.h */,
+				FAEDA046171A0FB400637470 /* button.h */,
+				FAD01285171A563800E56EAC /* led.h */,
+				FAEDA04C171A0FB400637470 /* serial.h */,
+				FAEDA04D171A0FB400637470 /* spi.h */,
+				FAEDA065171A119900637470 /* wdt.h */,
+				FA98C2B6171ACF960054C089 /* main.h */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		FAEDA04F171A0FB400637470 /* utility */ = {
+			isa = PBXGroup;
+			children = (
+				FAEDA050171A0FB400637470 /* arith.h */,
+				FAEDA051171A0FB400637470 /* bits.h */,
+				FAEDA052171A0FB400637470 /* data.h */,
+				FAEDA053171A0FB400637470 /* preprocessor.h */,
+				FAEDA054171A0FB400637470 /* static.h */,
+			);
+			path = utility;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		FAE27FDB1718EC0D00FEF03C /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FAEDA056171A0FB400637470 /* button.h in Headers */,
+				FAEDA057171A0FB400637470 /* compiler.h in Headers */,
+				FAEDA058171A0FB400637470 /* nu_types.h in Headers */,
+				FAEDA059171A0FB400637470 /* nusolar_lib-Prefix.pch in Headers */,
+				FAEDA05A171A0FB400637470 /* param.h in Headers */,
+				FAEDA05B171A0FB400637470 /* pinctl.h in Headers */,
+				FAEDA05C171A0FB400637470 /* serial.h in Headers */,
+				FAEDA05D171A0FB400637470 /* spi.h in Headers */,
+				FAEDA05E171A0FB400637470 /* timer.h in Headers */,
+				FAEDA05F171A0FB400637470 /* arith.h in Headers */,
+				FAEDA060171A0FB400637470 /* bits.h in Headers */,
+				FAEDA061171A0FB400637470 /* data.h in Headers */,
+				FAEDA062171A0FB400637470 /* preprocessor.h in Headers */,
+				FAEDA063171A0FB400637470 /* static.h in Headers */,
+				FAEDA064171A0FB400637470 /* utility.h in Headers */,
+				FAEDA066171A119900637470 /* wdt.h in Headers */,
+				FAD0127A171A4F3500E56EAC /* common_pragmas.h in Headers */,
+				FAD01280171A52FD00E56EAC /* nu32.h in Headers */,
+				FAD01286171A563800E56EAC /* led.h in Headers */,
+				FA98C2B7171ACF970054C089 /* main.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		FAE27FDC1718EC0D00FEF03C /* nusolar_lib */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FAE27FE11718EC0D00FEF03C /* Build configuration list for PBXNativeTarget "nusolar_lib" */;
+			buildPhases = (
+				FAE27FD91718EC0D00FEF03C /* Sources */,
+				FAE27FDA1718EC0D00FEF03C /* Frameworks */,
+				FAE27FDB1718EC0D00FEF03C /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = nusolar_lib;
+			productName = nusolar_lib;
+			productReference = FAE27FDD1718EC0D00FEF03C /* libnusolar_lib.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		FAE27FD51718EC0D00FEF03C /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0460;
+				ORGANIZATIONNAME = "Alex Chandel";
+			};
+			buildConfigurationList = FAE27FD81718EC0D00FEF03C /* Build configuration list for PBXProject "nusolar_lib" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = FAE27FD41718EC0D00FEF03C;
+			productRefGroup = FAE27FDE1718EC0D00FEF03C /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				FAE27FDC1718EC0D00FEF03C /* nusolar_lib */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		FAE27FD91718EC0D00FEF03C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FAEDA041171A0FA600637470 /* button.cpp in Sources */,
+				FAEDA042171A0FA600637470 /* pinctl.cpp in Sources */,
+				FAEDA043171A0FA600637470 /* serial.cpp in Sources */,
+				FAEDA044171A0FA600637470 /* spi.cpp in Sources */,
+				FAEDA068171A1A9A00637470 /* wdt.cpp in Sources */,
+				FAD0127D171A52CC00E56EAC /* nu32.cpp in Sources */,
+				FAD01283171A561F00E56EAC /* led.cpp in Sources */,
+				FA98C2B4171ACF790054C089 /* main.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		FAE27FDF1718EC0D00FEF03C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "include/nusolar_lib-Prefix.pch";
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "/Applications/microchip/xc32/v1.20/pic32-libs/include/**";
+				LINK_WITH_STANDARD_LIBRARIES = YES;
+				MACH_O_TYPE = staticlib;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		FAE27FE01718EC0D00FEF03C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "include/nusolar_lib-Prefix.pch";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "/Applications/microchip/xc32/v1.20/pic32-libs/include/**";
+				LINK_WITH_STANDARD_LIBRARIES = YES;
+				MACH_O_TYPE = staticlib;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		FAE27FE21718EC0D00FEF03C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		FAE27FE31718EC0D00FEF03C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		FAE27FD81718EC0D00FEF03C /* Build configuration list for PBXProject "nusolar_lib" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FAE27FDF1718EC0D00FEF03C /* Debug */,
+				FAE27FE01718EC0D00FEF03C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FAE27FE11718EC0D00FEF03C /* Build configuration list for PBXNativeTarget "nusolar_lib" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FAE27FE21718EC0D00FEF03C /* Debug */,
+				FAE27FE31718EC0D00FEF03C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = FAE27FD51718EC0D00FEF03C /* Project object */;
+}
