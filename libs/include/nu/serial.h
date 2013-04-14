@@ -59,6 +59,6 @@ nu_serial_puts(const struct nu_serial *s, const char *str)
 }
 
 void
-nu_serial_rx(struct nu_serial *s, void *dst, size_t n);
+nu_serial_rx(const struct nu_serial *s, void *dst, size_t n);
 
 #endif

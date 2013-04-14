@@ -26,7 +26,7 @@ Projects
 ----
 Chris implemented <i>absolutely everything</i> in
 <a href="http://en.wikipedia.org/wiki/X_Macro">X macros</a>. Understanding their
-syntax is necessary to read our code. Peruse with caution.
+syntax is recommended before reading our code. Peruse with caution.
 
 ### Project names beginning with `car_` go on the car.
 `car_bms` — lots of BMS

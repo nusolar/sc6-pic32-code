@@ -4,6 +4,8 @@
 #include "nu/utility.h"
 #include "nu/wdt.h"
 #include <alloca.h>
+#include <stdarg.h>
+#include <stdio.h>
 
 static COLD void
 nu_serial_report(struct nu_error_reporting_dev *e,
@@ -40,11 +42,11 @@ nu_serial_setup(struct nu_serial *s, u32 baud, enum nu_serial_module_interrupt u
     UARTSetFifoMode(s->module, interrupt_modes);
     UARTSetLineControl(s->module, line_control_modes);
     UARTSetDataRate(s->module, HZ, baud);
-    UARTEnable(s->module, (s32) UART_ENABLE_FLAGS(enable_modes));
+    UARTEnable(s->module, (UART_ENABLE_MODE) UART_ENABLE_FLAGS(enable_modes));
 
     if (NU_USE_UART_INTERRUPT == use_interrupt) {
         switch(s->module) {
-            case UART1: 
+            case UART1:
                 int_vect = INT_UART_1_VECTOR;
                 int_src = INT_U1RX;
                 break;
@@ -68,7 +70,7 @@ nu_serial_setup(struct nu_serial *s, u32 baud, enum nu_serial_module_interrupt u
                 int_vect = INT_UART_6_VECTOR;
                 int_src = INT_U6RX;
                 break;
-            case UART_NUMBER_OF_MODULES: 
+            case UART_NUMBER_OF_MODULES:
             default:
                 break;
         }
@@ -83,7 +85,7 @@ nu_serial_tx(const struct nu_serial *s, const void *src, size_t n)
 {
     size_t ui;
     for (ui = 0; ui < n; ++ui) {
-        clear_wdt();
+        nu_wdt_clear();
         while (!UARTTransmitterIsReady(s->module))
             Nop();
         UARTSendDataByte(s->module, ((const BYTE *)src)[ui]);
@@ -97,8 +99,8 @@ nu_serial_printf(const struct nu_serial *s, const char *fmt, ...)
     size_t n;
     va_list fmtargs;
     va_start(fmtargs, fmt);
-    n = vsnprintf(NULL, 0, fmt, fmtargs);
-    buf = alloca(n);
+    n = (size_t) vsnprintf(NULL, 0, fmt, fmtargs);
+    buf = (char *) alloca(n);
     vsprintf(buf, fmt, fmtargs);
     va_end(fmtargs);
     nu_serial_tx(s, buf, n);
