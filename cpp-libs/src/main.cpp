@@ -40,12 +40,12 @@ SteeringWheel::SteeringWheel(): Nu32(Nu32::V2, HZ), display(UART2)
 		}); // should repeat?
 
 		bool can_packet[buttons.size()];
-		for (int i = 0; i < buttons.size(); i++)
+		for (UINT i = 0; i < buttons.size(); i++)
 			can_packet[i] = buttons[i].pressed();
 		// SEND
 
 		bool can_packet_led[leds.size()];
-		for (int i = 0; i < leds.size(); i++)
+		for (UINT i = 0; i < leds.size(); i++)
 			can_packet_led[i] = leds[i].status();
 		// SEND
 
