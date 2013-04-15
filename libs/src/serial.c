@@ -35,9 +35,6 @@ nu_serial_setup(struct nu_serial *s, u32 baud, enum nu_serial_module_interrupt u
         UART_LINE_CONTROL_MODE line_control_modes, UART_CONFIGURATION uart_config,
         UART_ENABLE_MODE enable_modes)
 {
-    INT_VECTOR int_vect;
-    INT_SOURCE int_src;
-
     UARTConfigure(s->module, uart_config);
     UARTSetFifoMode(s->module, interrupt_modes);
     UARTSetLineControl(s->module, line_control_modes);
@@ -45,6 +42,8 @@ nu_serial_setup(struct nu_serial *s, u32 baud, enum nu_serial_module_interrupt u
     UARTEnable(s->module, (UART_ENABLE_MODE) UART_ENABLE_FLAGS(enable_modes));
 
     if (NU_USE_UART_INTERRUPT == use_interrupt) {
+        INT_VECTOR int_vect;
+        INT_SOURCE int_src;
         switch(s->module) {
             case UART1:
                 int_vect = INT_UART_1_VECTOR;
@@ -72,7 +71,7 @@ nu_serial_setup(struct nu_serial *s, u32 baud, enum nu_serial_module_interrupt u
                 break;
             case UART_NUMBER_OF_MODULES:
             default:
-                break;
+                return;
         }
         INTEnable(int_src, INT_ENABLED);
         INTSetVectorPriority(int_vect, int_priority);
