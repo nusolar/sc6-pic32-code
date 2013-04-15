@@ -2,6 +2,7 @@
 #include "can.h"
 #include "errorcodes.h"
 #include "timer.h"
+#include "wdt.h"
 
 #define DEFAULT_BUS_SPEED_HZ    1E6
 #if 0
@@ -26,8 +27,8 @@ nu_switch_module_mode(const struct nu_can *c, CAN_OP_MODE op_mode, u32 timeout_m
     return -ETIMEOUT;
 }
 
-#define go_config_mode(c)   switch_module_mode((c), CAN_CONFIGURATION, 1)
-#define go_normal_mode(c)   switch_module_mode((c), CAN_NORMAL_OPERATION, 1)
+#define go_config_mode(c)   nu_switch_module_mode((c), CAN_CONFIGURATION, 1)
+#define go_normal_mode(c)   nu_switch_module_mode((c), CAN_NORMAL_OPERATION, 1)
 
 static ALWAYSINLINE MUST_CHECK s32
 nu_change_features(const struct nu_can *c, CAN_MODULE_FEATURES features, BOOL enabled)
@@ -42,8 +43,8 @@ nu_change_features(const struct nu_can *c, CAN_MODULE_FEATURES features, BOOL en
     return 0;
 }
 
-#define enable_features(nu_can, features)  change_features((nu_can), (features), TRUE)
-#define disable_features(nu_can, features) change_features((nu_can), (features), FALSE)
+#define enable_features(nu_can, features)  nu_change_features((nu_can), (features), TRUE)
+#define disable_features(nu_can, features) nu_change_features((nu_can), (features), FALSE)
 
 static ALWAYSINLINE MUST_CHECK s32
 nu_can_init(struct nu_can *c, u32 bus_speed_hz, CAN_BIT_CONFIG *timings,
@@ -162,7 +163,7 @@ nu_can_report(struct nu_error_reporting_dev *erd,
                 err, err_name, fmtd_msg, file, line, expr);
 
     for (ui = 0; ui < sizeof(txBuf); ui += 8) {
-        clear_wdt();
+        nu_wdt_clear();
         send_err_frame(nu_can, txBuf+ui, 8);
     }
 
@@ -231,7 +232,7 @@ nu_can_add_channel_rx(const struct nu_can *c, CAN_CHANNEL chn, u32 channel_msg_s
     return 0;
 }
 
-MUST_CHECK long
+MUST_CHECK s64
 nu_can_rx(const struct nu_can *c, CAN_CHANNEL chn, u32 *id, void *dst)
 {
     CANRxMessageBuffer *buf;
@@ -280,6 +281,6 @@ nu_can_add_filter(const struct nu_can *c, CAN_CHANNEL chn, CAN_FILTER filter,
 }
 
 const struct nu_vtbl_error_reporting_dev nu_can_erd_ops = {
-    .report         = &nu_can_report,
-    .reset_err_state= NULL,
+    &nu_can_report,
+    NULL,
 };

@@ -5,17 +5,13 @@ steering wheel
 ----
 
 * add all button PINs
+* btn_update call frequency may need tweeking
 
-* If clock/IO lags while btn.debounce > btn.thresh, could take up to 100 pin reads needed to realize button is no longer pressed!
-
+Algorithm sketch:
 * check if btn_pressed
-
 * determine all Pressed Buttons
-
 * send CAN packet each cycle, of pressed buttons
-
 * Implement LEDs
-
 * Draw speed on LCD
 
 driver controls
@@ -26,17 +22,23 @@ driver controls
 * Draw LCD
 * listen for commands, implement
 
-wavesculptor20 and CAN
+wavesculptor20
 ----
-
 * fix ws20.c
 
-* fix CAN
+CAN
+---
+* many pedantic "ignoring result of" errors.
+* the longstanding `container_of` error
+* the ERD pointer type error.
+* `union can_anyFrame` is referenced but never defined.
+* `CAN_BIT_CONFIG *default_cfg` is never declared either.
+* `nu_can_new_easy()` isn't implemented
+
 
 Error reporting
 ----
-
-* implement wdt.c
+* fix error report definition inconsistency
 
 SPI Hardware
 ----
