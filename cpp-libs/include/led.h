@@ -21,7 +21,7 @@ namespace nu {
 		void ALWAYSINLINE toggle() {Pin::toggle();}
 		unsigned int ALWAYSINLINE status() {return read();}
 		
-		void INLINE setup() {
+		void ALWAYSINLINE setup() {
 			set_digital_out();
 			off();
 		}

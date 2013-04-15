@@ -129,7 +129,7 @@ namespace nu {
 			// Declaration:
 #define List(x) enum class x: int
 #define Xbase base
-#define X(name, type, ...) , name
+#define X(name, type, ...) , name##_k
 #define end
 #include "can.def.h"
 #undef end

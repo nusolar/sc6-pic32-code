@@ -10,6 +10,7 @@
 
 #include <algorithm>
 #include <bitset>
+#include <stdlib.h>
 
 using namespace std;
 using namespace nu;
@@ -59,7 +60,12 @@ SteeringWheel::SteeringWheel(): Nu32(Nu32::V2, HZ), display(UART2), can(CAN2)
 		can::frame::sw::tx::lights lts_frame = *(can::frame::sw::tx::lights*)&temp;
 		can.tx(&lts_frame, sizeof(lts_frame), 1);
 
-		display.tx("Speed: 5 mph", sizeof(char));
+		char inc[8]; uint32_t id;
+		can.rx(inc, id);
+		if (id == (uint32_t)can::addr::ws20::tx::motor_velocity_k){
+			can::frame::ws20::tx::motor_velocity pkt = *(can::frame::ws20::tx::motor_velocity *)&inc;
+			display.printf("Speed [m/s]: %f", pkt.vehicleVelocity);
+		}
 	}
 }
 
