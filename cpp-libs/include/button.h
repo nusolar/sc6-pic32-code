@@ -13,7 +13,7 @@
 
 namespace nu {
 	struct Button: protected Pin {
-		uint8_t debounce;
+		int8_t debounce;
 		uint8_t debounce_max;
 		uint8_t thresh;
 		

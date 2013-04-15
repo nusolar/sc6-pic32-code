@@ -80,15 +80,42 @@ namespace nu {
 	uint32_t u1;
 
 			// Specialty Data Types:
-#define motor_status()\
+#define motor_Status()\
 	uint16_t limitFlags;\
 	uint16_t errorFlags;\
 	uint16_t activeMotor;\
 	uint16_t reserved __attribute__ ((__packed__));
+#define sw_Lights()\
+	unsigned    left            :1;\
+	unsigned    right           :1;\
+	unsigned    radio           :1;\
+	unsigned    yes             :1;\
+	unsigned    hazard          :1;\
+	unsigned    cruise_en       :1;\
+	unsigned    cruise_up       :1;\
+	unsigned    maybe           :1;\
+	unsigned    no              :1;\
+	unsigned    horn            :1;\
+	unsigned    cruise_mode     :1;\
+	unsigned    cruise_down     :1;\
+	unsigned    reserved        :20;
+#define sw_Buttons()\
+	unsigned    left            :1;\
+	unsigned    right           :1;\
+	unsigned    yes             :1;\
+	unsigned    no              :1;\
+	unsigned    maybe           :1;\
+	unsigned    hazard          :1;\
+	unsigned    horn            :1;\
+	unsigned    cruise_en       :1;\
+	unsigned    cruise_mode     :1;\
+	unsigned    cruise_up       :1;\
+	unsigned    cruise_down     :1;\
+	unsigned    reserved        :21;
 
 			// Declaration:
 #define List(x) namespace x
-#define Xbase static const int base
+#define Xbase int base
 #define X(name, type, ...) ; struct PACKED name{type(__VA_ARGS__)}; int zzz__##name
 #define end ;
 #include "can.def.h"

@@ -101,9 +101,9 @@ size_t CAN::rx(void *dest, uint32_t &id) {
 	return len;
 }
 
-int32_t CAN::tx(const void *data, size_t n, uint32_t rtr_en) {
+int32_t CAN::tx(const void *data, size_t num_bytes, uint32_t rtr_en) {
 	CANTxMessageBuffer *msg = CANGetTxMessageBuffer(mod, chn);
-	if (n > 8) return -EINVAL;
+	if (num_bytes > 8) return -EINVAL; // Maximum of 8 data bytes in CAN frame
 
 	int32_t err = normal_mode();
 	if (err < 0) return err;
@@ -111,12 +111,12 @@ int32_t CAN::tx(const void *data, size_t n, uint32_t rtr_en) {
 	memset(msg, 0, sizeof(CANTxMessageBuffer));
 	msg->msgEID.IDE = (EXTENDED_ID == type); // EID is indicated by IDTypeExtended = 1
 	msg->msgSID.SID = BITFIELD_CAST(std_id, 11); // 11 bits
-	msg->msgEID.DLC = BITFIELD_CAST(n, 4); // 4 bits
+	msg->msgEID.DLC = BITFIELD_CAST(num_bytes, 4); // 4 bits
 	msg->msgEID.RTR = BITFIELD_CAST(rtr_en, 1); // 1 bit; 1 = remote transmission rqst enabled
 	if (EXTENDED_ID == type)
 		msg->msgEID.EID = BITFIELD_CAST(ext_id, 18); // 18 bits
 
-	if (n) memcpy(msg->data, (const char *)data, n);
+	if (num_bytes) memcpy(msg->data, (const char *)data, num_bytes);
 
 	CANUpdateChannel(mod, chn);
 	CANFlushTxChannel(mod, chn);

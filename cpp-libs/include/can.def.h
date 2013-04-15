@@ -74,7 +74,7 @@ namespace ws20 {
 	List(tx) {
 		Xbase = 0x500
 		X(motor_id, Status, tritiumId, serialNo) = base
-		X(motor_status_info, motor_status)
+		X(motor_status_info, motor_Status)
 		X(motor_bus, Float2, busVoltage, busCurrent)
 		X(motor_velocity, Float2, motorVelocity, vehicleVelocity)
 		X(motor_phase, Float2, phaseBCurrent, phaseACurrent)
@@ -112,15 +112,15 @@ namespace mppt {
 namespace sw {
 	List(rx) {
 		Xbase = 0x300
-		X(lights, UInt64, lights) = base
+		X(lights, sw_Lights) = base
 		end
 	};
 	List(tx) {
 		Xbase = 0x310
 		X(heartbeat, Status, dcStr, reserved) = base
 		X(error, Error)
-		X(buttons, UInt64, buttons)
-		X(lights, UInt64, lights)
+		X(buttons, sw_Buttons)
+		X(lights, sw_Lights)
 		end
 	};
 }
