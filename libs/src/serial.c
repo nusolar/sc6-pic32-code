@@ -1,8 +1,8 @@
-#include "nu/serial.h"
-#include "nu/errorcodes.h"
-#include "nu/nu32.h"
-#include "nu/utility.h"
-#include "nu/wdt.h"
+#include "serial.h"
+#include "errorcodes.h"
+#include "nu32.h"
+#include "utility.h"
+#include "wdt.h"
 #include <alloca.h>
 #include <stdarg.h>
 #include <stdio.h>

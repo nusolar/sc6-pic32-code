@@ -1,9 +1,9 @@
-#include "nu/led.h"
+#include "led.h"
 
 static s32
 led_resetErrState(struct nu_error_reporting_dev *erd)
 {
-    nu_led_off(erd_to_led(erd));
+    nu_led_off(nu_erd_to_led(erd));
     return 0;
 }
 
@@ -14,11 +14,11 @@ led_report(struct nu_error_reporting_dev *erd,
             UNUSED s32 err, UNUSED const char *err_str,
             UNUSED const char *fmtd_msg)
 {
-    nu_led_on(erd_to_led(erd));
+    nu_led_on(nu_erd_to_led(erd));
     return 0;
 }
 
 const struct nu_vtbl_error_reporting_dev led_erd_ops = {
-    .report         = &led_report,
-    .reset_err_state= &led_resetErrState,
+    &led_report,
+    &led_resetErrState,
 };

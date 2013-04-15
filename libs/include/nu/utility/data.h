@@ -14,7 +14,7 @@
 #define offsetof(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER)
 
 #define container_of(ptr, type, member) ({ \
-                const typeof( ((type *)0)->member ) *__mptr = (ptr); \
+                typeof( ((type *)0)->member ) *__mptr = (ptr); \
                 (type *)( (char *)__mptr - offsetof(type,member) );})
 /* ANSI C Version (sacrifices some type checking) (offsetof() is in <stddef.h>):
  * #define container_of(ptr, type, member) ((type *)((char *)ptr - offsetof(type, member)))
