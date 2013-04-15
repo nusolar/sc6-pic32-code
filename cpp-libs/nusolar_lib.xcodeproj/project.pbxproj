@@ -16,6 +16,7 @@
 		FAD01286171A563800E56EAC /* led.h in Headers */ = {isa = PBXBuildFile; fileRef = FAD01285171A563800E56EAC /* led.h */; };
 		FAE2C2BB171B809200EBF603 /* can.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAE2C2B9171B809200EBF603 /* can.cpp */; };
 		FAE2C2BE171B80B800EBF603 /* can.h in Headers */ = {isa = PBXBuildFile; fileRef = FAE2C2BD171B80B800EBF603 /* can.h */; };
+		FAE2C2C0171BACFA00EBF603 /* errorcodes.h in Headers */ = {isa = PBXBuildFile; fileRef = FAE2C2BF171BACFA00EBF603 /* errorcodes.h */; };
 		FAEDA041171A0FA600637470 /* button.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAEDA03D171A0FA600637470 /* button.cpp */; };
 		FAEDA042171A0FA600637470 /* pinctl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAEDA03E171A0FA600637470 /* pinctl.cpp */; };
 		FAEDA043171A0FA600637470 /* serial.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAEDA03F171A0FA600637470 /* serial.cpp */; };
@@ -49,6 +50,7 @@
 		FAE27FDD1718EC0D00FEF03C /* libnusolar_lib.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libnusolar_lib.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAE2C2B9171B809200EBF603 /* can.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = can.cpp; sourceTree = "<group>"; };
 		FAE2C2BD171B80B800EBF603 /* can.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = can.h; sourceTree = "<group>"; };
+		FAE2C2BF171BACFA00EBF603 /* errorcodes.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = errorcodes.h; sourceTree = "<group>"; };
 		FAEDA03D171A0FA600637470 /* button.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = button.cpp; sourceTree = "<group>"; };
 		FAEDA03E171A0FA600637470 /* pinctl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pinctl.cpp; sourceTree = "<group>"; };
 		FAEDA03F171A0FA600637470 /* serial.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = serial.cpp; sourceTree = "<group>"; };
@@ -108,9 +110,9 @@
 				FAD01281171A561F00E56EAC /* led.cpp */,
 				FAEDA03F171A0FA600637470 /* serial.cpp */,
 				FAEDA040171A0FA600637470 /* spi.cpp */,
+				FAE2C2B9171B809200EBF603 /* can.cpp */,
 				FAEDA067171A1A9A00637470 /* wdt.cpp */,
 				FA98C2B2171ACF790054C089 /* main.cpp */,
-				FAE2C2B9171B809200EBF603 /* can.cpp */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -122,6 +124,7 @@
 				FAD01279171A4F3500E56EAC /* common_pragmas.h */,
 				FAEDA047171A0FB400637470 /* compiler.h */,
 				FAEDA04A171A0FB400637470 /* param.h */,
+				FAE2C2BF171BACFA00EBF603 /* errorcodes.h */,
 				FAEDA04E171A0FB400637470 /* timer.h */,
 				FAEDA055171A0FB400637470 /* utility.h */,
 				FAEDA04F171A0FB400637470 /* utility */,
@@ -177,6 +180,7 @@
 				FAD01286171A563800E56EAC /* led.h in Headers */,
 				FA98C2B7171ACF970054C089 /* main.h in Headers */,
 				FAE2C2BE171B80B800EBF603 /* can.h in Headers */,
+				FAE2C2C0171BACFA00EBF603 /* errorcodes.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

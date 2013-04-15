@@ -24,7 +24,7 @@ namespace nu {
 		
 		UART_MODULE module;
 		
-		Serial(UART_MODULE _mod): module(_mod) {}
+		INLINE Serial(UART_MODULE _mod): module(_mod) {}
 		
 		void setup(uint32_t baud, module_interrupt use_interrupt,
 				   INT_PRIORITY int_priority, UART_FIFO_MODE interrupt_modes,

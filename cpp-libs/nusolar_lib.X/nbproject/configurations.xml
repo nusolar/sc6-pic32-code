@@ -25,6 +25,7 @@
       <itemPath>../include/nu32.h</itemPath>
       <itemPath>../include/main.h</itemPath>
       <itemPath>../include/can.h</itemPath>
+      <itemPath>../include/errorcodes.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
