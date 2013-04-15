@@ -19,7 +19,7 @@ struct nu_led {
 
 /** Go from a (struct error_reporting_dev *) to the enclosing struct led */
 #define nu_erd_to_led(erdp)   \
-        container_of((erdp), struct led, erd)
+        container_of((erdp), struct nu_led, erd)
 
 /* declared WEAK because this file is included by nu32.h, but linking against
  * led.c should be optional.
