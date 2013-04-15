@@ -95,14 +95,15 @@ void
 nu_serial_printf(const struct nu_serial *s, const char *fmt, ...)
 {
     char *buf;
-    size_t n;
+    int res;
     va_list fmtargs;
     va_start(fmtargs, fmt);
-    n = (size_t) vsnprintf(NULL, 0, fmt, fmtargs);
-    buf = (char *) alloca(n);
-    vsprintf(buf, fmt, fmtargs);
+    if (likely((res = vsnprintf(NULL, 0, fmt, fmtargs)) >= 0)) {
+        buf = (char *) alloca((size_t)res);
+        vsprintf(buf, fmt, fmtargs);
+        nu_serial_tx(s, buf, (size_t)res);
+    }
     va_end(fmtargs);
-    nu_serial_tx(s, buf, n);
 }
 
 void
@@ -112,3 +113,4 @@ nu_serial_rx(const struct nu_serial *s, void *dst, size_t n)
     for (ui = 0; ui < n && UARTReceivedDataIsAvailable(s->module); ++ui)
         ((u8 *)dst)[ui] = UARTGetDataByte(s->module);
 }
+
