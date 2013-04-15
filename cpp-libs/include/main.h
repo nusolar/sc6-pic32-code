@@ -21,11 +21,11 @@ namespace nu {
 		Serial display;
 		std::vector<Button> buttons;
 		std::vector<Led> leds;
-		
+
 		SteeringWheel();
-		
-		/* 
-		 * Gross stuff (field generation):
+
+		/*
+		 * Gross field generation:
 		 */
 		#define DIGITAL_IN_PINS			\
 			_BTN(yes,          E, 0)	\
@@ -48,7 +48,7 @@ namespace nu {
 			_LED(horn,         D, 5)    \
 			_LED(cruise_mode,  D, 9)    \
 			_LED(cruise_down,  A, 15)
-		
+
 		#define _BTN(name, ltr, num) \
 			Button name;
 			DIGITAL_IN_PINS

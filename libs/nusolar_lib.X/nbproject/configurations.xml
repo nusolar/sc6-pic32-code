@@ -105,8 +105,7 @@
       <itemPath>../src/errorcodes.c</itemPath>
       <itemPath>../src/ad7685.c</itemPath>
       <itemPath>../src/mcp49x2.c</itemPath>
-      <itemPath>../src/serial.c</itemPath>
-      <itemPath>../src/led.c</itemPath>
+      <itemPath>../src/error_reporting.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

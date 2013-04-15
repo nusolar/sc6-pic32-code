@@ -2,7 +2,6 @@
 #define NU_ARITH_H 1
 
 #include "../compiler.h"
-#include "../nu_types.h"
 #include <stdlib.h>
 
 /*
@@ -24,7 +23,7 @@
         })
 
 #define ABS64(x) ({                             \
-                s64 __x = (x);                  \
+                int64_t __x = (x);              \
                 (__x < 0) ? -__x : __x;         \
         })
 
@@ -70,25 +69,25 @@
 
 union utility_floatInt {
     float f;
-    s32 d;
+    int32_t d;
     uint32_t ud;
 };
 
 #pragma GCC diagnostic ignored "-Wfloat-equal"
 static ALWAYSINLINE UNUSED PURE unsigned int
-_floatEq(float _x, float _y, s32 maxUlps)
+_floatEq(float _x, float _y, int32_t maxUlps)
 {
     if (likely(_x == _y)) {
         return 1;
     } else {
         union utility_floatInt x, y;
-        s32 diff;
+        int32_t diff;
         x.f = _x;
         if (x.d < 0)
-            x.d = (s32)(0x80000000 - x.ud);
+            x.d = (int32_t)(0x80000000 - x.ud);
         y.f = _y;
         if (y.d < 0)
-            y.d = (s32)(0x80000000 - y.ud);
+            y.d = (int32_t)(0x80000000 - y.ud);
         diff = abs(x.d-y.d);
         if (diff <= maxUlps)
             return 1;

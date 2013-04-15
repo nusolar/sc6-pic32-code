@@ -14,13 +14,14 @@
 		FAD01280171A52FD00E56EAC /* nu32.h in Headers */ = {isa = PBXBuildFile; fileRef = FAD0127F171A52FD00E56EAC /* nu32.h */; };
 		FAD01283171A561F00E56EAC /* led.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAD01281171A561F00E56EAC /* led.cpp */; };
 		FAD01286171A563800E56EAC /* led.h in Headers */ = {isa = PBXBuildFile; fileRef = FAD01285171A563800E56EAC /* led.h */; };
+		FAE2C2BB171B809200EBF603 /* can.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAE2C2B9171B809200EBF603 /* can.cpp */; };
+		FAE2C2BE171B80B800EBF603 /* can.h in Headers */ = {isa = PBXBuildFile; fileRef = FAE2C2BD171B80B800EBF603 /* can.h */; };
 		FAEDA041171A0FA600637470 /* button.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAEDA03D171A0FA600637470 /* button.cpp */; };
 		FAEDA042171A0FA600637470 /* pinctl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAEDA03E171A0FA600637470 /* pinctl.cpp */; };
 		FAEDA043171A0FA600637470 /* serial.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAEDA03F171A0FA600637470 /* serial.cpp */; };
 		FAEDA044171A0FA600637470 /* spi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAEDA040171A0FA600637470 /* spi.cpp */; };
 		FAEDA056171A0FB400637470 /* button.h in Headers */ = {isa = PBXBuildFile; fileRef = FAEDA046171A0FB400637470 /* button.h */; };
 		FAEDA057171A0FB400637470 /* compiler.h in Headers */ = {isa = PBXBuildFile; fileRef = FAEDA047171A0FB400637470 /* compiler.h */; };
-		FAEDA058171A0FB400637470 /* nu_types.h in Headers */ = {isa = PBXBuildFile; fileRef = FAEDA048171A0FB400637470 /* nu_types.h */; };
 		FAEDA059171A0FB400637470 /* nusolar_lib-Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = FAEDA049171A0FB400637470 /* nusolar_lib-Prefix.pch */; };
 		FAEDA05A171A0FB400637470 /* param.h in Headers */ = {isa = PBXBuildFile; fileRef = FAEDA04A171A0FB400637470 /* param.h */; };
 		FAEDA05B171A0FB400637470 /* pinctl.h in Headers */ = {isa = PBXBuildFile; fileRef = FAEDA04B171A0FB400637470 /* pinctl.h */; };
@@ -46,13 +47,14 @@
 		FAD01281171A561F00E56EAC /* led.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = led.cpp; sourceTree = "<group>"; };
 		FAD01285171A563800E56EAC /* led.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = led.h; sourceTree = "<group>"; };
 		FAE27FDD1718EC0D00FEF03C /* libnusolar_lib.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libnusolar_lib.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		FAE2C2B9171B809200EBF603 /* can.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = can.cpp; sourceTree = "<group>"; };
+		FAE2C2BD171B80B800EBF603 /* can.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = can.h; sourceTree = "<group>"; };
 		FAEDA03D171A0FA600637470 /* button.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = button.cpp; sourceTree = "<group>"; };
 		FAEDA03E171A0FA600637470 /* pinctl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pinctl.cpp; sourceTree = "<group>"; };
 		FAEDA03F171A0FA600637470 /* serial.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = serial.cpp; sourceTree = "<group>"; };
 		FAEDA040171A0FA600637470 /* spi.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spi.cpp; sourceTree = "<group>"; };
 		FAEDA046171A0FB400637470 /* button.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = button.h; sourceTree = "<group>"; };
 		FAEDA047171A0FB400637470 /* compiler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = compiler.h; sourceTree = "<group>"; };
-		FAEDA048171A0FB400637470 /* nu_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = nu_types.h; sourceTree = "<group>"; };
 		FAEDA049171A0FB400637470 /* nusolar_lib-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "nusolar_lib-Prefix.pch"; sourceTree = "<group>"; };
 		FAEDA04A171A0FB400637470 /* param.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = param.h; sourceTree = "<group>"; };
 		FAEDA04B171A0FB400637470 /* pinctl.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = pinctl.h; sourceTree = "<group>"; };
@@ -108,6 +110,7 @@
 				FAEDA040171A0FA600637470 /* spi.cpp */,
 				FAEDA067171A1A9A00637470 /* wdt.cpp */,
 				FA98C2B2171ACF790054C089 /* main.cpp */,
+				FAE2C2B9171B809200EBF603 /* can.cpp */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -118,7 +121,6 @@
 				FAEDA049171A0FB400637470 /* nusolar_lib-Prefix.pch */,
 				FAD01279171A4F3500E56EAC /* common_pragmas.h */,
 				FAEDA047171A0FB400637470 /* compiler.h */,
-				FAEDA048171A0FB400637470 /* nu_types.h */,
 				FAEDA04A171A0FB400637470 /* param.h */,
 				FAEDA04E171A0FB400637470 /* timer.h */,
 				FAEDA055171A0FB400637470 /* utility.h */,
@@ -129,6 +131,7 @@
 				FAD01285171A563800E56EAC /* led.h */,
 				FAEDA04C171A0FB400637470 /* serial.h */,
 				FAEDA04D171A0FB400637470 /* spi.h */,
+				FAE2C2BD171B80B800EBF603 /* can.h */,
 				FAEDA065171A119900637470 /* wdt.h */,
 				FA98C2B6171ACF960054C089 /* main.h */,
 			);
@@ -156,7 +159,6 @@
 			files = (
 				FAEDA056171A0FB400637470 /* button.h in Headers */,
 				FAEDA057171A0FB400637470 /* compiler.h in Headers */,
-				FAEDA058171A0FB400637470 /* nu_types.h in Headers */,
 				FAEDA059171A0FB400637470 /* nusolar_lib-Prefix.pch in Headers */,
 				FAEDA05A171A0FB400637470 /* param.h in Headers */,
 				FAEDA05B171A0FB400637470 /* pinctl.h in Headers */,
@@ -174,6 +176,7 @@
 				FAD01280171A52FD00E56EAC /* nu32.h in Headers */,
 				FAD01286171A563800E56EAC /* led.h in Headers */,
 				FA98C2B7171ACF970054C089 /* main.h in Headers */,
+				FAE2C2BE171B80B800EBF603 /* can.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -236,6 +239,7 @@
 				FAD0127D171A52CC00E56EAC /* nu32.cpp in Sources */,
 				FAD01283171A561F00E56EAC /* led.cpp in Sources */,
 				FA98C2B4171ACF790054C089 /* main.cpp in Sources */,
+				FAE2C2BB171B809200EBF603 /* can.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
