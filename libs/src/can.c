@@ -225,7 +225,7 @@ nu_can_add_channel_rx(const struct nu_can *c, CAN_CHANNEL chn, u32 channel_msg_s
     CANLinkFilterToChannel(c->module, CAN_FILTER0, CAN_FILTER_MASK0, CAN_CHANNEL1);
     CANEnableFilter(c->module, CAN_FILTER0, TRUE);
     CANEnableChannelEvent(c->module, chn, interrupt_events, TRUE);
-    
+
     if ((err = go_normal_mode(c)) < 0)
         return err;
 

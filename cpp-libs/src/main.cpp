@@ -13,9 +13,11 @@
 using namespace nu;
 using namespace std;
 
-#define _BTN(name, ltr, num) ,name(IOPORT_##ltr, BIT_##num, 10, 5, "name")
-#define _LED(name, ltr, num) ,led_##name(IOPORT_##ltr, BIT_##num, "name")
-SteeringWheel::SteeringWheel(): Nu32(Nu32::V2, HZ), display(UART2)
+// stupid MPLAB won't initialize fields in-declaration like C++11 says, so:
+
+#define _BTN(name, ltr, num) ,name(IOPORT_##ltr, BIT_##num, 10, 5, #name)
+#define _LED(name, ltr, num) ,led_##name(IOPORT_##ltr, BIT_##num, #name)
+SteeringWheel::SteeringWheel(): Nu32(Nu32::V2, HZ), display(UART2), can(CAN2)
 	DIGITAL_IN_PINS
 	LED_PINS
 #undef _BTN
@@ -37,21 +39,25 @@ SteeringWheel::SteeringWheel(): Nu32(Nu32::V2, HZ), display(UART2)
 	while (1) {
 		for_each(buttons.begin(), buttons.end(), [](Button &x){
 			x.update();
-		}); // should repeat?
+		});
 
-		bool can_packet[buttons.size()];
-		for (UINT i = 0; i < buttons.size(); i++)
+		uint64_t n = buttons.size();
+		bool can_packet[n];
+		for (UINT i = 0; i < n; i++)
 			can_packet[i] = buttons[i].pressed();
-		// SEND
 
-		bool can_packet_led[leds.size()];
-		for (UINT i = 0; i < leds.size(); i++)
+		// ERROR need actual CAN struct
+		can.tx(can_packet, n, 1);
+
+		n = leds.size();
+		bool can_packet_led[n];
+		for (UINT i = 0; i < n; i++)
 			can_packet_led[i] = leds[i].status();
-		// SEND
 
+		// ERROR need actual CAN struct
+		can.tx(can_packet, n, 1);
 
-		// RECV
-		display.tx("Speed: 5mph", sizeof(char));
+		display.tx("Speed: 5 mph", sizeof(char));
 	}
 }
 

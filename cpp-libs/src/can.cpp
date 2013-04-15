@@ -25,24 +25,24 @@ CAN_BIT_CONFIG CAN::default_cfg = {
 };
 
 int32_t CAN::setup(uint32_t bus_speed = DEFAULT_BUS_SPEED_HZ, CAN_BIT_CONFIG *timings = &default_cfg, CAN_MODULE_EVENT interrupts = (CAN_MODULE_EVENT)0, INT_PRIORITY int_priority = INT_PRIORITY_DISABLED, CAN_MODULE_FEATURES features = (CAN_MODULE_FEATURES)0) {
-	
+
 	CANEnableModule(mod, TRUE);
-	
+
 	int32_t err = config_mode();
 	if (err < 0) {
 		normal_mode();
 		return err;
 	}
-	
+
 	CANSetSpeed(mod, timings, HZ, bus_speed);
 	CANAssignMemoryBuffer(mod, buf, sizeof(buf));
-	
+
 	if (interrupts) {
 		INT_VECTOR int_vec;
         INT_SOURCE int_src;
-		
+
         CANEnableModuleEvent(CAN1, interrupts, TRUE);
-		
+
         switch (mod) {
 			case CAN1:
 				int_vec = INT_CAN_1_VECTOR;
@@ -56,12 +56,12 @@ int32_t CAN::setup(uint32_t bus_speed = DEFAULT_BUS_SPEED_HZ, CAN_BIT_CONFIG *ti
 			default:
 				return -EINVAL;
         }
-		
+
         INTSetVectorPriority(int_vec, int_priority);
         INTSetVectorSubPriority(int_vec, INT_SUB_PRIORITY_LEVEL_0);
         INTEnable(int_src, INT_ENABLED);
 	}
-	
+
 	change_features(features, TRUE);
 	if ((err = normal_mode()) < 0) return err;
 	return 0;
