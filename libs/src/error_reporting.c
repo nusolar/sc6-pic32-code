@@ -102,7 +102,7 @@ nu_warn(const char *file, const char *func, u32 line, const char *expr,
     }
 
     list_for_each_entry(pos, &erd_list, list) {
-        clear_wdt();
+        nu_wdt_clear();
         if (pos->min_priority <= priority)
             pos->op->report(pos, file, func, line, expr, priority, fmtd_msg);
     }
@@ -126,7 +126,7 @@ nu_panic(const char *file, const char *func, u32 line, const char *expr,
 
     warn_enter();
 
-    disable_clear_wdt();
+    nu_wdt_disable_clear();
 
     if (!file)
         file = blank;

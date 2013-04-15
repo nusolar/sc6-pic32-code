@@ -1,17 +1,9 @@
-#include "../include/nu/ws20.h"
+#include "ws20.h"
+#include "errorcodes.h"
+#include "can_addresses.h"
 
-static int32_t
-driveCmd(const struct ws20 *self, float motorCurrentPercent,
-            float motorVelocityMperS);
-            
-static int32_t
-powerCmd(const struct ws20 *self, float busCurrent);
-
-static int32_t
-resetCmd(const struct ws20 *self);
-
-static int32_t
-sendIdFrame(const struct ws20 *self);
+int32_t
+nu_ws20_init(struct nu_ws20 *self);
 
 static const struct vtbl_wavesculptor20 wavesculptor20_ops = {
     .driveCmd       = &driveCmd,
@@ -20,8 +12,8 @@ static const struct vtbl_wavesculptor20 wavesculptor20_ops = {
     .sendIdFrame    = &sendIdFrame,
 };
 
-static int32_t
-wavesculptor20_init(struct ws20 *self)
+int32_t
+nu_ws20_init(struct nu_ws20 *self)
 {
     if (self == NULL)
         return -ENULPTR;
@@ -30,7 +22,7 @@ wavesculptor20_init(struct ws20 *self)
 }
 
 int32_t
-wavesculptor20_new(struct ws20 *self,
+nu_ws20_new(struct nu_ws20 *self,
                     uint32_t driverControlsSerialNo,
                     uint16_t driverControlsBaseAddr,
                     uint16_t motorControllerBaseAddr, CAN_MODULE module,
@@ -68,25 +60,25 @@ wavesculptor20_new(struct ws20 *self,
                                 CAN_RX_FULL_RECEIVE, 0)) < 0)
         return err;
 
-    return wavesculptor20_init(self);
+    return nu_ws20_init(self);
 }
 
 int32_t
-wavesculptor20_new_easy(struct ws20 *self,
+nu_ws20_new_easy(struct nu_ws20 *self,
                     CAN_MODULE module,
                     CAN_CHANNEL txChn, CAN_CHANNEL rxChn)
 {
     if (self == NULL)
         return -ENULPTR;
 
-    return wavesculptor20_new(self, module, 1, ADDR_WS20_RX_BASE,
+    return nu_ws20_new(self, module, 1, ADDR_WS20_RX_BASE,
             ADDR_WS20_TX_BASE, txChn, rxChn,
             WAVESCULPTOR20_BUS_SPEED_DEFAULT, CAN_BIT_3TQ, CAN_BIT_5TQ,
             CAN_BIT_1TQ, AUTO_SET, THREE_TIMES, CAN_BIT_1TQ);
 }
 
-static int32_t
-txFrame(const struct ws20 *self, const void *src, size_t siz,
+int32_t
+tx_frame(const struct nu_ws20 *self, const void *src, size_t siz,
             uint32_t addr)
 {
     if (self == NULL || src == NULL)
@@ -97,8 +89,8 @@ txFrame(const struct ws20 *self, const void *src, size_t siz,
                         0, 0, src, siz);
 }
 
-static int32_t
-driveCmd(const struct ws20 *self, float motorCurrentPercent,
+int32_t
+nu_ws20_drive_cmd(const struct nu_ws20 *self, float motorCurrentPercent,
             float motorVelocityMperS)
 {
     if (self == NULL)
@@ -112,11 +104,11 @@ driveCmd(const struct ws20 *self, float motorCurrentPercent,
         .motorVelocity = motorVelocityMperS,
     };
 
-    return txFrame(self, &frame, sizeof(frame), ADDR_WS20_RX_DRIVE_CMD);
+    return tx_frame(self, &frame, sizeof(frame), ADDR_WS20_RX_DRIVE_CMD);
 }
 
-static int32_t
-powerCmd(const struct ws20 *self, float busCurrent)
+int32_t
+nu_ws20_power_cmd(const struct nu_ws20 *self, float busCurrent)
 {
     if (self == NULL)
         return -ENULPTR;
@@ -126,22 +118,22 @@ powerCmd(const struct ws20 *self, float busCurrent)
         .reserved = 0,
     };
 
-    return txFrame(self, &frame, sizeof(frame), ADDR_WS20_RX_POWER_CMD);
+    return tx_frame(self, &frame, sizeof(frame), ADDR_WS20_RX_POWER_CMD);
 }
 
-static int32_t
-resetCmd(const struct ws20 *self)
+int32_t
+nu_ws20_reset_cmd(const struct nu_ws20 *self)
 {
     if (self == NULL)
         return -ENULPTR;
 
     struct can_ws20_rx_reset_cmd frame = {0};
 
-    return txFrame(self, &frame, sizeof(frame), ADDR_WS20_RX_RESET_CMD);
+    return tx_frame(self, &frame, sizeof(frame), ADDR_WS20_RX_RESET_CMD);
 }
 
-static int32_t
-sendIdFrame(const struct ws20 *self)
+int32_t
+nu_ws20_send_id_frame(const struct nu_ws20 *self)
 {
     if (self == NULL)
         return -ENULPTR;
@@ -151,5 +143,5 @@ sendIdFrame(const struct ws20 *self)
         .serialNo = self->driverControlsSerialNo,
     };
 
-    return txFrame(self, &frame, sizeof(frame), ADDR_WS20_RX_DRIVER_CONTROLS_ID);
+    return tx_frame(self, &frame, sizeof(frame), ADDR_WS20_RX_DRIVER_CONTROLS_ID);
 }

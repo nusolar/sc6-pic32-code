@@ -22,9 +22,14 @@ driver controls
 * Draw LCD
 * listen for commands, implement
 
-wavesculptor20
+ws20
 ----
-* fix ws20.c
+* remove old struct/op notation.
+* ERD vtbl is never declared.
+* both old and new CAN address names are used.
+* enum PhaseSeg2TimeSelect and SampleTimes don't exist.
+* nu_ws20_setup and nu_ws20_new_easy aren't implemented. nu_ws20_init() is used instead.
+* can_all.h doesn't compile
 
 CAN
 ---

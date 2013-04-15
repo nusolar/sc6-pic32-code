@@ -4,11 +4,11 @@
 #define NU_WS20_H
 
 #include "can.h"
-#include "can_all.h"
+/*#include "can_all.h"*/
 #include "nu_types.h"
 
-struct ws20 {
-    struct can can;
+struct nu_ws20 {
+    struct nu_can can;
     u32 driver_controls_serial_no;
     struct chn {
         CAN_CHANNEL tx;
@@ -27,28 +27,28 @@ struct ws20 {
     {(base_driver_controls), (base_motor_controller)}   \
     }
 #define WS20(name, can_mod, serial_no, tx_chn, rx_chn, base_driver_controls, base_motor_controller) \
-    struct ws20 name = WS20_INIT(can_mod, serial_no, tx_chn, rx_chn, base_driver_controls, base_motor_controller)
+    struct nu_ws20 name = WS20_INIT(can_mod, serial_no, tx_chn, rx_chn, base_driver_controls, base_motor_controller)
 
 s32
-ws20_send_id_frame(const struct ws20 *w);
+nu_ws20_send_id_frame(const struct nu_ws20 *w);
 
 s32
-ws20_drive_cmd(const struct ws20 *w, float motor_current_percent,
+nu_ws20_drive_cmd(const struct nu_ws20 *w, float motor_current_percent,
           float motor_velocity_m_per_s);
 
 s32
-ws20_power_cmd(const struct ws20 *w, float bus_current);
+nu_ws20_power_cmd(const struct nu_ws20 *w, float bus_current);
 
 s32
-ws20_reset_cmd(const struct ws20 *w);
+nu_ws20_reset_cmd(const struct nu_ws20 *w);
 
 #define WAVESCULPTOR20_BUS_SPEED_DEFAULT    (1000000) /* 1 Mbit/s */
 
 void
-ws20_setup(struct ws20 *w, u32 bus_speed_hz, CAN_BIT_CONFIG *cfg);
+nu_ws20_setup(struct nu_ws20 *w, u32 bus_speed_hz, CAN_BIT_CONFIG *cfg);
 
 s32
-wavesculptor20_new(struct ws20 *w, u32 driverControlsSerialNo,
+nu_ws20_new(struct nu_ws20 *w, u32 driverControlsSerialNo,
                     u16 driverControlsBaseAddr,
                     u16 motorControllerBaseAddr, CAN_MODULE module,
                     CAN_CHANNEL txChn, CAN_CHANNEL rxChn,
@@ -58,7 +58,7 @@ wavesculptor20_new(struct ws20 *w, u32 driverControlsSerialNo,
                     enum SampleTimes sample3Times, CAN_BIT_TQ syncJumpWidth);
 
 s32
-wavesculptor20_new_easy(struct ws20 *self, CAN_MODULE module,
+nu_ws20_new_easy(struct nu_ws20 *self, CAN_MODULE module,
                     CAN_CHANNEL txChn, CAN_CHANNEL rxChn);
 
 #endif
