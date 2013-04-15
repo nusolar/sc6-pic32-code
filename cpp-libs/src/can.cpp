@@ -13,6 +13,7 @@
 #include "timer.h"
 
 using namespace nu;
+using namespace can;
 
 #define DEFAULT_BUS_SPEED_HZ    1E6
 CAN_BIT_CONFIG CAN::default_cfg = {

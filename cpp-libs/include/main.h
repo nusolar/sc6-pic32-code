@@ -20,8 +20,8 @@
 namespace nu {
 	struct SteeringWheel: protected Nu32 {
 		Serial display;
-		CAN can;
-		
+		can::CAN can;
+
 		std::vector<Button> buttons;
 		std::vector<Led> leds;
 

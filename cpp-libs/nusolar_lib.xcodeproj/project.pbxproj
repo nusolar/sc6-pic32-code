@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FA20FF12171BEAAB00CFD040 /* can.def.h in Headers */ = {isa = PBXBuildFile; fileRef = FA20FF11171BEAAB00CFD040 /* can.def.h */; };
 		FA98C2B4171ACF790054C089 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA98C2B2171ACF790054C089 /* main.cpp */; };
 		FA98C2B7171ACF970054C089 /* main.h in Headers */ = {isa = PBXBuildFile; fileRef = FA98C2B6171ACF960054C089 /* main.h */; };
 		FAD0127A171A4F3500E56EAC /* common_pragmas.h in Headers */ = {isa = PBXBuildFile; fileRef = FAD01279171A4F3500E56EAC /* common_pragmas.h */; };
@@ -40,6 +41,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		FA20FF11171BEAAB00CFD040 /* can.def.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = can.def.h; sourceTree = "<group>"; };
 		FA98C2B2171ACF790054C089 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		FA98C2B6171ACF960054C089 /* main.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = main.h; sourceTree = "<group>"; };
 		FAD01279171A4F3500E56EAC /* common_pragmas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = common_pragmas.h; sourceTree = "<group>"; };
@@ -135,6 +137,7 @@
 				FAEDA04C171A0FB400637470 /* serial.h */,
 				FAEDA04D171A0FB400637470 /* spi.h */,
 				FAE2C2BD171B80B800EBF603 /* can.h */,
+				FA20FF11171BEAAB00CFD040 /* can.def.h */,
 				FAEDA065171A119900637470 /* wdt.h */,
 				FA98C2B6171ACF960054C089 /* main.h */,
 			);
@@ -181,6 +184,7 @@
 				FA98C2B7171ACF970054C089 /* main.h in Headers */,
 				FAE2C2BE171B80B800EBF603 /* can.h in Headers */,
 				FAE2C2C0171BACFA00EBF603 /* errorcodes.h in Headers */,
+				FA20FF12171BEAAB00CFD040 /* can.def.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

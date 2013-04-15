@@ -23,9 +23,10 @@
       <itemPath>../include/common_pragmas.h</itemPath>
       <itemPath>../include/led.h</itemPath>
       <itemPath>../include/nu32.h</itemPath>
-      <itemPath>../include/main.h</itemPath>
       <itemPath>../include/can.h</itemPath>
       <itemPath>../include/errorcodes.h</itemPath>
+      <itemPath>../include/main.h</itemPath>
+      <itemPath>../include/can.def.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
