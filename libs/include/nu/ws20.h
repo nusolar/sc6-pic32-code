@@ -5,6 +5,7 @@
 
 #include "can.h"
 /*#include "can_all.h"*/
+#include "can_addresses.h"
 #include "nu_types.h"
 
 struct nu_ws20 {
@@ -54,8 +55,8 @@ nu_ws20_new(struct nu_ws20 *w, u32 driverControlsSerialNo,
                     CAN_CHANNEL txChn, CAN_CHANNEL rxChn,
                     u32 canBusSpeedHz, CAN_BIT_TQ phaseSeg2Tq,
                     CAN_BIT_TQ phaseSeg1Tq, CAN_BIT_TQ propSegTq,
-                    enum PhaseSeg2TimeSelect selectAutoSet,
-                    enum SampleTimes sample3Times, CAN_BIT_TQ syncJumpWidth);
+                    enum nu_phase_seg2_time_select selectAutoSet,
+                    enum nu_sample_times sample3Times, CAN_BIT_TQ syncJumpWidth);
 
 s32
 nu_ws20_new_easy(struct nu_ws20 *self, CAN_MODULE module,

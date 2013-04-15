@@ -104,7 +104,7 @@ enum can_addresses {
 
     ADDR_DC_TX_DRV_ID           = ADDR_WS20_RX_DRIVER_CONTROLS_ID,
     
-    ADDR_MAX                    = 0x7FF,
+    ADDR_MAX                    = 0x7FF
 };
 
 #endif

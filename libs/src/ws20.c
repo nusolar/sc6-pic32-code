@@ -1,15 +1,16 @@
 #include "ws20.h"
 #include "errorcodes.h"
-#include "can_addresses.h"
 
 int32_t
 nu_ws20_init(struct nu_ws20 *self);
+int32_t
+tx_frame(const struct nu_ws20 *self, const void *src, size_t siz,uint32_t addr);
 
 static const struct vtbl_wavesculptor20 wavesculptor20_ops = {
-    .driveCmd       = &driveCmd,
-    .powerCmd       = &powerCmd,
-    .resetCmd       = &resetCmd,
-    .sendIdFrame    = &sendIdFrame,
+    .driveCmd       = &nu_ws20_drive_cmd,
+    .powerCmd       = &nu_ws20_power_cmd,
+    .resetCmd       = &nu_ws20_reset_cmd,
+    .sendIdFrame    = &nu_ws20_send_id_frame,
 };
 
 int32_t
@@ -29,8 +30,8 @@ nu_ws20_new(struct nu_ws20 *self,
                     CAN_CHANNEL txChn, CAN_CHANNEL rxChn,
                     uint32_t canBusSpeedHz, CAN_BIT_TQ phaseSeg2Tq,
                     CAN_BIT_TQ phaseSeg1Tq, CAN_BIT_TQ propSegTq,
-                    enum PhaseSeg2TimeSelect selectAutoSet,
-                    enum SampleTimes sample3Times, CAN_BIT_TQ syncJumpWidth)
+                    enum nu_phase_seg2_time_select selectAutoSet,
+                    enum nu_sample_times sample3Times, CAN_BIT_TQ syncJumpWidth)
 {
     int32_t err = 0;
 

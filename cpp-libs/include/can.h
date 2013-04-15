@@ -9,12 +9,23 @@
 #ifndef __nusolar_lib__can__
 #define __nusolar_lib__can__
 
-namespace nu {
-	class CAN {
-	  
+#include <stdint.h>
 
-	public:
-	  
+#include <peripheral/CAN.h>
+
+namespace nu {
+	struct CAN {
+		enum id_type {
+			STANDARD_ID,
+			EXTENDED_ID
+		};
+		
+		CAN_CHANNEL chn;
+		id_type id_type;
+		uint16_t std_id;
+		uint16_t ext_id;
+		
+		
 	};
 }
 
