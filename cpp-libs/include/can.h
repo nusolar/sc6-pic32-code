@@ -38,12 +38,8 @@ namespace nu {
 		uint16_t ext_id;
 		char buf[32*32*CAN_TX_RX_MESSAGE_SIZE_BYTES];
 		
-		INLINE CAN(CAN_MODULE _mod, CAN_CHANNEL _chn, id_type _type, 
-			uint16_t _std, uint16_t _ext): mod(_mod), chn(_chn),
+		INLINE CAN(CAN_MODULE _mod, CAN_CHANNEL _chn = CAN_CHANNEL0, id_type _type = STANDARD_ID, uint16_t _std = 0, uint16_t _ext = 0): mod(_mod), chn(_chn),
 			type(_type), std_id(_std), ext_id(_ext) {}
-		static void ALWAYSINLINE vend(CAN &can, CAN_MODULE _mod) {
-			can = CAN(_mod, CAN_CHANNEL0, STANDARD_ID, 0, 0);
-		}
 		
 		int32_t setup(uint32_t bus_speed, CAN_BIT_CONFIG *timings, CAN_MODULE_EVENT interrupts, INT_PRIORITY int_priority, CAN_MODULE_FEATURES features);
 		
