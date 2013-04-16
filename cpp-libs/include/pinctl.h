@@ -21,7 +21,7 @@ namespace nu {
 		uint32_t num;
 		const char *name;
 
-		INLINE Pin(IoPortId ltr, uint32_t num, const char *name = ""):
+		INLINE Pin(IoPortId ltr = IOPORT_D, uint32_t num = 0, const char *name = ""):
 			ltr(ltr), num(num), name(name) {}
 
 		void ALWAYSINLINE set_digital_out() {
