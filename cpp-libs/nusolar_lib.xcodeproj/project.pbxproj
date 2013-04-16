@@ -9,8 +9,6 @@
 /* Begin PBXBuildFile section */
 		FA1A2770171D3C3400F93207 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA1A2760171D3B4B00F93207 /* main.cpp */; };
 		FA20FF12171BEAAB00CFD040 /* can.def.h in Headers */ = {isa = PBXBuildFile; fileRef = FA20FF11171BEAAB00CFD040 /* can.def.h */; };
-		FA98C2B4171ACF790054C089 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA98C2B2171ACF790054C089 /* main.cpp */; };
-		FA98C2B7171ACF970054C089 /* main.h in Headers */ = {isa = PBXBuildFile; fileRef = FA98C2B6171ACF960054C089 /* main.h */; };
 		FAD0127A171A4F3500E56EAC /* common_pragmas.h in Headers */ = {isa = PBXBuildFile; fileRef = FAD01279171A4F3500E56EAC /* common_pragmas.h */; };
 		FAD0127D171A52CC00E56EAC /* nu32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAD0127B171A52CC00E56EAC /* nu32.cpp */; };
 		FAD01280171A52FD00E56EAC /* nu32.h in Headers */ = {isa = PBXBuildFile; fileRef = FAD0127F171A52FD00E56EAC /* nu32.h */; };
@@ -39,10 +37,20 @@
 		FAEDA064171A0FB400637470 /* utility.h in Headers */ = {isa = PBXBuildFile; fileRef = FAEDA055171A0FB400637470 /* utility.h */; };
 		FAEDA066171A119900637470 /* wdt.h in Headers */ = {isa = PBXBuildFile; fileRef = FAEDA065171A119900637470 /* wdt.h */; };
 		FAEDA068171A1A9A00637470 /* wdt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAEDA067171A1A9A00637470 /* wdt.cpp */; };
+		FAF76384171DCE4100E5AFED /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAF76383171DCE4100E5AFED /* main.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		FA1A2764171D3BBC00F93207 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		FAF76377171DCDFF00E5AFED /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = /usr/share/man/man1/;
@@ -58,8 +66,6 @@
 		FA1A2766171D3BBC00F93207 /* car_driver_controls */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = car_driver_controls; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA1A276F171D3C2800F93207 /* car_driver_controls.1 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.man; name = car_driver_controls.1; path = car_driver_controls.X/car_driver_controls.1; sourceTree = "<group>"; };
 		FA20FF11171BEAAB00CFD040 /* can.def.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = can.def.h; sourceTree = "<group>"; };
-		FA98C2B2171ACF790054C089 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		FA98C2B6171ACF960054C089 /* main.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = main.h; sourceTree = "<group>"; };
 		FAD01279171A4F3500E56EAC /* common_pragmas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = common_pragmas.h; sourceTree = "<group>"; };
 		FAD0127B171A52CC00E56EAC /* nu32.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = nu32.cpp; sourceTree = "<group>"; };
 		FAD0127F171A52FD00E56EAC /* nu32.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = nu32.h; sourceTree = "<group>"; };
@@ -89,6 +95,9 @@
 		FAEDA055171A0FB400637470 /* utility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utility.h; sourceTree = "<group>"; };
 		FAEDA065171A119900637470 /* wdt.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = wdt.h; sourceTree = "<group>"; };
 		FAEDA067171A1A9A00637470 /* wdt.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = wdt.cpp; sourceTree = "<group>"; };
+		FAF76379171DCDFF00E5AFED /* car_steering_wheel */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = car_steering_wheel; sourceTree = BUILT_PRODUCTS_DIR; };
+		FAF76383171DCE4100E5AFED /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = car_steering_wheel.X/main.cpp; sourceTree = "<group>"; };
+		FAF76385171DCE8C00E5AFED /* car_steering_wheel.1 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.man; name = car_steering_wheel.1; path = car_steering_wheel.X/car_steering_wheel.1; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,14 +115,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FAF76376171DCDFF00E5AFED /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		FA1A275F171D3B3500F93207 /* projects */ = {
 			isa = PBXGroup;
 			children = (
-				FA1A276F171D3C2800F93207 /* car_driver_controls.1 */,
+				FAF76383171DCE4100E5AFED /* main.cpp */,
+				FAF76385171DCE8C00E5AFED /* car_steering_wheel.1 */,
 				FA1A2760171D3B4B00F93207 /* main.cpp */,
+				FA1A276F171D3C2800F93207 /* car_driver_controls.1 */,
 			);
 			name = projects;
 			sourceTree = "<group>";
@@ -133,6 +151,7 @@
 			children = (
 				FAE27FDD1718EC0D00FEF03C /* libnusolar_lib.a */,
 				FA1A2766171D3BBC00F93207 /* car_driver_controls */,
+				FAF76379171DCDFF00E5AFED /* car_steering_wheel */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -148,7 +167,6 @@
 				FAEDA040171A0FA600637470 /* spi.cpp */,
 				FAE2C2B9171B809200EBF603 /* can.cpp */,
 				FAEDA067171A1A9A00637470 /* wdt.cpp */,
-				FA98C2B2171ACF790054C089 /* main.cpp */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -173,7 +191,6 @@
 				FAE2C2BD171B80B800EBF603 /* can.h */,
 				FA20FF11171BEAAB00CFD040 /* can.def.h */,
 				FAEDA065171A119900637470 /* wdt.h */,
-				FA98C2B6171ACF960054C089 /* main.h */,
 			);
 			path = include;
 			sourceTree = "<group>";
@@ -215,7 +232,6 @@
 				FAD0127A171A4F3500E56EAC /* common_pragmas.h in Headers */,
 				FAD01280171A52FD00E56EAC /* nu32.h in Headers */,
 				FAD01286171A563800E56EAC /* led.h in Headers */,
-				FA98C2B7171ACF970054C089 /* main.h in Headers */,
 				FAE2C2BE171B80B800EBF603 /* can.h in Headers */,
 				FAE2C2C0171BACFA00EBF603 /* errorcodes.h in Headers */,
 				FA20FF12171BEAAB00CFD040 /* can.def.h in Headers */,
@@ -259,6 +275,23 @@
 			productReference = FAE27FDD1718EC0D00FEF03C /* libnusolar_lib.a */;
 			productType = "com.apple.product-type.library.static";
 		};
+		FAF76378171DCDFF00E5AFED /* car_steering_wheel */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FAF7637F171DCDFF00E5AFED /* Build configuration list for PBXNativeTarget "car_steering_wheel" */;
+			buildPhases = (
+				FAF76375171DCDFF00E5AFED /* Sources */,
+				FAF76376171DCDFF00E5AFED /* Frameworks */,
+				FAF76377171DCDFF00E5AFED /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = car_steering_wheel;
+			productName = car_steering_wheel;
+			productReference = FAF76379171DCDFF00E5AFED /* car_steering_wheel */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -282,6 +315,7 @@
 			targets = (
 				FAE27FDC1718EC0D00FEF03C /* nusolar_lib */,
 				FA1A2765171D3BBC00F93207 /* car_driver_controls */,
+				FAF76378171DCDFF00E5AFED /* car_steering_wheel */,
 			);
 		};
 /* End PBXProject section */
@@ -306,8 +340,15 @@
 				FAEDA068171A1A9A00637470 /* wdt.cpp in Sources */,
 				FAD0127D171A52CC00E56EAC /* nu32.cpp in Sources */,
 				FAD01283171A561F00E56EAC /* led.cpp in Sources */,
-				FA98C2B4171ACF790054C089 /* main.cpp in Sources */,
 				FAE2C2BB171B809200EBF603 /* can.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FAF76375171DCDFF00E5AFED /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FAF76384171DCE4100E5AFED /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -411,6 +452,26 @@
 			};
 			name = Release;
 		};
+		FAF76380171DCDFF00E5AFED /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		FAF76381171DCDFF00E5AFED /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -421,6 +482,7 @@
 				FA1A276E171D3BBD00F93207 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		FAE27FD81718EC0D00FEF03C /* Build configuration list for PBXProject "nusolar_lib" */ = {
 			isa = XCConfigurationList;
@@ -439,6 +501,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		FAF7637F171DCDFF00E5AFED /* Build configuration list for PBXNativeTarget "car_steering_wheel" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FAF76380171DCDFF00E5AFED /* Debug */,
+				FAF76381171DCDFF00E5AFED /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};

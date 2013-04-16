@@ -33,8 +33,15 @@ namespace nu {
 			_PIN(lights_r,     D, 2)\
 			_PIN(headlights,   D, 3)
 
+#define _PIN(name, ltr, num) Pin name;
+		ANALOG_INS
+		DIGITAL_INS
+		DIGITAL_OUTS
+#undef _PIN
+		
+		
 		enum pin {
-		#define _PIN(name, ltr, num) name, //= Pin(IOPORT_##ltr, BIT_##num, #name);
+		#define _PIN(name, ltr, num) name ## _k, //= Pin(IOPORT_##ltr, BIT_##num, #name);
 			ANALOG_INS
 			DIGITAL_INS
 			DIGITAL_OUTS
@@ -51,6 +58,7 @@ using namespace nu;
  * Instantiate DriverControls object
  */
 int main(int argc, const char* argv[]) {
+	DriverControls dc{};
 	return 0;
 }
 
