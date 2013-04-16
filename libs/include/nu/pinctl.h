@@ -6,11 +6,10 @@
  * Simple pin wrapper
  */
 
-#include "arch.h"
 #include "nu_types.h"
 
 /*
- * arch-specific pinctl will provide the following functions/macros:
+ * platform-specific pinctl will provide the following functions/macros:
  * NU_PIN_INIT(...)
  * NU_INIT_PIN(struct nu_pin *p, ...)
  *
@@ -21,9 +20,7 @@
  * nu_pin_* functions, but must then define NU_HAVE_PIN_FUNCTIONS
  */
 
-#if NU_ARCH == NU_ARCH_PIC32MX
-# include "pinctl_pic32mx.h"
-#endif
+#include "platform/pinctl.h"
 
 /* PIC32MX example:
  * NU_PIN(main_relay_pin, NU_PIN_A0)
