@@ -47,6 +47,14 @@ namespace nu {
 			DIGITAL_OUTS
 		#undef _PIN
 		};
+		
+		DriverControls(): Nu32(Nu32::V2, HZ), ws_can(CAN1), common_can(CAN2)
+#define _PIN(name, ltr, num) ,name(IOPORT_##ltr, BIT_##num, #name)
+		ANALOG_INS DIGITAL_INS DIGITAL_OUTS
+#undef _PIN
+		{
+			
+		}
 	};
 }
 

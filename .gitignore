@@ -87,6 +87,7 @@ Makefile-impl.mk
 !configurations.xml
 !Makefile
 !project.xml
+Package-default.bash
 
 #Sublime Text 2
 *.sublime-project
