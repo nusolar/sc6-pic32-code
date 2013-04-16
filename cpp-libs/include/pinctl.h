@@ -1,3 +1,4 @@
+
 //
 //  Pinctl.h
 //  nusolar_lib
@@ -19,10 +20,10 @@ namespace nu {
 		IoPortId ltr;
 		uint32_t num;
 		const char *name;
-		
-		INLINE
-		Pin(IoPortId ltr, uint32_t num, const char *name = ""): ltr(ltr), num(num), name(name) {}
-		
+
+		INLINE Pin(IoPortId ltr, uint32_t num, const char *name = ""):
+			ltr(ltr), num(num), name(name) {}
+
 		void ALWAYSINLINE set_digital_out() {
 			PORTSetPinsDigitalOut(ltr, num);
 		}
@@ -35,7 +36,7 @@ namespace nu {
 		void ALWAYSINLINE set_analog_in() {
 			PORTSetPinsAnalogIn(ltr, num);
 		}
-		
+
 		unsigned int ALWAYSINLINE read() {
 			return PORTReadBits(ltr, num);
 		}

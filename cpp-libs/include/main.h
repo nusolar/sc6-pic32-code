@@ -13,12 +13,15 @@
 #include "button.h"
 #include "led.h"
 #include "serial.h"
+#include "can.h"
 
 #include <vector>
 
 namespace nu {
 	struct SteeringWheel: protected Nu32 {
 		Serial display;
+		can::CAN can;
+
 		std::vector<Button> buttons;
 		std::vector<Led> leds;
 
@@ -50,11 +53,11 @@ namespace nu {
 			_LED(cruise_down,  A, 15)
 
 		#define _BTN(name, ltr, num) \
-			Button name;
+			Button name; /*= Button(IOPORT_##ltr, BIT_##num, 10, 5, #name);*/
 			DIGITAL_IN_PINS
 		#undef _BTN
 		#define _LED(name, ltr, num) \
-			Led led_##name;
+			Led led_##name; /*= Led(IOPORT_##ltr, BIT_##num, #name);*/
 			LED_PINS
 		#undef _LED
 	};

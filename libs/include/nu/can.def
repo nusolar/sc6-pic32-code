@@ -34,7 +34,7 @@ CAN_FRAMEE      (bms_rx_reset_all,                      (CAN_FMT ""))
 CAN_FRAMEE_ID   (bms_rx_max,                    0x20F,  (CAN_FMT ""))
 
 CAN_FRAMEE_ID   (bms_tx_base,                   0x210,  (CAN_FMT ""))
-CAN_FRAMEE_ID   (bms_tx_hearbeat,               0x210,  (CAN_FMT ""))
+CAN_FRAMEE_ID   (bms_tx_heartbeat,              0x210,  (CAN_FMT ""))
 CAN_FRAMEE      (bms_tx_error,                          (CAN_FMT ""))
 CAN_FRAMEE      (bms_tx_uptime,                         (CAN_FMT ""))
 CAN_FRAMEA      (bms_tx_last_reset,

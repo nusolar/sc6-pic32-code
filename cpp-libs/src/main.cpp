@@ -9,13 +9,18 @@
 #include "main.h"
 
 #include <algorithm>
+#include <bitset>
+#include <stdlib.h>
 
-using namespace nu;
 using namespace std;
+using namespace nu;
 
-#define _BTN(name, ltr, num) ,name(IOPORT_##ltr, BIT_##num, 10, 5, "name")
-#define _LED(name, ltr, num) ,led_##name(IOPORT_##ltr, BIT_##num, "name")
-SteeringWheel::SteeringWheel(): Nu32(Nu32::V2, HZ), display(UART2)
+//template <size_t N> class bitset;
+
+// stupid MPLAB won't initialize fields in-declaration like C++11 says, so:
+#define _BTN(name, ltr, num) ,name(IOPORT_##ltr, BIT_##num, 10, 5, #name)
+#define _LED(name, ltr, num) ,led_##name(IOPORT_##ltr, BIT_##num, #name)
+SteeringWheel::SteeringWheel(): Nu32(Nu32::V2, HZ), display(UART2), can(CAN2)
 	DIGITAL_IN_PINS
 	LED_PINS
 #undef _BTN
@@ -37,21 +42,30 @@ SteeringWheel::SteeringWheel(): Nu32(Nu32::V2, HZ), display(UART2)
 	while (1) {
 		for_each(buttons.begin(), buttons.end(), [](Button &x){
 			x.update();
-		}); // should repeat?
+		});
 
-		bool can_packet[buttons.size()];
-		for (UINT i = 0; i < buttons.size(); i++)
-			can_packet[i] = buttons[i].pressed();
-		// SEND
+		bitset<32> bits;
+		for (unsigned i = 0; i < buttons.size(); i++)
+			bits[i] = buttons[i].pressed();
+		
+		uint32_t temp = (uint32_t)bits.to_ullong(); // WARNING BIT ORDER?
+		can::frame::sw::tx::buttons btns_frame = *(can::frame::sw::tx::buttons*)&temp;
+		can.tx(&btns_frame, sizeof(btns_frame), 1);
 
-		bool can_packet_led[leds.size()];
-		for (UINT i = 0; i < leds.size(); i++)
-			can_packet_led[i] = leds[i].status();
-		// SEND
+		bits = 0;
+		for (unsigned i = 0; i < leds.size(); i++)
+			bits[i] = leds[i].status();
 
+		temp = bits.to_ullong();
+		can::frame::sw::tx::lights lts_frame = *(can::frame::sw::tx::lights*)&temp;
+		can.tx(&lts_frame, sizeof(lts_frame), 1);
 
-		// RECV
-		display.tx("Speed: 5mph", sizeof(char));
+		char inc[8]; uint32_t id;
+		can.rx(inc, id);
+		if (id == (uint32_t)can::addr::ws20::tx::motor_velocity_k){
+			can::frame::ws20::tx::motor_velocity pkt = *(can::frame::ws20::tx::motor_velocity *)&inc;
+			display.printf("Speed [m/s]: %f", pkt.vehicleVelocity);
+		}
 	}
 }
 

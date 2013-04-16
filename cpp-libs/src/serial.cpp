@@ -80,16 +80,16 @@ void Serial::rx(void *dst, size_t n) {
 	}
 }
 
-/*
 void Serial::printf(const char *fmt, ...) {
 	char *buf;
-	size_t n;
+	int res;
 	va_list fmtargs;
 	va_start(fmtargs, fmt);
-	n = vsnprintf(NULL, (size_t)0, fmt, fmtargs);
-	buf = (char *) alloca(n);
-	vsprintf(buf, fmt, fmtargs);
+	if (likely((res = vsnprintf(NULL, 0, fmt, fmtargs)) >= 0)) {
+		buf = (char *) alloca((size_t)res);
+		vsprintf(buf, fmt, fmtargs);
+		tx(buf, (size_t)res);
+	}
 	va_end(fmtargs);
-	tx(buf, n);
-}*/
+}
 

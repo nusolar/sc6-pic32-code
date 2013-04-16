@@ -37,7 +37,7 @@ CAN
 * the longstanding `container_of` error
 * the ERD pointer type error.
 * `union can_anyFrame` is referenced but never defined.
-* `CAN_BIT_CONFIG *default_cfg` is never declared either.
+* why is `CAN_BIT_CONFIG *default_cfg` commented out?
 * `nu_can_new_easy()` isn't implemented
 
 
@@ -47,5 +47,4 @@ Error reporting
 
 SPI Hardware
 ----
-
 * fix nokia5110.h enum errors
