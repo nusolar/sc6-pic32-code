@@ -93,19 +93,13 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
-      <logicalFolder name="f1" displayName="spi" projectFiles="true">
-        <itemPath>../src/spi/spi_rx.c</itemPath>
-        <itemPath>../src/spi/spi_setup.c</itemPath>
-        <itemPath>../src/spi/spi_tx.c</itemPath>
-      </logicalFolder>
       <itemPath>../src/nu32.c</itemPath>
       <itemPath>../src/param.c</itemPath>
       <itemPath>../src/async_io.c</itemPath>
       <itemPath>../src/wdt.c</itemPath>
       <itemPath>../src/errorcodes.c</itemPath>
-      <itemPath>../src/ad7685.c</itemPath>
-      <itemPath>../src/mcp49x2.c</itemPath>
-      <itemPath>../src/error_reporting.c</itemPath>
+      <itemPath>../src/serial.c</itemPath>
+      <itemPath>../src/led.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -124,7 +118,7 @@
         <platformTool>PICkit3PlatformTool</platformTool>
         <languageToolchain>XC32</languageToolchain>
         <languageToolchainVersion>1.20</languageToolchainVersion>
-        <platform>4</platform>
+        <platform>2</platform>
       </toolsSet>
       <compileType>
         <archiverTool>
@@ -160,7 +154,7 @@
         <property key="support-ansi" value="false"/>
         <property key="use-cci" value="false"/>
         <property key="use-indirect-calls" value="false"/>
-        <appendMe value="-ggdb3 -Wno-unused-function -pedantic-errors -std=gnu89 -Werror -Wall -Wextra -Waggregate-return -Wbad-function-cast -Wcast-align -Wcast-qual -Wc++-compat -Wconversion -Wdeclaration-after-statement -Wdouble-promotion -Wfloat-equal -Wformat=2 -Winit-self -Winline -Wlogical-op -Wmissing-include-dirs -Wmissing-prototypes -Wnested-externs -Wpadded -Wpacked -Wpointer-arith -Wredundant-decls -Wshadow -Wstrict-aliasing=2 -Wstrict-overflow=5 -Wstrict-prototypes -Wswitch-default -Wswitch-enum -Wundef -Wuninitialized -Wunreachable-code -Wwrite-strings -O1 -fthread-jumps -falign-functions -falign-jumps -falign-loops -falign-labels -fcaller-saves -fcrossjumping -fcse-follow-jumps -fcse-skip-blocks -fdelete-null-pointer-checks -fexpensive-optimizations -fgcse -fgcse-lm -finline-small-functions -findirect-inlining -fipa-sra -foptimize-sibling-calls -fpeephole2 -fregmove -freorder-blocks -freorder-functions -frerun-cse-after-loop -fsched-interblock -fsched-spec -fschedule-insns -fschedule-insns2 -fstrict-aliasing -fstrict-overflow -ftree-switch-conversion -ftree-pre -ftree-vrp"/>
+        <appendMe value="-std=gnu89 -ggdb3 -pedantic-errors -Wno-unused-function -Wno-variadic-macros -Werror -Wall -Wextra -Waggregate-return -Wbad-function-cast -Wcast-align -Wcast-qual -Wc++-compat -Wconversion -Wdeclaration-after-statement -Wdouble-promotion -Wfloat-equal -Wformat=2 -Winit-self -Winline -Wlogical-op -Wmissing-include-dirs -Wmissing-prototypes -Wnested-externs -Wpadded -Wpacked -Wpointer-arith -Wredundant-decls -Wshadow -Wstrict-aliasing=2 -Wstrict-overflow=5 -Wstrict-prototypes -Wswitch-default -Wswitch-enum -Wundef -Wuninitialized -Wunreachable-code -Wwrite-strings"/>
       </C32>
       <C32-AS>
         <property key="assembler-symbols" value=""/>

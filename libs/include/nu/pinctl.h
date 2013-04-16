@@ -6,45 +6,58 @@
  * Simple pin wrapper
  */
 
-#include <peripheral/ports.h>
-#include "compiler.h"
+#include "arch.h"
 #include "nu_types.h"
 
-struct nu_pin {
-    IoPortId ltr;
-    u32 num;
-};
-
-#define NU_PIN_INIT(ltr,num)   {(ltr), (num)}
-#define NU_PIN(name, ltr, num)  \
-    struct nu_pin name = NU_PIN_INIT(ltr, num)
-
-static ALWAYSINLINE void
-NU_INIT_PIN(struct nu_pin *p, IoPortId ltr, u32 num)
-{
-    p->ltr = ltr;
-    p->num = num;
-}
-
-/**
- * Set a nu_pin to Digital Out
- * @param  p [in,out] `struct nu_pin` to set
+/*
+ * arch-specific pinctl will provide the following functions/macros:
+ * NU_PIN_INIT(...)
+ * NU_INIT_PIN(struct nu_pin *p, ...)
+ *
+ * It should also provide macros in the form NU_PIN_* that contain the
+ * set of arguments that define each pin for the architecture.
+ *
+ * It can also provide inline implementations for the
+ * nu_pin_* functions, but must then define NU_HAVE_PIN_FUNCTIONS
  */
-#define nu_pin_set_digital_out(p)  \
-    PORTSetPinsDigitalOut((p)->ltr, (p)->num)
-#define nu_pin_set_digital_in(p)   \
-    PORTSetPinsDigitalIn((p)->ltr, (p)->num)
-#define nu_pin_set_analog_out(p)   \
-    PORTSetPinsAnalogOut((p)->ltr, (p)->num)
-#define nu_pin_set_analog_in(p)    \
-    PORTSetPinsAnalogIn((p)->ltr, (p)->num)
-#define nu_pin_read(p) \
-    PORTReadBits((p)->ltr, (p)->num)
-#define nu_pin_set(p)  \
-    PORTSetBits((p)->ltr, (p)->num)
-#define nu_pin_clear(p)    \
-    PORTClearBits((p)->ltr, (p)->num)
-#define nu_pin_toggle(p)   \
-    PORTToggleBits((p)->ltr, (p)->num)
+
+#if NU_ARCH == NU_ARCH_PIC32MX
+# include "pinctl_pic32mx.h"
+#endif
+
+/* PIC32MX example:
+ * NU_PIN(main_relay_pin, NU_PIN_A0)
+ * will define an nu_pin named main_relay_pin on pin A0.
+ */
+#define NU_PIN(name, pin) \
+    struct nu_pin name = NU_PIN_INIT(pin)
+
+struct nu_pin;
+
+#ifndef NU_HAVE_PIN_FUNCTIONS
+void
+nu_pin_set_digital_out(const struct nu_pin *p);
+
+void
+nu_pin_set_digital_in(const struct nu_pin *p);
+
+void
+nu_pin_set_analog_out(const struct nu_pin *p);
+
+void
+nu_pin_set_analog_in(const struct nu_pin *p);
+
+u32
+nu_pin_read(const struct nu_pin *p);
+
+void
+nu_pin_set(const struct nu_pin *p);
+
+void
+nu_pin_clear(const struct nu_pin *p);
+
+void
+nu_pin_toggle(const struct nu_pin *p);
+#endif
 
 #endif

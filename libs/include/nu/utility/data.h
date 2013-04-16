@@ -7,18 +7,18 @@
 
 #define member_size(type, member) sizeof(((type *)0)->member)
 
-/* From Linux kernel */
-#ifdef offsetof
-    #undef  offsetof
-#endif
-#define offsetof(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER)
-
-#define container_of(ptr, type, member) ({ \
-                typeof( ((type *)0)->member ) *__mptr = (ptr); \
+#ifdef __STRICT_ANSI__
+/* ANSI C Version (sacrifices some type checking) (offsetof() is in <stddef.h>): */
+# include <stddef.h>
+# define container_of(ptr, type, member) \
+    ((type *) (void *) ((char *)ptr - offsetof(type, member)))
+#else
+# undef offsetof
+# define offsetof(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER)
+# define container_of(ptr, type, member) ({ \
+                const typeof( ((type *)0)->member ) *__mptr = (ptr); \
                 (type *)( (char *)__mptr - offsetof(type,member) );})
-/* ANSI C Version (sacrifices some type checking) (offsetof() is in <stddef.h>):
- * #define container_of(ptr, type, member) ((type *)((char *)ptr - offsetof(type, member)))
- */
+#endif
 
 #define ZEROARR(x)          (__must_be_array(x), memset((x), 0, sizeof(x)))
 #define CPYARR(dest, src)   \
