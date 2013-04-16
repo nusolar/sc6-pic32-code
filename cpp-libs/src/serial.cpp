@@ -82,14 +82,14 @@ void Serial::rx(void *dst, size_t n) {
 
 void Serial::printf(const char *fmt, ...) {
 	char *buf;
-    int res;
-    va_list fmtargs;
-    va_start(fmtargs, fmt);
-    if (likely((res = vsnprintf(NULL, 0, fmt, fmtargs)) >= 0)) {
-        buf = (char *) alloca((size_t)res);
-        vsprintf(buf, fmt, fmtargs);
-        tx(buf, (size_t)res);
-    }
-    va_end(fmtargs);
+	int res;
+	va_list fmtargs;
+	va_start(fmtargs, fmt);
+	if (likely((res = vsnprintf(NULL, 0, fmt, fmtargs)) >= 0)) {
+		buf = (char *) alloca((size_t)res);
+		vsprintf(buf, fmt, fmtargs);
+		tx(buf, (size_t)res);
+	}
+	va_end(fmtargs);
 }
 
