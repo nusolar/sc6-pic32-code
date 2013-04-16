@@ -66,6 +66,7 @@ xcuserdata/
 profile
 *.moved-aside
 *~.nib
+*.xcodeproj/
 
 # netbeans files/folders
 build/
