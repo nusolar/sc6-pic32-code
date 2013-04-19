@@ -13,7 +13,7 @@
 
 namespace nu {
 	struct Led: protected Pin {
-		INLINE Led(IoPortId ltr, uint32_t num, const char *name = ""):
+		INLINE Led(IoPortId ltr = IOPORT_D, uint32_t num = 0, const char *name = ""):
 			Pin(ltr, num, name) {}
 		
 		void ALWAYSINLINE off() {set();}

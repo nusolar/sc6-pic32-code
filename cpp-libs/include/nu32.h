@@ -48,6 +48,10 @@ namespace nu {
 			LIST_OF_PINS_V1
 		#undef X
 		
+		/**
+		 * Primary Setup. Super-call this before ANY setup calls!
+		 * Call all setups from derived-class constructor!
+		 */
 		Nu32(versions _version, uint64_t _hz);
 	};
 }

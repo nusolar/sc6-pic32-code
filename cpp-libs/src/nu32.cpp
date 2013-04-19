@@ -11,7 +11,6 @@
 using namespace nu;
 
 
-
 #define X(Type, name, ...) , name(__VA_ARGS__)
 Nu32::Nu32(versions _version, uint64_t _hz): version(_version)
 	LIST_OF_PINS_V1

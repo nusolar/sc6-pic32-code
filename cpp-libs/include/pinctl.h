@@ -11,7 +11,7 @@
 #define __nusolar_lib__pinctl__
 
 #include "compiler.h"
-#include <stdint.h>
+#include <cstdint>
 
 #include <peripheral/ports.h>
 

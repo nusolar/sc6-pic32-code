@@ -10,9 +10,9 @@
 #define __nusolar_lib__serial__
 
 #include "compiler.h"
-#include <stdint.h>
+#include <cstdint>
 
-#include <string.h>
+#include <cstring> // strlen
 #include <peripheral/uart.h>
 
 namespace nu {

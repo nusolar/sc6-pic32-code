@@ -9,9 +9,9 @@
 #include "serial.h"
 #include "param.h"
 #include "wdt.h"
+#include <cstdio> /* Serial::printf requires these */
+#include <cstdarg>
 #include <alloca.h>
-#include <stdarg.h>
-#include <stdio.h>
 
 using namespace nu;
 
@@ -63,6 +63,7 @@ void Serial::setup(__uint32_t baud, nu::Serial::module_interrupt use_interrupt,
 	}
 }
 
+
 void Serial::tx(const void *src, size_t n) {
 	size_t ui;
 	for (ui = 0; ui < n; ++ui) {
@@ -73,12 +74,14 @@ void Serial::tx(const void *src, size_t n) {
 	}
 }
 
+
 void Serial::rx(void *dst, size_t n) {
 	size_t ui;
 	for (ui = 0; ui < n && UARTReceivedDataIsAvailable(module); ++ui) {
 		((uint8_t *)dst)[ui] = UARTGetDataByte(module);
 	}
 }
+
 
 void Serial::printf(const char *fmt, ...) {
 	char *buf;

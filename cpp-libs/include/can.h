@@ -10,7 +10,7 @@
 #define __nusolar_lib__can__
 
 #include "compiler.h"
-#include <stdint.h>
+#include <cstdint>
 
 #include <peripheral/CAN.h>
 #include <peripheral/int.h>
@@ -78,7 +78,6 @@ namespace nu {
 #define Status(str, u1)\
 	char str[4];\
 	uint32_t u1;
-
 			// Specialty Data Types:
 #define motor_Status()\
 	uint16_t limitFlags;\

@@ -1,10 +1,10 @@
 #ifndef NU_ERRORCODES_H
 #define NU_ERRORCODES_H 1
 
-#include <stdint.h>
+#include <cstdint>
 
 #include "utility/data.h"
-#include <stdlib.h>
+#include <cstdlib>
 
 /* "The X Macro" technique from Dr. Dobb's
  * (http://www.drdobbs.com/blogs/cpp/228700289)

@@ -10,10 +10,10 @@
 #define __nusolar_lib__spi__
 
 #include "param.h"
-#include <stddef.h> // size_t
+#include <cstddef> // size_t
 
 #include "pinctl.h"
-#include <string.h>
+#include <cstring> // strlen
 #include <peripheral/spi.h>
 
 namespace nu {
