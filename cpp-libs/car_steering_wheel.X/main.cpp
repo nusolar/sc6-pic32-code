@@ -23,10 +23,7 @@ namespace nu {
 		
 		Enum<Button, 13> buttons;
 		Enum<Led, 12> leds;
-
-		SteeringWheel();
-		void run();
-
+		
 		/*
 		 * definition of Pins:
 		 */
@@ -58,53 +55,53 @@ namespace nu {
 			LED_PINS
 		#undef _BTN
 		#undef _LED
+		
+		SteeringWheel(): Nu32(Nu32::V2, HZ), display(UART2), can(CAN2) {
+			#define _BTN(name, ltr, num) name##_k = buttons.enumerate(Button(IOPORT_##ltr, BIT_##num, 10, 5, #name));
+			#define _LED(name, ltr, num) led_##name##_k = leds.enumerate(Led(IOPORT_##ltr, BIT_##num, #name));
+				DIGITAL_IN_PINS
+				LED_PINS
+			#undef _LED
+			#undef _BTN
+			
+			for (int i=0; i<leds.size(); i++)
+				leds[i].setup();
+		}
+		
+		void run() {
+			for (int repeat = 0; repeat < 10; repeat++)
+				for (int i = 0; i < buttons.size(); i++)
+					buttons[i].update();
+			
+			std::bitset<32> bits;
+			for (int i = 0; i < buttons.size(); i++)
+				bits[i] = buttons[i].pressed();
+			
+			uint32_t temp = (uint32_t)bits.to_ullong(); // 64->32 ok. WARNING BIT ORDER?
+			can::frame::sw::tx::buttons btns_frame = *(can::frame::sw::tx::buttons*)&temp;
+			can.tx(&btns_frame, sizeof(btns_frame), 1);
+			
+			bits = 0;
+			for (unsigned i = 0; i < leds.size(); i++)
+				bits[i] = leds[i].status();
+			
+			temp = bits.to_ullong();
+			can::frame::sw::tx::lights lts_frame = *(can::frame::sw::tx::lights*)&temp;
+			can.tx(&lts_frame, sizeof(lts_frame), 1);
+			
+			char inc[8]; uint32_t id;
+			can.rx(inc, id);
+			if (id == (uint32_t)can::addr::ws20::tx::motor_velocity_k){
+				can::frame::ws20::tx::motor_velocity pkt =
+				*(can::frame::ws20::tx::motor_velocity *)&inc;
+				display.printf("Speed [m/s]: %f", pkt.vehicleVelocity);
+			}
+		}
 	};
 }
 
 using namespace std;
 using namespace nu;
-
-SteeringWheel::SteeringWheel(): Nu32(Nu32::V2, HZ), display(UART2), can(CAN2) {	
-	#define _BTN(name, ltr, num) name##_k = buttons.enumerate(Button(IOPORT_##ltr, BIT_##num, 10, 5, #name));
-	#define _LED(name, ltr, num) led_##name##_k = leds.enumerate(Led(IOPORT_##ltr, BIT_##num, #name));
-		DIGITAL_IN_PINS
-		LED_PINS
-	#undef _LED
-	#undef _BTN
-	
-	for (int i=0; i<leds.size(); i++)
-		leds[i].setup();
-}
-
-void SteeringWheel::run() {
-	for (int repeat = 0; repeat < 10; repeat++)
-		for (int i = 0; i < buttons.size(); i++)
-			buttons[i].update();
-	
-	bitset<32> bits;
-	for (int i = 0; i < buttons.size(); i++)
-		bits[i] = buttons[i].pressed();
-	
-	uint32_t temp = (uint32_t)bits.to_ullong(); // 64->32 ok. WARNING BIT ORDER?
-	can::frame::sw::tx::buttons btns_frame = *(can::frame::sw::tx::buttons*)&temp;
-	can.tx(&btns_frame, sizeof(btns_frame), 1);
-	
-	bits = 0;
-	for (unsigned i = 0; i < leds.size(); i++)
-		bits[i] = leds[i].status();
-	
-	temp = bits.to_ullong();
-	can::frame::sw::tx::lights lts_frame = *(can::frame::sw::tx::lights*)&temp;
-	can.tx(&lts_frame, sizeof(lts_frame), 1);
-	
-	char inc[8]; uint32_t id;
-	can.rx(inc, id);
-	if (id == (uint32_t)can::addr::ws20::tx::motor_velocity_k){
-		can::frame::ws20::tx::motor_velocity pkt =
-		*(can::frame::ws20::tx::motor_velocity *)&inc;
-		display.printf("Speed [m/s]: %f", pkt.vehicleVelocity);
-	}
-}
 
 int main() {
 	SteeringWheel sw{};
