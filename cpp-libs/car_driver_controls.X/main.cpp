@@ -76,12 +76,8 @@ namespace nu {
 		}
 		
 		void do_lights() {
-			if (digital_ins[brake_pedal_k].read())
-				Nop(); // WARNING: brakelights ?!
-			else Nop();
-			if (digital_ins[headlight_switch_k].read())
-				digital_outs[headlights_k].set();
-			else digital_outs[headlights_k].clear();
+			digital_outs[lights_brake_k] &= digital_ins[brake_pedal_k].read()? 1:0;
+			digital_outs[headlights_k] &= digital_ins[headlight_switch_k].read()? 1:0;
 		}
 		
 		void run() {

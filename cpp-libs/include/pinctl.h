@@ -53,6 +53,12 @@ namespace nu {
 		
 		void ALWAYSINLINE high() {set();}
 		void ALWAYSINLINE low() {clear();}
+		
+		bool ALWAYSINLINE operator&= (bool setting) {
+			if (setting) set();
+			else clear();
+			return setting;
+		}
 	};
 }
 
