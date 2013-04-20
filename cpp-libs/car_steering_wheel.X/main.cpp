@@ -16,6 +16,7 @@
 #include <bitset>
 #include <cstdlib>
 #include "array.h"
+#include "timer.h"
 
 namespace nu {
 	struct SteeringWheel: protected Nu32 {
@@ -65,7 +66,7 @@ namespace nu {
 				LED_PINS
 			#undef _LED
 			#undef _BTN
-
+			WDT::clear();
 			for (int i=0; i<leds.size(); i++)
 				leds[i].setup();
 			can.setup_easy((CAN_MODULE_EVENT)0, INT_PRIORITY_DISABLED);
@@ -75,7 +76,23 @@ namespace nu {
 			// WARNING: setup display
 		}
 		
+		void animate_leds() {
+			WDT::clear();
+			for (int i=0; i<leds.size(); i++){
+				WDT::clear();
+				leds[i].on();
+				delay_ms(100); // WARNING: WDT time-out period?
+			}
+			WDT::clear();
+			for (int i=0; i<leds.size(); i++){
+				WDT::clear();
+				leds[i].off();
+				delay_ms(100); // WARNING: WDT time-out period?
+			}
+		}
+		
 		void run() {
+			WDT::clear();
 			for (int repeat = 0; repeat < 10; repeat++)
 				for (int i = 0; i < buttons.size(); i++)
 					buttons[i].update();
@@ -111,8 +128,8 @@ using namespace std;
 using namespace nu;
 
 int main() {
-	WDT::clear();
 	SteeringWheel sw{};
+	sw.animate_leds();
 	while (true) {
 		sw.run();
 	}

@@ -49,6 +49,7 @@ namespace nu {
 		DriverControls(): Nu32(Nu32::V2, HZ), ws_can(CAN1), common_can(CAN2),
 			lcd(IOPORT_G, BIT_9, SPI_CHANNEL2, IOPORT_A, BIT_9, IOPORT_E, BIT_9)
 		{
+			WDT::clear();
 			#define _PIN(name, ltr, num) name##_k = _ITER.enumerate(Pin(IOPORT_##ltr, BIT_##num, #name));
 				#define _ITER analog_ins
 					ANALOG_INS
@@ -74,6 +75,8 @@ namespace nu {
 			
 			lcd.setup();
 		}
+		
+		void run() {}
 	};
 }
 
@@ -85,9 +88,11 @@ using namespace nu;
  * Instantiate DriverControls object
  */
 int main(int argc, const char* argv[]) {
-	WDT::clear();
 	DriverControls dc{};
 	dc.setup();
+	while (true) {
+		dc.run();
+	}
 	return 0;
 }
 
