@@ -20,7 +20,7 @@
 
 namespace nu {
 	struct DriverControls: protected Nu32 {
-		can::CAN ws_can, common_can;
+		can::Module ws_can, common_can;
 		Nokia5110 lcd;
 		Enum<Pin, 3> analog_ins, digital_ins, digital_outs;
 		

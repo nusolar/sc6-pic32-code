@@ -254,7 +254,7 @@ void Nokia5110::printf(const char *fmt, ...) {
 
 
 // x should be in the range 0-83
-void ALWAYSINLINE Nokia5110::cmd_set_ram_x_addr(uint8_t x) {
+void Nokia5110::cmd_set_ram_x_addr(uint8_t x) {
 	instructions inst;
 	PREPARE_CMD(inst.basic.set_ram_x_addr);
 	inst.basic.set_ram_x_addr.addr = BITFIELD_CAST(x, 7); // 7 bits
@@ -262,7 +262,7 @@ void ALWAYSINLINE Nokia5110::cmd_set_ram_x_addr(uint8_t x) {
 }
 
 // y should be in the range 0-5
-void ALWAYSINLINE Nokia5110::cmd_set_ram_y_addr(uint8_t y) {
+void Nokia5110::cmd_set_ram_y_addr(uint8_t y) {
 	instructions inst;
 	PREPARE_CMD(inst.basic.set_ram_y_addr);
 	inst.basic.set_ram_y_addr.addr = BITFIELD_CAST(y, 3); // 3 bits

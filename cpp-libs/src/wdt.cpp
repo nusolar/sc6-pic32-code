@@ -1,5 +1,5 @@
 #include "wdt.h"
 
-using namespace nu::WDT;
+using namespace nu;
 
-void (*clear)(void) = &enabled_clear_wdt;
+void (*WDT::clear)(void) = &WDT::enabled_clear_wdt;

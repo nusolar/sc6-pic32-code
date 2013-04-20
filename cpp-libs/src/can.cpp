@@ -16,7 +16,7 @@ using namespace nu;
 using namespace can;
 
 #define DEFAULT_BUS_SPEED_HZ    1E6
-CAN_BIT_CONFIG CAN::default_cfg = {
+CAN_BIT_CONFIG Module::default_cfg = {
 	/* .phaseSeg2Tq            = */ CAN_BIT_5TQ,
 	/* .phaseSeg1Tq            = */ CAN_BIT_3TQ,
 	/* .propagationSegTq       = */ CAN_BIT_1TQ,
@@ -26,7 +26,7 @@ CAN_BIT_CONFIG CAN::default_cfg = {
 };
 
 
-int32_t CAN::setup(uint32_t bus_speed = DEFAULT_BUS_SPEED_HZ, CAN_BIT_CONFIG *timings = &default_cfg, CAN_MODULE_EVENT interrupts = (CAN_MODULE_EVENT)0, INT_PRIORITY int_priority = INT_PRIORITY_DISABLED, CAN_MODULE_FEATURES features = (CAN_MODULE_FEATURES)0) {
+int32_t Module::setup(uint32_t bus_speed = DEFAULT_BUS_SPEED_HZ, CAN_BIT_CONFIG *timings = &default_cfg, CAN_MODULE_EVENT interrupts = (CAN_MODULE_EVENT)0, INT_PRIORITY int_priority = INT_PRIORITY_DISABLED, CAN_MODULE_FEATURES features = (CAN_MODULE_FEATURES)0) {
 
 	CANEnableModule(mod, TRUE);
 
@@ -70,13 +70,13 @@ int32_t CAN::setup(uint32_t bus_speed = DEFAULT_BUS_SPEED_HZ, CAN_BIT_CONFIG *ti
 }
 
 
-int32_t CAN::setup_easy(CAN_MODULE_EVENT interrupts, INT_PRIORITY priority) {
+int32_t Module::setup_easy(CAN_MODULE_EVENT interrupts, INT_PRIORITY priority) {
 	return setup(DEFAULT_BUS_SPEED_HZ, &default_cfg, interrupts, priority, (CAN_MODULE_FEATURES) 0);
 }
 
 
 ALWAYSINLINE
-int32_t CAN::switch_mode(CAN_OP_MODE op_mode, uint32_t timeout_ms) {
+int32_t Module::switch_mode(CAN_OP_MODE op_mode, uint32_t timeout_ms) {
 	uint32_t start = timer_us();
 	CANSetOperatingMode(mod, op_mode);
 	while (timer_us() - start < timeout_ms*1000)
@@ -87,7 +87,7 @@ int32_t CAN::switch_mode(CAN_OP_MODE op_mode, uint32_t timeout_ms) {
 
 
 ALWAYSINLINE
-int32_t CAN::change_features(CAN_MODULE_FEATURES features, BOOL en) {
+int32_t Module::change_features(CAN_MODULE_FEATURES features, BOOL en) {
 	int32_t err = config_mode();
 	if (err < 0) {
 		normal_mode();
@@ -98,8 +98,7 @@ int32_t CAN::change_features(CAN_MODULE_FEATURES features, BOOL en) {
 }
 
 
-ALWAYSINLINE
-size_t CAN::rx(void *dest, uint32_t &id) {
+size_t Module::rx(void *dest, uint32_t &id) {
 	CANRxMessageBuffer *buffer = CANGetRxMessage(mod, chn);
 	if (buffer == NULL) return -ENODATA;
 
@@ -114,8 +113,7 @@ size_t CAN::rx(void *dest, uint32_t &id) {
 }
 
 
-ALWAYSINLINE
-int32_t CAN::tx(const void *data, size_t num_bytes, uint32_t rtr_en) {
+int32_t Module::tx(const void *data, size_t num_bytes, uint32_t rtr_en) {
 	CANTxMessageBuffer *msg = CANGetTxMessageBuffer(mod, chn);
 	if (num_bytes > 8) return -EINVAL; // Maximum of 8 data bytes in CAN frame
 
@@ -138,7 +136,7 @@ int32_t CAN::tx(const void *data, size_t num_bytes, uint32_t rtr_en) {
 }
 
 
-int32_t CAN::add_rx(CAN_CHANNEL chn, uint32_t msg_size, CAN_RX_DATA_MODE data_only,
+int32_t Module::add_rx(CAN_CHANNEL chn, uint32_t msg_size, CAN_RX_DATA_MODE data_only,
 	CAN_CHANNEL_EVENT interrupts) {
 	int32_t err = config_mode();
 	if (err < 0) {
@@ -158,7 +156,7 @@ int32_t CAN::add_rx(CAN_CHANNEL chn, uint32_t msg_size, CAN_RX_DATA_MODE data_on
 }
 
 
-int32_t CAN::add_tx(CAN_CHANNEL chn, uint32_t msg_size, CAN_TX_RTR rtr_en,
+int32_t Module::add_tx(CAN_CHANNEL chn, uint32_t msg_size, CAN_TX_RTR rtr_en,
 	CAN_TXCHANNEL_PRIORITY priority, CAN_CHANNEL_EVENT interrupts) {
 	int32_t err = config_mode();
 	if (err < 0) {
@@ -174,7 +172,7 @@ int32_t CAN::add_tx(CAN_CHANNEL chn, uint32_t msg_size, CAN_TX_RTR rtr_en,
 }
 
 
-int32_t CAN::add_filter(CAN_CHANNEL chn, CAN_FILTER filter, CAN_ID_TYPE f_type, uint32_t id,
+int32_t Module::add_filter(CAN_CHANNEL chn, CAN_FILTER filter, CAN_ID_TYPE f_type, uint32_t id,
 		CAN_FILTER_MASK mask, CAN_FILTER_MASK_TYPE mide, uint32_t mask_bits) {
 	int32_t err = config_mode();
 	if (err < 0) {

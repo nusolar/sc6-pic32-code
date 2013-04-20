@@ -12,21 +12,6 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
-      <logicalFolder name="src" displayName="src" projectFiles="true">
-        <itemPath>../src/ad7685.cpp</itemPath>
-        <itemPath>../src/array.cpp</itemPath>
-        <itemPath>../src/button.cpp</itemPath>
-        <itemPath>../src/can.cpp</itemPath>
-        <itemPath>../src/led.cpp</itemPath>
-        <itemPath>../src/nokia5110.cpp</itemPath>
-        <itemPath>../src/nu32.cpp</itemPath>
-        <itemPath>../src/param.cpp</itemPath>
-        <itemPath>../src/pinctl.cpp</itemPath>
-        <itemPath>../src/serial.cpp</itemPath>
-        <itemPath>../src/spi.cpp</itemPath>
-        <itemPath>../src/ulcd28pt.cpp</itemPath>
-        <itemPath>../src/wdt.cpp</itemPath>
-      </logicalFolder>
       <itemPath>main.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
@@ -37,6 +22,7 @@
   </logicalFolder>
   <sourceRootList>
     <Elem>../src</Elem>
+    <Elem>../include</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -54,6 +40,7 @@
       <compileType>
         <linkerTool>
           <linkerLibItems>
+            <linkerLibFileItem>../nusolar_lib.X/dist/default/production/nusolar_lib.X.a</linkerLibFileItem>
           </linkerLibItems>
         </linkerTool>
         <loading>

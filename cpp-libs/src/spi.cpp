@@ -25,7 +25,7 @@ void ALWAYSINLINE SPI::wait_busy() {
 	delay_ns(bit_tims_ns);
 }
 
-void ALWAYSINLINE SPI::tx(const void *src, size_t n, nu::SPI::tx_options _opt) {
+void SPI::tx(const void *src, size_t n, nu::SPI::tx_options _opt) {
 	uint32_t ui;
 	
     if (opt & SPI_TX_WAIT_START)
@@ -52,7 +52,7 @@ void ALWAYSINLINE SPI::tx(const void *src, size_t n, nu::SPI::tx_options _opt) {
         wait_busy();
 }
 
-void ALWAYSINLINE SPI::rx(void *dst, size_t n) {
+void SPI::rx(void *dst, size_t n) {
 	uint32_t ui;
 	
 	while (SpiChnRxBuffCount(chn)) {

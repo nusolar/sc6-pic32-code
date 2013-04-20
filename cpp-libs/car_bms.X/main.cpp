@@ -33,7 +33,7 @@ namespace nu {
 		};
 		
 		Pin main_relay, array_relay;
-		can::CAN common_can, mppt_can;
+		can::Module common_can, mppt_can;
 		Nokia5110 lcd1, lcd2;
 		AD7685 adc;
 		

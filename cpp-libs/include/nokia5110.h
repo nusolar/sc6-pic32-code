@@ -24,7 +24,7 @@ namespace nu {
 	 *  LCD 8-LED		----->	330 ohm	----->	5V
 	 *  (8-LED for backlight only if desired)
 	 ************************************/
-	struct Nokia5110: public SPI {
+	struct Nokia5110: protected SPI {
 		enum cmd_func_set_options {
 			DC_DATA                = 0,
 			DC_COMMAND             = 1<<0,
