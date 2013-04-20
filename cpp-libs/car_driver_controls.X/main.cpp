@@ -90,19 +90,25 @@ namespace nu {
 		
 		void read_ins() {
 			WDT::clear();
+			// TODO: Encapsulate ANALOG reading!
 			values.accel = ((float)ReadADC10(1) + 0)/1024; // scale 0-1023 to 0-1
 			if (values.accel < 0) values.accel = 0; // TODO: print warning, clamp
 			if (values.accel > 1) values.accel = 1; // TODO: print warning
 			values.accel_en = values.accel > 0.05;
 			
-			values.lights_head	= digital_ins[headlight_switch_k].read()? 1: 0;
+			values.regen = ((float)ReadADC10(analog_ins[regen_pedel_k].num) + 0)/1024;
+			values.regen_en = digital_ins[regen_enable_k].read()? 1: 0; // TODO: clamp
+			
+			values.airgap = ((float)ReadADC10(analog_ins[airgap_pot_k].num) + 0)/1024;
+			values.airgap_en = digital_ins[airgap_enable_k].read()? 1: 0; // TODO: clamp
+			
+			values.reverse_en	= digital_ins[reverse_switch_k].read();
+			
 			values.brake_en		= digital_ins[brake_pedal_k].read()? 1: 0;
 			values.lights_brake = values.brake_en;
-			values.reverse_en	= digital_ins[reverse_switch_k].read();
-			values.regen_en		= digital_ins[regen_enable_k].read();
-			values.regen		= digital_ins[regen_pedel_k].read(); // TODO: regen_pot?
-			values.airgap_en	= digital_ins[airgap_enable_k].read();
-			values.airgap		= digital_ins[airgap_pot_k].read();
+			
+			values.lights_head	= digital_ins[headlight_switch_k].read()? 1: 0;
+			
 		}
 		
 		void recv_can() {}
@@ -138,6 +144,7 @@ namespace nu {
 			WDT::clear();
 			
 			read_ins();
+			recv_can();
 			set_lights();
 			set_motor();
 			
