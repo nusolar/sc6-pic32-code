@@ -79,6 +79,7 @@ nbproject/private/
 libs/*/nbproject/
 projects/*/nbproject/private/
 projects/*/nbproject/private/*
+*/*/nbproject/private/*
 *.mk
 *.properties
 Makefile-default.mk

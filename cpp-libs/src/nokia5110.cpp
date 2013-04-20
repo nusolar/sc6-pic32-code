@@ -288,7 +288,7 @@ void ALWAYSINLINE Nokia5110::set_pixel(uint8_t x, uint8_t y) {
 
 void Nokia5110::lcd_clear() {
 	// WARNING: should we goto_xy(0,0) first??
-	for (uint32_t ui; ui < (lcd_x * lcd_y); ui++) {
+	for (uint32_t ui = 0; ui < (lcd_x * lcd_y); ui++) {
 		WDT::clear();
 		write_data(0x00);
 	}

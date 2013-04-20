@@ -12,7 +12,7 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
-      <itemPath>main.cpp</itemPath>
+      <itemPath>/Users/alex/Media/GitHub/sc6-pic32-code/cpp-libs/car_bms.X/main.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -59,7 +59,7 @@
         <property key="enable-symbols" value="true"/>
         <property key="enable-unroll-loops" value="false"/>
         <property key="exclude-floating-point" value="false"/>
-        <property key="extra-include-directories" value="../include"/>
+        <property key="extra-include-directories" value=""/>
         <property key="generate-16-bit-code" value="false"/>
         <property key="isolate-each-function" value="false"/>
         <property key="make-warnings-into-errors" value="false"/>
@@ -92,31 +92,10 @@
         <property key="warning-level" value=""/>
       </C32-AS>
       <C32-LD>
-        <property key="additional-options-use-response-files" value="false"/>
-        <property key="enable-check-sections" value="false"/>
-        <property key="exclude-floating-point-library" value="false"/>
-        <property key="exclude-standard-libraries" value="false"/>
-        <property key="extra-lib-directories" value=""/>
-        <property key="generate-16-bit-code" value="false"/>
-        <property key="generate-cross-reference-file" value="false"/>
-        <property key="heap-size" value=""/>
-        <property key="input-libraries" value=""/>
-        <property key="linker-symbols" value=""/>
-        <property key="map-file" value=""/>
-        <property key="no-startup-files" value="false"/>
-        <property key="oXC32ld-extra-opts" value=""/>
-        <property key="optimization-level" value=""/>
-        <property key="preprocessor-macros" value=""/>
-        <property key="remove-unused-sections" value="false"/>
-        <property key="report-memory-usage" value="false"/>
-        <property key="stack-size" value=""/>
-        <property key="symbol-stripping" value=""/>
-        <property key="trace-symbols" value=""/>
-        <property key="warn-section-align" value="false"/>
       </C32-LD>
       <C32CPP>
         <property key="additional-warnings" value="true"/>
-        <property key="check-new" value="true"/>
+        <property key="check-new" value="false"/>
         <property key="eh-specs" value="true"/>
         <property key="enable-app-io" value="false"/>
         <property key="enable-omit-frame-pointer" value="false"/>
@@ -142,6 +121,7 @@
       <C32Global>
         <property key="legacy-libc" value="false"/>
         <property key="save-temps" value="false"/>
+        <appendMe value="-std=gnu++0x -fthread-jumps -falign-functions -falign-jumps -falign-loops  -falign-labels -fcaller-saves -fcrossjumping -fcse-follow-jumps  -fcse-skip-blocks -fdelete-null-pointer-checks -fexpensive-optimizations -fgcse  -fgcse-lm  -finline-small-functions -findirect-inlining -fipa-sra -foptimize-sibling-calls -fpeephole2 -fregmove -freorder-blocks -freorder-functions -frerun-cse-after-loop -fsched-interblock -fsched-spec -fschedule-insns  -fschedule-insns2 -fstrict-aliasing -fstrict-overflow -ftree-switch-conversion -ftree-pre -ftree-vrp"/>
       </C32Global>
       <PICkit3PlatformTool>
       </PICkit3PlatformTool>

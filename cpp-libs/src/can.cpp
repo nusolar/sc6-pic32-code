@@ -71,7 +71,7 @@ int32_t CAN::setup(uint32_t bus_speed = DEFAULT_BUS_SPEED_HZ, CAN_BIT_CONFIG *ti
 
 
 int32_t CAN::setup_easy(CAN_MODULE_EVENT interrupts, INT_PRIORITY priority) {
-	setup(DEFAULT_BUS_SPEED_HZ, &default_cfg, interrupts, priority, (CAN_MODULE_FEATURES) 0);
+	return setup(DEFAULT_BUS_SPEED_HZ, &default_cfg, interrupts, priority, (CAN_MODULE_FEATURES) 0);
 }
 
 

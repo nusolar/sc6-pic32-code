@@ -22,8 +22,8 @@ namespace nu {
 			accel, regen, reverse, LEN};
 	}
 	struct DriverControls: protected Nu32 {
-		Nokia5110 lcd;
 		can::CAN ws_can, common_can;
+		Nokia5110 lcd;
 		Enum<Pin, 3> analog_ins, digital_ins, digital_outs;
 		
 		struct values {

@@ -21,8 +21,8 @@
 
 namespace nu {
 	struct SteeringWheel: protected Nu32 {
-		Serial display;
 		can::CAN can;
+		Serial display;
 		
 		Enum<Button, 13> buttons;
 		Enum<Led, 12> leds;
@@ -68,7 +68,7 @@ namespace nu {
 			#undef _LED
 			#undef _BTN
 			WDT::clear();
-			for (int i=0; i<leds.size(); i++)
+			for (unsigned i=0; i<leds.size(); i++)
 				leds[i].setup();
 			can.setup_easy((CAN_MODULE_EVENT)0, INT_PRIORITY_DISABLED);
 			can.add_rx(CAN_CHANNEL0, 32, CAN_RX_FULL_RECEIVE);
@@ -79,13 +79,13 @@ namespace nu {
 		
 		void animate_leds() {
 			WDT::clear();
-			for (int i=0; i<leds.size(); i++){
+			for (unsigned i=0; i<leds.size(); i++){
 				WDT::clear();
 				leds[i].on();
 				delay_ms(100); // WARNING: WDT time-out period?
 			}
 			WDT::clear();
-			for (int i=0; i<leds.size(); i++){
+			for (unsigned i=0; i<leds.size(); i++){
 				WDT::clear();
 				leds[i].off();
 				delay_ms(100); // WARNING: WDT time-out period?
@@ -95,11 +95,11 @@ namespace nu {
 		void run() {
 			WDT::clear();
 			for (int repeat = 0; repeat < 10; repeat++) // re-update 10x
-				for (int i = 0; i < buttons.size(); i++)
+				for (unsigned i = 0; i < buttons.size(); i++)
 					buttons[i].update();
 			
 			std::bitset<32> bits;
-			for (int i = 0; i < buttons.size(); i++)
+			for (unsigned i = 0; i < buttons.size(); i++)
 				bits[i] = buttons[i].pressed();
 			
 			uint32_t temp = (uint32_t)bits.to_ullong(); // 64->32 ok. WARNING BIT ORDER?

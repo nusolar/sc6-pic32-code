@@ -20,6 +20,5 @@
 #define nomips16 used
 
 #define Nop()
-//#define UART1 UART2
 
 #endif
