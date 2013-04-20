@@ -1,11 +1,22 @@
-#ifndef NU_PARAM_H
-#define NU_PARAM_H 1
+//
+//  param.h
+//  nusolar_lib
+//
+//  Created by Al Chandel on 4/20/13.
+//  Copyright (c) 2013 Alex Chandel. All rights reserved.
+//
 
-unsigned long nu_hz = 80000000UL;
+#ifndef __nusolar_lib__param__
+#define __nusolar_lib__param__
 
-#define NU_DEFAULT_HZ (80000000UL)
-#define NU_PBUS_FREQ_HZ (nu_hz/((uint32_t)(1 << OSCCONbits.PBDIV)))
+namespace nu {
+	struct Param {
+		static unsigned long nu_hz; // FUCK MPLAB
+		
+		#define NU_DEFAULT_HZ (80000000UL)
+		#define NU_PBUS_FREQ_HZ (Param::nu_hz/((uint32_t)(1 << OSCCONbits.PBDIV)))
+		#define HZ (80000000UL)
+	};
+}
 
-#define HZ (80000000UL)
-
-#endif
+#endif /* defined(__nusolar_lib__param__) */

@@ -67,7 +67,8 @@ namespace nu {
 		void PRINTF(2,3) printf(const char *fmt, ...);
 		
 		void ALWAYSINLINE goto_xy(uint8_t x, uint8_t y) {
-			cmd_set_ram_x_addr(x); cmd_set_ram_y_addr(y);
+			cmd_set_ram_x_addr(x);
+			cmd_set_ram_y_addr(y);
 		}
 		void set_pixel(uint8_t x, uint8_t y);
 		

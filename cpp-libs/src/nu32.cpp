@@ -16,7 +16,7 @@ Nu32::Nu32(versions _version, uint64_t _hz): version(_version)
 	LIST_OF_PINS_V1
 #undef  X
 {
-	nu_hz = _hz;
+	Param::nu_hz = _hz;
 	
 	SYSTEMConfig(HZ, SYS_CFG_ALL);
 	INTConfigureSystem(INT_SYSTEM_CONFIG_MULT_VECTOR);
