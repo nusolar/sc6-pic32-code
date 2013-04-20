@@ -11,6 +11,7 @@
 #include "led.h"
 #include "serial.h"
 #include "can.h"
+#include "wdt.h"
 
 #include <bitset>
 #include <cstdlib>
@@ -25,7 +26,7 @@ namespace nu {
 		Enum<Led, 12> leds;
 		
 		/*
-		 * definition of Pins:
+		 * Pin definitions
 		 */
 		#define DIGITAL_IN_PINS			\
 			_BTN(yes,          E, 0)	\
@@ -56,16 +57,22 @@ namespace nu {
 		#undef _BTN
 		#undef _LED
 		
-		SteeringWheel(): Nu32(Nu32::V2, HZ), display(UART2), can(CAN2) {
+		SteeringWheel(): Nu32(Nu32::V2, HZ), can(CAN2), display(UART2)
+		{
 			#define _BTN(name, ltr, num) name##_k = buttons.enumerate(Button(IOPORT_##ltr, BIT_##num, 10, 5, #name));
 			#define _LED(name, ltr, num) led_##name##_k = leds.enumerate(Led(IOPORT_##ltr, BIT_##num, #name));
 				DIGITAL_IN_PINS
 				LED_PINS
 			#undef _LED
 			#undef _BTN
-			
+
 			for (int i=0; i<leds.size(); i++)
 				leds[i].setup();
+			can.setup_easy((CAN_MODULE_EVENT)0, INT_PRIORITY_DISABLED);
+			can.add_rx(CAN_CHANNEL0, 32, CAN_RX_FULL_RECEIVE);
+			can.add_tx(CAN_CHANNEL1, 32, CAN_TX_RTR_DISABLED, CAN_HIGH_MEDIUM_PRIORITY);
+			can.add_tx(CAN_CHANNEL2, 32, CAN_TX_RTR_DISABLED, CAN_LOWEST_PRIORITY);
+			// WARNING: setup display
 		}
 		
 		void run() {
@@ -104,6 +111,7 @@ using namespace std;
 using namespace nu;
 
 int main() {
+	WDT::clear();
 	SteeringWheel sw{};
 	while (true) {
 		sw.run();

@@ -33,7 +33,7 @@ namespace nu {
 		
 		void rx(void *dst, size_t n);
 		void tx(const void *src, size_t n);
-		void printf(const char *fmt, ...); // PRINTF(2, 3) 
+		void PRINTF(2, 3) printf(const char *fmt, ...);
 		void ALWAYSINLINE puts(const char *str) {
 			tx(str, strlen(str));
 		}

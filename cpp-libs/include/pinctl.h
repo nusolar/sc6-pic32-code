@@ -21,6 +21,7 @@ namespace nu {
 		uint32_t num;
 		const char *name;
 
+		
 		INLINE Pin(IoPortId ltr = IOPORT_D, uint32_t num = 0, const char *name = ""):
 			ltr(ltr), num(num), name(name) {}
 
@@ -49,6 +50,9 @@ namespace nu {
 		void ALWAYSINLINE toggle() {
 			PORTToggleBits(ltr, num);
 		}
+		
+		void ALWAYSINLINE high() {set();}
+		void ALWAYSINLINE low() {clear();}
 	};
 }
 
