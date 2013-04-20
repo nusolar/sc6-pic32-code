@@ -18,8 +18,8 @@
 namespace nu {
 	struct Serial {
 		enum module_interrupt {
-			NU_USE_UART_INTERRUPT,
-			NU_NOT_USE_UART_INTERRUPT
+			USE_UART_INTERRUPT,
+			NOT_USE_UART_INTERRUPT
 		};
 		
 		UART_MODULE module;

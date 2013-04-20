@@ -15,7 +15,7 @@
 
 using namespace nu;
 
-void Serial::setup(__uint32_t baud, nu::Serial::module_interrupt use_interrupt,
+void Serial::setup(uint32_t baud, nu::Serial::module_interrupt use_interrupt,
 				   INT_PRIORITY int_priority, UART_FIFO_MODE interrupt_modes,
 				   UART_LINE_CONTROL_MODE line_control_modes, UART_CONFIGURATION uart_config,
 				   UART_ENABLE_MODE enable_modes) {
@@ -25,7 +25,7 @@ void Serial::setup(__uint32_t baud, nu::Serial::module_interrupt use_interrupt,
 	UARTSetDataRate(module, HZ, baud);
 	UARTEnable(module, (UART_ENABLE_MODE) UART_ENABLE_FLAGS(enable_modes));
 
-	if (NU_USE_UART_INTERRUPT == use_interrupt) {
+	if (use_interrupt == USE_UART_INTERRUPT) {
 		INT_VECTOR int_vect;
 		INT_SOURCE int_src;
 		switch(module) {
