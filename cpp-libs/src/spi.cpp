@@ -12,12 +12,12 @@
 
 using namespace nu;
 
-uint32_t SPI::get_bitrate(SpiChannel chn) {
+uint32_t ALWAYSINLINE SPI::get_bitrate(SpiChannel chn) {
 	uint32_t clk_div = (_SpiMapTbl[chn]->brg+1)*2;
 	return (uint32_t) NU_PBUS_FREQ_HZ/clk_div; //bitrate
 }
 
-void SPI::wait_busy() {
+void ALWAYSINLINE SPI::wait_busy() {
 	uint32_t bit_tims_ns = 1000000000/this->get_bitrate(chn);
 	while (SpiChnIsBusy(chn)) {
 		Nop();
@@ -25,7 +25,7 @@ void SPI::wait_busy() {
 	delay_ns(bit_tims_ns);
 }
 
-void SPI::tx(const void *src, size_t n, nu::SPI::tx_options _opt) {
+void ALWAYSINLINE SPI::tx(const void *src, size_t n, nu::SPI::tx_options _opt) {
 	uint32_t ui;
 	
     if (opt & SPI_TX_WAIT_START)
@@ -52,7 +52,7 @@ void SPI::tx(const void *src, size_t n, nu::SPI::tx_options _opt) {
         wait_busy();
 }
 
-void SPI::rx(void *dst, size_t n) {
+void ALWAYSINLINE SPI::rx(void *dst, size_t n) {
 	uint32_t ui;
 	
 	while (SpiChnRxBuffCount(chn)) {

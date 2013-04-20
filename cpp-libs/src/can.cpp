@@ -75,6 +75,7 @@ int32_t CAN::setup_easy(CAN_MODULE_EVENT interrupts, INT_PRIORITY priority) {
 }
 
 
+ALWAYSINLINE
 int32_t CAN::switch_mode(CAN_OP_MODE op_mode, uint32_t timeout_ms) {
 	uint32_t start = timer_us();
 	CANSetOperatingMode(mod, op_mode);
@@ -85,6 +86,7 @@ int32_t CAN::switch_mode(CAN_OP_MODE op_mode, uint32_t timeout_ms) {
 }
 
 
+ALWAYSINLINE
 int32_t CAN::change_features(CAN_MODULE_FEATURES features, BOOL en) {
 	int32_t err = config_mode();
 	if (err < 0) {
@@ -96,6 +98,7 @@ int32_t CAN::change_features(CAN_MODULE_FEATURES features, BOOL en) {
 }
 
 
+ALWAYSINLINE
 size_t CAN::rx(void *dest, uint32_t &id) {
 	CANRxMessageBuffer *buffer = CANGetRxMessage(mod, chn);
 	if (buffer == NULL) return -ENODATA;
@@ -111,6 +114,7 @@ size_t CAN::rx(void *dest, uint32_t &id) {
 }
 
 
+ALWAYSINLINE
 int32_t CAN::tx(const void *data, size_t num_bytes, uint32_t rtr_en) {
 	CANTxMessageBuffer *msg = CANGetTxMessageBuffer(mod, chn);
 	if (num_bytes > 8) return -EINVAL; // Maximum of 8 data bytes in CAN frame

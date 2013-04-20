@@ -37,7 +37,7 @@ namespace nu {
 		void ALWAYSINLINE setup(uint32_t bitrate, SpiOpenFlags oflags) {
 			SpiChnOpen(chn, oflags, (uint32_t) NU_PBUS_FREQ_HZ/bitrate);
 		}
-		void setup_pin(uint32_t bitrate, SpiOpenFlags oflags) {
+		void ALWAYSINLINE setup_pin(uint32_t bitrate, SpiOpenFlags oflags) {
 			set_digital_out();
 			high();
 			setup(bitrate, oflags);
@@ -46,8 +46,8 @@ namespace nu {
 		void ALWAYSINLINE high() {set();}
 		void ALWAYSINLINE low() {clear();}
 		
-		void ALWAYSINLINE rx(void *dst, size_t n);
-		void ALWAYSINLINE tx(const void *src, size_t n, tx_options _opt);
+		void rx(void *dst, size_t n);
+		void tx(const void *src, size_t n, tx_options _opt);
 		void ALWAYSINLINE puts(const char *str, tx_options _opt) {
 			tx(str, strlen(str), _opt);
 		}

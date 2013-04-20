@@ -94,7 +94,7 @@ namespace nu {
 		
 		void run() {
 			WDT::clear();
-			for (int repeat = 0; repeat < 10; repeat++)
+			for (int repeat = 0; repeat < 10; repeat++) // re-update 10x
 				for (int i = 0; i < buttons.size(); i++)
 					buttons[i].update();
 			

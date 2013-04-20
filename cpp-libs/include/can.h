@@ -53,10 +53,10 @@ namespace nu {
 			int32_t add_filter(CAN_CHANNEL chn, CAN_FILTER filter, CAN_ID_TYPE f_type, uint32_t id, CAN_FILTER_MASK mask, CAN_FILTER_MASK_TYPE mide, uint32_t mask_bits);
 
 		private:
-			int32_t ALWAYSINLINE switch_mode(CAN_OP_MODE op_mode, uint32_t timeout_ms);
+			int32_t switch_mode(CAN_OP_MODE op_mode, uint32_t timeout_ms);
 			int32_t ALWAYSINLINE normal_mode() {return switch_mode(CAN_NORMAL_OPERATION, 1);}
 			int32_t ALWAYSINLINE config_mode() {return switch_mode(CAN_CONFIGURATION, 1);}
-			int32_t ALWAYSINLINE change_features(CAN_MODULE_FEATURES features, BOOL en);
+			int32_t change_features(CAN_MODULE_FEATURES features, BOOL en);
 		};
 
 		namespace frame {
