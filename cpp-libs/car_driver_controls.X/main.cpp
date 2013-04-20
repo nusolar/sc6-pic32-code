@@ -18,7 +18,6 @@ namespace nu {
 	struct DriverControls: protected Nu32 {
 		Nokia5110 lcd;
 		can::CAN ws_can, common_can;
-		//std::vector<Pin> analog_ins, digital_ins, digital_outs;
 		Enum<Pin, 3> analog_ins, digital_ins, digital_outs;
 
 		/*
@@ -76,7 +75,22 @@ namespace nu {
 			lcd.setup();
 		}
 		
-		void run() {}
+		void do_lights() {
+			if (digital_ins[brake_pedal_k].read())
+				Nop(); // WARNING: brakelights ?!
+			else Nop();
+			if (digital_ins[headlight_switch_k].read())
+				digital_outs[headlights_k].set();
+			else digital_outs[headlights_k].clear();
+		}
+		
+		void run() {
+			WDT::clear();
+			
+			lcd.lcd_clear();
+			lcd.goto_xy(0, 0);
+			lcd.printf("%f", 25);
+		}
 	};
 }
 
