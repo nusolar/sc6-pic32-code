@@ -27,6 +27,8 @@ namespace nu {
 		Enum<Button, 13> buttons;
 		Enum<Led, 12> leds;
 		
+		std::bitset<32> bits;
+				
 		/*
 		 * Pin definitions
 		 */
@@ -59,15 +61,19 @@ namespace nu {
 		#undef _BTN
 		#undef _LED
 		
-		SteeringWheel(): Nu32(Nu32::V2, HZ), can(CAN2), display(UART2)
+		/**
+		 * Initialize NU32, CAN, and Display.
+		 */
+		ALWAYSINLINE SteeringWheel(): Nu32(Nu32::V2), can(CAN2), display(UART2)
 		{
+			WDT::clear();
 			#define _BTN(name, ltr, num) name##_k = buttons.enumerate(Button(IOPORT_##ltr, BIT_##num, 10, 5, #name));
 			#define _LED(name, ltr, num) led_##name##_k = leds.enumerate(Led(IOPORT_##ltr, BIT_##num, #name));
 				DIGITAL_IN_PINS
 				LED_PINS
 			#undef _LED
 			#undef _BTN
-			WDT::clear();
+			
 			for (unsigned i=0; i<leds.size(); i++)
 				leds[i].setup();
 			can.setup_easy((CAN_MODULE_EVENT)0, INT_PRIORITY_DISABLED);
@@ -77,7 +83,10 @@ namespace nu {
 			// WARNING: setup display
 		}
 		
-		void animate_leds() {
+		/**
+		 * Animate LEDs on startup.
+		 */
+		void ALWAYSINLINE animate_leds() {
 			WDT::clear();
 			for (unsigned i=0; i<leds.size(); i++){
 				WDT::clear();
@@ -92,13 +101,16 @@ namespace nu {
 			}
 		}
 		
-		void run() {
+		/**
+		 * A function to be called repeatedly.
+		 */
+		void ALWAYSINLINE run() {
 			WDT::clear();
 			for (int repeat = 0; repeat < 10; repeat++) // re-update 10x
 				for (unsigned i = 0; i < buttons.size(); i++)
 					buttons[i].update();
 			
-			std::bitset<32> bits;
+			bits = 0;
 			for (unsigned i = 0; i < buttons.size(); i++)
 				bits[i] = buttons[i].pressed();
 			

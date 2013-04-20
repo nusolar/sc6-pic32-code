@@ -6,21 +6,19 @@
  */
 
 #include <cstdint>
+#include <cstddef>
+#include "compiler.h"
 #include "array.h"
 #include "timer.h"
 
 #include "nu32.h"
 #include "nokia5110.h"
 #include "can.h"
+#include "spi.h"
 #include "pinctl.h"
 #include "wdt.h"
 
 namespace nu {
-	namespace value {
-		enum value
-		{lights_head = 0, lights_brake, lights_l, lights_r,
-			accel, regen, reverse, LEN};
-	}
 	struct DriverControls: protected Nu32 {
 		can::CAN ws_can, common_can;
 		Nokia5110 lcd;
@@ -57,8 +55,8 @@ namespace nu {
 			DIGITAL_OUTS
 		#undef _PIN
 		
-		DriverControls(): Nu32(Nu32::V2, HZ), ws_can(CAN1), common_can(CAN2),
-			lcd(IOPORT_G, BIT_9, SPI_CHANNEL2, IOPORT_A, BIT_9, IOPORT_E, BIT_9)
+		ALWAYSINLINE DriverControls(): Nu32(Nu32::V2), ws_can(CAN1), common_can(CAN2),
+			lcd(SPI(Pin(IOPORT_G, BIT_9), SPI_CHANNEL2), Pin(IOPORT_A, BIT_9), Pin(IOPORT_E, BIT_9))
 		{
 			WDT::clear();
 			#define _PIN(name, ltr, num) name##_k = _ITER.enumerate(Pin(IOPORT_##ltr, BIT_##num, #name));
@@ -72,10 +70,7 @@ namespace nu {
 					DIGITAL_OUTS
 				#undef _ITER
 			#undef _PIN
-		}
-		
-		void setup() {
-			WDT::clear();
+
 			common_can.setup_easy((CAN_MODULE_EVENT)0, INT_PRIORITY_DISABLED);
 			common_can.add_rx(CAN_CHANNEL0, 32, CAN_RX_FULL_RECEIVE);
 			common_can.add_tx(CAN_CHANNEL1, 32, CAN_TX_RTR_DISABLED, CAN_HIGH_MEDIUM_PRIORITY);
@@ -88,7 +83,7 @@ namespace nu {
 			lcd.setup();
 		}
 		
-		void read_ins() {
+		void ALWAYSINLINE read_ins() {
 			WDT::clear();
 			// TODO: Encapsulate ANALOG reading!
 			values.accel = ((float)ReadADC10(1) + 0)/1024; // scale 0-1023 to 0-1
@@ -111,9 +106,9 @@ namespace nu {
 			
 		}
 		
-		void recv_can() {}
+		void ALWAYSINLINE recv_can() {}
 		
-		void set_lights() {
+		void ALWAYSINLINE set_lights() {
 			WDT::clear();
 			digital_outs[headlights_k]		&= values.lights_head;
 			digital_outs[lights_brake_k]	&= values.lights_brake;
@@ -121,7 +116,7 @@ namespace nu {
 			digital_outs[lights_l_k]		&= values.lights_l;
 		}
 		
-		void set_motor() {
+		void ALWAYSINLINE set_motor() {
 			WDT::clear();
 			can::frame::ws20::rx::drive_cmd drive {0, 0}; // [current, velocity]
 			
@@ -140,7 +135,7 @@ namespace nu {
 			ws_can.tx(&drive, sizeof(drive), 0); // ERROR: CAN ADDRESS?
 		}
 		
-		void run() {
+		void ALWAYSINLINE run() {
 			WDT::clear();
 			
 			read_ins();
@@ -164,7 +159,6 @@ using namespace nu;
  */
 int main(int argc, const char* argv[]) {
 	DriverControls dc{};
-	dc.setup();
 	while (true) {
 		dc.run();
 	}
