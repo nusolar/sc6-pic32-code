@@ -147,6 +147,13 @@ namespace nu {
 			lcd.goto_xy(0, 0);
 			lcd.printf("%f", 25);
 		}
+		
+		void ALWAYSINLINE demo() {
+			WDT::clear();
+			delay_ms(100);
+			led1.toggle();
+			led2.on();
+		}
 	};
 }
 
@@ -160,7 +167,8 @@ using namespace nu;
 int main(int argc, const char* argv[]) {
 	DriverControls dc{};
 	while (true) {
-		dc.run();
+		//dc.run();
+		dc.demo();
 	}
 	return 0;
 }
