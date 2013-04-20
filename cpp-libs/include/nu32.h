@@ -15,11 +15,7 @@
 #include "pinctl.h"
 #include "serial.h"
 
-#include <peripheral/system.h>
-#include <peripheral/cvref.h>
-#include <peripheral/adc10.h>
-#include <peripheral/eth.h>
-#include <peripheral/pmp.h>
+#include <plib.h>
 
 namespace nu {
 	struct Nu32 {
@@ -43,6 +39,7 @@ namespace nu {
 			X(Serial, serial1, UART1) \
 			X(Serial, serial2, UART3) \
 				
+		// FUCK MPLAB
 		#define X(Type, name, ...) \
 			Type name;
 			LIST_OF_PINS_V1

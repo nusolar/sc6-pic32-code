@@ -45,7 +45,7 @@ namespace nu {
 		#undef NU_ERROR
 	};
 	
-	const char *error_get_name(int32_t err) {
+	inline const char *error_get_name(int32_t err) {
 		err = (uint16_t) abs(err);
 		return error_names[err < NUM_ERRORS? err: EOTHER];
 	}

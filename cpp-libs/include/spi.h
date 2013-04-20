@@ -14,7 +14,7 @@
 
 #include "pinctl.h"
 #include <cstring> // strlen
-#include <peripheral/spi.h>
+#include <plib.h>
 
 namespace nu {
 	struct SPI: protected Pin { // chip select pin

@@ -4,7 +4,7 @@
 #include "compiler.h"
 
 #include <xc.h>
-#include <peripheral/wdt.h>
+#include <plib.h>
 
 namespace nu {
 	/**

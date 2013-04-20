@@ -13,7 +13,7 @@
 #include "compiler.h"
 #include <cstdint>
 
-#include <peripheral/ports.h>
+#include <plib.h>
 
 namespace nu {
 	struct Pin {

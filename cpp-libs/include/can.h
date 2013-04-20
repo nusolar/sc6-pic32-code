@@ -12,8 +12,7 @@
 #include "compiler.h"
 #include <cstdint>
 
-#include <peripheral/CAN.h>
-#include <peripheral/int.h>
+#include <plib.h>
 
 namespace nu {
 	namespace can {

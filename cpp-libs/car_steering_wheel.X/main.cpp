@@ -116,7 +116,7 @@ namespace nu {
 			
 			uint32_t temp = (uint32_t)bits.to_ullong(); // 64->32 ok. WARNING BIT ORDER?
 			can::frame::sw::tx::buttons btns_frame = *(can::frame::sw::tx::buttons*)&temp;
-			can.tx(&btns_frame, sizeof(btns_frame), 1);
+			can.tx(&btns_frame, sizeof(btns_frame), 0);
 			
 			bits = 0;
 			for (unsigned i = 0; i < leds.size(); i++)
@@ -124,7 +124,7 @@ namespace nu {
 			
 			temp = bits.to_ullong();
 			can::frame::sw::tx::lights lts_frame = *(can::frame::sw::tx::lights*)&temp;
-			can.tx(&lts_frame, sizeof(lts_frame), 1);
+			can.tx(&lts_frame, sizeof(lts_frame), 0);
 			
 			char inc[8]; uint32_t id;
 			can.rx(inc, id);

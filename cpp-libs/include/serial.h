@@ -13,7 +13,7 @@
 #include <cstdint>
 
 #include <cstring> // strlen
-#include <peripheral/uart.h>
+#include <plib.h>
 
 namespace nu {
 	struct Serial {

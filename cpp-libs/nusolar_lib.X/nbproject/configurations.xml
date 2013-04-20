@@ -29,6 +29,7 @@
       <itemPath>/Users/alex/Media/GitHub/sc6-pic32-code/cpp-libs/include/array.h</itemPath>
       <itemPath>/Users/alex/Media/GitHub/sc6-pic32-code/cpp-libs/include/nokia5110.h</itemPath>
       <itemPath>/Users/alex/Media/GitHub/sc6-pic32-code/cpp-libs/include/ad7685.h</itemPath>
+      <itemPath>../include/ulcd28pt.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -49,6 +50,7 @@
       <itemPath>../src/ad7685.cpp</itemPath>
       <itemPath>../src/array.cpp</itemPath>
       <itemPath>../src/nokia5110.cpp</itemPath>
+      <itemPath>../src/ulcd28pt.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -91,10 +93,10 @@
         <property key="exclude-floating-point" value="false"/>
         <property key="extra-include-directories" value="../include"/>
         <property key="generate-16-bit-code" value="false"/>
-        <property key="isolate-each-function" value="false"/>
+        <property key="isolate-each-function" value="true"/>
         <property key="make-warnings-into-errors" value="false"/>
         <property key="optimization-level" value="-O3"/>
-        <property key="place-data-into-section" value="false"/>
+        <property key="place-data-into-section" value="true"/>
         <property key="post-instruction-scheduling" value="default"/>
         <property key="pre-instruction-scheduling" value="default"/>
         <property key="preprocessor-macros" value="_ALLOW_KEYWORD_MACROS"/>
@@ -129,7 +131,7 @@
         <property key="extra-lib-directories" value=""/>
         <property key="generate-16-bit-code" value="false"/>
         <property key="generate-cross-reference-file" value="false"/>
-        <property key="heap-size" value=""/>
+        <property key="heap-size" value="1024"/>
         <property key="input-libraries" value=""/>
         <property key="linker-symbols" value=""/>
         <property key="map-file" value=""/>
@@ -142,7 +144,7 @@
         <property key="stack-size" value=""/>
         <property key="symbol-stripping" value=""/>
         <property key="trace-symbols" value=""/>
-        <property key="warn-section-align" value="false"/>
+        <property key="warn-section-align" value="true"/>
       </C32-LD>
       <C32CPP>
         <property key="additional-warnings" value="true"/>
@@ -156,10 +158,10 @@
         <property key="exclude-floating-point" value="false"/>
         <property key="extra-include-directories" value="../include"/>
         <property key="generate-16-bit-code" value="false"/>
-        <property key="isolate-each-function" value="false"/>
+        <property key="isolate-each-function" value="true"/>
         <property key="make-warnings-into-errors" value="false"/>
         <property key="optimization-level" value="-O1"/>
-        <property key="place-data-into-section" value="false"/>
+        <property key="place-data-into-section" value="true"/>
         <property key="post-instruction-scheduling" value="default"/>
         <property key="pre-instruction-scheduling" value="default"/>
         <property key="preprocessor-macros" value="_ALLOW_KEYWORD_MACROS"/>

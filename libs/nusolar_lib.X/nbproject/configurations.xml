@@ -110,10 +110,6 @@
       <itemPath>../src/async_io.c</itemPath>
       <itemPath>../src/wdt.c</itemPath>
       <itemPath>../src/errorcodes.c</itemPath>
-      <itemPath>../src/serial.c</itemPath>
-      <itemPath>../src/led.c</itemPath>
-      <itemPath>/Users/alex/Media/GitHub/sc6-pic32-code/libs/src/can.c</itemPath>
-      <itemPath>/Users/alex/Media/GitHub/sc6-pic32-code/libs/src/nokia5110.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

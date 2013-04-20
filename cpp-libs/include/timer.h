@@ -7,7 +7,7 @@
 
 #include "utility.h"
 #include <xc.h>
-#include <peripheral/timer.h>
+#include <plib.h>
 
 STATIC_ASSERT(HZ > 1000000, SYS_CLK_HZ_TOO_LOW);
 #define MHZ (HZ/1000000)
