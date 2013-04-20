@@ -7,6 +7,7 @@
 
 #include <cstdint>
 #include "array.h"
+#include "timer.h"
 
 #include "nu32.h"
 #include "nokia5110.h"
@@ -15,11 +16,22 @@
 #include "wdt.h"
 
 namespace nu {
+	namespace value {
+		enum value
+		{lights_head = 0, lights_brake, lights_l, lights_r,
+			accel, regen, reverse, LEN};
+	}
 	struct DriverControls: protected Nu32 {
 		Nokia5110 lcd;
 		can::CAN ws_can, common_can;
 		Enum<Pin, 3> analog_ins, digital_ins, digital_outs;
-
+		
+		struct values {
+			bool lights_head, lights_brake, lights_l, lights_r,
+				accel_en, brake_en, reverse_en, regen_en, airgap_en;
+			float accel, regen, airgap;
+		} values;
+		
 		/*
 		 * Pin definitions
 		 */
@@ -72,16 +84,62 @@ namespace nu {
 			ws_can.setup_easy((CAN_MODULE_EVENT)0, INT_PRIORITY_DISABLED);
 			ws_can.add_tx(CAN_CHANNEL1, 32, CAN_TX_RTR_DISABLED, CAN_HIGH_MEDIUM_PRIORITY);
 			
+			// TODO: configure ADC10
 			lcd.setup();
 		}
 		
-		void do_lights() {
-			digital_outs[lights_brake_k] &= digital_ins[brake_pedal_k].read()? 1:0;
-			digital_outs[headlights_k] &= digital_ins[headlight_switch_k].read()? 1:0;
+		void read_ins() {
+			WDT::clear();
+			values.accel = ((float)ReadADC10(1) + 0)/1024; // scale 0-1023 to 0-1
+			if (values.accel < 0) values.accel = 0; // TODO: print warning, clamp
+			if (values.accel > 1) values.accel = 1; // TODO: print warning
+			values.accel_en = values.accel > 0.05;
+			
+			values.lights_head	= digital_ins[headlight_switch_k].read()? 1: 0;
+			values.brake_en		= digital_ins[brake_pedal_k].read()? 1: 0;
+			values.lights_brake = values.brake_en;
+			values.reverse_en	= digital_ins[reverse_switch_k].read();
+			values.regen_en		= digital_ins[regen_enable_k].read();
+			values.regen		= digital_ins[regen_pedel_k].read(); // TODO: regen_pot?
+			values.airgap_en	= digital_ins[airgap_enable_k].read();
+			values.airgap		= digital_ins[airgap_pot_k].read();
+		}
+		
+		void recv_can() {}
+		
+		void set_lights() {
+			WDT::clear();
+			digital_outs[headlights_k]		&= values.lights_head;
+			digital_outs[lights_brake_k]	&= values.lights_brake;
+			digital_outs[lights_l_k]		&= values.lights_l;
+			digital_outs[lights_l_k]		&= values.lights_l;
+		}
+		
+		void set_motor() {
+			WDT::clear();
+			can::frame::ws20::rx::drive_cmd drive {0, 0}; // [current, velocity]
+			
+			if (values.brake_en) {
+				if (values.regen_en) 
+					drive = {0.2, 0}; // REGEN_AMOUNT
+				else 
+					drive = {0, 0};
+			} else if (values.accel_en)
+				drive = {values.accel, 100};
+			
+			if (values.reverse_en)
+				drive.motorVelocity *= -1;
+			
+			led1.on(); delay_ms(100); led1.off(); // WTF
+			ws_can.tx(&drive, sizeof(drive), 0); // ERROR: CAN ADDRESS?
 		}
 		
 		void run() {
 			WDT::clear();
+			
+			read_ins();
+			set_lights();
+			set_motor();
 			
 			lcd.lcd_clear();
 			lcd.goto_xy(0, 0);

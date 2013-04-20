@@ -6,17 +6,18 @@
 //  Copyright (c) 2013 Alex Chandel. All rights reserved.
 //
 
+
+#include <bitset>
+#include <cstdlib>
+#include "array.h"
+#include "timer.h"
+
 #include "nu32.h"
 #include "button.h"
 #include "led.h"
 #include "serial.h"
 #include "can.h"
 #include "wdt.h"
-
-#include <bitset>
-#include <cstdlib>
-#include "array.h"
-#include "timer.h"
 
 namespace nu {
 	struct SteeringWheel: protected Nu32 {
