@@ -16,13 +16,14 @@
  * The List(x) MACRO shall yield a namespace or enum, called x
  * The Xbase MACRO shall yield the token `xbase` or a global variable declaration
  * The X(name, type, ...) MACRO shall begin with a correct separator symbol
+ * The Xinit(name, type, ...) MACRO is X, except it shall be assigned = base.
  * The end MACRO shall yield a separator symbol if required 
  */
 
 namespace bms {
 	List(rx) {
 		Xbase = 0x200
-		X(trip, Float2, trip_code, module) = base
+		Xinit(trip, Float2, trip_code, module) = base
 		X(reset_cc_batt, Empty)
 		X(reset_cc_array, Empty)
 		X(reset_cc_mppt1, Empty)
@@ -30,12 +31,12 @@ namespace bms {
 		X(reset_cc_mppt3, Empty)
 		X(reset_cc_Wh, Empty)
 		X(reset_cc_all, Empty)
-		X(max, Empty) = 0x20F
+		Xinit(max, Empty) = 0x20F
 		end
 	};
 	List(tx) {
 		Xbase = 0x210
-		X(heartbeat, Status, bmsStr, reserved) = base
+		Xinit(heartbeat, Status, bmsStr, reserved) = base
 		X(error, Error)
 		X(uptime, Double, seconds)
 		X(last_reset, Trip, lastResetCode, reserved)
@@ -65,7 +66,7 @@ namespace bms {
 namespace ws20 {
 	List(rx) {
 		Xbase = 0x400
-		X(driver_controls_id, Status, drvId, serialNo) = base
+		Xinit(driver_controls_id, Status, drvId, serialNo) = base
 		X(drive_cmd, Float2, motorVelocity, motorCurrent)
 		X(power_cmd, Float2, reserved, busCurrent)
 		X(reset_cmd, UInt2, unused1, unused2)
@@ -73,7 +74,7 @@ namespace ws20 {
 	};
 	List(tx) {
 		Xbase = 0x500
-		X(motor_id, Status, tritiumId, serialNo) = base
+		Xinit(motor_id, Status, tritiumId, serialNo) = base
 		X(motor_status_info, motor_Status)
 		X(motor_bus, Float2, busVoltage, busCurrent)
 		X(motor_velocity, Float2, motorVelocity, vehicleVelocity)
@@ -95,16 +96,16 @@ namespace ws20 {
 namespace mppt {
 	List(rx) {
 		Xbase = 0b11100010000
-		X(mppt1, Empty) = base
-		X(mppt2, Empty) = base
-		X(mppt3, Empty) = base
+		Xinit(mppt1, Empty) = base
+		Xinit(mppt2, Empty) = base
+		Xinit(mppt3, Empty) = base
 		end
 	};
 	List(tx) {
 		Xbase = 0b11100010000
-		X(mppt1, Empty) = base
-		X(mppt2, Empty) = base
-		X(mppt3, Empty) = base
+		Xinit(mppt1, Empty) = base
+		Xinit(mppt2, Empty) = base
+		Xinit(mppt3, Empty) = base
 		end
 	};
 }
@@ -112,12 +113,12 @@ namespace mppt {
 namespace sw {
 	List(rx) {
 		Xbase = 0x300
-		X(lights, sw_Lights) = base
+		Xinit(lights, sw_Lights) = base
 		end
 	};
 	List(tx) {
 		Xbase = 0x310
-		X(heartbeat, Status, dcStr, reserved) = base
+		Xinit(heartbeat, Status, dcStr, reserved) = base
 		X(error, Error)
 		X(buttons, sw_Buttons)
 		X(lights, sw_Lights)
@@ -128,7 +129,7 @@ namespace sw {
 namespace dc {
 	List(rx) {
 		Xbase = 0x110
-		X(horn, UInt64, enabled) = base
+		Xinit(horn, UInt64, enabled) = base
 		X(signals, UInt2, l, r)
 		X(cruise, UInt64, enabled)
 		X(cruise_velocity_current, Float2, velocity, current)

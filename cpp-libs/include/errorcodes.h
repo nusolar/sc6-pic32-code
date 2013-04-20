@@ -49,19 +49,5 @@ namespace nu {
 		err = (uint16_t) abs(err);
 		return error_names[err < NUM_ERRORS? err: EOTHER];
 	}
-	
-	enum tripcodes {
-		NONE = 0,
-		OTHER,
-		OW_BUS_FAILURE,
-		DS18X20_MISSING,
-		LTC_POST_FAILED,
-		OVER_VOLTAGE,
-		UNDER_VOLTAGE,
-		OVER_CURRENT_DISCHARGE,
-		OVER_CURRENT_CHARGE,
-		OVER_TEMP,
-		UNDER_TEMP // sanity check
-	};
 }
 #endif

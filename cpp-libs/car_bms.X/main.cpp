@@ -7,7 +7,6 @@
 //
 
 #include <cstdint>
-#include "errorcodes.h"
 
 #include "nu32.h"
 #include "pinctl.h"
@@ -19,6 +18,20 @@
 
 namespace nu {
 	struct BatteryMs: protected Nu32 {
+		enum tripcodes {
+			NONE = 0,
+			OTHER,
+			OW_BUS_FAILURE,
+			DS18X20_MISSING,
+			LTC_POST_FAILED,
+			OVER_VOLTAGE,
+			UNDER_VOLTAGE,
+			OVER_CURRENT_DISCHARGE,
+			OVER_CURRENT_CHARGE,
+			OVER_TEMP,
+			UNDER_TEMP // sanity check
+		};
+		
 		Pin main_relay, array_relay;
 		can::CAN common_can, mppt_can;
 		Nokia5110 lcd1, lcd2;
@@ -39,7 +52,7 @@ namespace nu {
 			lcd1(SPI(Pin(IOPORT_G, BIT_9), SPI_CHANNEL2), Pin(IOPORT_A, BIT_9), Pin(IOPORT_E, BIT_9)),
 			lcd2(SPI(Pin(IOPORT_E, BIT_8), SPI_CHANNEL2), Pin(IOPORT_A, BIT_10), Pin(IOPORT_E, BIT_9)),
 			adc (SPI(Pin(IOPORT_A, BIT_0), SPI_CHANNEL4), Pin(IOPORT_F, BIT_12),
-				 (AD7685::options) (2|AD7685::CHAIN_MODE|AD7685::NO_BUSY_INDICATOR)) // ERROR: SPI pin?
+			(AD7685::options) (2|AD7685::CHAIN_MODE|AD7685::NO_BUSY_INDICATOR)) // ERROR: SPI pin?
 		{
 			WDT::clear();
 			state.last_trip_module = 12345;

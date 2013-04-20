@@ -8,7 +8,7 @@
 
 namespace nu {
 	/**
-	 * Clear WatchDogTimer
+	 * Clear WatchDogTimer. Normally set to ~2 seconds.
 	 */
 	namespace WDT {
 		static ALWAYSINLINE void enabled_clear_wdt (void) { ClearWDT(); }

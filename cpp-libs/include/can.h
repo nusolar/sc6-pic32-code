@@ -17,6 +17,11 @@
 
 namespace nu {
 	namespace can {
+		
+		/**
+		 * CAN Module. Has a default CAN Channel.
+		 * TODO: Implement multiple CAN channels.
+		 */
 		struct CAN {
 			enum id_type {
 				STANDARD_ID,
@@ -59,85 +64,98 @@ namespace nu {
 			int32_t change_features(CAN_MODULE_FEATURES features, BOOL en);
 		};
 
+		
+		/**
+		 * CAN frames are implemented as PACKED structs, 
+		 * within namespaces for scoping.
+		 */
 		namespace frame {
 			// Data Types:
-#define Empty()
-#define Module(u1, f1)\
-	uint32_t u1;\
-	float f1;
-#define Double(d1)\
-	double d1;
-#define Float2(f1, f2)\
-	float f1, f2;
-#define UInt64(u1)\
-	uint64_t u1;
-#define UInt2(u1, u2)\
-	uint32_t u1, u2;
-#define Trip(s1, u1)\
-	int32_t s1;\
-	uint32_t u1;
-#define Error()\
-	char msg[8];
-#define Status(str, u1)\
-	char str[4];\
-	uint32_t u1;
+			#define Empty()
+			#define Module(u1, f1)\
+				uint32_t u1;\
+				float f1;
+			#define Double(d1)\
+				double d1;
+			#define Float2(f1, f2)\
+				float f1, f2;
+			#define UInt64(u1)\
+				uint64_t u1;
+			#define UInt2(u1, u2)\
+				uint32_t u1, u2;
+			#define Trip(s1, u1)\
+				int32_t s1;\
+				uint32_t u1;
+			#define Error()\
+				char msg[8];
+			#define Status(str, u1)\
+				char str[4];\
+				uint32_t u1;
 			// Specialty Data Types:
-#define motor_Status()\
-	uint16_t limitFlags;\
-	uint16_t errorFlags;\
-	uint16_t activeMotor;\
-	uint16_t reserved __attribute__ ((__packed__));
-#define sw_Lights()\
-	unsigned    left            :1;\
-	unsigned    right           :1;\
-	unsigned    radio           :1;\
-	unsigned    yes             :1;\
-	unsigned    hazard          :1;\
-	unsigned    cruise_en       :1;\
-	unsigned    cruise_up       :1;\
-	unsigned    maybe           :1;\
-	unsigned    no              :1;\
-	unsigned    horn            :1;\
-	unsigned    cruise_mode     :1;\
-	unsigned    cruise_down     :1;\
-	unsigned    reserved        :20;
-#define sw_Buttons()\
-	unsigned    left            :1;\
-	unsigned    right           :1;\
-	unsigned    yes             :1;\
-	unsigned    no              :1;\
-	unsigned    maybe           :1;\
-	unsigned    hazard          :1;\
-	unsigned    horn            :1;\
-	unsigned    cruise_en       :1;\
-	unsigned    cruise_mode     :1;\
-	unsigned    cruise_up       :1;\
-	unsigned    cruise_down     :1;\
-	unsigned    reserved        :21;
+			#define motor_Status()\
+				uint16_t limitFlags;\
+				uint16_t errorFlags;\
+				uint16_t activeMotor;\
+				uint16_t reserved __attribute__ ((__packed__));
+			#define sw_Lights()\
+				unsigned    left            :1;\
+				unsigned    right           :1;\
+				unsigned    radio           :1;\
+				unsigned    yes             :1;\
+				unsigned    hazard          :1;\
+				unsigned    cruise_en       :1;\
+				unsigned    cruise_up       :1;\
+				unsigned    maybe           :1;\
+				unsigned    no              :1;\
+				unsigned    horn            :1;\
+				unsigned    cruise_mode     :1;\
+				unsigned    cruise_down     :1;\
+				unsigned    reserved        :20;
+			#define sw_Buttons()\
+				unsigned    left            :1;\
+				unsigned    right           :1;\
+				unsigned    yes             :1;\
+				unsigned    no              :1;\
+				unsigned    maybe           :1;\
+				unsigned    hazard          :1;\
+				unsigned    horn            :1;\
+				unsigned    cruise_en       :1;\
+				unsigned    cruise_mode     :1;\
+				unsigned    cruise_up       :1;\
+				unsigned    cruise_down     :1;\
+				unsigned    reserved        :21;
 
 			// Declaration:
-#define List(x) namespace x
-#define Xbase int base
-#define X(name, type, ...) ; struct PACKED name{type(__VA_ARGS__)}; int zzz__##name
-#define end ;
-#include "can.def.h"
-#undef end
-#undef X
-#undef Xbase
-#undef List
+			#define List(x) namespace x
+			#define Xbase const int base // FUCK MPLAB
+			#define X(name, type, ...) ; struct PACKED name{type(__VA_ARGS__)};
+			#define Xinit(name, type, ...) X(name, type, __VA_ARGS__) const int zzz__##name
+			#define end ;
+				#include "can.def.h"
+			#undef end
+			#undef Xinit
+			#undef X
+			#undef Xbase
+			#undef List
 		}
 
+		
+		/**
+		 * CAN addresses are uint16_t's, 
+		 * within enum classes for scoping.
+		 */
 		namespace addr {
-			// Declaration:
-#define List(x) enum class x: int
-#define Xbase base
-#define X(name, type, ...) , name##_k
-#define end
-#include "can.def.h"
-#undef end
-#undef X
-#undef Xbase
-#undef List
+			#define List(x) enum class x: uint16_t
+			#define Xbase base
+			#define X(name, type, ...) , name##_k
+			#define Xinit(name, type, ...) X(name, type, __VA_ARGS__)
+			#define end
+				#include "can.def.h"
+			#undef end
+			#undef Xinit
+			#undef X
+			#undef Xbase
+			#undef List
 		}
 	}
 }

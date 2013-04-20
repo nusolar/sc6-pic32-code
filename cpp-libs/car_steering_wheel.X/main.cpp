@@ -81,8 +81,6 @@ namespace nu {
 			can.add_tx(CAN_CHANNEL2, 32, CAN_TX_RTR_DISABLED, CAN_LOWEST_PRIORITY);
 			
 			lcd.setup(115200, Serial::NOT_USE_UART_INTERRUPT, INT_PRIORITY_DISABLED, (UART_FIFO_MODE)0, (UART_LINE_CONTROL_MODE)0, (UART_CONFIGURATION)0, (UART_ENABLE_MODE)(UART_ENABLE|UART_RX|UART_TX));
-			
-			// WARNING: setup display
 		}
 		
 		/**
@@ -93,13 +91,13 @@ namespace nu {
 			for (unsigned i=0; i<leds.size(); i++){
 				WDT::clear();
 				leds[i].on();
-				delay_ms(100); // WARNING: WDT time-out period?
+				delay_ms(100); // ok. WDT timeout ~ 2s
 			}
 			WDT::clear();
 			for (unsigned i=0; i<leds.size(); i++){
 				WDT::clear();
 				leds[i].off();
-				delay_ms(100); // WARNING: WDT time-out period?
+				delay_ms(100); // ok. WDT timeout ~ 2s
 			}
 		}
 		
