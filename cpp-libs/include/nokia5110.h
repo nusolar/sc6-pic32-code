@@ -51,7 +51,7 @@ namespace nu {
 		
 		Pin reset, dc;
 		
-		Nokia5110(IoPortId cs_ltr, uint32_t cs_num, SpiChannel _chn, IoPortId reset_ltr, uint32_t reset_num, IoPortId dc_ltr, uint32_t dc_num): SPI(cs_ltr, cs_num, _chn, SPI_DEFAULT), reset(reset_ltr, reset_num), dc(dc_ltr, dc_num) {}
+		Nokia5110(SPI spi, Pin _reset, Pin _dc): SPI(spi), reset(_reset), dc(_dc) {}
 		
 		void setup();
 		void cmd_func_set(cmd_func_set_options opt);

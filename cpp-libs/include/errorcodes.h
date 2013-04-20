@@ -33,21 +33,35 @@
 
 namespace nu {
 	enum errors {
-#define NU_ERROR(x) x,
-		NU_ERRORS
-#undef NU_ERROR
+		#define NU_ERROR(x) x,
+			NU_ERRORS
+		#undef NU_ERROR
 		NUM_ERRORS
 	};
 	
 	static const char *error_names[] = {
-#define NU_ERROR(x) #x,
-		NU_ERRORS
-#undef NU_ERROR
+		#define NU_ERROR(x) #x,
+			NU_ERRORS
+		#undef NU_ERROR
 	};
 	
 	const char *error_get_name(int32_t err) {
 		err = (uint16_t) abs(err);
 		return error_names[err < NUM_ERRORS? err: EOTHER];
 	}
+	
+	enum tripcodes {
+		NONE = 0,
+		OTHER,
+		OW_BUS_FAILURE,
+		DS18X20_MISSING,
+		LTC_POST_FAILED,
+		OVER_VOLTAGE,
+		UNDER_VOLTAGE,
+		OVER_CURRENT_DISCHARGE,
+		OVER_CURRENT_CHARGE,
+		OVER_TEMP,
+		UNDER_TEMP // sanity check
+	};
 }
 #endif

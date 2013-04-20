@@ -18,9 +18,12 @@ namespace nu {
 		uint8_t thresh;
 		
 		
-		INLINE Button(IoPortId ltr = IOPORT_D, uint32_t num = 0, uint8_t _debounce_max = 10,
+		ALWAYSINLINE Button(IoPortId ltr = IOPORT_D, uint32_t num = 0, uint8_t _debounce_max = 10,
 			uint8_t _thresh = 5, const char *name = ""): Pin(ltr, num, name), debounce(0),
 			debounce_max(_debounce_max), thresh(_thresh) {}
+		ALWAYSINLINE Button(Pin btn, uint8_t _debounce_max = 10, uint8_t _thresh = 5):
+			Pin(btn), debounce(0),
+		debounce_max(_debounce_max), thresh(_thresh) {}
 		
 		bool ALWAYSINLINE pressed() {
 			return debounce >= thresh;

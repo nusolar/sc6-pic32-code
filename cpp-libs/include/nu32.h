@@ -52,7 +52,7 @@ namespace nu {
 		 * Primary Setup. Super-call this before ANY setup calls!
 		 * Call all setups from derived-class constructor!
 		 */
-		Nu32(versions _version, uint64_t _hz);
+		Nu32(versions _version, uint64_t _hz = HZ);
 	};
 }
 

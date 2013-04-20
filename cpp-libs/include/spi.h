@@ -30,9 +30,8 @@ namespace nu {
 		SpiChannel chn;
 		options opt;
 		
-		
-		INLINE SPI(IoPortId cs_ltr, uint32_t cs_num, SpiChannel _chn, options _opt = SPI_DEFAULT,
-			const char *name = ""): Pin(cs_ltr, cs_num, name), chn(_chn), opt(_opt) {}
+		ALWAYSINLINE SPI(Pin cs, SpiChannel _chn, options _opt = SPI_DEFAULT):
+			Pin(cs), chn(_chn), opt(_opt) {}
 		
 		void ALWAYSINLINE setup(uint32_t bitrate, SpiOpenFlags oflags) {
 			SpiChnOpen(chn, oflags, (uint32_t) NU_PBUS_FREQ_HZ/bitrate);
