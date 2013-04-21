@@ -38,9 +38,9 @@ namespace nu {
 
 			
 			CAN_MODULE mod;
-			CAN_CHANNEL chn;
+			CAN_CHANNEL chn; // CAN channel for TX/RX! TODO: make class
 			id_type type;
-			uint16_t std_id;
+			uint16_t std_id; // Address of CAN packet! TODO: make dynamic
 			uint16_t ext_id;
 			char buf[32*32*CAN_TX_RX_MESSAGE_SIZE_BYTES];
 

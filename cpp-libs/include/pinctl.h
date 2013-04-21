@@ -22,6 +22,10 @@ namespace nu {
 		const char *name;
 
 		
+		/**
+		 * Encapsulate a PIC32 I/O pin. They are addressed by a (letter, number)
+		 * combination, represented by an (IoPortId, BIT_X) type combination.
+		 */
 		INLINE Pin(IoPortId ltr = IOPORT_D, uint32_t num = 0, const char *name = ""):
 			ltr(ltr), num(num), name(name) {}
 
@@ -54,7 +58,10 @@ namespace nu {
 		void ALWAYSINLINE high() {set();}
 		void ALWAYSINLINE low() {clear();}
 		
-		bool ALWAYSINLINE operator&= (bool setting) {
+		/**
+		 * Easily [raise/lower] Pin by setting it to [true/false] respectively.
+		 */
+		bool ALWAYSINLINE operator= (bool setting) {
 			if (setting) set();
 			else clear();
 			return setting;

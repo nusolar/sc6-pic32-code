@@ -46,8 +46,8 @@ namespace nu {
 		#undef X
 		
 		/**
-		 * Primary Setup. Super-call this before ANY setup calls!
-		 * Call all setups from derived-class constructor!
+		 * Primary Setup. SuperConstructor-call this before ANY setup calls!
+		 * Call all setups from derived class's constructor!
 		 */
 		Nu32(versions _version, uint64_t _hz = HZ);
 	};

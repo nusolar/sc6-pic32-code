@@ -27,7 +27,9 @@ namespace nu {
 		Enum<Button, 13> buttons;
 		Enum<Led, 12> leds;
 		
+		/** State of Steering Wheel */
 		std::bitset<32> bits;
+		uint32_t bits_int;
 				
 		/*
 		 * Pin definitions
@@ -61,8 +63,9 @@ namespace nu {
 		#undef _BTN
 		#undef _LED
 		
+		
 		/**
-		 * Initialize NU32, CAN, and Display.
+		 * Setup NU32, CAN, LEDs, and uLCD Display.
 		 */
 		ALWAYSINLINE SteeringWheel(): Nu32(Nu32::V2), common_can(CAN2), lcd(UART3) {
 			WDT::clear();
@@ -83,11 +86,13 @@ namespace nu {
 			lcd.setup(115200, Serial::NOT_USE_UART_INTERRUPT, INT_PRIORITY_DISABLED, (UART_FIFO_MODE)0, (UART_LINE_CONTROL_MODE)0, (UART_CONFIGURATION)0, (UART_ENABLE_MODE)(UART_ENABLE|UART_RX|UART_TX));
 		}
 		
+		
 		/**
 		 * Animate LEDs on startup.
 		 */
 		void ALWAYSINLINE animate_leds() {
 			WDT::clear();
+			// FUCK MPLAB
 			for (unsigned i=0; i<leds.size(); i++){
 				WDT::clear();
 				leds[i].on();
@@ -101,6 +106,26 @@ namespace nu {
 			}
 		}
 		
+		
+		/**
+		 * Read the car's state from CAN, draw to dashboard LCD.
+		 */
+		void ALWAYSINLINE update_lcd(){
+			char inc[8]; uint32_t id;
+			common_can.rx(inc, id);
+			switch (id) {
+				case (uint32_t)can::addr::ws20::tx::motor_velocity_k:
+					lcd.printf("|velo:%f|", (*(can::frame::ws20::tx::motor_velocity *)&inc).vehicleVelocity);
+					break;
+				case (uint32_t)can::addr::ws20::tx::current_vector_k:
+					lcd.printf("|curr:%f|", (*(can::frame::ws20::tx::current_vector *)&inc).currentRe);
+					break;
+				default:
+					break;
+			}
+		}
+		
+		
 		/**
 		 * A function to be called repeatedly.
 		 */
@@ -113,26 +138,18 @@ namespace nu {
 			bits = 0;
 			for (unsigned i = 0; i < buttons.size(); i++)
 				bits[i] = buttons[i].pressed();
-			
-			uint32_t bits_int = (uint32_t)bits.to_ullong(); // 64->32 ok. WARNING BIT ORDER?
+			bits_int = bits.to_ullong(); // 64->32 ok. WARNING BIT ORDER?
 			can::frame::sw::tx::buttons btns_frame = *(can::frame::sw::tx::buttons*)&bits_int;
 			common_can.tx(&btns_frame, sizeof(btns_frame), 0);
 			
 			bits = 0;
 			for (unsigned i = 0; i < leds.size(); i++)
 				bits[i] = leds[i].status();
-			
 			bits_int = bits.to_ullong();
 			can::frame::sw::tx::lights lts_frame = *(can::frame::sw::tx::lights*)&bits_int;
 			common_can.tx(&lts_frame, sizeof(lts_frame), 0);
 			
-			char inc[8]; uint32_t id;
-			common_can.rx(inc, id);
-			if (id == (uint32_t)can::addr::ws20::tx::motor_velocity_k){
-				can::frame::ws20::tx::motor_velocity pkt =
-				*(can::frame::ws20::tx::motor_velocity *)&inc;
-				lcd.printf("|velo:%f|", pkt.vehicleVelocity);
-			}
+			update_lcd();
 		}
 	};
 }

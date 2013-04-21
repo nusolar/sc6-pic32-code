@@ -24,6 +24,10 @@ namespace nu {
 		Nokia5110 lcd;
 		Enum<Pin, 3> analog_ins, digital_ins, digital_outs;
 		
+		/**
+		 * State of DriverControls-relevant parameters.
+		 * TODO: Implement extensible, polymorphic, car-wide state management.
+		 */
 		struct values {
 			bool lights_head, lights_brake, lights_l, lights_r,
 				accel_en, brake_en, reverse_en, regen_en, airgap_en;
@@ -55,6 +59,10 @@ namespace nu {
 			DIGITAL_OUTS
 		#undef _PIN
 		
+		
+		/**
+		 * Setup CAN, input Pins, output Pins, and Nokia LCD.
+		 */
 		ALWAYSINLINE DriverControls(): Nu32(Nu32::V2), ws_can(CAN1), common_can(CAN2),
 			lcd(SPI(Pin(IOPORT_G, BIT_9), SPI_CHANNEL2), Pin(IOPORT_A, BIT_9), Pin(IOPORT_E, BIT_9))
 		{
@@ -83,6 +91,10 @@ namespace nu {
 			lcd.setup();
 		}
 		
+		
+		/**
+		 * Read all input Pins. Store result in state.
+		 */
 		void ALWAYSINLINE read_ins() {
 			WDT::clear();
 			// TODO: Encapsulate ANALOG reading!
@@ -106,23 +118,36 @@ namespace nu {
 			
 		}
 		
-		void ALWAYSINLINE recv_can() {}
 		
-		void ALWAYSINLINE set_lights() {
-			WDT::clear();
-			digital_outs[headlights_k]		&= values.lights_head;
-			digital_outs[lights_brake_k]	&= values.lights_brake;
-			digital_outs[lights_l_k]		&= values.lights_l;
-			digital_outs[lights_l_k]		&= values.lights_l;
+		/**
+		 * Read car state from CAN.
+		 */
+		void ALWAYSINLINE recv_can() {
 		}
 		
+		
+		/**
+		 * Update all light Outputs, to conform to state.
+		 */
+		void ALWAYSINLINE set_lights() {
+			WDT::clear();
+			digital_outs[headlights_k]		= values.lights_head;
+			digital_outs[lights_brake_k]	= values.lights_brake;
+			digital_outs[lights_l_k]		= values.lights_l;
+			digital_outs[lights_l_k]		= values.lights_l;
+		}
+		
+		
+		/**
+		 * Command motor, from accel_pedel, brake, & cruise control input.
+		 */
 		void ALWAYSINLINE set_motor() {
 			WDT::clear();
 			can::frame::ws20::rx::drive_cmd drive {0, 0}; // [current, velocity]
 			
 			if (values.brake_en) {
 				if (values.regen_en) 
-					drive = {0.2, 0}; // REGEN_AMOUNT
+					drive = {0.2, 0}; // WARNING: REGEN_AMOUNT
 				else 
 					drive = {0, 0};
 			} else if (values.accel_en)
@@ -131,10 +156,14 @@ namespace nu {
 			if (values.reverse_en)
 				drive.motorVelocity *= -1;
 			
-			led1.on(); delay_ms(100); led1.off(); // WTF
+			led1.on(); delay_ms(100); led1.off(); // WARNING: WTF
 			ws_can.tx(&drive, sizeof(drive), 0); // ERROR: CAN ADDRESS?
 		}
 		
+		
+		/**
+		 * A function to be called repeatedly.
+		 */
 		void ALWAYSINLINE run() {
 			WDT::clear();
 			
@@ -148,6 +177,10 @@ namespace nu {
 			lcd.printf("%f", 25);
 		}
 		
+		
+		/**
+		 * Demo LEDs
+		 */
 		void ALWAYSINLINE demo() {
 			WDT::clear();
 			delay_ms(100);

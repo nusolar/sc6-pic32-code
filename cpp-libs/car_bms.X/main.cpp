@@ -17,6 +17,11 @@
 
 
 namespace nu {
+	/**
+	 * Battery Management System. Controls voltage, temperature, and current 
+	 * monitoring sensors; informs telemetry; emergency-stops the car if needed.
+	 * TODO: Implement. (Will use C implementation for now)
+	 */
 	struct BatteryMs: protected Nu32 {
 		enum tripcodes {
 			NONE = 0,
@@ -37,6 +42,10 @@ namespace nu {
 		Nokia5110 lcd1, lcd2;
 		AD7685 adc;
 		
+		
+		/**
+		 * The state of the Batteries and the BMS.
+		 */
 		struct state {
 			static const size_t num_modules = 32;
 			double uptime;
@@ -47,6 +56,12 @@ namespace nu {
 			double cc_mppt[3], wh_mppt_in[3], wh_mppt_out[3];
 		} state;
 		
+		
+		/**
+		 * Setup Relays, CAN modules, Nokia LCDs, Current sensors, Voltage sensors,
+		 * Temperature sensors, and more.
+		 * TODO: Lots
+		 */
 		ALWAYSINLINE BatteryMs(): Nu32(Nu32::V2),
 			main_relay(IOPORT_D, BIT_2), array_relay(IOPORT_D, BIT_3), common_can(CAN1), mppt_can(CAN2),
 			lcd1(SPI(Pin(IOPORT_G, BIT_9), SPI_CHANNEL2), Pin(IOPORT_A, BIT_9), Pin(IOPORT_E, BIT_9)),
@@ -63,6 +78,10 @@ namespace nu {
 			array_relay.set();
 		}
 		
+		
+		/**
+		 * A function to be called repeatedly
+		 */
 		void ALWAYSINLINE run() {
 			lcd2.goto_xy(0, 1);
 			lcd2.printf("V:%0.9f", state.voltages[31]);
