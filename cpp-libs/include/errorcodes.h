@@ -32,6 +32,7 @@
     NU_ERROR(EREPORTNOFREEDEVS)
 
 namespace nu {
+	/** Standard error codes, which index error_names[] below */
 	enum errors {
 		#define NU_ERROR(x) x,
 			NU_ERRORS
@@ -39,12 +40,14 @@ namespace nu {
 		NUM_ERRORS
 	};
 	
+	/** Array of the string representations of the standard error codes */
 	static const char *error_names[] = {
 		#define NU_ERROR(x) #x,
 			NU_ERRORS
 		#undef NU_ERROR
 	};
 	
+	/** A wrapper function to get (without failure) an error name */
 	inline const char *error_get_name(int32_t err) {
 		err = (uint16_t) abs(err);
 		return error_names[err < NUM_ERRORS? err: EOTHER];

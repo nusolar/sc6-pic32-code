@@ -51,7 +51,7 @@ namespace nu {
 		
 		Pin reset, dc;
 		
-		Nokia5110(SPI spi, Pin _reset, Pin _dc): SPI(spi), reset(_reset), dc(_dc) {}
+		ALWAYSINLINE Nokia5110(SPI spi, Pin _reset, Pin _dc): SPI(spi), reset(_reset), dc(_dc) {}
 		
 		void setup();
 		void cmd_func_set(cmd_func_set_options opt);

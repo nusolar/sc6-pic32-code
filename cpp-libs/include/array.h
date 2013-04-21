@@ -14,6 +14,10 @@
 #include <array>
 
 namespace nu {
+	/**
+	 * This template class stores its data on the stack, WHILE ALSO returning
+	 * incrementing values as enumerate() is called, to facilitate enumeration.
+	 */
 	template <class _Tp, size_t _Size>
 	struct Enum: public std::array<_Tp, _Size> {
 		size_t len; // WARNING: MUST DEFAULT INITIALIZE

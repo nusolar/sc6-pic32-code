@@ -10,6 +10,9 @@
 #define __nusolar_lib__param__
 
 namespace nu {
+	/**
+	 * Operating hardware-specific parameters.
+	 */
 	struct Param {
 		static unsigned long nu_hz; // FUCK MPLAB
 		

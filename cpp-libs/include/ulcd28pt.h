@@ -16,9 +16,12 @@
 #include "pinctl.h"
 
 namespace nu {
+	/**
+	 * The touch-sensitive LCD on the Steering Wheel.
+	 */
 	struct uLCD28PT: public Serial {
 		
-		uLCD28PT(UART_MODULE mod): Serial(mod) {}
+		ALWAYSINLINE uLCD28PT(UART_MODULE mod): Serial(mod) {}
 		
 	};
 }

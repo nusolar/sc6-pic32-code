@@ -9,6 +9,10 @@
 #ifndef nusolar_lib_nusolar_lib_Prefix_pch
 #define nusolar_lib_nusolar_lib_Prefix_pch
 
+/* This prefix file enables partial compilation in Xcode/non-MPLAB IDE's,
+ * for syntax-checking purposes.
+ */
+
 #define __XC32
 #define __32MX795F512L__
 #define __PIC32_FEATURE_SET__ 795
