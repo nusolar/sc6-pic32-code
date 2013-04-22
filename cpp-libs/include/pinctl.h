@@ -16,6 +16,10 @@
 #include <plib.h>
 
 namespace nu {
+	/**
+	 * Encapsulate a PIC32 I/O pin. They are addressed by a (letter, number)
+	 * combination, represented by an (IoPortId, BIT_X) type combination.
+	 */
 	struct Pin {
 		IoPortId ltr;
 		uint32_t num;
@@ -23,8 +27,8 @@ namespace nu {
 
 		
 		/**
-		 * Encapsulate a PIC32 I/O pin. They are addressed by a (letter, number)
-		 * combination, represented by an (IoPortId, BIT_X) type combination.
+		 * Setup Pin's (letter, number) combination, represented by an 
+		 * (IoPortId, BIT_X) type combination.
 		 */
 		INLINE Pin(IoPortId ltr = IOPORT_D, uint32_t num = 0, const char *name = ""):
 			ltr(ltr), num(num), name(name) {}

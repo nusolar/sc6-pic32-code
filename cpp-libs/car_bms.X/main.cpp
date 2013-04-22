@@ -6,6 +6,7 @@
 //  Copyright (c) 2013 Alex Chandel. All rights reserved.
 //
 
+#include "common_pragmas.h"
 #include <cstdint>
 
 #include "nu32.h"

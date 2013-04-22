@@ -16,6 +16,9 @@
 #include <plib.h>
 
 namespace nu {
+	/**
+	 * Encapsulate Serial/UART reading/writing.
+	 */
 	struct Serial {
 		enum module_interrupt {
 			USE_UART_INTERRUPT,

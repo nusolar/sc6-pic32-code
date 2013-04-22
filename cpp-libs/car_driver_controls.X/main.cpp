@@ -22,42 +22,47 @@ namespace nu {
 	struct DriverControls: protected Nu32 {
 		can::Module ws_can, common_can;
 		Nokia5110 lcd;
-		Enum<Pin, 3> analog_ins, digital_ins, digital_outs;
 		
-		/**
-		 * State of DriverControls-relevant parameters.
-		 * TODO: Implement extensible, polymorphic, car-wide state management.
-		 */
-		struct values {
-			bool lights_head, lights_brake, lights_l, lights_r,
-				accel_en, brake_en, reverse_en, regen_en, airgap_en;
-			float accel, regen, airgap;
-		} values;
-		
-		/*
-		 * Pin definitions
-		 */
+		Enum<Pin, 3> analog_ins;
 		#define ANALOG_INS\
 			_PIN(regen_pedel, B, 0)\
 			_PIN(accel_pedel, B, 1)\
 			_PIN(airgap_pot, B, 4)
+		
+		Enum<Pin, 5> digital_ins;
 		#define DIGITAL_INS\
 			_PIN(brake_pedal,         B, 2)\
 			_PIN(headlight_switch,    B, 3)\
 			_PIN(airgap_enable,       B, 5)\
 			_PIN(regen_enable,        B, 8)\
 			_PIN(reverse_switch,      B, 9)
+		
+		Enum<Pin, 4> digital_outs;
 		#define DIGITAL_OUTS\
 			_PIN(lights_brake, D, 0)\
 			_PIN(lights_l,	   D, 1)\
 			_PIN(lights_r,     D, 2)\
 			_PIN(headlights,   D, 3)
 		
-		#define _PIN(name, ltr, num) uint16_t name##_k;
+		/*
+		 * Enumeration constants. 
+		 */
+		#define _PIN(name, ltr, num) uint16_t name##_k; // FUCK MPLAB
 			ANALOG_INS
 			DIGITAL_INS
 			DIGITAL_OUTS
 		#undef _PIN
+		
+		/**
+		 * State of DriverControls-relevant parameters.
+		 * TODO: Implement extensible, polymorphic, car-wide state management.
+		 */
+		struct values {
+			bool lights_head, lights_brake, lights_l, lights_r, lights_hazard,
+				horn, // DISCONNECTED
+				accel_en, brake_en, reverse_en, regen_en, airgap_en;
+			float accel, regen, airgap;
+		} values;
 		
 		
 		/**
@@ -123,6 +128,19 @@ namespace nu {
 		 * Read car state from CAN.
 		 */
 		void ALWAYSINLINE recv_can() {
+			char inc[8]; uint32_t id;
+			common_can.rx(inc, id);
+			switch (id) {
+				case (uint32_t)can::addr::sw::tx::buttons_k: {
+					can::frame::sw::tx::buttons btns = *(can::frame::sw::tx::buttons*)&inc;
+					values.lights_l = btns.left;
+					values.lights_r = btns.right;
+					values.lights_hazard = btns.hazard;
+					return;
+				}
+				default:
+					return;
+			}
 		}
 		
 		

@@ -17,6 +17,9 @@
 #include <plib.h>
 
 namespace nu {
+	/**
+	 * Encapsulate SPI reading/writing.
+	 */
 	struct SPI: protected Pin { // chip select pin
 		enum options {
 			SPI_DEFAULT = 0,

@@ -22,6 +22,8 @@ namespace nu {
 	struct Enum: public std::array<_Tp, _Size> {
 		size_t len; // WARNING: MUST DEFAULT INITIALIZE
 		size_t ALWAYSINLINE enumerate(_Tp &&rvalue) {
+			if (unlikely(len == this->size()))
+				return len-1;
 			(*this)[len] = rvalue;
 			return len++;
 		}
