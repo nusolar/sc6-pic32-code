@@ -187,6 +187,7 @@ namespace nu {
 			
 			read_ins();
 			recv_can();
+			
 			set_lights();
 			set_motor();
 			
@@ -196,9 +197,7 @@ namespace nu {
 		}
 		
 		
-		/**
-		 * Demo LEDs
-		 */
+		/** Demo LED toggling */
 		void ALWAYSINLINE demo() {
 			WDT::clear();
 			delay_ms(100);

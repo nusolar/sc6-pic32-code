@@ -25,6 +25,15 @@ namespace nu {
 		void ALWAYSINLINE toggle() {Pin::toggle();}
 		unsigned int ALWAYSINLINE status() {return read();}
 		
+		/**
+		 * Turn LED [on/off] by assigning it to [true/false] respectively.
+		 */
+		bool ALWAYSINLINE operator= (bool setting) {
+			if (setting) on();
+			else off();
+			return setting;
+		}
+		
 		void ALWAYSINLINE setup() {
 			set_digital_out();
 			off();

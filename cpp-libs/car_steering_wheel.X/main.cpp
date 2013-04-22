@@ -27,9 +27,13 @@ namespace nu {
 		Enum<Button, 13> buttons;
 		Enum<Led, 12> leds;
 		
-		/** State of Steering Wheel */
-		std::bitset<32> bits;
-		uint32_t bits_int;
+		/** State of Steering Wheel & car */
+		struct state {
+			std::bitset<32> btns, leds; // actual state
+			can::frame::sw::rx::lights lights; // requested LED state
+			can::frame::ws20::tx::motor_velocity velo;
+			can::frame::ws20::tx::current_vector curr;
+		} state;
 				
 		/*
 		 * Pin definitions
@@ -108,17 +112,39 @@ namespace nu {
 		
 		
 		/**
-		 * Read the car's state from CAN, draw to dashboard LCD.
+		 * Read value of Button & LED Pins, update internal state.
 		 */
-		void ALWAYSINLINE update_lcd(){
+		void ALWAYSINLINE read_ins() {
+			WDT::clear();
+			for (int repeat = 0; repeat < 10; repeat++) // re-update 10x
+				for (unsigned i = 0; i < buttons.size(); i++)
+					buttons[i].update();
+			// WARNING: Should zero bitset?
+			for (unsigned i = 0; i < buttons.size(); i++)
+				state.btns[i] = buttons[i].pressed();
+			for (unsigned i = 0; i < leds.size(); i++)
+				state.leds[i] = leds[i].status();
+		}
+		
+		
+		/**
+		 * Receive data to draw on LCD. Also receive any commands.
+		 */
+		void ALWAYSINLINE recv_can() {
+			WDT::clear();
 			char inc[8]; uint32_t id;
 			common_can.rx(inc, id);
+			
 			switch (id) {
+				case (uint32_t)can::addr::sw::rx::lights_k:
+					state.lights = *(can::frame::sw::rx::lights *)&inc;
+					// WARNING: unimplemented
+					break;
 				case (uint32_t)can::addr::ws20::tx::motor_velocity_k:
-					lcd.printf("|velo:%f|", (*(can::frame::ws20::tx::motor_velocity *)&inc).vehicleVelocity);
+					state.velo = *(can::frame::ws20::tx::motor_velocity *)&inc;
 					break;
 				case (uint32_t)can::addr::ws20::tx::current_vector_k:
-					lcd.printf("|curr:%f|", (*(can::frame::ws20::tx::current_vector *)&inc).currentRe);
+					state.curr = *(can::frame::ws20::tx::current_vector *)&inc;
 					break;
 				default:
 					break;
@@ -127,29 +153,53 @@ namespace nu {
 		
 		
 		/**
+		 * Set each LED according to Steering Wheel's state.
+		 */
+		void ALWAYSINLINE set_leds() {
+			for (unsigned i=0; i < leds.len; i++) {
+				leds[i] = state.leds[i];
+			}
+		}
+		
+		
+		/**
+		 * Read the car's state from CAN, draw to dashboard LCD.
+		 */
+		void ALWAYSINLINE draw_lcd(){
+			lcd.printf("|velo:%f|", state.velo.vehicleVelocity);
+			lcd.printf("|curr:%f|", state.curr.currentRe);
+		}
+		
+		
+		/**
+		 * Send CAN update of Steering Wheel status (LEDs and Buttons).
+		 */
+		void ALWAYSINLINE send_can() {
+			WDT::clear();
+			uint32_t bits_int;
+			
+			bits_int = state.btns.to_ullong(); // 64->32 ok. WARNING BIT ORDER?
+			can::frame::sw::tx::buttons btns_frame = *(can::frame::sw::tx::buttons*)&bits_int;
+			common_can.tx(&btns_frame, sizeof(btns_frame), 0);
+			
+			bits_int = state.leds.to_ullong();
+			can::frame::sw::tx::lights lts_frame = *(can::frame::sw::tx::lights*)&bits_int;
+			common_can.tx(&lts_frame, sizeof(lts_frame), 0);
+		}
+		
+		/**
 		 * A function to be called repeatedly.
 		 */
 		void ALWAYSINLINE run() {
 			WDT::clear();
-			for (int repeat = 0; repeat < 10; repeat++) // re-update 10x
-				for (unsigned i = 0; i < buttons.size(); i++)
-					buttons[i].update();
 			
-			bits = 0;
-			for (unsigned i = 0; i < buttons.size(); i++)
-				bits[i] = buttons[i].pressed();
-			bits_int = bits.to_ullong(); // 64->32 ok. WARNING BIT ORDER?
-			can::frame::sw::tx::buttons btns_frame = *(can::frame::sw::tx::buttons*)&bits_int;
-			common_can.tx(&btns_frame, sizeof(btns_frame), 0);
+			read_ins();
+			recv_can();
 			
-			bits = 0;
-			for (unsigned i = 0; i < leds.size(); i++)
-				bits[i] = leds[i].status();
-			bits_int = bits.to_ullong();
-			can::frame::sw::tx::lights lts_frame = *(can::frame::sw::tx::lights*)&bits_int;
-			common_can.tx(&lts_frame, sizeof(lts_frame), 0);
+			set_leds();
+			draw_lcd();
 			
-			update_lcd();
+			send_can();
 		}
 	};
 }
