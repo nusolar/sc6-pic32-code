@@ -58,12 +58,16 @@ namespace nu {
 		 * State of DriverControls-relevant parameters.
 		 * TODO: Implement extensible, polymorphic, car-wide state management.
 		 */
-		struct values {
+		struct state {
 			bool lights_head, lights_brake, lights_l, lights_r, lights_hazard,
 				horn, // DISCONNECTED
 				accel_en, brake_en, reverse_en, regen_en, airgap_en;
 			float accel, regen, airgap;
-		} values;
+			
+			state(): lights_head(0), lights_brake(0), lights_l(0), lights_r(0), // FUCK MPLAB
+				lights_hazard(0), horn(0), accel_en(0), brake_en(0), reverse_en(0),
+				regen_en(0), airgap_en(0), accel(0), regen(0), airgap(0) {}
+		} state;
 
 
 		/**
@@ -104,24 +108,23 @@ namespace nu {
 		void ALWAYSINLINE read_ins() {
 			WDT::clear();
 			// TODO: Encapsulate ANALOG reading!
-			values.accel = ((float)ReadADC10(1) + 0)/1024; // scale 0-1023 to 0-1
-			if (values.accel < 0) values.accel = 0; // TODO: print warning, clamp
-			if (values.accel > 1) values.accel = 1; // TODO: print warning
-			values.accel_en = values.accel > 0.05;
+			state.accel = ((float)ReadADC10(1) + 0)/1024; // scale 0-1023 to 0-1
+			if (state.accel < 0) state.accel = 0; // TODO: print warning, clamp
+			if (state.accel > 1) state.accel = 1; // TODO: print warning
+			state.accel_en = state.accel > 0.05;
 
-			values.regen = ((float)ReadADC10(analog_ins[regen_pedel_k].num) + 0)/1024; // WARNING: disconnected
-			values.regen_en = digital_ins[regen_enable_k].read()? 1: 0; // TODO: clamp
+			state.regen = ((float)ReadADC10(analog_ins[regen_pedel_k].num) + 0)/1024; // WARNING: disconnected
+			state.regen_en = digital_ins[regen_enable_k].read()? 1: 0; // TODO: clamp
 
-			values.airgap = ((float)ReadADC10(analog_ins[airgap_pot_k].num) + 0)/1024; // WARNING: disconnected
-			values.airgap_en = digital_ins[airgap_enable_k].read()? 1: 0; // TODO: clamp
+			state.airgap = ((float)ReadADC10(analog_ins[airgap_pot_k].num) + 0)/1024; // WARNING: disconnected
+			state.airgap_en = digital_ins[airgap_enable_k].read()? 1: 0; // TODO: clamp
 
-			values.reverse_en	= digital_ins[reverse_switch_k].read();
+			state.reverse_en	= digital_ins[reverse_switch_k].read();
 
-			values.brake_en		= digital_ins[brake_pedal_k].read()? 1: 0;
-			values.lights_brake = values.brake_en;
+			state.brake_en		= digital_ins[brake_pedal_k].read()? 1: 0;
+			state.lights_brake = state.brake_en;
 
-			values.lights_head	= digital_ins[headlight_switch_k].read()? 1: 0;
-
+			state.lights_head	= digital_ins[headlight_switch_k].read()? 1: 0;
 		}
 
 
@@ -134,9 +137,9 @@ namespace nu {
 			switch (id) {
 				case (uint32_t)can::addr::sw::tx::buttons_k: {
 					can::frame::sw::tx::buttons btns = *(can::frame::sw::tx::buttons*)&inc;
-					values.lights_l = btns.left;
-					values.lights_r = btns.right;
-					values.lights_hazard = btns.hazard;
+					state.lights_l = btns.left;
+					state.lights_r = btns.right;
+					state.lights_hazard = btns.hazard;
 					return;
 				}
 				default:
@@ -150,10 +153,12 @@ namespace nu {
 		 */
 		void ALWAYSINLINE set_lights() {
 			WDT::clear();
-			digital_outs[headlights_k]		= values.lights_head;
-			digital_outs[lights_brake_k]	= values.lights_brake;
-			digital_outs[lights_l_k]		= values.lights_l;
-			digital_outs[lights_l_k]		= values.lights_l;
+			digital_outs[headlights_k]		= state.lights_head;
+			digital_outs[lights_brake_k]	= state.lights_brake;
+			
+			bool tick = timer_s()%2;// Even or Odd, change every second
+			digital_outs[lights_l_k] = state.lights_l||state.lights_hazard? tick: 0;
+			digital_outs[lights_r_k] = state.lights_r||state.lights_hazard? tick: 0;
 		}
 
 
@@ -164,15 +169,15 @@ namespace nu {
 			WDT::clear();
 			can::frame::ws20::rx::drive_cmd drive {0, 0}; // [current, velocity]
 
-			if (values.brake_en) {
-				if (values.regen_en)
+			if (state.brake_en) {
+				if (state.regen_en)
 					drive = {0.2, 0}; // WARNING: REGEN_AMOUNT
 				else
 					drive = {0, 0};
-			} else if (values.accel_en)
-				drive = {values.accel, 100};
+			} else if (state.accel_en)
+				drive = {state.accel, 100};
 
-			if (values.reverse_en)
+			if (state.reverse_en)
 				drive.motorVelocity *= -1;
 
 			led1.on(); delay_ms(100); led1.off(); // WARNING: WTF

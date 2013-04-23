@@ -283,14 +283,15 @@ void ALWAYSINLINE Nokia5110::set_pixel(uint8_t x, uint8_t y) {
 	
 	// Write the updated pixel out to the LCD
 	goto_xy(x, y_mod);
-	write_data(val);
+	write_data(val); // WARNING: Clears all pixels in column?
 }
 
 void Nokia5110::lcd_clear() {
 	goto_xy(0,0);
+	// WARNING: Loops over lcd_y48, but only 6 rows?
 	for (uint32_t ui = 0; ui < (lcd_x * lcd_y); ui++) {
 		WDT::clear();
-		write_data(0x00);
+		write_data(0x00); // WARNING: Nokia auto-increments location?
 	}
 }
 
