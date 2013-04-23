@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 Alex Chandel. All rights reserved.
 //
 
-
+#include "common_pragmas.h"
 #include <bitset>
 #include <cstdlib>
 #include "array.h"

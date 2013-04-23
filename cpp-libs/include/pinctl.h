@@ -20,8 +20,8 @@ namespace nu {
 		 * Setup Pin's (letter, number) combination, represented by an 
 		 * (IoPortId, BIT_X) type combination.
 		 */
-		INLINE Pin(IoPortId ltr = IOPORT_D, uint32_t num = 0, const char *name = ""):
-			ltr(ltr), num(num), name(name) {}
+		INLINE Pin(IoPortId _ltr = IOPORT_D, uint32_t _num = 0, const char *_name = ""):
+			ltr(_ltr), num(_num), name(_name) {}
 
 		/**
 		 * Call one of these four setters in your Setup.
@@ -45,11 +45,11 @@ namespace nu {
 		/**
 		 * Easily [raise/lower] Pin by setting it to [true/false] respectively.
 		 */
-		ALWAYSINLINE Pin& operator= (bool rhs) {
+		ALWAYSINLINE Pin &operator= (bool rhs) {
 			if (rhs)
-                set();
+				set();
 			else
-                clear();
+				clear();
 			return *this;
 		}
 	};
