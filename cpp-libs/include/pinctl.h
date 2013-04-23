@@ -1,18 +1,8 @@
-
-//
-//  Pinctl.h
-//  nusolar_lib
-//
-//  Created by Al Chandel on 4/12/13.
-//  Copyright (c) 2013 Alex Chandel. All rights reserved.
-//
-
-#ifndef __nusolar_lib__pinctl__
-#define __nusolar_lib__pinctl__
+#ifndef NUSOLAR_CPP_PINCTL_H
+#define NUSOLAR_CPP_PINCTL_H 1
 
 #include "compiler.h"
 #include <cstdint>
-
 #include <plib.h>
 
 namespace nu {
@@ -33,7 +23,6 @@ namespace nu {
 		INLINE Pin(IoPortId ltr = IOPORT_D, uint32_t num = 0, const char *name = ""):
 			ltr(ltr), num(num), name(name) {}
 
-		
 		/**
 		 * Call one of these four setters in your Setup.
 		 */
@@ -56,12 +45,14 @@ namespace nu {
 		/**
 		 * Easily [raise/lower] Pin by setting it to [true/false] respectively.
 		 */
-		bool ALWAYSINLINE operator= (bool setting) {
-			if (setting) set();
-			else clear();
-			return setting;
+		ALWAYSINLINE Pin& operator= (bool rhs) {
+			if (rhs)
+                set();
+			else
+                clear();
+			return *this;
 		}
 	};
 }
 
-#endif /* defined(__nusolar_lib__Pinctl__) */
+#endif

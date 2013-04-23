@@ -1,13 +1,5 @@
-//
-//  led.h
-//  nusolar_lib
-//
-//  Created by Al Chandel on 4/13/13.
-//  Copyright (c) 2013 Alex Chandel. All rights reserved.
-//
-
-#ifndef __nusolar_lib__led__
-#define __nusolar_lib__led__
+#ifndef NUSOLAR_CPP_LED_H
+#define NUSOLAR_CPP_LED_H 1
 
 #include "pinctl.h"
 
@@ -19,7 +11,7 @@ namespace nu {
 		ALWAYSINLINE Led(IoPortId ltr = IOPORT_D, uint32_t num = 0, const char *name = ""):
 			Pin(ltr, num, name) {}
 		ALWAYSINLINE Led(Pin led): Pin(led) {}
-		
+
 		void ALWAYSINLINE off() {set();}
 		void ALWAYSINLINE on() {clear();}
 		void ALWAYSINLINE toggle() {Pin::toggle();}
@@ -28,10 +20,12 @@ namespace nu {
 		/**
 		 * Turn LED [on/off] by assigning it to [true/false] respectively.
 		 */
-		bool ALWAYSINLINE operator= (bool setting) {
-			if (setting) on();
-			else off();
-			return setting;
+		ALWAYSINLINE Led& operator= (bool rhs) {
+			if (rhs)
+                on();
+			else
+                off();
+			return *this;
 		}
 		
 		void ALWAYSINLINE setup() {
@@ -41,4 +35,4 @@ namespace nu {
 	};
 }
 
-#endif /* defined(__nusolar_lib__led__) */
+#endif
