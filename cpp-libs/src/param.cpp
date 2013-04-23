@@ -10,4 +10,4 @@
 
 using namespace nu;
 
-unsigned long Param::nu_hz = 80000000UL;
+uint64_t Param::nu_hz = 80000000UL;

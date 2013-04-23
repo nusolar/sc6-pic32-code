@@ -6,6 +6,6 @@
 //  Copyright (c) 2013 Alex Chandel. All rights reserved.
 //
 
-#include "array.h"
+#include "enum.h"
 
 using namespace nu;

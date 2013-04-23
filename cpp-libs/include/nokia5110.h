@@ -54,7 +54,7 @@ namespace nu {
 		ALWAYSINLINE Nokia5110(SPI spi, Pin _reset, Pin _dc): SPI(spi), reset(_reset), dc(_dc) {}
 		
 		void setup();
-		void cmd_func_set(cmd_func_set_options opt);
+		void cmd_func_set(cmd_func_set_options opts);
 		void cmd_set_vop(uint8_t vop);
 		void ALWAYSINLINE cmd_set_contrast(uint8_t vop) {cmd_set_vop(vop);}
 		void cmd_set_temp_coeff(cmd_func_set_options coeff);
@@ -79,11 +79,11 @@ namespace nu {
 	private:
 		void ALWAYSINLINE write_cmd(uint8_t cmd) {
 			dc.low();
-			tx(&cmd, 1, SPI_TX_WAIT_START); // WARNING: tx_options GUESSED
+			tx(&cmd, 1); // WARNING: tx_options GUESSED
 		}
 		void ALWAYSINLINE write_data(uint8_t data) {
 			dc.high();
-			tx(&data, 1, SPI_TX_WAIT_START); // WARNING: tx_options GUESSED
+			tx(&data, 1); // WARNING: tx_options GUESSED
 		}
 		
 		void cmd_set_ram_x_addr(uint8_t x);

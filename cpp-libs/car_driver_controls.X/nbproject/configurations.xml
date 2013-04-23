@@ -106,14 +106,14 @@
         <property key="map-file" value=""/>
         <property key="no-startup-files" value="false"/>
         <property key="oXC32ld-extra-opts" value=""/>
-        <property key="optimization-level" value=""/>
+        <property key="optimization-level" value="-O1"/>
         <property key="preprocessor-macros" value=""/>
-        <property key="remove-unused-sections" value="false"/>
+        <property key="remove-unused-sections" value="true"/>
         <property key="report-memory-usage" value="false"/>
         <property key="stack-size" value=""/>
         <property key="symbol-stripping" value=""/>
         <property key="trace-symbols" value=""/>
-        <property key="warn-section-align" value="false"/>
+        <property key="warn-section-align" value="true"/>
       </C32-LD>
       <C32CPP>
         <property key="additional-warnings" value="true"/>

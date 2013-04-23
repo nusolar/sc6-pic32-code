@@ -9,9 +9,13 @@
 #ifndef __nusolar_lib__array__
 #define __nusolar_lib__array__
 
-#include "compiler.h"
-#include <cstddef>
+#include "compiler.h" // MAXIMUM WARNING MAXIMUM ERROR WTF. MUST BE INCLUDED FIRST
+
+#if defined(__DEBUG)
+#undef inline
+#endif
 #include <array>
+#include <cstddef>
 
 namespace nu {
 	/**
@@ -20,13 +24,15 @@ namespace nu {
 	 */
 	template <class _Tp, size_t _Size>
 	struct Enum: public std::array<_Tp, _Size> {
-		size_t len; // WARNING: MUST DEFAULT INITIALIZE
-		size_t ALWAYSINLINE enumerate(_Tp &&rvalue) {
+		size_t len; // FUCK MPLAB
+		size_t enumerate(_Tp &&rvalue) {
 			if (unlikely(len == this->size()))
 				return len-1;
 			(*this)[len] = rvalue;
 			return len++;
 		}
+		
+		Enum(): len(0) {}
 	};
 }
 

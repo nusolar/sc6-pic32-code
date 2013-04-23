@@ -31,10 +31,11 @@ namespace nu {
 		};
 		
 		Pin convert;
-		options opts;
 		uint32_t num_devices;
+		options opts;
 		
-		ALWAYSINLINE AD7685(SPI spi, Pin _convert, options _opts): SPI(spi), convert(_convert), opts(_opts) {}
+		ALWAYSINLINE AD7685(SPI spi, Pin _convert, uint32_t _num, options _opts):
+			SPI(spi), convert(_convert), num_devices(_num), opts(_opts) {}
 		
 		/**
 		 * Setup SPI and conversion pin.

@@ -20,8 +20,9 @@ namespace nu {
 		 * Setup Pin's (letter, number) combination, represented by an 
 		 * (IoPortId, BIT_X) type combination.
 		 */
-		INLINE Pin(IoPortId _ltr = IOPORT_D, uint32_t _num = 0, const char *_name = ""):
-			ltr(_ltr), num(_num), name(_name) {}
+		ALWAYSINLINE Pin(IoPortId _ltr = IOPORT_D, uint32_t _num = BIT_0, const char *_name = ""):
+			ltr(_ltr), num(_num), name{_name} {}
+		ALWAYSINLINE virtual ~Pin() {}
 
 		/**
 		 * Call one of these four setters in your Setup.
@@ -32,7 +33,7 @@ namespace nu {
 		void ALWAYSINLINE set_analog_in()	{PORTSetPinsAnalogIn(ltr, num);}
 
 		
-		unsigned int ALWAYSINLINE read() {return PORTReadBits(ltr, num);}
+		uint32_t ALWAYSINLINE read() {return PORTReadBits(ltr, num);} // returns 0 or not-0
 		void ALWAYSINLINE set()		{PORTSetBits(ltr, num);}
 		void ALWAYSINLINE clear()	{PORTClearBits(ltr, num);}
 		void ALWAYSINLINE toggle()	{PORTToggleBits(ltr, num);}

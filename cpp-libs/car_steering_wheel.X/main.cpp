@@ -9,7 +9,7 @@
 #include "common_pragmas.h"
 #include <bitset>
 #include <cstdlib>
-#include "array.h"
+#include "enum.h"
 #include "timer.h"
 
 #include "nu32.h"
@@ -23,10 +23,10 @@ namespace nu {
 	struct SteeringWheel: protected Nu32 {
 		can::Module common_can;
 		uLCD28PT lcd;
-		
+
 		Enum<Button, 13> buttons;
 		Enum<Led, 12> leds;
-		
+
 		/** State of Steering Wheel & car */
 		struct state {
 			std::bitset<32> btns, leds; // actual state
@@ -34,7 +34,7 @@ namespace nu {
 			can::frame::ws20::tx::motor_velocity velo;
 			can::frame::ws20::tx::current_vector curr;
 		} state;
-				
+
 		/*
 		 * Pin definitions
 		 */
@@ -59,38 +59,38 @@ namespace nu {
 			_LED(horn,         D, 5)    \
 			_LED(cruise_mode,  D, 9)    \
 			_LED(cruise_down,  A, 15)
-		
+
 		#define _BTN(name, ltr, num) uint16_t name##_k;
 		#define _LED(name, ltr, num) uint16_t led_##name##_k;
 			DIGITAL_IN_PINS
 			LED_PINS
 		#undef _BTN
 		#undef _LED
-		
-		
+
+
 		/**
 		 * Setup NU32, CAN, LEDs, and uLCD Display.
 		 */
 		ALWAYSINLINE SteeringWheel(): Nu32(Nu32::V2), common_can(CAN2), lcd(UART3) {
 			WDT::clear();
-			#define _BTN(name, ltr, num) name##_k = buttons.enumerate(Button(IOPORT_##ltr, BIT_##num, 10, 5, #name));
-			#define _LED(name, ltr, num) led_##name##_k = leds.enumerate(Led(IOPORT_##ltr, BIT_##num, #name));
+			#define _BTN(name, ltr, num) name##_k = buttons.enumerate(Button(Pin(IOPORT_##ltr, BIT_##num, #name), 10, 5));
+			#define _LED(name, ltr, num) led_##name##_k = leds.enumerate(Led(Pin(IOPORT_##ltr, BIT_##num, #name)));
 				DIGITAL_IN_PINS
 				LED_PINS
 			#undef _LED
 			#undef _BTN
-			
+
 			for (unsigned i=0; i<leds.size(); i++)
 				leds[i].setup();
 			common_can.setup_easy((CAN_MODULE_EVENT)0, INT_PRIORITY_DISABLED);
 			common_can.add_rx(CAN_CHANNEL0, 32, CAN_RX_FULL_RECEIVE);
 			common_can.add_tx(CAN_CHANNEL1, 32, CAN_TX_RTR_DISABLED, CAN_HIGH_MEDIUM_PRIORITY);
 			common_can.add_tx(CAN_CHANNEL2, 32, CAN_TX_RTR_DISABLED, CAN_LOWEST_PRIORITY);
-			
+
 			lcd.setup(115200, Serial::NOT_USE_UART_INTERRUPT, INT_PRIORITY_DISABLED, (UART_FIFO_MODE)0, (UART_LINE_CONTROL_MODE)0, (UART_CONFIGURATION)0, (UART_ENABLE_MODE)(UART_ENABLE|UART_RX|UART_TX));
 		}
-		
-		
+
+
 		/**
 		 * Animate LEDs on startup.
 		 */
@@ -109,8 +109,8 @@ namespace nu {
 				delay_ms(100); // ok. WDT timeout ~ 2s
 			}
 		}
-		
-		
+
+
 		/**
 		 * Read value of Button & LED Pins, update internal state.
 		 */
@@ -125,8 +125,8 @@ namespace nu {
 			for (unsigned i = 0; i < leds.size(); i++)
 				state.leds[i] = leds[i].status();
 		}
-		
-		
+
+
 		/**
 		 * Receive data to draw on LCD. Also receive any commands.
 		 */
@@ -134,7 +134,7 @@ namespace nu {
 			WDT::clear();
 			char inc[8]; uint32_t id;
 			common_can.rx(inc, id);
-			
+
 			switch (id) {
 				case (uint32_t)can::addr::sw::rx::lights_k:
 					state.lights = *(can::frame::sw::rx::lights *)&inc;
@@ -150,8 +150,8 @@ namespace nu {
 					break;
 			}
 		}
-		
-		
+
+
 		/**
 		 * Set each LED according to Steering Wheel's state.
 		 */
@@ -160,8 +160,8 @@ namespace nu {
 				leds[i] = state.leds[i];
 			}
 		}
-		
-		
+
+
 		/**
 		 * Read the car's state from CAN, draw to dashboard LCD.
 		 */
@@ -169,37 +169,45 @@ namespace nu {
 			lcd.printf("|velo:%f|", state.velo.vehicleVelocity);
 			lcd.printf("|curr:%f|", state.curr.currentRe);
 		}
-		
-		
+
+
 		/**
 		 * Send CAN update of Steering Wheel status (LEDs and Buttons).
 		 */
 		void ALWAYSINLINE send_can() {
 			WDT::clear();
 			uint32_t bits_int;
-			
+
 			bits_int = state.btns.to_ullong(); // 64->32 ok. WARNING BIT ORDER?
 			can::frame::sw::tx::buttons btns_frame = *(can::frame::sw::tx::buttons*)&bits_int;
 			common_can.tx(&btns_frame, sizeof(btns_frame), 0);
-			
+
 			bits_int = state.leds.to_ullong();
 			can::frame::sw::tx::lights lts_frame = *(can::frame::sw::tx::lights*)&bits_int;
 			common_can.tx(&lts_frame, sizeof(lts_frame), 0);
 		}
-		
+
 		/**
 		 * A function to be called repeatedly.
 		 */
 		void ALWAYSINLINE run() {
 			WDT::clear();
-			
+
 			read_ins();
 			recv_can();
-			
+
 			set_leds();
 			draw_lcd();
-			
+
 			send_can();
+		}
+
+		/** Demo LED toggling */
+		void ALWAYSINLINE demo() {
+			WDT::clear();
+			delay_ms(100);
+			led1.toggle();
+			led2.on();
 		}
 	};
 }
@@ -212,6 +220,6 @@ int main() {
 	SteeringWheel sw{};
 	sw.animate_leds();
 	while (true) {
-		sw.run();
+		sw.demo();
 	}
 }

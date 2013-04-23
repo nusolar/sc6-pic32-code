@@ -6,11 +6,11 @@
  */
 
 #include "common_pragmas.h"
+#include "compiler.h"
+#include "enum.h"
+#include "timer.h"
 #include <cstdint>
 #include <cstddef>
-#include "compiler.h"
-#include "array.h"
-#include "timer.h"
 
 #include "nu32.h"
 #include "nokia5110.h"
@@ -109,10 +109,10 @@ namespace nu {
 			if (values.accel > 1) values.accel = 1; // TODO: print warning
 			values.accel_en = values.accel > 0.05;
 
-			values.regen = ((float)ReadADC10(analog_ins[regen_pedel_k].num) + 0)/1024;
+			values.regen = ((float)ReadADC10(analog_ins[regen_pedel_k].num) + 0)/1024; // WARNING: disconnected
 			values.regen_en = digital_ins[regen_enable_k].read()? 1: 0; // TODO: clamp
 
-			values.airgap = ((float)ReadADC10(analog_ins[airgap_pot_k].num) + 0)/1024;
+			values.airgap = ((float)ReadADC10(analog_ins[airgap_pot_k].num) + 0)/1024; // WARNING: disconnected
 			values.airgap_en = digital_ins[airgap_enable_k].read()? 1: 0; // TODO: clamp
 
 			values.reverse_en	= digital_ins[reverse_switch_k].read();
@@ -188,7 +188,6 @@ namespace nu {
 
 			read_ins();
 			recv_can();
-
 			set_lights();
 			set_motor();
 
@@ -208,7 +207,6 @@ namespace nu {
 	};
 }
 
-
 using namespace std;
 using namespace nu;
 
@@ -218,7 +216,6 @@ using namespace nu;
 int main(int argc, const char* argv[]) {
 	DriverControls dc{};
 	while (true) {
-		//dc.run();
 		dc.demo();
 	}
 	return 0;

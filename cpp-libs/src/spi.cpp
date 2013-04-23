@@ -25,10 +25,10 @@ void ALWAYSINLINE SPI::wait_busy() {
 	delay_ns(bit_tims_ns);
 }
 
-void SPI::tx(const void *src, size_t n, nu::SPI::tx_options _opt) {
+void SPI::tx(const void *src, size_t n) {
 	uint32_t ui;
 	
-    if (opt & SPI_TX_WAIT_START)
+    if (opt & TX_WAIT_START)
         wait_busy();
 	
     if (_SpiMapTbl[chn]->con.MODE32) {
@@ -48,7 +48,7 @@ void SPI::tx(const void *src, size_t n, nu::SPI::tx_options _opt) {
             SpiChnPutC(chn, elems[ui]);
     }
 	
-    if (opt & SPI_TX_WAIT_END)
+    if (opt & TX_WAIT_END)
         wait_busy();
 }
 

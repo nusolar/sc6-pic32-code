@@ -21,19 +21,19 @@ namespace nu {
 	 * Encapsulate SPI reading/writing.
 	 */
 	struct SPI: protected Pin { // chip select pin
-		enum options {
-			SPI_DEFAULT = 0,
+		enum UNUSED options {
+			DEFAULT = 0,
 		};
 		enum tx_options {
-			SPI_TX_WAIT_START = 1<<0,
-			SPI_TX_WAIT_END = 1<<1
+			TX_WAIT_START = 1<<0,
+			TX_WAIT_END = 1<<1
 		};
 		
 		
 		SpiChannel chn;
-		options opt;
+		tx_options opt;
 		
-		ALWAYSINLINE SPI(Pin cs, SpiChannel _chn, options _opt = SPI_DEFAULT):
+		ALWAYSINLINE SPI(Pin cs, SpiChannel _chn, tx_options _opt = (tx_options)(TX_WAIT_START|TX_WAIT_END)):
 			Pin(cs), chn(_chn), opt(_opt) {}
 		
 		void ALWAYSINLINE setup(uint32_t bitrate, SpiOpenFlags oflags) {
@@ -49,9 +49,9 @@ namespace nu {
 		void ALWAYSINLINE low() {clear();}
 		
 		void rx(void *dst, size_t n);
-		void tx(const void *src, size_t n, tx_options _opt);
-		void ALWAYSINLINE puts(const char *str, tx_options _opt) {
-			tx(str, strlen(str), _opt);
+		void tx(const void *src, size_t n);
+		void ALWAYSINLINE puts(const char *str) {
+			tx(str, strlen(str));
 		}
 		
 	private:

@@ -8,9 +8,7 @@ namespace nu {
 	 * Wrap Led setup, clarify Pin function names.
 	 */
 	struct Led: protected Pin {
-		ALWAYSINLINE Led(IoPortId ltr = IOPORT_D, uint32_t num = 0, const char *name = ""):
-			Pin(ltr, num, name) {}
-		ALWAYSINLINE Led(Pin led): Pin(led) {}
+		ALWAYSINLINE Led(Pin led = Pin()): Pin(led) {}
 
 		void ALWAYSINLINE off() {set();}
 		void ALWAYSINLINE on() {clear();}

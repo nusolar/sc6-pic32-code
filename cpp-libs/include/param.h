@@ -9,12 +9,14 @@
 #ifndef __nusolar_lib__param__
 #define __nusolar_lib__param__
 
+#include <cstdint>
+
 namespace nu {
 	/**
 	 * Operating hardware-specific parameters.
 	 */
 	struct Param {
-		static unsigned long nu_hz; // FUCK MPLAB
+		static uint64_t nu_hz; // FUCK MPLAB
 		
 		#define NU_DEFAULT_HZ (80000000UL)
 		#define NU_PBUS_FREQ_HZ (Param::nu_hz/((uint32_t)(1 << OSCCONbits.PBDIV)))

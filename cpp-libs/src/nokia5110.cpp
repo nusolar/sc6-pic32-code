@@ -184,12 +184,12 @@ void Nokia5110::setup() {
 }
 
 
-void Nokia5110::cmd_func_set(cmd_func_set_options opt) {
+void Nokia5110::cmd_func_set(cmd_func_set_options opts) {
 	instructions inst;
 	PREPARE_CMD(inst.func_set);
-	inst.func_set.addr_mode = !!((ADDRESSING_VERTICAL | ADDRESSING_HORIZONTAL) & opt);
-    inst.func_set.chip_active = !!((POWERDOWN | ACTIVE) & opt);
-    inst.func_set.use_extended = !!((INSTRUCTIONS_BASIC | INSTRUCTIONS_EXTENDED) & opt);
+	inst.func_set.addr_mode = !!((ADDRESSING_VERTICAL | ADDRESSING_HORIZONTAL) & opts);
+    inst.func_set.chip_active = !!((POWERDOWN | ACTIVE) & opts);
+    inst.func_set.use_extended = !!((INSTRUCTIONS_BASIC | INSTRUCTIONS_EXTENDED) & opts);
 	write_cmd(inst.cmd_byte);
 }
 
