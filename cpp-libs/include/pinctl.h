@@ -1,6 +1,7 @@
-#ifndef NUSOLAR_CPP_PINCTL_H
-#define NUSOLAR_CPP_PINCTL_H 1
+#ifndef __nusolar_lib__pinctl__
+#define __nusolar_lib__pinctl__
 
+#include <string>
 #include "compiler.h"
 #include <cstdint>
 #include <plib.h>
@@ -13,7 +14,7 @@ namespace nu {
 	struct Pin {
 		IoPortId ltr;
 		uint32_t num;
-		const char *name;
+		std::string name;
 
 		
 		/**
@@ -22,7 +23,7 @@ namespace nu {
 		 */
 		ALWAYSINLINE Pin(IoPortId _ltr = IOPORT_D, uint32_t _num = BIT_0, const char *_name = ""):
 			ltr(_ltr), num(_num), name{_name} {}
-		ALWAYSINLINE virtual ~Pin() {}
+		virtual ~Pin() {}
 
 		/**
 		 * Call one of these four setters in your Setup.
@@ -47,13 +48,11 @@ namespace nu {
 		 * Easily [raise/lower] Pin by setting it to [true/false] respectively.
 		 */
 		ALWAYSINLINE Pin &operator= (bool rhs) {
-			if (rhs)
-				set();
-			else
-				clear();
+			if (rhs) set();
+			else clear();
 			return *this;
 		}
 	};
 }
 
-#endif
+#endif /* defined(__nusolar_lib__Pinctl__) */

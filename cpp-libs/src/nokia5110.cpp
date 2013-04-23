@@ -269,7 +269,7 @@ void Nokia5110::cmd_set_ram_y_addr(uint8_t y) {
 	write_cmd(inst.cmd_byte);
 }
 
-/* The LCD has 6 rows, with 8 pixels per  row.
+/* The LCD has 6 rows, with 8 pixels per row.
  * 'y_mod' is the row that the pixel is in.
  * 'y_pix' is the pixel in that row we want to enable/disable
  */

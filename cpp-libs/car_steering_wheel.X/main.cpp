@@ -168,6 +168,8 @@ namespace nu {
 		void ALWAYSINLINE draw_lcd(){
 			lcd.printf("|velo:%f|", state.velo.vehicleVelocity);
 			lcd.printf("|curr:%f|", state.curr.currentRe);
+			uint32_t msg = 0x004e4550;
+			lcd.printf("|text:%s%s%u|", "Alert: ", (char *)&msg, 0xF);
 		}
 
 

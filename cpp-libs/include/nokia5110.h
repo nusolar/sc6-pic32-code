@@ -79,11 +79,11 @@ namespace nu {
 	private:
 		void ALWAYSINLINE write_cmd(uint8_t cmd) {
 			dc.low();
-			tx(&cmd, 1); // WARNING: tx_options GUESSED
+			tx(&cmd, 1);
 		}
 		void ALWAYSINLINE write_data(uint8_t data) {
 			dc.high();
-			tx(&data, 1); // WARNING: tx_options GUESSED
+			tx(&data, 1);
 		}
 		
 		void cmd_set_ram_x_addr(uint8_t x);

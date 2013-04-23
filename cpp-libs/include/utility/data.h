@@ -31,8 +31,8 @@
 
 #define ZEROVAR(x)          memset(&(x), 0, sizeof(x))
 
-#define swap(a, b) \
+#define nu_swap2(a, b) \
 	do { typeof(a) __tmp = (a); (a) = (b); (b) = __tmp; } while (0)
-#define SWAP(a, b)  swap(a, b)
+#define SWAP(a, b)  nu_swap2(a, b)
 
 #endif
