@@ -89,13 +89,13 @@ namespace nu {
 				#undef _ITER
 			#undef _PIN
 
-			common_can.setup_easy((CAN_MODULE_EVENT)0, INT_PRIORITY_DISABLED);
-			common_can.add_rx(CAN_CHANNEL0, 32, CAN_RX_FULL_RECEIVE);
-			common_can.add_tx(CAN_CHANNEL1, 32, CAN_TX_RTR_DISABLED, CAN_HIGH_MEDIUM_PRIORITY);
-			common_can.add_tx(CAN_CHANNEL2, 32, CAN_TX_RTR_DISABLED, CAN_LOWEST_PRIORITY); // err chn
+			common_can.setup();
+			common_can.in()  = (can::RxChannel(can::Channel(common_can, CAN_CHANNEL0), CAN_RX_FULL_RECEIVE));
+			common_can.out() = (can::TxChannel(can::Channel(common_can, CAN_CHANNEL1), CAN_HIGH_MEDIUM_PRIORITY));
+			common_can.err() = (can::TxChannel(can::Channel(common_can, CAN_CHANNEL2), CAN_LOWEST_PRIORITY)); // err chn
 
-			ws_can.setup_easy((CAN_MODULE_EVENT)0, INT_PRIORITY_DISABLED);
-			ws_can.add_tx(CAN_CHANNEL1, 32, CAN_TX_RTR_DISABLED, CAN_HIGH_MEDIUM_PRIORITY);
+			ws_can.setup();
+			ws_can.out() = (can::TxChannel(can::Channel(ws_can, CAN_CHANNEL1), CAN_HIGH_MEDIUM_PRIORITY));
 
 			// TODO: configure ADC10
 			lcd.setup();
@@ -133,7 +133,7 @@ namespace nu {
 		 */
 		void ALWAYSINLINE recv_can() {
 			char inc[8]; uint32_t id;
-			common_can.rx(inc, id);
+			common_can.in().rx(inc, id);
 			switch (id) {
 				case (uint32_t)can::addr::sw::tx::buttons_k: {
 					can::frame::sw::tx::buttons btns = *(can::frame::sw::tx::buttons*)&inc;
@@ -181,7 +181,7 @@ namespace nu {
 				drive.motorVelocity *= -1;
 
 			led1.on(); delay_ms(100); led1.off(); // WARNING: WTF
-			ws_can.tx(&drive, sizeof(drive), 0); // ERROR: CAN ADDRESS?
+			ws_can.out().tx(&drive, sizeof(drive), 0); // ERROR: CAN ADDRESS?
 		}
 
 

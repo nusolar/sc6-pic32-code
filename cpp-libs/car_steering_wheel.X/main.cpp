@@ -82,10 +82,11 @@ namespace nu {
 
 			for (unsigned i=0; i<leds.size(); i++)
 				leds[i].setup();
-			common_can.setup_easy((CAN_MODULE_EVENT)0, INT_PRIORITY_DISABLED);
-			common_can.add_rx(CAN_CHANNEL0, 32, CAN_RX_FULL_RECEIVE);
-			common_can.add_tx(CAN_CHANNEL1, 32, CAN_TX_RTR_DISABLED, CAN_HIGH_MEDIUM_PRIORITY);
-			common_can.add_tx(CAN_CHANNEL2, 32, CAN_TX_RTR_DISABLED, CAN_LOWEST_PRIORITY);
+			
+			common_can.setup();
+			common_can.in() = can::RxChannel(can::Channel(common_can, CAN_CHANNEL0), CAN_RX_FULL_RECEIVE);
+			common_can.out() = can::TxChannel(can::Channel(common_can, CAN_CHANNEL1), CAN_HIGH_MEDIUM_PRIORITY);
+			common_can.err() = can::TxChannel(can::Channel(common_can, CAN_CHANNEL2), CAN_LOWEST_PRIORITY);
 
 			lcd.setup(115200, Serial::NOT_USE_UART_INTERRUPT, INT_PRIORITY_DISABLED, (UART_FIFO_MODE)0, (UART_LINE_CONTROL_MODE)0, (UART_CONFIGURATION)0, (UART_ENABLE_MODE)(UART_ENABLE|UART_RX|UART_TX));
 		}
@@ -133,7 +134,7 @@ namespace nu {
 		void ALWAYSINLINE recv_can() {
 			WDT::clear();
 			char inc[8]; uint32_t id;
-			common_can.rx(inc, id);
+			common_can.in().rx(inc, id);
 
 			switch (id) {
 				case (uint32_t)can::addr::sw::rx::lights_k:
@@ -182,11 +183,11 @@ namespace nu {
 
 			bits_int = state.btns.to_ullong(); // 64->32 ok. WARNING BIT ORDER?
 			can::frame::sw::tx::buttons btns_frame = *(can::frame::sw::tx::buttons*)&bits_int;
-			common_can.tx(&btns_frame, sizeof(btns_frame), 0);
+			common_can.out().tx(&btns_frame, sizeof(btns_frame), (uint16_t)can::addr::sw::tx::buttons_k);
 
 			bits_int = state.leds.to_ullong();
 			can::frame::sw::tx::lights lts_frame = *(can::frame::sw::tx::lights*)&bits_int;
-			common_can.tx(&lts_frame, sizeof(lts_frame), 0);
+			common_can.out().tx(&lts_frame, sizeof(lts_frame), (uint16_t)can::addr::sw::tx::lights_k);
 		}
 
 		/**

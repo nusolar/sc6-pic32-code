@@ -25,15 +25,13 @@ CAN_BIT_CONFIG Module::default_cfg = {
 	/* .syncJumpWidth          = */ CAN_BIT_1TQ
 };
 
-
-int32_t Module::setup(uint32_t bus_speed = DEFAULT_BUS_SPEED_HZ, CAN_BIT_CONFIG *timings = &default_cfg, CAN_MODULE_EVENT interrupts = (CAN_MODULE_EVENT)0, INT_PRIORITY int_priority = INT_PRIORITY_DISABLED, CAN_MODULE_FEATURES features = (CAN_MODULE_FEATURES)0) {
-
+int32_t Module::setup(uint32_t bus_speed, CAN_BIT_CONFIG *timings, CAN_MODULE_EVENT interrupts, INT_PRIORITY int_priority, CAN_MODULE_FEATURES features) {
 	CANEnableModule(mod, TRUE);
 
-	int32_t err = config_mode();
-	if (err < 0) {
+	int32_t err_num = config_mode();
+	if (err_num < 0) {
 		normal_mode();
-		return err;
+		return err_num;
 	}
 
 	CANSetSpeed(mod, timings, HZ, bus_speed);
@@ -63,15 +61,14 @@ int32_t Module::setup(uint32_t bus_speed = DEFAULT_BUS_SPEED_HZ, CAN_BIT_CONFIG 
         INTSetVectorSubPriority(int_vec, INT_SUB_PRIORITY_LEVEL_0);
         INTEnable(int_src, INT_ENABLED);
 	}
-
 	change_features(features, TRUE);
-	if ((err = normal_mode()) < 0) return err;
+	if ((err_num = normal_mode()) < 0) return err_num;
+	
+	// TODO: Better collection
+	if(rx.chn != CAN_ALL_CHANNELS) rx.setup();
+	if(tx.chn != CAN_ALL_CHANNELS) tx.setup();
+	if(ex.chn != CAN_ALL_CHANNELS) ex.setup();
 	return 0;
-}
-
-
-int32_t Module::setup_easy(CAN_MODULE_EVENT interrupts, INT_PRIORITY priority) {
-	return setup(DEFAULT_BUS_SPEED_HZ, &default_cfg, interrupts, priority, (CAN_MODULE_FEATURES) 0);
 }
 
 
@@ -88,38 +85,76 @@ int32_t Module::switch_mode(CAN_OP_MODE op_mode, uint32_t timeout_ms) {
 
 ALWAYSINLINE
 int32_t Module::change_features(CAN_MODULE_FEATURES features, BOOL en) {
-	int32_t err = config_mode();
-	if (err < 0) {
+	int32_t err_num = config_mode();
+	if (err_num < 0) {
 		normal_mode();
-		return err;
+		return err_num;
 	}
 	CANEnableFeature(mod, features, en);
 	return 0;
 }
 
 
-size_t Module::rx(void *dest, uint32_t &id) {
+Channel::Channel(Module &_mod, CAN_CHANNEL _chn, uint32_t _size, CAN_CHANNEL_EVENT _inter):
+	mod(_mod), chn(_chn), msg_size(_size), interrupts(_inter) {}
+
+
+int32_t RxChannel::setup() {
+	int32_t err = mod.config_mode();
+	if (err < 0) {
+		mod.normal_mode();
+		return err;
+	}
+	
+	CANConfigureChannelForRx(mod, chn, msg_size, data_only);
+	CANConfigureFilter(mod, CAN_FILTER0, 0, CAN_SID);
+	CANConfigureFilterMask(mod, CAN_FILTER_MASK0, 0, CAN_SID, CAN_FILTER_MASK_ANY_TYPE);
+	CANLinkFilterToChannel(mod, CAN_FILTER0, CAN_FILTER_MASK0, CAN_CHANNEL1);
+	CANEnableFilter(mod, CAN_FILTER0, TRUE);
+	CANEnableChannelEvent(mod, chn, interrupts, TRUE);
+	
+	if ((err = mod.normal_mode()) < 0) return err;
+	return 0;
+}
+
+
+int32_t TxChannel::setup() {
+	int32_t err = mod.config_mode();
+	if (err < 0) {
+		mod.normal_mode();
+		return err;
+	}
+	
+	CANConfigureChannelForTx(mod, chn, msg_size, rtr_en, priority);
+	CANEnableChannelEvent(mod, chn, interrupts, TRUE);
+	
+	if ((err = mod.normal_mode()) < 0) return err;
+	return 0;
+}
+
+
+size_t RxChannel::rx(void *dest, uint32_t &id) {
 	CANRxMessageBuffer *buffer = CANGetRxMessage(mod, chn);
 	if (buffer == NULL) return -ENODATA;
-
+	
 	id = (buffer->msgEID.IDE == STANDARD_ID)?
-		buffer->msgSID.SID: buffer->msgEID.EID|buffer->msgSID.SID;
-
+	buffer->msgSID.SID: buffer->msgEID.EID|buffer->msgSID.SID;
+	
 	size_t len = buffer->msgEID.DLC;
 	memcpy(dest, buffer->data, len);
 	CANUpdateChannel(mod, chn);
-
+	
 	return len;
 }
 
 
-int32_t Module::tx(const void *data, size_t num_bytes, uint32_t rtr_en) {
+int32_t TxChannel::tx(const void *data, size_t num_bytes, uint16_t std_id, uint32_t ext_id, id_type type) {
 	CANTxMessageBuffer *msg = CANGetTxMessageBuffer(mod, chn);
 	if (num_bytes > 8) return -EINVAL; // Maximum of 8 data bytes in CAN frame
-
-	int32_t err = normal_mode();
+	
+	int32_t err = mod.normal_mode();
 	if (err < 0) return err;
-
+	
 	memset(msg, 0, sizeof(CANTxMessageBuffer));
 	msg->msgEID.IDE = (EXTENDED_ID == type); // EID is indicated by IDTypeExtended = 1
 	msg->msgSID.SID = BITFIELD_CAST(std_id, 11); // 11 bits
@@ -127,67 +162,29 @@ int32_t Module::tx(const void *data, size_t num_bytes, uint32_t rtr_en) {
 	msg->msgEID.RTR = BITFIELD_CAST(rtr_en, 1); // 1 bit; 1 = remote transmission rqst enabled
 	if (EXTENDED_ID == type)
 		msg->msgEID.EID = BITFIELD_CAST(ext_id, 18); // 18 bits
-
+	
 	if (num_bytes) memcpy(msg->data, (const char *)data, num_bytes);
-
+	
 	CANUpdateChannel(mod, chn);
 	CANFlushTxChannel(mod, chn);
 	return 0;
 }
 
-
-int32_t Module::add_rx(CAN_CHANNEL chn, uint32_t msg_size, CAN_RX_DATA_MODE data_only,
-	CAN_CHANNEL_EVENT interrupts) {
-	int32_t err = config_mode();
+int32_t RxChannel::add_filter(CAN_FILTER filter, CAN_ID_TYPE f_type, uint32_t id,
+							  CAN_FILTER_MASK mask, CAN_FILTER_MASK_TYPE mide, uint32_t mask_bits) {
+	int32_t err = mod.config_mode();
 	if (err < 0) {
-		normal_mode();
+		mod.normal_mode();
 		return err;
 	}
-
-	CANConfigureChannelForRx(mod, chn, msg_size, data_only);
-	CANConfigureFilter(mod, CAN_FILTER0, 0, CAN_SID);
-	CANConfigureFilterMask(mod, CAN_FILTER_MASK0, 0, CAN_SID, CAN_FILTER_MASK_ANY_TYPE);
-	CANLinkFilterToChannel(mod, CAN_FILTER0, CAN_FILTER_MASK0, CAN_CHANNEL1);
-	CANEnableFilter(mod, CAN_FILTER0, TRUE);
-	CANEnableChannelEvent(mod, chn, interrupts, TRUE);
-
-	if ((err = normal_mode()) < 0) return err;
-	return 0;
-}
-
-
-int32_t Module::add_tx(CAN_CHANNEL chn, uint32_t msg_size, CAN_TX_RTR rtr_en,
-	CAN_TXCHANNEL_PRIORITY priority, CAN_CHANNEL_EVENT interrupts) {
-	int32_t err = config_mode();
-	if (err < 0) {
-		normal_mode();
-		return err;
-	}
-
-	CANConfigureChannelForTx(mod, chn, msg_size, rtr_en, priority);
-	CANEnableChannelEvent(mod, chn, interrupts, TRUE);
-
-	if ((err = normal_mode()) < 0) return err;
-	return 0;
-}
-
-
-int32_t Module::add_filter(CAN_CHANNEL chn, CAN_FILTER filter, CAN_ID_TYPE f_type, uint32_t id,
-		CAN_FILTER_MASK mask, CAN_FILTER_MASK_TYPE mide, uint32_t mask_bits) {
-	int32_t err = config_mode();
-	if (err < 0) {
-		normal_mode();
-		return err;
-	}
-
+	
 	CANConfigureFilter(mod, filter, id, f_type);
 	CANConfigureFilterMask(mod, mask, mask_bits, f_type, mide);
 	CANLinkFilterToChannel(mod, filter, mask, chn);
 	CANEnableFilter(mod, filter, TRUE);
-
-	if ((err = normal_mode()) < 0) return err;
+	
+	if ((err = mod.normal_mode()) < 0) return err;
 	return 0;
 }
-
 
 

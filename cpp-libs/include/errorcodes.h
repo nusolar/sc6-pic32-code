@@ -2,9 +2,21 @@
 #define NU_ERRORCODES_H 1
 
 #include <cstdint>
-
 #include "utility/data.h"
-#include <cstdlib>
+
+/* Library Conflicts */
+#ifdef EOTHER
+#undef EOTHER
+#endif
+#ifdef EINVAL
+#undef EINVAL
+#endif
+#ifdef ENODATA
+#undef ENODATA
+#endif
+#ifdef ENODEV
+#undef ENODEV
+#endif
 
 /* "The X Macro" technique from Dr. Dobb's
  * (http://www.drdobbs.com/blogs/cpp/228700289)
@@ -47,9 +59,8 @@ namespace nu {
 		#undef NU_ERROR
 	};
 	
-	/** A wrapper function to get (without failure) an error name */
-	inline const char *error_get_name(int32_t err) {
-		err = (uint16_t) abs(err);
+	/** A wrapper to get (without failure) an error name */
+	inline const char *error_get_name(errors err) {
 		return error_names[err < NUM_ERRORS? err: EOTHER];
 	}
 }

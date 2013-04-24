@@ -2,7 +2,7 @@
 #define NU_ARITH_H 1
 
 #include "../compiler.h"
-#include <stdlib.h>
+#include <cstdlib>
 
 /*
  * ABS() handles unsigned and signed longs, ints, shorts and chars.  For all
