@@ -13,19 +13,14 @@
                    displayName="Source Files"
                    projectFiles="true">
       <itemPath>../nupp/ad7685.cpp</itemPath>
-      <itemPath>../nupp/button.cpp</itemPath>
       <itemPath>../nupp/can.cpp</itemPath>
-      <itemPath>../nupp/enum.cpp</itemPath>
-      <itemPath>../nupp/led.cpp</itemPath>
       <itemPath>../nupp/nokia5110.cpp</itemPath>
       <itemPath>../nupp/nu32.cpp</itemPath>
-      <itemPath>../nupp/optional.cpp</itemPath>
       <itemPath>../nupp/param.cpp</itemPath>
-      <itemPath>../nupp/pinctl.cpp</itemPath>
       <itemPath>../nupp/serial.cpp</itemPath>
       <itemPath>../nupp/spi.cpp</itemPath>
-      <itemPath>../nupp/ulcd28pt.cpp</itemPath>
       <itemPath>../nupp/wdt.cpp</itemPath>
+      <itemPath>../nupp/headers.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
