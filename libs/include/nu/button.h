@@ -1,8 +1,8 @@
 #ifndef NU_BUTTON_H
-#define NU_BUTTON_H
+#define NU_BUTTON_H 1
 
-#include "utility/arith.h"
-#include "pinctl.h"
+#include "nu/utility/arith.h"
+#include "nu/pinctl.h"
 
 struct btn {
     struct nu_pin pin;

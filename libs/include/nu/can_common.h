@@ -1,5 +1,5 @@
 #ifndef NU_CAN_COMMON_H
-#define NU_CAN_COMMON_H
+#define NU_CAN_COMMON_H 1
 
 union can_common;
 union can_common_tx;

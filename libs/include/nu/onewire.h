@@ -1,8 +1,8 @@
 #ifndef NU_ONEWIRE_H
-#define NU_ONEWIRE_H
+#define NU_ONEWIRE_H 1
 
-#include "nu_types.h"
-#include "pinctl.h"
+#include "nu/nu_types.h"
+#include "nu/pinctl.h"
 
 union romcode {
     struct {

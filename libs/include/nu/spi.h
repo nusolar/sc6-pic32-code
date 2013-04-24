@@ -1,40 +1,36 @@
 #ifndef NU_SPI_H
 #define NU_SPI_H 1
 
-#include "compiler.h"
-#include "nu_types.h"
-#include "pinctl.h"
-#include <peripheral/spi.h>
+#include "nu/compiler.h"
+#include "nu/nu_types.h"
+#include "nu/pinctl.h"
+#include "nu/platform.h"
 
-enum nu_spi_options {
-    NU_SPI_DEFAULT = 0
-};
+#if BOOST_PP_VARIADICS
+# define NU_SPI_CS_INIT(pin, ...) {pin, {__VA_ARGS__}}
+# define NU_SPI_INIT(...) {NU_PIN_INIT(NU_PIN_DEFAULT), {__VA_ARGS__}}
+# define NU_INIT_SPI_CS(s, cs, ...) \
+    __nu_init_spi_cs(s, cs, __VA_ARGS__)
+# define NU_INIT_SPI(s, ...) \
+    NU_INIT_SPI_CS(s, NU_PIN_DEFAULT, __VA_ARGS__)
+#endif
 
-struct nu_spi {
-    struct nu_pin cs;  /* chip select pin */
-    SpiChannel chn;
-    enum nu_spi_options opt;
-};
+#if NU_ARCH == NU_ARCH_PIC32MX
+# include "spi_pic32mx.h"
+#endif
 
-#define NU_SPI_CS_INIT(cs_ltr, cs_num, chn, opt) \
-    { \
-    NU_PIN_INIT(cs_ltr, cs_num), \
-    (chn), \
-    (opt) \
-    }
-#define NU_SPI_INIT(chn, opt) \
-    NU_SPI_CS_INIT(IOPORT_A, BIT_0, chn, opt)
+struct nu_spi;
 
-#define NU_SPI_CS(name, cs_ltr, cs_num, chn, opt)  \
-    struct nu_spi name = NU_SPI_CS_INIT(cs_ltr, cs_num, chn, opt)
-#define NU_SPI(name, chn, opt)  \
-    struct nu_spi name = NU_SPI_INIT(chn, opt)
+#define NU_SPI_CS(name, cs_pin, spi)  \
+    struct nu_spi name = NU_SPI_CS_INIT(cs_pin, spi)
+#define NU_SPI(name, spi)  \
+    struct nu_spi name = NU_SPI_INIT(spi)
 
 static INLINE void
-NU_INIT_SPI_CS(struct nu_spi *s, IoPortId cs_ltr, u32 cs_num, SpiChannel chn,
+NU_INIT_SPI_CS(struct nu_spi *s, struct nu_pin *cs_pin, SpiChannel chn,
         enum nu_spi_options opt)
 {
-    NU_INIT_PIN(&(s->cs), cs_ltr, cs_num);
+    s->cs = *cs_pin;
     s->chn = chn;
     s->opt = opt;
 }
@@ -42,7 +38,8 @@ NU_INIT_SPI_CS(struct nu_spi *s, IoPortId cs_ltr, u32 cs_num, SpiChannel chn,
 static INLINE void
 NU_INIT_SPI(struct nu_spi *s, SpiChannel chn, enum nu_spi_options opt)
 {
-    NU_INIT_SPI_CS(s, IOPORT_A, BIT_0, chn, opt);
+    NU_PIN(tmp, NU_PIN_DEFAULT);
+    NU_INIT_SPI_CS(s, &tmp, chn, opt);
 }
 
 static ALWAYSINLINE void

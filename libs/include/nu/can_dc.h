@@ -1,7 +1,7 @@
 #ifndef NU_CAN_DC_H
-#define NU_CAN_DC_H
+#define NU_CAN_DC_H 1
 
-#include "utility.h"
+#include "nu/utility.h"
 
 /* CAN for driver controls */
 

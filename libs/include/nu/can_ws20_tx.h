@@ -1,13 +1,13 @@
 #ifndef NU_CAN_WAVESCULPTOR_BROADCAST_MESSAGES_H
-#define NU_CAN_WAVESCULPTOR_BROADCAST_MESSAGES_H
+#define NU_CAN_WAVESCULPTOR_BROADCAST_MESSAGES_H 1
 
 #ifdef __PIC32MX
 #include <GenericTypeDefs.h>
 #endif
 
 #include <stdint.h>
-#include "can_addresses.h"
-#include "utility.h"
+#include "nu/can_addresses.h"
+#include "nu/utility.h"
 
 union can_ws20_tx;
 

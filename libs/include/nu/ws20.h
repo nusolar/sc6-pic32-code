@@ -1,12 +1,12 @@
 /* wavesculptor 20 */
 
 #ifndef NU_WS20_H
-#define NU_WS20_H
+#define NU_WS20_H 1
 
-#include "can.h"
+#include "nu/can.h"
 /*#include "can_all.h"*/
-#include "can_addresses.h"
-#include "nu_types.h"
+#include "nu/can_addresses.h"
+#include "nu/nu_types.h"
 
 struct nu_ws20 {
     struct nu_can can;

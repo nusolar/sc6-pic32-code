@@ -1,10 +1,10 @@
 #ifndef NU_LTC6803_H
-#define NU_LTC6803_H
+#define NU_LTC6803_H 1
 
-#include "compiler.h"
-#include "nu_types.h"
-#include "spi.h"
-#include "utility.h"
+#include "nu/compiler.h"
+#include "nu/nu_types.h"
+#include "nu/spi.h"
+#include "nu/utility.h"
 
 /**
  *  The Battery Voltage chip

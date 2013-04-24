@@ -1,11 +1,11 @@
 /**
  * @file SafeString.h
- * @brief Provides strlcpy and strlcat, safer alternativesto strncpy and
+ * @brief Provides strlcpy and strlcat, safer alternatives to strncpy and
  *          strncat, respectively.
  */
 
-#ifndef __NU_SAFESTRING_H
-#define __NU_SAFESTRING_H
+#ifndef NU_SAFESTRING_H
+#define NU_SAFESTRING_H 1
 
 #include <sys/types.h>
 #include <string.h>

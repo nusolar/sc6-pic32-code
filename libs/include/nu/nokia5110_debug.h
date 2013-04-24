@@ -1,14 +1,7 @@
-/**
- * @file   LcdDebug.h
- * @author Chris Yungmann (christopheryungmann2010@u.northwestern.edu)
- * @date   December, 2011
- * @brief Macro functions for printing debugging information to the lcd screen (Nokia5110).
- */
+#ifndef NU_NOKIA5110_DEBUG_H
+#define NU_NOKIA5110_DEBUG_H 1
 
-#ifndef __NU_NOKIA5110_DEBUG_H
-#define __NU_NOKIA5110_DEBUG_H
-
-#include "nokia5110.h"
+#include "nu/nokia5110.h"
 
 /**
  * @def PRINTDEBUG()

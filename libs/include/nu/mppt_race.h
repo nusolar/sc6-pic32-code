@@ -1,5 +1,5 @@
-#ifndef __NU_MPPT_RACE_H
-#define __NU_MPPT_RACE_H
+#ifndef NU_MPPT_RACE_H
+#define NU_MPPT_RACE_H 1
 
 #ifdef __PIC32MX
 #include <GenericTypeDefs.h>

@@ -1,7 +1,7 @@
 #ifndef NU_ERRORCODES_H
 #define NU_ERRORCODES_H 1
 
-#include "nu_types.h"
+#include "nu/nu_types.h"
 
 /* "The X Macro" technique from Dr. Dobb's
  * (http://www.drdobbs.com/blogs/cpp/228700289)

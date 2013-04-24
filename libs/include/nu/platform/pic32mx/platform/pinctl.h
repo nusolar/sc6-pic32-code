@@ -1,8 +1,8 @@
 #ifndef NU_PINCTL_PIC32MX_H
 #define NU_PINCTL_PIC32MX_H 1
 
-#include "compiler.h"
-#include "nu_types.h"
+#include "nu/compiler.h"
+#include "nu/nu_types.h"
 #include <peripheral/ports.h>
 
 struct nu_pin {
@@ -99,6 +99,7 @@ NU_INIT_PIN(struct nu_pin *p, IoPortId ltr, u32 num)
 # define NU_PIN_G1  IOPORT_G, BIT_1
 # define NU_PIN_G2  IOPORT_G, BIT_2
 # define NU_PIN_G3  IOPORT_G, BIT_3
+# define NU_PIN_G6  IOPORT_G, BIT_6
 # define NU_PIN_G7  IOPORT_G, BIT_7
 # define NU_PIN_G8  IOPORT_G, BIT_8
 # define NU_PIN_G9  IOPORT_G, BIT_9

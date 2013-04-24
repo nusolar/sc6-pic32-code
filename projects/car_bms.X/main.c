@@ -1,3 +1,49 @@
+#include "nu/common_pragmas.h"
+#include "nu/nu_types.h"
+#include "nu/pinctl.h"
+
+/** Trip codes that will be reported right before the car trips, and [hopefully]
+ *  right after the car comes back up.
+ */
+#define BMS_TRIPCODES \
+    BMS_TRIPCODE(NONE) \
+    BMS_TRIPCODE(OTHER) \
+    BMS_TRIPCODE(OW_BUS_FAILURE) \
+    BMS_TRIPCODE(DS18X20_MISSING) \
+    BMS_TRIPCODE(LTC_POST_FAILED) \
+    BMS_TRIPCODE(ADC_FAILURE) \
+    BMS_TRIPCODE(OVER_VOLTAGE) \
+    BMS_TRIPCODE(UNDER_VOLTAGE) \
+    BMS_TRIPCODE(OVER_CURRENT_DISCHRG) \
+    BMS_TRIPCODE(OVER_CURRENT_CHRG) \
+    BMS_TRIPCODE(OVER_TEMP) \
+    BMS_TRIPCODE(UNDER_TEMP)
+
+enum tripcode {
+#define TRIPCODE(x) BMS_TRIP_##x,
+    TRIPCODES
+#undef TRIPCODE
+};
+
+static char const * const tripcode_str[] = {
+#define TRIPCODE(x) #x,
+    TRIPCODES
+#undef TRIPCODE
+};
+
+static const NU_PIN(pin_main_relay,     NU_PIN_D2);
+static const NU_PIN(pin_array_relay,    NU_PIN_D3);
+static const struct nu_pin pin_batt_bypass =
+    NU_PIN_INIT(IOPORT_D, BIT_0|BIT_1|BIT_2|BIT_3|BIT_4|BIT_5);
+
+s32
+main(void)
+{
+    return 0;
+}
+
+#if 0
+
 #define HZ (80000000UL)
 
 #include "ad7685.h"
@@ -731,66 +777,70 @@ doVoltages(void)
         last_voltageConversion = ReadCoreTimer();
     }
 
-//    if (vConvertStatus == VCONVERT_NONE) {
-//        if (ticksToSecs(ReadCoreTimer() - last_openWireConversion) > INTERVAL_GET_OW_VOLTAGES) {
-//            IF_ERR(ltcp->op->startOpenWireConversion(ltcp), REP_CRITICAL,
-//                    "LTC OPEN WIRE CONVERSION FAILED")
-//                trip_nomod(TRIP_OTHER);
-//            last_openWireConversion = ReadCoreTimer();
-//            vConvertStatus = VCONVERT_OPENWIRE;
-//        } else if (ticksToSecs(ReadCoreTimer() - last_voltageConversion) > INTERVAL_GET_VOLTAGES) {
-//            IF_ERR(ltcp->op->startVoltageConversion(ltcp), REP_CRITICAL,
-//                    "LTC VOLTAGE CONVERSION FAILED")
-//                trip_nomod(TRIP_OTHER);
-//            last_voltageConversion = ReadCoreTimer();
-//            vConvertStatus = VCONVERT_NORMAL;
-//        }
-//    }
-//
-//    if (vConvertStatus == VCONVERT_OPENWIRE &&
-//            ticksToSecs(ReadCoreTimer() - last_openWireConversion) > 16E-3) {
-//        uint32_t ui;
-//        IF_ERR(ltcp->op->readVolts(ltcp, voltages), REP_CRITICAL,
-//                "LTC READVOLTS FAILED")
-//           trip_nomod(TRIP_OTHER);
-//        for (ui = 0; ui < MODULE_COUNT; ui++) {
-//            ClearWDT();
-//            if (openWireVoltages[ui] < 0.5) {
-//                if (ui+1 != battBypass) {
-//                    REPORT_ERR(REP_EMERGENCY, -ETRIP, "MODULE %d DISCONNECTED", ui);
-//                    trip_mod(TRIP_OTHER, ui);
-//                } else {
-//                    REPORT(REP_WARNING, "MODULE %d BYPASSED", ui);
-//                }
-//            }
-//        }
-//        vConvertStatus = VCONVERT_NONE;
-//    } else if (vConvertStatus == VCONVERT_NORMAL &&
-//            ticksToSecs(ReadCoreTimer() - last_voltageConversion) > 16E-3) {
-//        uint32_t ui;
-//        double sum;
-//        IF_ERR(ltcp->op->readVolts(ltcp, voltages), REP_CRITICAL,
-//                        "LTC READVOLTS FAILED")
-//           trip_nomod(TRIP_OTHER);
-//        /* Check for over/under-voltage */
-//        for (ui = 0; ui < MODULE_COUNT; ui++) {
-//            ClearWDT();
-//            sum += voltages[ui];
-//            if (voltages[ui] > OVER_VOLTAGE) {
-//                REPORT_ERR(REP_EMERGENCY, -ETRIP, "MODULE %d OVER VOLTAGE", ui);
-//                trip_mod(TRIP_OVER_VOLTAGE, ui);
-//            } else if (voltages[ui] < UNDER_VOLTAGE) {
-//                if (ui+1 != battBypass) {
-//                    REPORT_ERR(REP_EMERGENCY, -ETRIP, "MODULE %d UNDER VOLTAGE", ui);
-//                    trip_mod(TRIP_UNDER_VOLTAGE, ui);
-//                } else {
-//                    REPORT(REP_WARNING, "MODULE %d BYPASSED", ui);
-//                }
-//            }
-//        }
-//        wh_battery += (sum*ticksToSecs(ReadCoreTimer()-last_voltageConversion))/3600;
-//        vConvertStatus = VCONVERT_NONE;
-//    }
+/*
+ *     if (vConvertStatus == VCONVERT_NONE) {
+ *        if (ticksToSecs(ReadCoreTimer() - last_openWireConversion) > INTERVAL_GET_OW_VOLTAGES) {
+ *            IF_ERR(ltcp->op->startOpenWireConversion(ltcp), REP_CRITICAL,
+ *                    "LTC OPEN WIRE CONVERSION FAILED")
+ *                trip_nomod(TRIP_OTHER);
+ *            last_openWireConversion = ReadCoreTimer();
+ *            vConvertStatus = VCONVERT_OPENWIRE;
+ *        } else if (ticksToSecs(ReadCoreTimer() - last_voltageConversion) > INTERVAL_GET_VOLTAGES) {
+ *            IF_ERR(ltcp->op->startVoltageConversion(ltcp), REP_CRITICAL,
+ *                    "LTC VOLTAGE CONVERSION FAILED")
+ *                trip_nomod(TRIP_OTHER);
+ *            last_voltageConversion = ReadCoreTimer();
+ *            vConvertStatus = VCONVERT_NORMAL;
+ *        }
+ *    }
+ *
+ *    if (vConvertStatus == VCONVERT_OPENWIRE &&
+ *            ticksToSecs(ReadCoreTimer() - last_openWireConversion) > 16E-3) {
+ *        uint32_t ui;
+ *        IF_ERR(ltcp->op->readVolts(ltcp, voltages), REP_CRITICAL,
+ *                "LTC READVOLTS FAILED")
+ *           trip_nomod(TRIP_OTHER);
+ *        for (ui = 0; ui < MODULE_COUNT; ui++) {
+ *            ClearWDT();
+ *            if (openWireVoltages[ui] < 0.5) {
+ *                if (ui+1 != battBypass) {
+ *                    REPORT_ERR(REP_EMERGENCY, -ETRIP, "MODULE %d DISCONNECTED", ui);
+ *                    trip_mod(TRIP_OTHER, ui);
+ *                } else {
+ *                    REPORT(REP_WARNING, "MODULE %d BYPASSED", ui);
+ *                }
+ *            }
+ *        }
+ *        vConvertStatus = VCONVERT_NONE;
+ *    } else if (vConvertStatus == VCONVERT_NORMAL &&
+ *            ticksToSecs(ReadCoreTimer() - last_voltageConversion) > 16E-3) {
+ *        uint32_t ui;
+ *        double sum;
+ *        IF_ERR(ltcp->op->readVolts(ltcp, voltages), REP_CRITICAL,
+ *                        "LTC READVOLTS FAILED")
+ *           trip_nomod(TRIP_OTHER);
+ */
+    /* Check for over/under-voltage */
+/*        
+ *         for (ui = 0; ui < MODULE_COUNT; ui++) {
+ *            ClearWDT();
+ *            sum += voltages[ui];
+ *            if (voltages[ui] > OVER_VOLTAGE) {
+ *                REPORT_ERR(REP_EMERGENCY, -ETRIP, "MODULE %d OVER VOLTAGE", ui);
+ *                trip_mod(TRIP_OVER_VOLTAGE, ui);
+ *            } else if (voltages[ui] < UNDER_VOLTAGE) {
+ *                if (ui+1 != battBypass) {
+ *                    REPORT_ERR(REP_EMERGENCY, -ETRIP, "MODULE %d UNDER VOLTAGE", ui);
+ *                    trip_mod(TRIP_UNDER_VOLTAGE, ui);
+ *                } else {
+ *                    REPORT(REP_WARNING, "MODULE %d BYPASSED", ui);
+ *                }
+ *            }
+ *        }
+ *        wh_battery += (sum*ticksToSecs(ReadCoreTimer()-last_voltageConversion))/3600;
+ *        vConvertStatus = VCONVERT_NONE;
+ *    }
+ */
 }
 
 static void
@@ -1361,3 +1411,5 @@ main(void)
 
     exit(EXIT_SUCCESS); /* should never get here */
 }
+
+#endif

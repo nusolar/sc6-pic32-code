@@ -1,5 +1,5 @@
 #ifndef NU_CAN_STEERING_WHEEL_H
-#define NU_CAN_STEERING_WHEEL_H
+#define NU_CAN_STEERING_WHEEL_H 1
 
 #include <stdint.h>
 

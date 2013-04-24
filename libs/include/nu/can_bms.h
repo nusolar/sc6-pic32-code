@@ -1,5 +1,5 @@
-#ifndef NU_CAN_BMS
-#define NU_CAN_BMS
+#ifndef NU_CAN_BMS_H
+#define NU_CAN_BMS_H 1
 
 #include <stdint.h>
 

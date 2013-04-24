@@ -1,10 +1,10 @@
 #ifndef NU_DS18X20_H
-#define NU_DS18X20_H
+#define NU_DS18X20_H 1
 
-#include "compiler.h"
-#include "nu_types.h"
-#include "onewire.h"
-#include "utility.h"
+#include "nu/compiler.h"
+#include "nu/nu_types.h"
+#include "nu/onewire.h"
+#include "nu/utility.h"
 
 extern const u8             DS18B20_FAMILY_CODE;
 extern const u8             DS18S20_FAMILY_CODE;

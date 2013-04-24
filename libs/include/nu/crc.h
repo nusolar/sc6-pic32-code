@@ -5,11 +5,11 @@
  * calculator.
  */
 
-#ifndef __NU_CRC_H
-#define __NU_CRC_H
+#ifndef NU_CRC_H
+#define NU_CRC_H 1
 
 #include <GenericTypeDefs.h>
-#include "errorcodes.h"
+#include "nu/errorcodes.h"
 
 /* from http://en.wikipedia.org/wiki/Cyclic_redundancy_check#Commonly_used_and_standardized_CRCs */
 #define CRC_1           0x01                /* x+1 */

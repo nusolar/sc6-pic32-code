@@ -1,10 +1,10 @@
 #ifndef NU_MCP49X2_H
 #define NU_MCP49X2_H 1
 
-#include "compiler.h"
-#include "nu_types.h"
-#include "pinctl.h"
-#include "spi.h"
+#include "nu/compiler.h"
+#include "nu/nu_types.h"
+#include "nu/pinctl.h"
+#include "nu/spi.h"
 
 enum nu_mcp49_dac {
     NU_MCP49_DAC_A = 0,

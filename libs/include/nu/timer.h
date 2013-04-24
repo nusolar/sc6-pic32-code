@@ -1,11 +1,11 @@
 #ifndef NU_TIMER_H
-#define NU_TIMER_H
+#define NU_TIMER_H 1
 
 #include <peripheral/timer.h>
-#include "compiler.h"
-#include "nu_types.h"
-#include "param.h"
-#include "utility.h"
+#include "nu/compiler.h"
+#include "nu/nu_types.h"
+#include "nu/param.h"
+#include "nu/utility.h"
 
 STATIC_ASSERT(HZ > 1000000, SYS_CLK_HZ_TOO_LOW);
 #define MHZ (HZ/1000000)

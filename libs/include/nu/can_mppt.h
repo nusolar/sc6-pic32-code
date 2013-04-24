@@ -1,7 +1,7 @@
 #ifndef NU_CAN_MPPT_H
-#define NU_CAN_MPPT_H
+#define NU_CAN_MPPT_H 1
 
-#include "utility.h"
+#include "nu/utility.h"
 
 union can_mppt {
     union can_mppt_tx {

@@ -1,10 +1,10 @@
 #ifndef NU_ERROR_REPORTING_H
 #define NU_ERROR_REPORTING_H 1
 
-#include "compiler.h"
-#include "list.h"
-#include "nu_types.h"
-#include "utility.h"
+#include "nu/compiler.h"
+#include "nu/list.h"
+#include "nu/nu_types.h"
+#include "nu/utility.h"
 #include "boost/preprocessor.hpp"
 
 #include <stdarg.h>

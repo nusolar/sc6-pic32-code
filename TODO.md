@@ -1,6 +1,35 @@
 TODO
 ====
 
+NUSolar API (highest priority first)
+----
+* param
+* serial (get in semi-stable state for use in nu32)
+* led
+* pinctl (done?)
+* nu32
+* timer
+* spi
+* nokia5110
+* w1
+* ds18x20
+* ad7685
+* hais50p
+* ltc6803
+* wdt
+* flash
+* CAN
+* ws20
+* mppt
+* error_reporting
+* async_io
+
+Projects (highest priority first)
+----
+* BMS
+* driver controls
+* steering wheel
+
 steering wheel
 ----
 

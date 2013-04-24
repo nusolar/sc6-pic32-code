@@ -1,12 +1,12 @@
 #ifndef NU_NOKIA5110_H
 #define NU_NOKIA5110_H 1
 
-#include "compiler.h"
-#include "error_reporting.h"
-#include "nu_types.h"
-#include "pinctl.h"
-#include "spi.h"
-#include "utility.h"
+#include "nu/compiler.h"
+#include "nu/error_reporting.h"
+#include "nu/nu_types.h"
+#include "nu/pinctl.h"
+#include "nu/spi.h"
+#include "nu/utility.h"
 
 /***********************************
 *  Schematic:

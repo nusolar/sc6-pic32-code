@@ -1,5 +1,5 @@
 #ifndef NU_BYTEORDER_H
-#define NU_BYTEORDER_H
+#define NU_BYTEORDER_H 1
 
 /* provide macros/functions:
  * 
@@ -15,8 +15,8 @@
  * also includes swap16 and swap32
  */
 #include <sys/endian.h>
-#include "compiler.h"
-#include "nu_types.h"
+#include "nu/compiler.h"
+#include "nu/nu_types.h"
 
 static ALWAYSINLINE u16
 bswap_u16(u16 val)

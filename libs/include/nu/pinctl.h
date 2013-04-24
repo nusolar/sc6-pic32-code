@@ -6,12 +6,13 @@
  * Simple pin wrapper
  */
 
-#include "nu_types.h"
+#include "nu/nu_types.h"
 
 /*
  * platform-specific pinctl will provide the following functions/macros:
- * NU_PIN_INIT(...)
+ * __NU_PIN_INIT(...)
  * NU_INIT_PIN(struct nu_pin *p, ...)
+ * NU_PIN(name, ...)
  *
  * It should also provide macros in the form NU_PIN_* that contain the
  * set of arguments that define each pin for the architecture.
@@ -26,7 +27,7 @@
  * NU_PIN(main_relay_pin, NU_PIN_A0)
  * will define an nu_pin named main_relay_pin on pin A0.
  */
-#define NU_PIN(name, pin) \
+# define NU_PIN(name, pin) \
     struct nu_pin name = NU_PIN_INIT(pin)
 
 struct nu_pin;

@@ -1,5 +1,5 @@
 #ifndef NU_MINUNIT_H
-#define NU_MINUNIT_H
+#define NU_MINUNIT_H 1
 
 /**
  * @file

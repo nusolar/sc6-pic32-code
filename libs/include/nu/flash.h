@@ -1,11 +1,11 @@
-#ifndef __NU_FLASH_H
-#define __NU_FLASH_H
+#ifndef NU_FLASH_H
+#define NU_FLASH_H 1
 
 #include <plib.h>
 #include <stdint.h>
 #include <string.h>
-#include "errorcodes.h"
-#include "wdt.h"
+#include "nu/errorcodes.h"
+#include "nu/wdt.h"
 
 #define CONST_FLASH_SIZE_BYTES BYTE_PAGE_SIZE
 

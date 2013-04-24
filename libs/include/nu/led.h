@@ -1,16 +1,16 @@
 #ifndef NU_LED_H
-#define NU_LED_H
+#define NU_LED_H 1
 
 /**
  * @file
  * Little wrapper for LEDs
  */
 
-#include "compiler.h"
-#include "error_reporting.h"
-#include "nu_types.h"
-#include "pinctl.h"
-#include "utility.h"
+#include "nu/compiler.h"
+#include "nu/error_reporting.h"
+#include "nu/nu_types.h"
+#include "nu/pinctl.h"
+#include "nu/utility.h"
 
 struct nu_led {
     struct nu_error_reporting_dev erd;
@@ -26,28 +26,25 @@ struct nu_led {
  */
 WEAK extern const struct nu_vtbl_error_reporting_dev nu_led_erd_ops;
 
-#define NU_LED_ERD_INIT(ltr, num, min_priority) \
+#define NU_LED_ERD_INIT(pin, erd) \
     { \
-    NU_ERD_INIT(min_priority, &nu_led_erd_ops), \
-    NU_PIN_INIT(ltr, num) \
+    erd, \
+    pin \
     }
-#define NU_LED_INIT(ltr, num)  \
-    NU_LED_ERD_INIT(ltr, num, NU_REP_DEBUG)
+#define NU_LED_INIT(pin)  \
+    NU_LED_ERD_INIT(pin, NU_ERD_INIT(NU_REP_DEBUG, NULL))
 
-#define NU_LED(name, ltr, num) \
-    struct nu_led name = NU_LED_INIT(ltr, num)
-#define NU_LED_ERD(name, ltr, num, min_priority)   \
-    struct nu_led name = NU_LED_ERD_INIT(ltr, num, min_priority)
+#define NU_LED(name, pin) \
+    struct nu_led name = NU_LED_INIT(pin)
+#define NU_LED_ERD(name, pin, erd)   \
+    struct nu_led name = NU_LED_ERD_INIT(pin, erd)
+
+#define NU_INIT_LED(led, _pin) \
+    NU_INIT_PIN(&((led)->pin), _pin)
 
 #define nu_led_off(l)       nu_pin_set(&((l)->pin))
 #define nu_led_on(l)        nu_pin_clear(&((l)->pin))
 #define nu_led_toggle(l)    nu_pin_toggle(&((l)->pin))
-
-static ALWAYSINLINE void
-NU_INIT_LED(struct nu_led *l, IoPortId ltr, unsigned int num)
-{
-    NU_INIT_PIN(&(l->pin), ltr, num);
-}
 
 static INLINE void
 nu_led_setup(const struct nu_led *l)

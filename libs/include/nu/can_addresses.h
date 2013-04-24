@@ -1,5 +1,5 @@
 #ifndef NU_CAN_ADDRESSES_H
-#define NU_CAN_ADDRESSES_H
+#define NU_CAN_ADDRESSES_H 1
 
 /*
  * NP++ regex to cleanup old macros:

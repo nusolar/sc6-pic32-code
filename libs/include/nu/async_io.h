@@ -1,9 +1,9 @@
 #ifndef NU_ASYNC_IO_H
 #define NU_ASYNC_IO_H 1
 
-#include "circ_buf.h"
-#include "nu_types.h"
-#include "utility/arith.h"
+#include "nu/circ_buf.h"
+#include "nu/nu_types.h"
+#include "nu/utility/arith.h"
 #include <sys/types.h>
 
 struct nu_async_io {

@@ -1,9 +1,40 @@
 #ifndef NU_SERIAL_H
 #define NU_SERIAL_H 1
 
-#include "compiler.h"
-#include "error_reporting.h"
-#include "nu_types.h"
+#include "nu/compiler.h"
+#include "nu/error_reporting.h"
+#include "nu/utility/data.h"
+/*
+ * NU_SERIAL_PLATFORM_INIT(...), which expands to {..., ...}
+ * NU_INIT_SERIAL_PLATFORM(struct nu_serial_platform *p, ...)
+ * NU_SERIAL_PLATFORM(name, ...)
+ */
+#include "platform/serial.h"
+
+struct nu_serial {
+    struct nu_error_reporting_dev erd;
+    struct nu_serial_platform platform;
+};
+
+#define nu_erd_to_serial(erdp) \
+    container_of((erdp), struct nu_serial, erd)
+
+size_t
+nu_serial_rx(const struct nu_serial *s, void *dst, size_t n);
+
+size_t
+nu_serial_tx(const struct nu_serial *s, const void *src, size_t n);
+
+void
+nu_serial_puts(const struct nu_serial *s, const char *str);
+
+void PRINTF(2, 3)
+nu_serial_printf(const struct nu_serial *s, const char *fmt, ...);
+
+#if 0
+#include "nu/compiler.h"
+#include "nu/error_reporting.h"
+#include "nu/nu_types.h"
 #include <peripheral/uart.h>
 
 enum nu_serial_module_interrupt {
@@ -15,9 +46,6 @@ struct nu_serial {
     struct nu_error_reporting_dev erd;
     UART_MODULE module;
 };
-
-#define nu_erd_to_serial(erdp) \
-    container_of((erdp), struct nu_serial, erd)
 
 WEAK extern const struct nu_vtbl_error_reporting_dev nu_serial_erd_ops;
 
@@ -60,5 +88,6 @@ nu_serial_puts(const struct nu_serial *s, const char *str)
 
 void
 nu_serial_rx(const struct nu_serial *s, void *dst, size_t n);
+#endif
 
 #endif

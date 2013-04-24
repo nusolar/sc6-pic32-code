@@ -1,7 +1,7 @@
 #ifndef NU_UTIL_DATA_H
-#define NU_UTIL_DATA_H
+#define NU_UTIL_DATA_H 1
 
-#include "static.h"
+#include "nu/static.h"
 
 /* data structure things */
 
