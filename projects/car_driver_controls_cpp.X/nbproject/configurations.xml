@@ -144,8 +144,8 @@
         <property key="legacy-libc" value="false"/>
         <property key="save-temps" value="false"/>
       </C32Global>
-      <Simulator>
-      </Simulator>
+      <PICkit3PlatformTool>
+      </PICkit3PlatformTool>
     </conf>
   </confs>
 </configurationDescriptor>
