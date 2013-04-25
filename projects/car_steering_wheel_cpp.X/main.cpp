@@ -128,19 +128,20 @@ namespace nu {
 		 */
 		void ALWAYSINLINE recv_can() {
 			WDT::clear();
-			char inc[8]; uint32_t id;
-			common_can.in().rx(inc, id);
+			can::frame::Packet incoming;
+			uint32_t id;
+			common_can.in().rx(incoming.frame.d, id);
 
 			switch (id) {
 				case (uint32_t)can::addr::sw::rx::lights_k:
-					state.lights = *(can::frame::sw::rx::lights *)&inc;
+					state.lights.frame.i = incoming.frame.i;
 					// WARNING: unimplemented
 					break;
 				case (uint32_t)can::addr::ws20::tx::motor_velocity_k:
-					state.velo = *(can::frame::ws20::tx::motor_velocity *)&inc;
+					state.velo.frame.i = incoming.frame.i;
 					break;
 				case (uint32_t)can::addr::ws20::tx::current_vector_k:
-					state.curr = *(can::frame::ws20::tx::current_vector *)&inc;
+					state.curr.frame.i = incoming.frame.i;
 					break;
 				default:
 					break;
@@ -162,8 +163,8 @@ namespace nu {
 		 * Read the car's state from CAN, draw to dashboard LCD.
 		 */
 		void ALWAYSINLINE draw_lcd(){
-			lcd.printf("|velo:%f|", state.velo.vehicleVelocity);
-			lcd.printf("|curr:%f|", state.curr.currentRe);
+			lcd.printf("|velo:%f|", state.velo.frame.s.vehicleVelocity);
+			lcd.printf("|curr:%f|", state.curr.frame.s.currentRe);
 			uint32_t msg = 0x004e4550;
 			lcd.printf("|text:%s%s%u|", "Alert: ", (char *)&msg, 0xF);
 		}
@@ -174,15 +175,18 @@ namespace nu {
 		 */
 		void ALWAYSINLINE send_can() {
 			WDT::clear();
-			uint32_t bits_int;
 
-			bits_int = state.btns.to_ullong(); // 64->32 ok. WARNING BIT ORDER?
-			can::frame::sw::tx::buttons btns_frame = *(can::frame::sw::tx::buttons*)&bits_int;
-			common_can.out().tx(&btns_frame, sizeof(btns_frame), (uint16_t)can::addr::sw::tx::buttons_k);
+			can::frame::sw::tx::buttons btns_pkt;
+			btns_pkt.frame.i = state.btns.to_ullong();
+			common_can.out().tx(btns_pkt.frame.d,
+								4, // 64->32 ok. WARNING BIT ORDER?
+								(uint16_t)can::addr::sw::tx::buttons_k);
 
-			bits_int = state.leds.to_ullong();
-			can::frame::sw::tx::lights lts_frame = *(can::frame::sw::tx::lights*)&bits_int;
-			common_can.out().tx(&lts_frame, sizeof(lts_frame), (uint16_t)can::addr::sw::tx::lights_k);
+			can::frame::sw::tx::lights lts_pkt;
+			lts_pkt.frame.i = state.leds.to_ullong();
+			common_can.out().tx(lts_pkt.frame.d,
+								4, // 64->32 ok. WARNING BIT ORDER?
+								(uint16_t)can::addr::sw::tx::lights_k);
 		}
 
 		/**

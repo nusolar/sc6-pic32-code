@@ -107,6 +107,16 @@ namespace nu {
 		 * within namespaces for scoping.
 		 */
 		namespace frame {
+			struct Packet {
+				union frame_t {
+					uint8_t d[8];
+					uint64_t i;
+				} frame;
+				virtual ~Packet() {}
+				virtual uint64_t get_i() {return frame.i;};
+				virtual uint8_t *get_d() {return frame.d;};
+			};
+			
 			// Data Types:
 			#define Empty()
 			#define Module(u1, f1)\
@@ -165,7 +175,18 @@ namespace nu {
 			// Declaration:
 			#define List(x) namespace x
 			#define Xbase const int base // FUCK MPLAB
-			#define X(name, type, ...) ; struct PACKED name{type(__VA_ARGS__)};
+			#define X(name, type, ...)\
+				; struct name : public Packet {\
+					union frame_t {\
+						struct PACKED name##_t {\
+							type(__VA_ARGS__)\
+						} s;\
+						uint8_t d[8];\
+						uint64_t i;\
+					} frame;\
+					uint64_t get_i() {return frame.i;}\
+					uint8_t *get_d() {return frame.d;};\
+				};
 			#define Xinit(name, type, ...) X(name, type, __VA_ARGS__) const int zzz__##name
 			#define end ;
 				#include "nupp/can.def.hpp"
