@@ -34,6 +34,10 @@ namespace nu {
 			write_key_val("curr", x.frame.s.currentRe);
 			return *this;
 		}
+		uLCD28PT& operator << (const char * x) {
+			write_key_val("text", x);
+			return *this;
+		}
 		
 	private:
 		template <class V>

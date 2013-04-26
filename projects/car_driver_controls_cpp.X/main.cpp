@@ -51,14 +51,16 @@ namespace nu {
 		 * TODO: Implement extensible, polymorphic, car-wide state management.
 		 */
 		struct state {
-			bool lights_head, lights_brake, lights_l, lights_r, lights_hazard,
-				horn, // DISCONNECTED
-				accel_en, brake_en, reverse_en, regen_en, airgap_en;
-			float accel, regen, airgap;
+			bool lights_l, lights_r, lights_hazard,
+				lights_head, lights_brake, horn, // HORN DISCONNECTED
+				accel_en, brake_en, reverse_en, regen_en, airgap_en, cruise_en;
+			float accel, regen, airgap, cruise; // FUCK MPLAB
+			uint32_t sw_timer;
 			
-			state(): lights_head(0), lights_brake(0), lights_l(0), lights_r(0), // FUCK MPLAB
-				lights_hazard(0), horn(0), accel_en(0), brake_en(0), reverse_en(0),
-				regen_en(0), airgap_en(0), accel(0), regen(0), airgap(0) {}
+			state(): lights_l(0), lights_r(0), lights_hazard(0),
+				lights_head(0), lights_brake(0), horn(0),
+				accel_en(0), brake_en(0), reverse_en(0), regen_en(0), airgap_en(0), cruise_en(0),
+				accel(0), regen(0), airgap(0), cruise(0), sw_timer(0) {}
 		} state;
 
 
@@ -129,10 +131,17 @@ namespace nu {
 					state.lights_l = btns.frame.s.left;
 					state.lights_r = btns.frame.s.right;
 					state.lights_hazard = btns.frame.s.hazard;
+					state.sw_timer = timer_ms();
 					return;
 				}
 				default:
-					return;
+					uint32_t dc_time = timer_ms(); // Kill SW things if SW removed.
+					if ((dc_time > state.sw_timer + 500) || ((dc_time < state.sw_timer) && (dc_time > 500))) {
+						state.lights_l = 0;
+						state.lights_r = 0;
+						state.lights_hazard = 0;
+						state.cruise_en = 0;
+					}
 			}
 		}
 
@@ -156,15 +165,17 @@ namespace nu {
 		 */
 		void ALWAYSINLINE set_motor() {
 			WDT::clear();
+			
 			can::frame::ws20::rx::drive_cmd drive; // Zero-init [current, velocity]
 
 			if (state.brake_en) {
+				state.cruise_en = 0;
 				if (state.regen_en)
 					drive.frame.s.motorCurrent = 0.2; // REGEN_AMOUNT
 				else
-					Nop();
+					Nop(); // Normal braking.
 			} else if (state.accel_en)
-				drive.frame.s = {101, state.accel}; // [101m/s, accel percent]
+				drive.frame.s = {101, state.accel}; // [Max 101m/s, accel percent]
 
 			if (state.reverse_en)
 				drive.frame.s.motorVelocity *= -1;
@@ -205,7 +216,6 @@ namespace nu {
 
 using namespace std;
 using namespace nu;
-#include <sstream>
 
 /**
  * Instantiate DriverControls object
@@ -214,8 +224,6 @@ int main(int argc, const char* argv[]) {
 	DriverControls dc{};
 	while (true) {
 		dc.demo();
-		can::frame::sw::tx::buttons b;
-		
 	}
 	return 0;
 }
