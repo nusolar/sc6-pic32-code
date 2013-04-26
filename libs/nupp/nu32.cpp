@@ -5,7 +5,7 @@ using namespace nu;
 #define NU32_MEMINIT(Type, name, ...) , name(__VA_ARGS__)
 Nu32::Nu32(versions _version, uint32_t _hz): version(_version) LIST_OF_PINS_V1(NU32_MEMINIT)
 {
-	Param::nu_hz = _hz;
+	nu::param::Hz() = _hz;
 	
 	SYSTEMConfig(NU_HZ, SYS_CFG_ALL);
 	INTConfigureSystem(INT_SYSTEM_CONFIG_MULT_VECTOR);

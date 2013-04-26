@@ -398,7 +398,6 @@
       <itemPath>../nupp/can.cpp</itemPath>
       <itemPath>../nupp/nokia5110.cpp</itemPath>
       <itemPath>../nupp/nu32.cpp</itemPath>
-      <itemPath>../nupp/param.cpp</itemPath>
       <itemPath>../nupp/serial.cpp</itemPath>
       <itemPath>../nupp/spi.cpp</itemPath>
       <itemPath>../nupp/wdt.cpp</itemPath>
@@ -446,7 +445,8 @@
         <property key="enable-symbols" value="true"/>
         <property key="enable-unroll-loops" value="true"/>
         <property key="exclude-floating-point" value="false"/>
-        <property key="extra-include-directories" value="../include"/>
+        <property key="extra-include-directories"
+                  value="../include;../include/platform/pic32mx"/>
         <property key="generate-16-bit-code" value="false"/>
         <property key="isolate-each-function" value="true"/>
         <property key="make-warnings-into-errors" value="false"/>
@@ -511,7 +511,8 @@
         <property key="enable-unroll-loops" value="true"/>
         <property key="exceptions" value="false"/>
         <property key="exclude-floating-point" value="false"/>
-        <property key="extra-include-directories" value="../include"/>
+        <property key="extra-include-directories"
+                  value="../include;../include/platform/pic32mx"/>
         <property key="generate-16-bit-code" value="false"/>
         <property key="isolate-each-function" value="true"/>
         <property key="make-warnings-into-errors" value="false"/>

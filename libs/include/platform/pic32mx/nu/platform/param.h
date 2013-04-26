@@ -2,9 +2,10 @@
 #define NU_PIC32MX_PARAM_H 1
 
 #include "nu/nu_types.h"
+#include "nu/param.h"
+#include <xc.h>
 
 #define NU_DEFAULT_HZ (80000000UL)
-#define NU_PBUS_FREQ_HZ (nu_hz/((u32)(1 << OSCONbits.PBDIV)))
+#define NU_PBUS_FREQ_HZ (nu_hz/((u32)(1 << OSCCONbits.PBDIV)))
 
 #endif
-

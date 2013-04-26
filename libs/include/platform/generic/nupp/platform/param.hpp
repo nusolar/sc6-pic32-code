@@ -1,0 +1,7 @@
+#ifndef NUPP_PLATFORM_PARAM_HPP
+#define NUPP_PLATFORM_PARAM_HPP 1
+
+
+
+#endif
+
