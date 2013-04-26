@@ -4,10 +4,10 @@
 #include "nu/nu_types.h"
 #include "platform/param.h"
 
-extern unsigned long nu_hz;
+extern u64 nu_hz;
 
 #ifndef NU_DEFAULT_HZ
-# define NU_DEFAULT_HZ (80000000UL)
+#define NU_DEFAULT_HZ (80000000UL)
 #endif
 
 #define NU_HZ   nu_hz

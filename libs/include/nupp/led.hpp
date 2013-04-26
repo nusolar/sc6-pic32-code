@@ -1,6 +1,11 @@
 #ifndef NUPP_LED_HPP
 #define NUPP_LED_HPP 1
 
+/**
+ * @file
+ * Little wrapper for LEDs
+ */
+
 #include "nupp/pinctl.hpp"
 
 namespace nu {
@@ -14,7 +19,7 @@ namespace nu {
 		void ALWAYSINLINE on() {clear();}
 		void ALWAYSINLINE toggle() {Pin::toggle();}
 		unsigned int ALWAYSINLINE status() {return read();}
-		
+
 		/**
 		 * Turn LED [on/off] by assigning it to [true/false] respectively.
 		 */
@@ -25,7 +30,7 @@ namespace nu {
 				off();
 			return *this;
 		}
-		
+
 		void ALWAYSINLINE setup() {
 			set_digital_out();
 			off();

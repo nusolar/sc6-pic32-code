@@ -2,4 +2,4 @@
 
 using namespace nu;
 
-uint64_t Param::nu_hz = 80000000UL;
+uint64_t Param::nu_hz = NU_DEFAULT_HZ;
