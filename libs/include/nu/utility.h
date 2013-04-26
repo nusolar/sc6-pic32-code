@@ -7,7 +7,6 @@
 #include "nu/utility/data.h"
 #include "nu/utility/preprocessor.h"
 #include "nu/utility/static.h"
-#include "nu/compiler.h"
 
 /* for loop that shouldn't be optimized away
  * it wouldn't hurt to also declare the iteration variable
@@ -22,3 +21,4 @@
     void claimed_pin_##n(void){}
 
 #endif
+

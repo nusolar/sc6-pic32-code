@@ -2,10 +2,10 @@
 #define NUPP_TIMER_HPP 1
 
 #include "nupp/param.hpp"
-#include "nupp/compiler.hpp"
+#include "nu/compiler.h"
 #include <stdint.h>
 
-#include "nupp/utility.hpp"
+#include "nu/utility.h"
 #include <xc.h>
 #include <plib.h>
 

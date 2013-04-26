@@ -2,7 +2,7 @@
 #define NUPP_ERRORCODES_HPP 1
 
 #include <cstdint>
-#include "nupp/utility/data.hpp"
+#include "nu/utility/data.h"
 
 /* Library Conflicts */
 #ifdef EOTHER

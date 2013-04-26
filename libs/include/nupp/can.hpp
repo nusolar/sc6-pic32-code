@@ -1,7 +1,7 @@
 #ifndef NUPP_CAN_HPP
 #define NUPP_CAN_HPP 1
 
-#include "nupp/compiler.hpp"
+#include "nu/compiler.h"
 #include <cstdint>
 #include <new>
 #include <plib.h>

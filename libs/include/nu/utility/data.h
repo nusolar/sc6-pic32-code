@@ -1,7 +1,7 @@
 #ifndef NU_UTIL_DATA_H
 #define NU_UTIL_DATA_H 1
 
-#include "nu/static.h"
+#include "nu/utility/static.h"
 
 /* data structure things */
 
@@ -31,8 +31,11 @@
 
 #define ZEROVAR(x)          memset(&(x), 0, sizeof(x))
 
-#define swap(a, b) \
+#define SWAP(a, b) \
 	do { typeof(a) __tmp = (a); (a) = (b); (b) = __tmp; } while (0)
-#define SWAP(a, b)  swap(a, b)
+#ifndef __cplusplus
+# define swap(a, b)  SWAP(a, b)
+#endif
 
 #endif
+

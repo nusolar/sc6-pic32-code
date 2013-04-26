@@ -1,7 +1,7 @@
 #ifndef NUPP_ENUM_HPP
 #define NUPP_ENUM_HPP 1
 
-#include "nupp/compiler.hpp" // MAXIMUM WARNING MAXIMUM ERROR WTF. MUST BE INCLUDED FIRST
+#include "nu/compiler.h" // MAXIMUM WARNING MAXIMUM ERROR WTF. MUST BE INCLUDED FIRST
 
 #if defined(__DEBUG)
 #undef inline

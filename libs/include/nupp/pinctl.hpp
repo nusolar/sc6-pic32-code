@@ -2,7 +2,7 @@
 #define NUPP_PINCTL_HPP 1
 
 #include <string>
-#include "nupp/compiler.hpp"
+#include "nu/compiler.h"
 #include <cstdint>
 #include <plib.h>
 

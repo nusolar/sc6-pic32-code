@@ -2,7 +2,7 @@
 #define NUPP_AD7685_HPP 1
 
 #include <cstdint>
-#include "nupp/compiler.hpp"
+#include "nu/compiler.h"
 #include "nupp/errorcodes.hpp"
 
 #include "nupp/spi.hpp"

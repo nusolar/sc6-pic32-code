@@ -1,7 +1,7 @@
 #ifndef NUPP_WDT_HPP
 #define NUPP_WDT_HPP 1
 
-#include "nupp/compiler.hpp"
+#include "nu/compiler.h"
 
 #include <xc.h>
 #include <plib.h>

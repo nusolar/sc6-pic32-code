@@ -1,7 +1,7 @@
 #ifndef NUPP_SERIAL_HPP
 #define NUPP_SERIAL_HPP 1
 
-#include "nupp/compiler.hpp"
+#include "nu/compiler.h"
 #include <cstdint>
 
 #include <cstring> // strlen
