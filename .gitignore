@@ -10,6 +10,8 @@
 *.hex
 *.elf
 
+nppBackup/
+
 # linux
 .*
 !.gitignore
