@@ -17,14 +17,14 @@ namespace nu {
 		};
 		versions version;
 		
-		#define LIST_OF_PINS_V1 \
+		#define LIST_OF_PINS_V1(X) \
 			X(Led, led1, Pin(IOPORT_A, BIT_4)) \
 			X(Led, led2, Pin(IOPORT_A, BIT_5)) \
 			X(Pin, switch1, IOPORT_C, BIT_13) \
 			X(Serial, serial1, UART1) \
 			X(Serial, serial2, UART4) \
 
-		#define LIST_OF_PINS_V2 \
+		#define LIST_OF_PINS_V2(X) \
 			X(Led, led1, Pin(IOPORT_G, BIT_12)) \
 			X(Led, led2, Pin(IOPORT_G, BIT_13)) \
 			X(Pin, switch1, IOPORT_G, BIT_6) \
@@ -32,10 +32,9 @@ namespace nu {
 			X(Serial, serial2, UART3) \
 				
 		// FUCK MPLAB
-		#define X(Type, name, ...) \
+		#define NU32_DECLARE(Type, name, ...) \
 			Type name;
-			LIST_OF_PINS_V1
-		#undef X
+			LIST_OF_PINS_V1(NU32_DECLARE)
 		
 		/**
 		 * Primary Setup. SuperConstructor-call this before ANY setup calls!

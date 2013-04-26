@@ -8,7 +8,7 @@ namespace nu {
 	 * Abstract Button updates and detecting pressed buttons. 
 	 */
 	struct Button: protected Pin {
-		int8_t debounce;
+		int32_t debounce;
 		uint8_t debounce_max;
 		uint8_t thresh;
 		

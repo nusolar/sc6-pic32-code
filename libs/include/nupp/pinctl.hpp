@@ -5,6 +5,7 @@
 #include "nupp/compiler.hpp"
 #include <cstdint>
 #include <plib.h>
+#include <alloca.h>
 
 namespace nu {
 	/**
@@ -14,7 +15,7 @@ namespace nu {
 	struct Pin {
 		IoPortId ltr;
 		uint32_t num;
-		std::string name;
+		const char *name;
 
 		
 		/**
@@ -23,7 +24,9 @@ namespace nu {
 		 */
 		ALWAYSINLINE Pin(IoPortId _ltr = IOPORT_D, uint32_t _num = BIT_0, const char *_name = ""):
 			ltr(_ltr), num(_num), name{_name} {}
-		virtual ~Pin() {}
+		NOINLINE virtual ~Pin() {}
+		ALWAYSINLINE Pin(const Pin& p): ltr(p.ltr), num(p.num), name(p.name) {}
+		ALWAYSINLINE Pin& operator =(const Pin& p) {ltr=p.ltr; num=p.num; name=p.name; return *this;}
 
 		/**
 		 * Call one of these four setters in your Setup.
@@ -51,6 +54,11 @@ namespace nu {
 			if (rhs) set();
 			else clear();
 			return *this;
+		}
+
+		int *givemestack() {
+		    int *a = (int *)alloca(sizeof(*a));
+		    return a;
 		}
 	};
 }

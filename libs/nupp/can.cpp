@@ -7,7 +7,6 @@
 using namespace nu;
 using namespace can;
 
-#define DEFAULT_BUS_SPEED_HZ    1E6
 CAN_BIT_CONFIG Module::default_cfg = {
 	/* .phaseSeg2Tq            = */ CAN_BIT_5TQ,
 	/* .phaseSeg1Tq            = */ CAN_BIT_3TQ,

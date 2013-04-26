@@ -2,10 +2,8 @@
 
 using namespace nu;
 
-#define X(Type, name, ...) , name(__VA_ARGS__)
-Nu32::Nu32(versions _version, uint64_t _hz): version(_version)
-	LIST_OF_PINS_V1
-#undef  X
+#define NU32_MEMINIT(Type, name, ...) , name(__VA_ARGS__)
+Nu32::Nu32(versions _version, uint64_t _hz): version(_version) LIST_OF_PINS_V1(NU32_MEMINIT)
 {
 	Param::nu_hz = _hz;
 	

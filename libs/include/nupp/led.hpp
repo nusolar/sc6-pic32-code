@@ -20,9 +20,9 @@ namespace nu {
 		 */
 		ALWAYSINLINE Led& operator= (bool rhs) {
 			if (rhs)
-                on();
+				on();
 			else
-                off();
+				off();
 			return *this;
 		}
 		

@@ -24,7 +24,7 @@ namespace nu {
 
 		/** State of Steering Wheel & car */
 		struct state {
-			std::bitset<32> btns, leds; // actual state
+			std::bitset<32> btns, leds; // state of buttons & LEDs
 			can::frame::sw::rx::lights lights; // requested LED state
 			can::frame::ws20::tx::motor_velocity velo;
 			can::frame::ws20::tx::current_vector curr;
@@ -33,7 +33,7 @@ namespace nu {
 		/*
 		 * Pin definitions
 		 */
-		#define DIGITAL_IN_PINS			\
+		#define DIGITAL_IN_PINS(_BTN)	\
 			_BTN(yes,          E, 0)	\
 			_BTN(no,           G, 12)	\
 			_BTN(maybe,        E, 2)	\
@@ -41,7 +41,7 @@ namespace nu {
 			_BTN(cruise_mode,  D, 8)	\
 			_BTN(cruise_up,    D, 10)	\
 			_BTN(cruise_down,  A, 15)
-		#define LED_PINS                \
+		#define LED_PINS(_LED)			\
 			_LED(left,         D, 7)    \
 			_LED(right,        D, 3)    \
 			_LED(radio,        E, 5)    \
@@ -55,12 +55,10 @@ namespace nu {
 			_LED(cruise_mode,  D, 9)    \
 			_LED(cruise_down,  A, 15)
 
-		#define _BTN(name, ltr, num) uint16_t name##_k;
-		#define _LED(name, ltr, num) uint16_t led_##name##_k;
-			DIGITAL_IN_PINS
-			LED_PINS
-		#undef _BTN
-		#undef _LED
+		#define SW_DECLARE_BTNS(name, ltr, num) uint16_t name##_k;
+		#define SW_DECLARE_LEDS(name, ltr, num) uint16_t led_##name##_k;
+			DIGITAL_IN_PINS(SW_DECLARE_BTNS)
+			LED_PINS(SW_DECLARE_LEDS)
 
 
 		/**
@@ -68,12 +66,10 @@ namespace nu {
 		 */
 		ALWAYSINLINE SteeringWheel(): Nu32(Nu32::V2), common_can(CAN2), lcd(UART3) {
 			WDT::clear();
-			#define _BTN(name, ltr, num) name##_k = buttons.enumerate(Button(Pin(IOPORT_##ltr, BIT_##num, #name), 10, 5));
-			#define _LED(name, ltr, num) led_##name##_k = leds.enumerate(Led(Pin(IOPORT_##ltr, BIT_##num, #name)));
-				DIGITAL_IN_PINS
-				LED_PINS
-			#undef _LED
-			#undef _BTN
+			#define SW_INIT_BTNS(name, ltr, num) name##_k = buttons.enumerate(Button(Pin(IOPORT_##ltr, BIT_##num, #name), 10, 5));
+			#define SW_INIT_LEDS(name, ltr, num) led_##name##_k = leds.enumerate(Led(Pin(IOPORT_##ltr, BIT_##num, #name)));
+				DIGITAL_IN_PINS(SW_INIT_BTNS)
+				LED_PINS(SW_INIT_LEDS)
 
 			for (unsigned i=0; i<leds.size(); i++)
 				leds[i].setup();
@@ -163,8 +159,7 @@ namespace nu {
 		 * Read the car's state from CAN, draw to dashboard LCD.
 		 */
 		void ALWAYSINLINE draw_lcd(){
-			lcd.printf("|velo:%f|", state.velo.frame.s.vehicleVelocity);
-			lcd.printf("|curr:%f|", state.curr.frame.s.currentRe);
+			lcd << state.velo << state.curr;
 			uint32_t msg = 0x004e4550;
 			lcd.printf("|text:%s%s%u|", "Alert: ", (char *)&msg, 0xF);
 		}
