@@ -7,7 +7,6 @@
 using namespace nu;
 using namespace can;
 
-#define DEFAULT_BUS_SPEED_HZ    1E6
 CAN_BIT_CONFIG Module::default_cfg = {
 	/* .phaseSeg2Tq            = */ CAN_BIT_5TQ,
 	/* .phaseSeg1Tq            = */ CAN_BIT_3TQ,
@@ -26,7 +25,7 @@ int32_t Module::setup(uint32_t bus_speed, CAN_BIT_CONFIG *timings, CAN_MODULE_EV
 		return err_num;
 	}
 
-	CANSetSpeed(mod, timings, HZ, bus_speed);
+	CANSetSpeed(mod, timings, NU_HZ, bus_speed);
 	CANAssignMemoryBuffer(mod, buf, sizeof(buf));
 
 	if (interrupts) {

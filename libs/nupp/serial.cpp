@@ -14,7 +14,7 @@ void Serial::setup(uint32_t baud, nu::Serial::module_interrupt use_interrupt,
 	UARTConfigure(module, uart_config);
 	UARTSetFifoMode(module, interrupt_modes);
 	UARTSetLineControl(module, line_control_modes);
-	UARTSetDataRate(module, HZ, baud);
+	UARTSetDataRate(module, NU_HZ, baud);
 	UARTEnable(module, (UART_ENABLE_MODE) UART_ENABLE_FLAGS(enable_modes));
 
 	if (use_interrupt == USE_UART_INTERRUPT) {

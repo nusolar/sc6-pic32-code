@@ -18,48 +18,49 @@ namespace nu {
 		Nokia5110 lcd;
 
 		Enum<Pin, 3> analog_ins;
-		#define ANALOG_INS\
-			_PIN(regen_pedel, B, 0)\
-			_PIN(accel_pedel, B, 1)\
-			_PIN(airgap_pot, B, 4)
+		#define ANALOG_INS(X)\
+			X(regen_pedel,	B,	0)\
+			X(accel_pedel,	B,	1)\
+			X(airgap_pot,	B,	4)
 
 		Enum<Pin, 5> digital_ins;
-		#define DIGITAL_INS\
-			_PIN(brake_pedal,         B, 2)\
-			_PIN(headlight_switch,    B, 3)\
-			_PIN(airgap_enable,       B, 5)\
-			_PIN(regen_enable,        B, 8)\
-			_PIN(reverse_switch,      B, 9)
+		#define DIGITAL_INS(X)\
+			X(brake_pedal,		B,	2)\
+			X(headlight_switch,	B,	3)\
+			X(airgap_enable,	B,	5)\
+			X(regen_enable,		B,	8)\
+			X(reverse_switch,	B,	9)
 
 		Enum<Pin, 4> digital_outs;
-		#define DIGITAL_OUTS\
-			_PIN(lights_brake, D, 0)\
-			_PIN(lights_l,	   D, 1)\
-			_PIN(lights_r,     D, 2)\
-			_PIN(headlights,   D, 3)
+		#define DIGITAL_OUTS(X)\
+			X(lights_brake,	D,	0)\
+			X(lights_l,		D,	1)\
+			X(lights_r,		D,	2)\
+			X(headlights,	D,	3)
 
 		/*
 		 * Enumeration constants.
 		 */
-		#define _PIN(name, ltr, num) uint16_t name##_k; // FUCK MPLAB
-			ANALOG_INS
-			DIGITAL_INS
-			DIGITAL_OUTS
-		#undef _PIN
+		#define DC_DECLARE(name, ltr, num) uint16_t name##_k; // FUCK MPLAB
+			ANALOG_INS(DC_DECLARE)
+			DIGITAL_INS(DC_DECLARE)
+			DIGITAL_OUTS(DC_DECLARE)
 
 		/**
 		 * State of DriverControls-relevant parameters.
 		 * TODO: Implement extensible, polymorphic, car-wide state management.
 		 */
 		struct state {
-			bool lights_head, lights_brake, lights_l, lights_r, lights_hazard,
-				horn, // DISCONNECTED
-				accel_en, brake_en, reverse_en, regen_en, airgap_en;
-			float accel, regen, airgap;
+			bool lights_l, lights_r, lights_hazard,
+				lights_head, lights_brake, horn, // HORN DISCONNECTED
+				accel_en, brake_en, reverse_en, regen_en, airgap_en, cruise_en;
+			float accel, regen, airgap, cruise; // FUCK MPLAB
+			uint32_t sw_timer;
 			
-			state(): lights_head(0), lights_brake(0), lights_l(0), lights_r(0), // FUCK MPLAB
-				lights_hazard(0), horn(0), accel_en(0), brake_en(0), reverse_en(0),
-				regen_en(0), airgap_en(0), accel(0), regen(0), airgap(0) {}
+			state(): lights_l(0), lights_r(0), lights_hazard(0),
+				lights_head(0), lights_brake(0), horn(0),
+				accel_en(0), brake_en(0), reverse_en(0), regen_en(0), airgap_en(0), cruise_en(0),
+				accel(0), regen(0), airgap(0), cruise(0), sw_timer(0) {}
 		} state;
 
 
@@ -70,17 +71,13 @@ namespace nu {
 			lcd(SPI(Pin(IOPORT_G, BIT_9), SPI_CHANNEL2), Pin(IOPORT_A, BIT_9), Pin(IOPORT_E, BIT_9))
 		{
 			WDT::clear();
-			#define _PIN(name, ltr, num) name##_k = _ITER.enumerate(Pin(IOPORT_##ltr, BIT_##num, #name));
-				#define _ITER analog_ins
-					ANALOG_INS
-				#undef _ITER
-				#define _ITER digital_ins
-					DIGITAL_INS
-				#undef _ITER
-				#define _ITER digital_outs
-					DIGITAL_OUTS
-				#undef _ITER
-			#undef _PIN
+			#define DC_ENUMERATE(name, ltr, num, X_ITER) name##_k = X_ITER.enumerate(Pin(IOPORT_##ltr, BIT_##num, #name));
+				#define DC_AIN(...)  DC_ENUMERATE(__VA_ARGS__, analog_ins)
+				#define DC_DIN(...)  DC_ENUMERATE(__VA_ARGS__, digital_ins)
+				#define DC_DOUT(...) DC_ENUMERATE(__VA_ARGS__, digital_outs)
+					ANALOG_INS(DC_AIN)
+					DIGITAL_INS(DC_DIN)
+					DIGITAL_OUTS(DC_DOUT)
 
 			common_can.setup();
 			common_can.in()  = (can::RxChannel(can::Channel(common_can, CAN_CHANNEL0), CAN_RX_FULL_RECEIVE));
@@ -125,18 +122,26 @@ namespace nu {
 		 * Read car state from CAN.
 		 */
 		void ALWAYSINLINE recv_can() {
-			char inc[8]; uint32_t id;
-			common_can.in().rx(inc, id);
+			uint32_t id;
+			can::frame::Packet incoming;
+			common_can.in().rx(incoming.frame.d, id);
 			switch (id) {
 				case (uint32_t)can::addr::sw::tx::buttons_k: {
-					can::frame::sw::tx::buttons btns = *(can::frame::sw::tx::buttons*)&inc;
-					state.lights_l = btns.left;
-					state.lights_r = btns.right;
-					state.lights_hazard = btns.hazard;
+					can::frame::sw::tx::buttons btns(incoming);
+					state.lights_l = btns.frame.s.left;
+					state.lights_r = btns.frame.s.right;
+					state.lights_hazard = btns.frame.s.hazard;
+					state.sw_timer = timer_ms();
 					return;
 				}
 				default:
-					return;
+					uint32_t dc_time = timer_ms(); // Kill SW things if SW removed.
+					if ((dc_time > state.sw_timer + 500) || ((dc_time < state.sw_timer) && (dc_time > 500))) {
+						state.lights_l = 0;
+						state.lights_r = 0;
+						state.lights_hazard = 0;
+						state.cruise_en = 0;
+					}
 			}
 		}
 
@@ -160,21 +165,25 @@ namespace nu {
 		 */
 		void ALWAYSINLINE set_motor() {
 			WDT::clear();
-			can::frame::ws20::rx::drive_cmd drive {0, 0}; // [current, velocity]
+			
+			can::frame::ws20::rx::drive_cmd drive; // Zero-init [current, velocity]
 
 			if (state.brake_en) {
+				state.cruise_en = 0;
 				if (state.regen_en)
-					drive = {0.2, 0}; // WARNING: REGEN_AMOUNT
+					drive.frame.s.motorCurrent = 0.2; // REGEN_AMOUNT
 				else
-					drive = {0, 0};
+					Nop(); // Normal braking.
 			} else if (state.accel_en)
-				drive = {state.accel, 100};
+				drive.frame.s = {101, state.accel}; // [Max 101m/s, accel percent]
 
 			if (state.reverse_en)
-				drive.motorVelocity *= -1;
+				drive.frame.s.motorVelocity *= -1;
 
 			led1.on(); delay_ms(100); led1.off(); // WARNING: WTF
-			ws_can.out().tx(&drive, sizeof(drive), 0); // ERROR: CAN ADDRESS?
+			ws_can.out().tx(drive.frame.d,
+							8,
+							(uint16_t)can::addr::ws20::rx::drive_cmd_k); // ERROR: CAN ADDRESS?
 		}
 
 
@@ -191,7 +200,7 @@ namespace nu {
 
 			lcd.lcd_clear();
 			lcd.goto_xy(0, 0);
-			lcd.printf("%f", 25);
+			lcd.printf("%f", 25.0);
 		}
 
 

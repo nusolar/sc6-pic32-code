@@ -109,12 +109,17 @@ namespace nu {
 		namespace frame {
 			struct Packet {
 				union frame_t {
-					uint8_t d[8];
 					uint64_t i;
+					uint8_t d[8];
 				} frame;
 				virtual ~Packet() {}
-				virtual uint64_t get_i() {return frame.i;};
-				virtual uint8_t *get_d() {return frame.d;};
+				virtual uint64_t &get_i() {return frame.i;};
+				virtual uint8_t  *get_d() {return frame.d;};
+				Packet(): frame{0} {}
+				Packet(uint64_t &_i): frame{_i} {get_i() = _i;}
+				Packet(Packet& p): frame{p.get_i()} {get_i() = p.get_i();}
+				Packet& operator= (uint64_t &_i) {get_i() = _i; return *this;}
+				Packet& operator= (Packet& p) {get_i() = p.get_i(); return *this;}
 			};
 			
 			// Data Types:
@@ -178,14 +183,17 @@ namespace nu {
 			#define X(name, type, ...)\
 				; struct name : public Packet {\
 					union frame_t {\
+						uint64_t i;\
+						uint8_t d[8];\
 						struct PACKED name##_t {\
 							type(__VA_ARGS__)\
 						} s;\
-						uint8_t d[8];\
-						uint64_t i;\
 					} frame;\
-					uint64_t get_i() {return frame.i;}\
-					uint8_t *get_d() {return frame.d;};\
+					uint64_t &get_i() {return frame.i;}\
+					uint8_t  *get_d() {return frame.d;};\
+					name(): frame{0} {}\
+					name(uint64_t &_i): frame{_i} {get_i() = _i;}\
+					name(Packet& p): frame{p.get_i()} {get_i() = p.get_i();}\
 				};
 			#define Xinit(name, type, ...) X(name, type, __VA_ARGS__) const int zzz__##name
 			#define end ;

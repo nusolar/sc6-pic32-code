@@ -197,7 +197,7 @@ void Nokia5110::cmd_set_vop(uint8_t vop) {
 void Nokia5110::cmd_set_temp_coeff(cmd_func_set_options coeff) {
     instructions inst;
     PREPARE_CMD(inst.extended.temp_control);
-    inst.extended.temp_control.temp_coeff = coeff;
+    inst.extended.temp_control.temp_coeff = BITFIELD_CAST(coeff, 2) ;
     write_cmd(inst.cmd_byte);
 }
 
@@ -212,7 +212,7 @@ void Nokia5110::cmd_set_bias(uint8_t bias) {
 void Nokia5110::cmd_set_disp_mode(cmd_func_set_options mode) {
     instructions inst;
     PREPARE_CMD(inst.basic.disp_control);
-    inst.basic.disp_control.disp_mode = mode;
+    inst.basic.disp_control.disp_mode = BITFIELD_CAST(mode, 3);
     write_cmd(inst.cmd_byte);
 }
 
@@ -266,9 +266,9 @@ void Nokia5110::cmd_set_ram_y_addr(uint8_t y) {
  * 'y_pix' is the pixel in that row we want to enable/disable
  */
 void ALWAYSINLINE Nokia5110::set_pixel(uint8_t x, uint8_t y) {
-	uint8_t y_mod = (y >> 3);          // >>3 divides by 8
-	uint8_t y_pix = (y-(y_mod << 3));  // <<3 multiplies by 8
-	uint8_t val = 1 << y_pix;
+	uint8_t y_mod = (uint8_t)(y >> 3);          // >>3 divides by 8
+	uint8_t y_pix = (uint8_t)(y-(y_mod << 3));  // <<3 multiplies by 8
+	uint8_t val   = (uint8_t)(1 << y_pix);
 	
 	if (lcd_x > 84 || lcd_y > 48)
 		return;
