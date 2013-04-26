@@ -25,7 +25,7 @@ int32_t Module::setup(uint32_t bus_speed, CAN_BIT_CONFIG *timings, CAN_MODULE_EV
 		return err_num;
 	}
 
-	CANSetSpeed(mod, timings, HZ, bus_speed);
+	CANSetSpeed(mod, timings, NU_HZ, bus_speed);
 	CANAssignMemoryBuffer(mod, buf, sizeof(buf));
 
 	if (interrupts) {
