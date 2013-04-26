@@ -164,13 +164,15 @@ namespace nu {
 				else
 					Nop();
 			} else if (state.accel_en)
-				drive.frame.s = {101, state.accel}; // 101m/s,
+				drive.frame.s = {101, state.accel}; // [101m/s, accel percent]
 
 			if (state.reverse_en)
 				drive.frame.s.motorVelocity *= -1;
 
 			led1.on(); delay_ms(100); led1.off(); // WARNING: WTF
-			ws_can.out().tx(drive.frame.d, sizeof(drive.frame.i), 0); // ERROR: CAN ADDRESS?
+			ws_can.out().tx(drive.frame.d,
+							8,
+							(uint16_t)can::addr::ws20::rx::drive_cmd_k); // ERROR: CAN ADDRESS?
 		}
 
 
