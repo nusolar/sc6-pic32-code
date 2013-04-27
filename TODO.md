@@ -4,6 +4,7 @@ TODO
 NUSolar API (highest priority first)
 ----
 * param
+* error_reporting
 * serial (get in semi-stable state for use in nu32)
 * led
 * pinctl (done?)
@@ -21,7 +22,6 @@ NUSolar API (highest priority first)
 * CAN
 * ws20
 * mppt
-* error_reporting
 * async_io
 
 Projects (highest priority first)
