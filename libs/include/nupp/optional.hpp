@@ -14,7 +14,7 @@ namespace nu {
 		A *member;
 	public:
 		optional(): member(NULL) {}
-		
+
 		optional(const optional &a) {
 			member = a.member;
 		}
@@ -24,7 +24,7 @@ namespace nu {
 				new (this) optional(a);
 			} return *this;
 		}
-		
+
 		optional(const A& a) {
 			member = &a;
 		}
@@ -32,7 +32,7 @@ namespace nu {
 			member = &a;
 			return *this;
 		}
-		
+
 		/**
 		 * ERROR: Doesn't work. Returned value must be able to cast
 		 * itself implicitly.

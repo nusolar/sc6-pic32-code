@@ -23,7 +23,7 @@ namespace nu {
 			(*this)[len] = rvalue;
 			return len++;
 		}
-		
+
 		Enum(): len(0) {}
 	};
 }

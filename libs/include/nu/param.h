@@ -8,9 +8,10 @@
 # define NU_DEFAULT_HZ (80000000UL)
 #endif
 
-#define NU_HZ   nu_hz
-#define NU_MHZ  (NU_HZ/1000000UL)
 
 extern unsigned long nu_hz;
+
+#define NU_HZ   nu_hz
+#define NU_MHZ  (NU_HZ/1000000UL)
 
 #endif

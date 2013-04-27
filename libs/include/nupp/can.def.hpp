@@ -8,7 +8,7 @@
  * The Xbase MACRO shall yield the token `xbase` or a global variable declaration
  * The X(name, type, ...) MACRO shall begin with a correct separator symbol
  * The Xinit(name, type, ...) MACRO is X, except it shall be assigned = base.
- * The end MACRO shall yield a separator symbol if required 
+ * The end MACRO shall yield a separator symbol if required
  */
 
 namespace bms {

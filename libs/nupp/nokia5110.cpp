@@ -161,17 +161,17 @@ void Nokia5110::setup() {
 	SPI::setup(2000000, (SpiOpenFlags)(SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON));
 	dc.set_digital_out();
 	reset.set_digital_out();
-	
+
 	reset.low();
 	reset.high();
-	
+
 	cmd_func_set((cmd_func_set_options)(ADDRESSING_HORIZONTAL|ACTIVE|INSTRUCTIONS_EXTENDED));
 	cmd_set_contrast(57);
 	cmd_set_temp_coeff(TEMP_COEFF_0);
 	cmd_set_bias(4);
 	cmd_func_set((cmd_func_set_options)(ADDRESSING_HORIZONTAL|ACTIVE|INSTRUCTIONS_BASIC));
 	cmd_set_disp_mode(DISP_MODE_NORMAL);
-	
+
 	lcd_clear();
 }
 
@@ -269,10 +269,10 @@ void ALWAYSINLINE Nokia5110::set_pixel(uint8_t x, uint8_t y) {
 	uint8_t y_mod = (uint8_t)(y >> 3);          // >>3 divides by 8
 	uint8_t y_pix = (uint8_t)(y-(y_mod << 3));  // <<3 multiplies by 8
 	uint8_t val   = (uint8_t)(1 << y_pix);
-	
+
 	if (lcd_x > 84 || lcd_y > 48)
 		return;
-	
+
 	// Write the updated pixel out to the LCD
 	goto_xy(x, y_mod);
 	write_data(val); // WARNING: Clears all pixels in column?

@@ -1,4 +1,4 @@
-#include "nupp/common_pragmas.hpp"
+#include "nu/common_pragmas.h"
 #include <cstdint>
 
 #include "nupp/nu32.hpp"
@@ -10,7 +10,7 @@
 
 namespace nu {
 	/**
-	 * Battery Management System. Controls voltage, temperature, and current 
+	 * Battery Management System. Controls voltage, temperature, and current
 	 * monitoring sensors; informs telemetry; emergency-stops the car if needed.
 	 * TODO: Implement. (Will use C implementation for now)
 	 */
@@ -28,13 +28,13 @@ namespace nu {
 			OVER_TEMP,
 			UNDER_TEMP // sanity check
 		};
-		
+
 		Pin main_relay, array_relay;
 		can::Module common_can, mppt_can;
 		Nokia5110 lcd1, lcd2;
 		AD7685 adc;
-		
-		
+
+
 		/**
 		 * The state of the Batteries and the BMS.
 		 */
@@ -47,8 +47,8 @@ namespace nu {
 			double cc_battery, cc_array, wh_battery, wh_array;
 			double cc_mppt[3], wh_mppt_in[3], wh_mppt_out[3];
 		} state;
-		
-		
+
+
 		/**
 		 * Setup Relays, CAN modules, Nokia LCDs, Current sensors, Voltage sensors,
 		 * Temperature sensors, and more.
@@ -63,14 +63,14 @@ namespace nu {
 		{
 			WDT::clear();
 			state.last_trip_module = 12345;
-			
+
 			main_relay.set_digital_out();
 			array_relay.set_digital_out();
 			main_relay.set();
 			array_relay.set();
 		}
-		
-		
+
+
 		/**
 		 * A function to be called repeatedly
 		 */

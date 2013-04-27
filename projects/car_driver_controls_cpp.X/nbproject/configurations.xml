@@ -125,7 +125,8 @@
         <property key="enable-unroll-loops" value="false"/>
         <property key="exceptions" value="false"/>
         <property key="exclude-floating-point" value="false"/>
-        <property key="extra-include-directories" value="../../libs/include"/>
+        <property key="extra-include-directories"
+                  value="../../libs/include;../../libs/include/platform/pic32mx"/>
         <property key="generate-16-bit-code" value="false"/>
         <property key="isolate-each-function" value="true"/>
         <property key="make-warnings-into-errors" value="false"/>

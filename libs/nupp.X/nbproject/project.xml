@@ -6,7 +6,7 @@
             <name>nupp</name>
             <creation-uuid>c0d3e8a7-efa6-499f-87b6-3c11f75df158</creation-uuid>
             <make-project-type>0</make-project-type>
-            <c-extensions/>
+            <c-extensions>c</c-extensions>
             <cpp-extensions>cpp</cpp-extensions>
             <header-extensions>h,hpp</header-extensions>
             <sourceEncoding>ISO-8859-1</sourceEncoding>

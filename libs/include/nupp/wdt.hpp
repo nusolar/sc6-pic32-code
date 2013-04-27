@@ -13,13 +13,13 @@ namespace nu {
 	struct WDT {
 		static ALWAYSINLINE void enabled_clear_wdt (void) { ClearWDT(); }
 		static ALWAYSINLINE void disabled_clear_wdt(void) {}
-		
+
 		static void (*clear)(void);
-		
+
 		static ALWAYSINLINE void enable_clear(void) {
 			clear = enabled_clear_wdt;
 		}
-		
+
 		static ALWAYSINLINE void disable_clear(void) {
 			clear = disabled_clear_wdt;
 		}

@@ -10,15 +10,17 @@ extern "C" {
 
 #include <cstdint>
 
-namespace nu { namespace param {
-    static ALWAYSINLINE typeof(nu_hz)& Hz()     { return nu_hz; }
-    static ALWAYSINLINE typeof(NU_MHZ) MHz()    { return NU_MHZ; }
+namespace nu {
+	namespace param {
+		static ALWAYSINLINE typeof(nu_hz)& Hz()     { return nu_hz; }
+		static ALWAYSINLINE typeof(NU_MHZ) MHz()    { return NU_MHZ; }
 
-    static ALWAYSINLINE typeof(nu_hz)&
-    MHz(typeof(NU_MHZ) mhz) { return Hz() = mhz/1000000; }
+		static ALWAYSINLINE typeof(nu_hz)&
+		MHz(typeof(NU_MHZ) mhz) { return Hz() = mhz/1000000; }
 
-    static ALWAYSINLINE typeof(NU_DEFAULT_HZ)
-    default_hz() { return NU_DEFAULT_HZ; }
-}}
+		static ALWAYSINLINE typeof(NU_DEFAULT_HZ)
+		default_hz() { return NU_DEFAULT_HZ; }
+	}
+}
 
 #endif

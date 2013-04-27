@@ -1,5 +1,6 @@
-#include "nupp/common_pragmas.hpp"
-#include "nupp/compiler.hpp"
+#include "nu/common_pragmas.h"
+
+#include "nu/compiler.h"
 #include "nupp/enum.hpp"
 #include "nupp/timer.hpp"
 #include <cstdint>
@@ -56,7 +57,7 @@ namespace nu {
 				accel_en, brake_en, reverse_en, regen_en, airgap_en, cruise_en;
 			float accel, regen, airgap, cruise; // FUCK MPLAB
 			uint32_t sw_timer;
-			
+
 			state(): lights_l(0), lights_r(0), lights_hazard(0),
 				lights_head(0), lights_brake(0), horn(0),
 				accel_en(0), brake_en(0), reverse_en(0), regen_en(0), airgap_en(0), cruise_en(0),
@@ -153,7 +154,7 @@ namespace nu {
 			WDT::clear();
 			digital_outs[headlights_k]		= state.lights_head;
 			digital_outs[lights_brake_k]	= state.lights_brake;
-			
+
 			bool tick = timer_s()%2;// Even or Odd, change every second
 			digital_outs[lights_l_k] = state.lights_l||state.lights_hazard? tick: 0;
 			digital_outs[lights_r_k] = state.lights_r||state.lights_hazard? tick: 0;
@@ -165,7 +166,7 @@ namespace nu {
 		 */
 		void ALWAYSINLINE set_motor() {
 			WDT::clear();
-			
+
 			can::frame::ws20::rx::drive_cmd drive; // Zero-init [current, velocity]
 
 			if (state.brake_en) {

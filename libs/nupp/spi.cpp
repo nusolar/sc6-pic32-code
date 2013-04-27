@@ -19,10 +19,10 @@ void ALWAYSINLINE SPI::wait_busy() {
 
 void SPI::tx(const void *src, size_t n) {
 	uint32_t ui;
-	
+
     if (opt & TX_WAIT_START)
         wait_busy();
-	
+
     if (_SpiMapTbl[chn]->con.MODE32) {
         const uint32_t *elems = (const uint32_t *)src;
         SpiChnWriteC(chn, elems[0]);
@@ -39,18 +39,18 @@ void SPI::tx(const void *src, size_t n) {
         for (ui = 1; ui < n; ++ui)
             SpiChnPutC(chn, elems[ui]);
     }
-	
+
     if (opt & TX_WAIT_END)
         wait_busy();
 }
 
 void SPI::rx(void *dst, size_t n) {
 	uint32_t ui;
-	
+
 	while (SpiChnRxBuffCount(chn)) {
 		SpiChnReadC(chn);
 	}
-	
+
 	if (_SpiMapTbl[chn]->con.MODE32) {
 		uint32_t *elems = (uint32_t *)dst;
 		SpiChnPutC(chn, 0);

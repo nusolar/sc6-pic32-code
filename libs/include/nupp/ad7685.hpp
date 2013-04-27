@@ -21,14 +21,14 @@ namespace nu {
 			NO_BUSY_INDICATOR = 0,
 			BUSY_INDICATOR = 1<<2
 		};
-		
+
 		Pin convert;
 		uint32_t num_devices;
 		options opts;
-		
+
 		ALWAYSINLINE AD7685(SPI spi, Pin _convert, uint32_t _num, options _opts):
 			SPI(spi), convert(_convert), num_devices(_num), opts(_opts) {}
-		
+
 		/**
 		 * Setup SPI and conversion pin.
 		 */
@@ -40,12 +40,12 @@ namespace nu {
 			SPI::setup(100000, (SpiOpenFlags)(SPI_OPEN_CKE_REV|SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON));
 			return 0;
 		}
-		
-		/** 
+
+		/**
 		 * Gets the actual voltage reading(s) (not raw data).
 		 */
 		void convert_read_uv(uint32_t *dst);
-		
+
 	private:
 		void read_uv(uint32_t *dst);
 	};

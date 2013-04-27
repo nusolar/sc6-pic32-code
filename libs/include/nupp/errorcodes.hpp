@@ -51,14 +51,14 @@ namespace nu {
 		#undef NU_ERROR
 		NUM_ERRORS
 	};
-	
+
 	/** Array of the string representations of the standard error codes */
 	static const char *error_names[] = {
 		#define NU_ERROR(x) #x,
 			NU_ERRORS
 		#undef NU_ERROR
 	};
-	
+
 	/** A wrapper to get (without failure) an error name */
 	inline const char *error_get_name(errors err) {
 		return error_names[err < NUM_ERRORS? err: EOTHER];

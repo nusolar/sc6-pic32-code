@@ -1,4 +1,4 @@
-#include "nupp/common_pragmas.hpp"
+#include "nu/common_pragmas.h"
 #include <bitset>
 #include <cstdlib>
 #include "nupp/enum.hpp"
@@ -73,7 +73,7 @@ namespace nu {
 
 			for (unsigned i=0; i<leds.size(); i++)
 				leds[i].setup();
-			
+
 			common_can.setup();
 			common_can.in() = can::RxChannel(can::Channel(common_can, CAN_CHANNEL0), CAN_RX_FULL_RECEIVE);
 			common_can.out() = can::TxChannel(can::Channel(common_can, CAN_CHANNEL1), CAN_HIGH_MEDIUM_PRIORITY);

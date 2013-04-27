@@ -357,19 +357,10 @@
           <itemPath>../include/nu/ws20.h</itemPath>
         </logicalFolder>
         <logicalFolder name="nupp" displayName="nupp" projectFiles="true">
-          <logicalFolder name="utility" displayName="utility" projectFiles="true">
-            <itemPath>../include/nupp/utility/arith.hpp</itemPath>
-            <itemPath>../include/nupp/utility/bits.hpp</itemPath>
-            <itemPath>../include/nupp/utility/data.hpp</itemPath>
-            <itemPath>../include/nupp/utility/preprocessor.hpp</itemPath>
-            <itemPath>../include/nupp/utility/static.hpp</itemPath>
-          </logicalFolder>
           <itemPath>../include/nupp/ad7685.hpp</itemPath>
           <itemPath>../include/nupp/button.hpp</itemPath>
           <itemPath>../include/nupp/can.def.hpp</itemPath>
           <itemPath>../include/nupp/can.hpp</itemPath>
-          <itemPath>../include/nupp/common_pragmas.hpp</itemPath>
-          <itemPath>../include/nupp/compiler.hpp</itemPath>
           <itemPath>../include/nupp/enum.hpp</itemPath>
           <itemPath>../include/nupp/errorcodes.hpp</itemPath>
           <itemPath>../include/nupp/led.hpp</itemPath>
@@ -382,7 +373,6 @@
           <itemPath>../include/nupp/spi.hpp</itemPath>
           <itemPath>../include/nupp/timer.hpp</itemPath>
           <itemPath>../include/nupp/ulcd28pt.hpp</itemPath>
-          <itemPath>../include/nupp/utility.hpp</itemPath>
           <itemPath>../include/nupp/wdt.hpp</itemPath>
         </logicalFolder>
       </logicalFolder>
@@ -394,6 +384,9 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <logicalFolder name="f1" displayName="nu" projectFiles="true">
+        <itemPath>../nu/param.c</itemPath>
+      </logicalFolder>
       <itemPath>../nupp/ad7685.cpp</itemPath>
       <itemPath>../nupp/can.cpp</itemPath>
       <itemPath>../nupp/nokia5110.cpp</itemPath>
@@ -411,6 +404,7 @@
   </logicalFolder>
   <sourceRootList>
     <Elem>../include</Elem>
+    <Elem>../nu</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
