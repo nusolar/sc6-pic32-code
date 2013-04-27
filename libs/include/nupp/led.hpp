@@ -13,12 +13,13 @@ namespace nu {
 	 * Wrap Led setup, clarify Pin function names.
 	 */
 	struct Led: protected Pin {
-		ALWAYSINLINE Led(Pin led = Pin()): Pin(led) {}
-
-		void ALWAYSINLINE off() {set();}
-		void ALWAYSINLINE on() {clear();}
-		void ALWAYSINLINE toggle() {Pin::toggle();}
-		unsigned int ALWAYSINLINE status() {return read();}
+		bool _status;
+		
+		ALWAYSINLINE Led(Pin led = Pin()): Pin(led), _status(false) {}
+		void ALWAYSINLINE off() {set(); _status = false;}
+		void ALWAYSINLINE on() {clear(); _status = true;}
+		void ALWAYSINLINE toggle() {Pin::toggle(); _status = !_status;}
+		unsigned int ALWAYSINLINE status() {return _status;}
 
 		/**
 		 * Turn LED [on/off] by assigning it to [true/false] respectively.

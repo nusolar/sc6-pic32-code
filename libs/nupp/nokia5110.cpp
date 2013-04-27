@@ -7,7 +7,7 @@
 
 using namespace nu;
 
-static const unsigned char ASCII[96][5] = {
+static const uint8_t ASCII[96][5] = {
 	{0x00, 0x00, 0x00, 0x00, 0x00} /* 20  (space) */
 	,{0x00, 0x00, 0x5f, 0x00, 0x00} /* 21 ! */
 	,{0x00, 0x07, 0x00, 0x07, 0x00} /* 22 " */
@@ -151,7 +151,7 @@ union instructions {
             unsigned    fixed           :1; /* 1 */
         } set_vop;
     } extended;
-    char cmd_byte;
+    uint8_t cmd_byte;
 };
 #define PREPARE_CMD(a)\
 	do {memset(&a, 0, sizeof(a)); a.fixed = 1;} while(0)

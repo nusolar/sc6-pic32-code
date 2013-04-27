@@ -1,6 +1,7 @@
 #include "nu/common_pragmas.h"
 #include <cstdint>
 
+#include "nupp/timer.hpp"
 #include "nupp/nu32.hpp"
 #include "nupp/pinctl.hpp"
 #include "nupp/nokia5110.hpp"
@@ -68,6 +69,9 @@ namespace nu {
 			array_relay.set_digital_out();
 			main_relay.set();
 			array_relay.set();
+
+			lcd1.setup();
+			lcd2.setup();
 		}
 
 
@@ -81,6 +85,8 @@ namespace nu {
 			lcd2.printf("T:%0.9f", state.temperatures[31]);
 			lcd2.goto_xy(0, 3);
 			lcd2.printf("I:%0.9f", state.current_battery);
+			led1.toggle();
+			delay_ms(300);
 		}
 	};
 }
@@ -91,5 +97,8 @@ using namespace nu;
 
 int main(int argc, const char * argv[]){
 	BatteryMs bms{};
+	while (true) {
+		bms.run();
+	}
     return 0;
 }
