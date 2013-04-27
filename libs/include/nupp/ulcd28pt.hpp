@@ -13,6 +13,10 @@
 namespace nu {
 	/**
 	 * The touch-sensitive LCD on the Steering Wheel.
+	 * The communication protocol is: "|text:value|",
+	 * where port ('|') is the record separator ('\x1E')
+	 * and colon (':') is the unit separator ('\x1F').
+	 * The key, "text", must be 4 letters.
 	 */
 	struct uLCD28PT: public Serial {
 		static const char unit = '\x1F';

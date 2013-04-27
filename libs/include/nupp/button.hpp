@@ -10,7 +10,9 @@
 
 namespace nu {
 	/**
-	 * HW Button with debouncing.
+	 * Digital Button on one pin. Button contacts are flimsy, so
+	 * calling update() "debounces" the value.
+	 * Call update() often relative to threshold to keep value updated.
 	 */
 	struct Button: protected Pin {
 		int32_t debounce;
