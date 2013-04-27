@@ -68,7 +68,7 @@ namespace nu {
 		/**
 		 * Setup CAN, input Pins, output Pins, and Nokia LCD.
 		 */
-		ALWAYSINLINE DriverControls(): Nu32(Nu32::V2), ws_can(CAN1), common_can(CAN2),
+		ALWAYSINLINE DriverControls(): Nu32(Nu32::V1), ws_can(CAN1), common_can(CAN2),
 			lcd(SPI(Pin(IOPORT_G, BIT_9), SPI_CHANNEL2), Pin(IOPORT_A, BIT_9), Pin(IOPORT_E, BIT_9))
 		{
 			WDT::clear();
@@ -208,9 +208,9 @@ namespace nu {
 		/** Demo LED toggling */
 		void ALWAYSINLINE demo() {
 			WDT::clear();
-			delay_ms(100);
 			led1.toggle();
 			led2.on();
+			delay_ms(1000);
 		}
 	};
 }
