@@ -24,7 +24,7 @@ namespace nu {
 		static ALWAYSINLINE typeof(NU_DEFAULT_HZ)
 		default_hz() { return NU_DEFAULT_HZ; }
 
-#ifdef 0
+#if 0
 		/**
 		 * Get Hz specific to Peripherial Bus if one exists. Otherwise get
 		 * system clock Hz.
