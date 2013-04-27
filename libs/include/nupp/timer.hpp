@@ -26,7 +26,7 @@ namespace nu {
 
 		static ALWAYSINLINE void delay_ticks(uint32_t t) {
 			uint32_t start = timer_ticks();
-			while (timer_ticks() - start < t)
+			while (timer_ticks() - start < (t/20))
 				Nop();   /* do nothing */
 		}
 
