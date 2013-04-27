@@ -49,7 +49,7 @@ namespace nu {
 		 * Primary Setup. SuperConstructor-call this before ANY setup calls!
 		 * Call all setups from derived class's constructor!
 		 */
-		Nu32(versions _version, uint32_t _hz = NU_DEFAULT_HZ);
+		Nu32(versions _version, uint32_t _hz = param::default_hz());
 	};
 }
 

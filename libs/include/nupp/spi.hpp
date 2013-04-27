@@ -29,7 +29,7 @@ namespace nu {
 			Pin(cs), chn(_chn), opt(_opt) {}
 
 		void ALWAYSINLINE setup(uint32_t bitrate, SpiOpenFlags oflags) {
-			SpiChnOpen(chn, oflags, (uint32_t) NU_PBUS_FREQ_HZ/bitrate);
+			SpiChnOpen(chn, oflags, (uint32_t) param::pbus_hz()/bitrate);
 		}
 		void ALWAYSINLINE setup_pin(uint32_t bitrate, SpiOpenFlags oflags) {
 			set_digital_out();

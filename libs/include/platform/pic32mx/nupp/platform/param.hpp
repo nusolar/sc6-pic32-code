@@ -8,8 +8,6 @@ extern "C" {
 
 namespace nu {
 	namespace platform {
-		static ALWAYSINLINE typeof(NU_PBUS_FREQ_HZ)
-		pbus_freq_hz() { return NU_PBUS_FREQ_HZ; }
 	}
 }
 

@@ -6,7 +6,7 @@ using namespace nu;
 
 uint32_t ALWAYSINLINE SPI::get_bitrate(SpiChannel chn) {
 	uint32_t clk_div = (_SpiMapTbl[chn]->brg+1)*2;
-	return (uint32_t) NU_PBUS_FREQ_HZ/clk_div; //bitrate
+	return (uint32_t) param::pbus_hz()/clk_div; //bitrate
 }
 
 void ALWAYSINLINE SPI::wait_busy() {
