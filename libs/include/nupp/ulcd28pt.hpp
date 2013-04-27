@@ -47,7 +47,7 @@ namespace nu {
 		template <class V>
 		void write_key_val(const char *key, V &value) {
 			s << record << key << unit << value << record;
-			this->printf(s.str().c_str());
+			this->puts(s.str().c_str());
 			s.str("");
 		}
 	};

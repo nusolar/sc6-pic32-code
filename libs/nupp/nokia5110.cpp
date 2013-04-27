@@ -158,7 +158,7 @@ union instructions {
 
 
 void Nokia5110::setup() {
-	SPI::setup(2000000, (SpiOpenFlags)(SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON));
+	SPI::setup_pin(2000000, (SpiOpenFlags)(SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON));
 	dc.set_digital_out();
 	reset.set_digital_out();
 
