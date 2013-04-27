@@ -60,11 +60,6 @@ namespace nu {
 			else clear();
 			return *this;
 		}
-
-		int *givemestack() {
-		    int *a = (int *)alloca(sizeof(*a));
-		    return a;
-		}
 	};
 }
 

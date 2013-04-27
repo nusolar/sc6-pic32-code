@@ -125,7 +125,7 @@ namespace nu {
 		void ALWAYSINLINE recv_can() {
 			uint32_t id;
 			can::frame::Packet incoming;
-			common_can.in().rx(incoming.frame.d, id);
+			common_can.in().rx(incoming.bytes(), id);
 			switch (id) {
 				case (uint32_t)can::addr::sw::tx::buttons_k: {
 					can::frame::sw::tx::buttons btns(incoming);
@@ -182,7 +182,7 @@ namespace nu {
 				drive.frame.s.motorVelocity *= -1;
 
 			led1.on(); delay_ms(100); led1.off(); // WARNING: WTF
-			ws_can.out().tx(drive.frame.d,
+			ws_can.out().tx(drive.bytes(),
 							8,
 							(uint16_t)can::addr::ws20::rx::drive_cmd_k); // ERROR: CAN ADDRESS?
 		}
