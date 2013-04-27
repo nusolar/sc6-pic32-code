@@ -6,7 +6,6 @@
 #include "nupp/led.hpp"
 #include "nupp/nokia5110.hpp"
 #include "nupp/nu32.hpp"
-#include "nupp/optional.hpp"
 #include "nupp/param.hpp"
 #include "nupp/pinctl.hpp"
 #include "nupp/serial.hpp"

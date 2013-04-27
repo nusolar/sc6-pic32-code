@@ -281,22 +281,27 @@
           </logicalFolder>
           <logicalFolder name="platform" displayName="platform" projectFiles="true">
             <logicalFolder name="generic" displayName="generic" projectFiles="true">
-              <logicalFolder name="platform" displayName="platform" projectFiles="true">
-                <logicalFolder name="nppBackup" displayName="nppBackup" projectFiles="true">
+              <logicalFolder name="f1" displayName="nu" projectFiles="true">
+                <logicalFolder name="f1" displayName="platform" projectFiles="true">
+                  <itemPath>../include/platform/generic/nu/platform/param.h</itemPath>
+                  <itemPath>../include/platform/generic/nu/platform/pinctl.h</itemPath>
                 </logicalFolder>
-                <itemPath>../include/nu/platform/generic/platform/pinctl.h</itemPath>
+              </logicalFolder>
+              <logicalFolder name="f2" displayName="nupp" projectFiles="true">
               </logicalFolder>
             </logicalFolder>
             <logicalFolder name="pic32mx" displayName="pic32mx" projectFiles="true">
-              <logicalFolder name="platform" displayName="platform" projectFiles="true">
-                <logicalFolder name="nppBackup" displayName="nppBackup" projectFiles="true">
+              <logicalFolder name="f1" displayName="nu" projectFiles="true">
+                <logicalFolder name="f1" displayName="platform" projectFiles="true">
+                  <itemPath>../include/platform/pic32mx/nu/platform/common_pragmas.h</itemPath>
+                  <itemPath>../include/platform/pic32mx/nu/platform/nu32.h</itemPath>
+                  <itemPath>../include/platform/pic32mx/nu/platform/param.h</itemPath>
+                  <itemPath>../include/platform/pic32mx/nu/platform/pinctl.h</itemPath>
+                  <itemPath>../include/platform/pic32mx/nu/platform/platform.h</itemPath>
+                  <itemPath>../include/platform/pic32mx/nu/platform/serial.h</itemPath>
                 </logicalFolder>
-                <itemPath>../include/nu/platform/pic32mx/platform/common_pragmas.h</itemPath>
-                <itemPath>../include/nu/platform/pic32mx/platform/nu32.h</itemPath>
-                <itemPath>../include/nu/platform/pic32mx/platform/param.h</itemPath>
-                <itemPath>../include/nu/platform/pic32mx/platform/pinctl.h</itemPath>
-                <itemPath>../include/nu/platform/pic32mx/platform/platform.h</itemPath>
-                <itemPath>../include/nu/platform/pic32mx/platform/serial.h</itemPath>
+              </logicalFolder>
+              <logicalFolder name="f2" displayName="nupp" projectFiles="true">
               </logicalFolder>
             </logicalFolder>
           </logicalFolder>
@@ -366,7 +371,6 @@
           <itemPath>../include/nupp/led.hpp</itemPath>
           <itemPath>../include/nupp/nokia5110.hpp</itemPath>
           <itemPath>../include/nupp/nu32.hpp</itemPath>
-          <itemPath>../include/nupp/optional.hpp</itemPath>
           <itemPath>../include/nupp/param.hpp</itemPath>
           <itemPath>../include/nupp/pinctl.hpp</itemPath>
           <itemPath>../include/nupp/serial.hpp</itemPath>
