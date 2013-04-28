@@ -13,10 +13,10 @@ namespace nu {
 	//namespace timer {
 #define timer_reset()   WriteCoreTimer(0)
 
-		static ALWAYSINLINE float s_to_ticks (float s)  { return s *param::Hz() /2; }
-		static ALWAYSINLINE float ms_to_ticks(float ms) { return ms*param::Hz() /2000; }
-		static ALWAYSINLINE float us_to_ticks(float us) { return us*param::MHz()/2; }
-		static ALWAYSINLINE float ns_to_ticks(float ns) { return ns*param::MHz()/2000; }
+		static ALWAYSINLINE float s_to_ticks (float s)  { return s *(float)param::Hz() /2; }
+		static ALWAYSINLINE float ms_to_ticks(float ms) { return ms*(float)param::Hz() /2000; }
+		static ALWAYSINLINE float us_to_ticks(float us) { return us*(float)param::MHz()/2; }
+		static ALWAYSINLINE float ns_to_ticks(float ns) { return ns*(float)param::MHz()/2000; }
 
 #define timer_ticks ReadCoreTimer
 		static ALWAYSINLINE uint32_t timer_s(void)  { return timer_ticks()*2	/param::Hz(); }

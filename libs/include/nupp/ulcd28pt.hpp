@@ -19,16 +19,19 @@ namespace nu {
 	 * The key, "text", must be 4 letters.
 	 */
 	struct uLCD28PT: public Serial {
-		static const char unit = '\x1F';
-		static const char record = '\x1E';
-
+		static const uint8_t unit = '\x1F';
+		static const uint8_t record = '\x1E';
+		static const uint16_t buffersize = 512;
 		/**
-		 * WARNING: USES HEAP. ACCEPTABLE CUZ ITS A PRINTF BUFFER,
-		 * WOULD IDENTICALLY OVERFLOW ON STACK.
+		 * WARNING: INITIALLY USES HEAP. HOWEVER, CONSTRUCTOR IMMEDIATELY
+		 * GIVES IT A STACK BUFFER.
 		 */
 		std::stringstream s;
+		char _buffer[buffersize];
 
-		ALWAYSINLINE uLCD28PT(UART_MODULE mod): Serial(mod), s() {}
+		ALWAYSINLINE uLCD28PT(UART_MODULE mod): Serial(mod), s() {
+			s.rdbuf()->pubsetbuf(_buffer, buffersize);
+		}
 
 		uLCD28PT& operator << (const can::frame::ws20::tx::motor_velocity& x) {
 			write_key_val("velo", x.frame.s.vehicleVelocity);
