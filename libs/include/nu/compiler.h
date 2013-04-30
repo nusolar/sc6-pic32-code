@@ -45,6 +45,7 @@
 #define WEAK            __attribute__((weak))
 /* execute before main() */
 #define CONSTRUCTOR(args)   __attribute__((constructor args))
+#define COMPILE_ERROR(args) __attribute__((error args))
 
 /*
  * Prevent the compiler from merging or refetching accesses.  The compiler

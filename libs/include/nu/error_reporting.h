@@ -85,6 +85,8 @@ enum nu_report_priority {
 
 extern const char * const nu_report_priority_str[];
 
+extern bool nu_library_warn_enabled;
+
 struct nu_error_reporting_dev {
     struct list_head list;
     const struct nu_vtbl_error_reporting_dev *op;
@@ -141,7 +143,10 @@ COLD void PRINTF(5,0)
 nu_vpanic(const char *file, const char *func, u32 line, const char *expr,
         const char *fmt, va_list args);
 
-static ALWAYSINLINE COLD NORETURN void PRINTF(5,6)
+#ifdef IS_NU_LIBRARY
+COMPILE_ERROR(("Can't invoke panic from library code!"))
+#endif
+static COLD NORETURN void PRINTF(5,6)
 nu_panic(const char *file, const char *func, u32 line, const char *expr,
     const char *fmt, ...)
 {
@@ -151,7 +156,10 @@ nu_panic(const char *file, const char *func, u32 line, const char *expr,
     unreachable();
 }
 
-static ALWAYSINLINE COLD void PRINTF(6,7)
+#ifdef IS_NU_LIBRARY
+COMPILE_ERROR(("Can't invoke panic from library code!"))
+#endif
+static COLD void PRINTF(6,7)
 nu_panic_on(u32 cond, const char *file, const char *func, u32 line,
         const char *expr, const char *fmt, ...)
 {
@@ -167,20 +175,28 @@ COLD void PRINTF(6,0)
 nu_vwarn(const char *file, const char *func, u32 line, const char *expr,
     enum nu_report_priority priority, const char *fmt, va_list args);
 
-static ALWAYSINLINE COLD void PRINTF(6, 7)
+static COLD void PRINTF(6, 7)
 nu_warn(const char *file, const char *func, u32 line, const char *expr,
         enum nu_report_priority priority, const char *fmt, ...)
 {
     va_list vl;
+#ifdef IS_NU_LIBRARY
+    if (!nu_library_warn_enabled)
+        return;
+#endif
     va_start(vl, fmt);
     nu_vwarn(file, func, line, expr, priority, fmt, vl);
     va_end(vl);
 }
 
-static ALWAYSINLINE COLD u32 PRINTF(7, 8)
+static COLD u32 PRINTF(7, 8)
 nu_warn_on(u32 cond, const char *file, const char *func, u32 line,
     const char *expr, enum nu_report_priority priority, const char *fmt, ...)
 {
+#ifdef IS_NU_LIBRARY
+    if (!nu_library_warn_enabled)
+        return cond;
+#endif
     if (unlikely((long)cond)) {
         va_list vl;
         va_start(vl, fmt);

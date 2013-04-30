@@ -39,6 +39,8 @@ panic_enter(void)
     return nu_lock_acquired(&panic_lock);
 }
 
+bool nu_library_warn_enabled = false;
+
 COLD void
 nu_reporting_register_warn_prehook(nu_reporting_prehook func)
 {
