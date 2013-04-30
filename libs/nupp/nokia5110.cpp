@@ -7,7 +7,7 @@
 
 using namespace nu;
 
-static const unsigned char ASCII[96][5] = {
+static const uint8_t ASCII[96][5] = {
 	{0x00, 0x00, 0x00, 0x00, 0x00} /* 20  (space) */
 	,{0x00, 0x00, 0x5f, 0x00, 0x00} /* 21 ! */
 	,{0x00, 0x07, 0x00, 0x07, 0x00} /* 22 " */
@@ -151,14 +151,14 @@ union instructions {
             unsigned    fixed           :1; /* 1 */
         } set_vop;
     } extended;
-    char cmd_byte;
+    uint8_t cmd_byte;
 };
 #define PREPARE_CMD(a)\
 	do {memset(&a, 0, sizeof(a)); a.fixed = 1;} while(0)
 
 
 void Nokia5110::setup() {
-	SPI::setup(2000000, (SpiOpenFlags)(SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON));
+	SPI::setup_pin(2000000, (SpiOpenFlags)(SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON));
 	dc.set_digital_out();
 	reset.set_digital_out();
 
@@ -245,6 +245,36 @@ void Nokia5110::printf(const char *fmt, ...) {
 }
 
 
+/**
+ * Set one pixel. UNUSED
+ * The LCD has 6 rows, with 8 pixels per row.
+ * 'y_row' is the row that the pixel is in.
+ * 'y_pix' is the pixel in that row we want to enable/disable
+ */
+void ALWAYSINLINE Nokia5110::set_pixel(uint8_t x, uint8_t y) {
+	uint8_t y_row = (uint8_t)(y >> 3);          // >>3 divides by 8
+	uint8_t y_pix = (uint8_t)(y-(y_row << 3));  // <<3 multiplies by 8
+	uint8_t val   = (uint8_t)(1 << y_pix);
+
+	if (x >= lcd_x || y >= lcd_y)
+		return;
+
+	// Write the updated pixel out to the LCD
+	goto_xy(x, y_row);
+	write_data(val); // WARNING: Clears all pixels in column?
+}
+
+
+void Nokia5110::lcd_clear() {
+	goto_xy(0,0);
+	// WARNING: Loops over lcd_y48, but only 6 rows?
+	for (uint32_t ui = 0; ui < (lcd_x * 6); ui++) {
+		WDT::clear();
+		write_data(0x00); // WARNING: Nokia auto-increments location?
+	}
+}
+
+
 // x should be in the range 0-83
 void Nokia5110::cmd_set_ram_x_addr(uint8_t x) {
 	instructions inst;
@@ -260,32 +290,5 @@ void Nokia5110::cmd_set_ram_y_addr(uint8_t y) {
 	inst.basic.set_ram_y_addr.addr = BITFIELD_CAST(y, 3); // 3 bits
 	write_cmd(inst.cmd_byte);
 }
-
-/* The LCD has 6 rows, with 8 pixels per row.
- * 'y_mod' is the row that the pixel is in.
- * 'y_pix' is the pixel in that row we want to enable/disable
- */
-void ALWAYSINLINE Nokia5110::set_pixel(uint8_t x, uint8_t y) {
-	uint8_t y_mod = (uint8_t)(y >> 3);          // >>3 divides by 8
-	uint8_t y_pix = (uint8_t)(y-(y_mod << 3));  // <<3 multiplies by 8
-	uint8_t val   = (uint8_t)(1 << y_pix);
-
-	if (lcd_x > 84 || lcd_y > 48)
-		return;
-
-	// Write the updated pixel out to the LCD
-	goto_xy(x, y_mod);
-	write_data(val); // WARNING: Clears all pixels in column?
-}
-
-void Nokia5110::lcd_clear() {
-	goto_xy(0,0);
-	// WARNING: Loops over lcd_y48, but only 6 rows?
-	for (uint32_t ui = 0; ui < (lcd_x * lcd_y); ui++) {
-		WDT::clear();
-		write_data(0x00); // WARNING: Nokia auto-increments location?
-	}
-}
-
 
 

@@ -1,6 +1,7 @@
 #include "nu/common_pragmas.h"
 #include <cstdint>
 
+#include "nupp/timer.hpp"
 #include "nupp/nu32.hpp"
 #include "nupp/pinctl.hpp"
 #include "nupp/nokia5110.hpp"
@@ -54,7 +55,7 @@ namespace nu {
 		 * Temperature sensors, and more.
 		 * TODO: Lots
 		 */
-		ALWAYSINLINE BatteryMs(): Nu32(Nu32::V2),
+		ALWAYSINLINE BatteryMs(): Nu32(Nu32::V1),
 			main_relay(IOPORT_D, BIT_2), array_relay(IOPORT_D, BIT_3), common_can(CAN1), mppt_can(CAN2),
 			lcd1(SPI(Pin(IOPORT_G, BIT_9), SPI_CHANNEL2), Pin(IOPORT_A, BIT_9), Pin(IOPORT_E, BIT_9)),
 			lcd2(SPI(Pin(IOPORT_E, BIT_8), SPI_CHANNEL2), Pin(IOPORT_A, BIT_10), Pin(IOPORT_E, BIT_9)),
@@ -65,9 +66,20 @@ namespace nu {
 			state.last_trip_module = 12345;
 
 			main_relay.set_digital_out();
-			array_relay.set_digital_out();
 			main_relay.set();
+			array_relay.set_digital_out();
 			array_relay.set();
+
+			common_can.setup();
+			common_can.in() = can::RxChannel(can::Channel(common_can, CAN_CHANNEL0), CAN_RX_FULL_RECEIVE);
+			common_can.out() = can::TxChannel(can::Channel(common_can, CAN_CHANNEL1), CAN_HIGH_MEDIUM_PRIORITY);
+			common_can.err() = can::TxChannel(can::Channel(common_can, CAN_CHANNEL2), CAN_LOWEST_PRIORITY);
+			
+			mppt_can.setup();
+			mppt_can.out() = can::TxChannel(can::Channel(common_can, CAN_CHANNEL1), CAN_HIGH_MEDIUM_PRIORITY);
+			
+			lcd1.setup();
+			lcd2.setup();
 		}
 
 
@@ -76,11 +88,13 @@ namespace nu {
 		 */
 		void ALWAYSINLINE run() {
 			lcd2.goto_xy(0, 1);
-			lcd2.printf("V:%0.9f", state.voltages[31]);
+			lcd2.printf("V: %0.9f", state.voltages[31]);
 			lcd2.goto_xy(0, 2);
-			lcd2.printf("T:%0.9f", state.temperatures[31]);
+			lcd2.printf("T: %0.9f", state.temperatures[31]);
 			lcd2.goto_xy(0, 3);
-			lcd2.printf("I:%0.9f", state.current_battery);
+			lcd2.printf("I: %0.9f", state.current_battery);
+			led1.toggle();
+			delay_s(10);
 		}
 	};
 }
@@ -91,5 +105,8 @@ using namespace nu;
 
 int main(int argc, const char * argv[]){
 	BatteryMs bms{};
+	while (true) {
+		bms.run();
+	}
     return 0;
 }

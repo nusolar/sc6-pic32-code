@@ -18,8 +18,6 @@
 # define INLINE          inline
 # define ALWAYSINLINE    inline  __attribute__((always_inline))
 #else
-# undef  inline
-# define inline
 # define INLINE
 # define ALWAYSINLINE
 #endif

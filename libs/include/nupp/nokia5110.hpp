@@ -42,6 +42,8 @@ namespace nu {
 		};
 
 		Pin reset, dc;
+		static const uint16_t lcd_x = 84;
+		static const uint16_t lcd_y = 48;
 
 		ALWAYSINLINE Nokia5110(SPI spi, Pin _reset, Pin _dc): SPI(spi), reset(_reset), dc(_dc) {}
 
@@ -58,16 +60,16 @@ namespace nu {
 		void puts(unsigned char *str);
 		void PRINTF(2,3) printf(const char *fmt, ...);
 
+		/**
+		 * Goto column x, line y. 84 columns, 6 lines.
+		 */
 		void ALWAYSINLINE goto_xy(uint8_t x, uint8_t y) {
 			cmd_set_ram_x_addr(x);
 			cmd_set_ram_y_addr(y);
 		}
 		void set_pixel(uint8_t x, uint8_t y);
-
 		void lcd_clear();
-		static const uint16_t lcd_x = 84;
-		static const uint16_t lcd_y = 48;
-
+		
 	private:
 		void ALWAYSINLINE write_cmd(uint8_t cmd) {
 			dc.low();

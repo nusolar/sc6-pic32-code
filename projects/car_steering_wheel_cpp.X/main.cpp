@@ -57,8 +57,8 @@ namespace nu {
 
 		#define SW_DECLARE_BTNS(name, ltr, num) uint16_t name##_k;
 		#define SW_DECLARE_LEDS(name, ltr, num) uint16_t led_##name##_k;
-			DIGITAL_IN_PINS(SW_DECLARE_BTNS)
-			LED_PINS(SW_DECLARE_LEDS)
+		DIGITAL_IN_PINS(SW_DECLARE_BTNS)
+		LED_PINS(SW_DECLARE_LEDS)
 
 
 		/**
@@ -68,8 +68,8 @@ namespace nu {
 			WDT::clear();
 			#define SW_INIT_BTNS(name, ltr, num) name##_k = buttons.enumerate(Button(Pin(IOPORT_##ltr, BIT_##num, #name), 10, 5));
 			#define SW_INIT_LEDS(name, ltr, num) led_##name##_k = leds.enumerate(Led(Pin(IOPORT_##ltr, BIT_##num, #name)));
-				DIGITAL_IN_PINS(SW_INIT_BTNS)
-				LED_PINS(SW_INIT_LEDS)
+			DIGITAL_IN_PINS(SW_INIT_BTNS)
+			LED_PINS(SW_INIT_LEDS)
 
 			for (unsigned i=0; i<leds.size(); i++)
 				leds[i].setup();
@@ -79,7 +79,7 @@ namespace nu {
 			common_can.out() = can::TxChannel(can::Channel(common_can, CAN_CHANNEL1), CAN_HIGH_MEDIUM_PRIORITY);
 			common_can.err() = can::TxChannel(can::Channel(common_can, CAN_CHANNEL2), CAN_LOWEST_PRIORITY);
 
-			lcd.setup(115200, Serial::NOT_USE_UART_INTERRUPT, INT_PRIORITY_DISABLED, (UART_FIFO_MODE)0, (UART_LINE_CONTROL_MODE)0, (UART_CONFIGURATION)0, (UART_ENABLE_MODE)(UART_ENABLE|UART_RX|UART_TX));
+			lcd.setup(115200);
 		}
 
 
@@ -202,7 +202,7 @@ namespace nu {
 		/** Demo LED toggling */
 		void ALWAYSINLINE demo() {
 			WDT::clear();
-			delay_ms(100);
+			delay_ms(2000);
 			led1.toggle();
 			led2.on();
 		}

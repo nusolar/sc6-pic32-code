@@ -20,7 +20,7 @@ void AD7685::read_uv(uint32_t *dst){
 
 void AD7685::convert_read_uv(uint32_t *dst){
 	if (FOUR_WIRE & opt && BUSY_INDICATOR & opt)
-        Pin::high();
+        cs.high();
 
     // start conversion
     convert.high();
@@ -30,17 +30,17 @@ void AD7685::convert_read_uv(uint32_t *dst){
         if (THREE_WIRE & opt)
             convert.low();
         else if (FOUR_WIRE & opt)
-            Pin::high();
+            cs.high();
     }
 
     delay_ns(2300); // 2.3 us
 
     if (THREE_WIRE & opt && NO_BUSY_INDICATOR & opt)
-        Pin::low();
+        cs.low();
 
     // read in the actual voltage reading(s) over SPI
     read_uv(dst);
 
-	Pin::low();
+	cs.low();
     delay_us(5);
 }

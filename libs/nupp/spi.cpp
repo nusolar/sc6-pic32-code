@@ -19,6 +19,7 @@ void ALWAYSINLINE SPI::wait_busy() {
 
 void SPI::tx(const void *src, size_t n) {
 	uint32_t ui;
+	cs.low();
 
     if (opt & TX_WAIT_START)
         wait_busy();
@@ -42,6 +43,7 @@ void SPI::tx(const void *src, size_t n) {
 
     if (opt & TX_WAIT_END)
         wait_busy();
+	cs.high();
 }
 
 void SPI::rx(void *dst, size_t n) {

@@ -43,9 +43,9 @@ namespace nu {
 		 * Enumeration constants.
 		 */
 		#define DC_DECLARE(name, ltr, num) uint16_t name##_k; // FUCK MPLAB
-			ANALOG_INS(DC_DECLARE)
-			DIGITAL_INS(DC_DECLARE)
-			DIGITAL_OUTS(DC_DECLARE)
+		ANALOG_INS(DC_DECLARE)
+		DIGITAL_INS(DC_DECLARE)
+		DIGITAL_OUTS(DC_DECLARE)
 
 		/**
 		 * State of DriverControls-relevant parameters.
@@ -68,25 +68,25 @@ namespace nu {
 		/**
 		 * Setup CAN, input Pins, output Pins, and Nokia LCD.
 		 */
-		ALWAYSINLINE DriverControls(): Nu32(Nu32::V2), ws_can(CAN1), common_can(CAN2),
+		ALWAYSINLINE DriverControls(): Nu32(Nu32::V1), ws_can(CAN1), common_can(CAN2),
 			lcd(SPI(Pin(IOPORT_G, BIT_9), SPI_CHANNEL2), Pin(IOPORT_A, BIT_9), Pin(IOPORT_E, BIT_9))
 		{
 			WDT::clear();
 			#define DC_ENUMERATE(name, ltr, num, X_ITER) name##_k = X_ITER.enumerate(Pin(IOPORT_##ltr, BIT_##num, #name));
-				#define DC_AIN(...)  DC_ENUMERATE(__VA_ARGS__, analog_ins)
-				#define DC_DIN(...)  DC_ENUMERATE(__VA_ARGS__, digital_ins)
-				#define DC_DOUT(...) DC_ENUMERATE(__VA_ARGS__, digital_outs)
-					ANALOG_INS(DC_AIN)
-					DIGITAL_INS(DC_DIN)
-					DIGITAL_OUTS(DC_DOUT)
+			#define DC_AIN(...)  DC_ENUMERATE(__VA_ARGS__, analog_ins)
+			#define DC_DIN(...)  DC_ENUMERATE(__VA_ARGS__, digital_ins)
+			#define DC_DOUT(...) DC_ENUMERATE(__VA_ARGS__, digital_outs)
+			ANALOG_INS(DC_AIN)
+			DIGITAL_INS(DC_DIN)
+			DIGITAL_OUTS(DC_DOUT)
 
 			common_can.setup();
-			common_can.in()  = (can::RxChannel(can::Channel(common_can, CAN_CHANNEL0), CAN_RX_FULL_RECEIVE));
-			common_can.out() = (can::TxChannel(can::Channel(common_can, CAN_CHANNEL1), CAN_HIGH_MEDIUM_PRIORITY));
-			common_can.err() = (can::TxChannel(can::Channel(common_can, CAN_CHANNEL2), CAN_LOWEST_PRIORITY)); // err chn
+			common_can.in()  = can::RxChannel(can::Channel(common_can, CAN_CHANNEL0), CAN_RX_FULL_RECEIVE);
+			common_can.out() = can::TxChannel(can::Channel(common_can, CAN_CHANNEL1), CAN_HIGH_MEDIUM_PRIORITY);
+			common_can.err() = can::TxChannel(can::Channel(common_can, CAN_CHANNEL2), CAN_LOWEST_PRIORITY); // err chn
 
 			ws_can.setup();
-			ws_can.out() = (can::TxChannel(can::Channel(ws_can, CAN_CHANNEL1), CAN_HIGH_MEDIUM_PRIORITY));
+			ws_can.out() = can::TxChannel(can::Channel(ws_can, CAN_CHANNEL1), CAN_HIGH_MEDIUM_PRIORITY);
 
 			// TODO: configure ADC10
 			lcd.setup();
@@ -208,9 +208,9 @@ namespace nu {
 		/** Demo LED toggling */
 		void ALWAYSINLINE demo() {
 			WDT::clear();
-			delay_ms(100);
 			led1.toggle();
 			led2.on();
+			delay_ms(1000);
 		}
 	};
 }

@@ -11,6 +11,9 @@ extern "C" {
 #include <cstdint>
 
 namespace nu {
+	/**
+	 * System parameters, like the clock frequency and peripheral bus frequency.
+	 */
 	namespace param {
 		static ALWAYSINLINE typeof(nu_hz)& Hz()     { return nu_hz; }
 		static ALWAYSINLINE typeof(NU_MHZ) MHz()    { return NU_MHZ; }
@@ -20,6 +23,16 @@ namespace nu {
 
 		static ALWAYSINLINE typeof(NU_DEFAULT_HZ)
 		default_hz() { return NU_DEFAULT_HZ; }
+
+#if 0
+		/**
+		 * Get Hz specific to Peripherial Bus if one exists. Otherwise get
+		 * system clock Hz.
+		 * @todo: Distinguish DEFAULT_PBUS_HZ from PBUS_HZ, initialize in nu32.h
+		 */
+		static ALWAYSINLINE typeof(NU_PBUS_FREQ_HZ)
+		pbus_hz() { return NU_PBUS_FREQ_HZ; }
+#endif
 	}
 }
 
