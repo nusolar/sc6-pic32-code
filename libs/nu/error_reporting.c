@@ -81,9 +81,11 @@ void
 nu_reporting_clear(enum nu_report_priority max_priority)
 {
     struct nu_error_reporting_dev *pos;
-    list_for_each_entry(pos, &erd_list, list)
+    list_for_each_entry(pos, &erd_list, list) {
+        nu_wdt_clear();
         if (pos->min_priority <= max_priority)
             pos->op->reset_err_state(pos);
+    }
 }
 
 COLD void PRINTF(6,0)
