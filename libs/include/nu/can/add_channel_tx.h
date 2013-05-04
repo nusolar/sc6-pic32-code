@@ -1,7 +1,7 @@
 #ifndef NU_CAN_ADD_CHANNEL_TX_H
 #define NU_CAN_ADD_CHANNEL_TX_H 1
 
-#include "nu/nu_types.h"
+#include "nu/types.h"
 #include "nu/can.h"
 
 struct nu_can;

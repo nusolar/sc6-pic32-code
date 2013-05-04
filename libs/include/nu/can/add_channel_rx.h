@@ -2,7 +2,7 @@
 #define NU_CAN_ADD_CHANNEL_RX_H 1
 
 #include "nu/can.h"
-#include "nu/nu_types.h"
+#include "nu/types.h"
 
 struct nu_can;
 struct nu_can_add_channel_rx_attr;

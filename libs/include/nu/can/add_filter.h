@@ -1,7 +1,7 @@
 #ifndef NU_CAN_ADD_FILTER_H
 #define NU_CAN_ADD_FILTER_H 1
 
-#include "nu/nu_types.h"
+#include "nu/types.h"
 #include <peripheral/CAN.h>
 
 struct nu_can;

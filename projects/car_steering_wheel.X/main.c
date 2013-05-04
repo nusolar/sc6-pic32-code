@@ -3,7 +3,7 @@
 #include "nu/compiler.h"
 #include "nu/nu32.h"
 #include "nu/can.h"
-#include "nu/nu_types.h"
+#include "nu/types.h"
 #include "nu/serial.h"
 #include "nu/pinctl.h"
 #include "nu/utility.h"

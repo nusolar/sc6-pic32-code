@@ -1,5 +1,5 @@
 #include "nu/common_pragmas.h"
-#include "nu/nu_types.h"
+#include "nu/types.h"
 #include "nu/pinctl.h"
 
 /** Trip codes that will be reported right before the car trips, and [hopefully]

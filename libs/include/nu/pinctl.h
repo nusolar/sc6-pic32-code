@@ -6,7 +6,7 @@
  * Simple pin wrapper
  */
 
-#include "nu/nu_types.h"
+#include "nu/types.h"
 
 /*
  * platform-specific pinctl will provide the following functions/macros:

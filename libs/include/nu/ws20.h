@@ -6,7 +6,7 @@
 #include "nu/can.h"
 /*#include "can_all.h"*/
 #include "nu/can_addresses.h"
-#include "nu/nu_types.h"
+#include "nu/types.h"
 
 struct nu_ws20 {
     struct nu_can can;

@@ -16,7 +16,7 @@
  */
 #include <sys/endian.h>
 #include "nu/compiler.h"
-#include "nu/nu_types.h"
+#include "nu/types.h"
 
 static ALWAYSINLINE u16
 bswap_u16(u16 val)

@@ -2,7 +2,7 @@
 #define NU_PINCTL_GENERIC_H 1
 
 #include "nu/compiler.h"
-#include "nu/nu_types.h"
+#include "nu/types.h"
 
 struct nu_pin {
     u8 reserved;

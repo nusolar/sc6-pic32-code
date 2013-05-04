@@ -2,7 +2,7 @@
 #define NU_ARITH_H 1
 
 #include "nu/compiler.h"
-#include "nu/nu_types.h"
+#include "nu/types.h"
 #include <stdlib.h>
 
 /*

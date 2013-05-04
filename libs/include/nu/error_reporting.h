@@ -4,7 +4,7 @@
 #include "boost/preprocessor.hpp"
 #include "nu/compiler.h"
 #include "nu/list.h"
-#include "nu/nu_types.h"
+#include "nu/types.h"
 #include <stdarg.h>
 
 /* if we have variadic macros... */

@@ -3,7 +3,7 @@
 
 #include <peripheral/timer.h>
 #include "nu/compiler.h"
-#include "nu/nu_types.h"
+#include "nu/types.h"
 #include "nu/param.h"
 #include "nu/utility.h"
 
