@@ -112,6 +112,7 @@
       </logicalFolder>
       <itemPath>../nu/param.c</itemPath>
       <itemPath>../nu/error_reporting.c</itemPath>
+      <itemPath>../nu/serial.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

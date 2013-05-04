@@ -4,26 +4,24 @@
 #include "nu/compiler.h"
 #include "nu/error_reporting.h"
 #include "nu/utility/data.h"
+#include "nu/platform/serial.h"
 /*
  * NU_SERIAL_PLATFORM_INIT(...), which expands to {..., ...}
  * NU_INIT_SERIAL_PLATFORM(struct nu_serial_platform *p, ...)
  * NU_SERIAL_PLATFORM(name, ...)
  */
-#include "platform/serial.h"
-
-struct nu_serial {
-    struct nu_error_reporting_dev erd;
-    struct nu_serial_platform platform;
-};
 
 #define nu_erd_to_serial(erdp) \
     container_of((erdp), struct nu_serial, erd)
 
-size_t
-nu_serial_rx(const struct nu_serial *s, void *dst, size_t n);
+struct nu_serial {
+    struct nu_serial_platform platform;
+    struct nu_error_reporting_dev erd;
+};
 
-size_t
-nu_serial_tx(const struct nu_serial *s, const void *src, size_t n);
+void
+nu_serial_setup(struct nu_serial *s, u32 baud,
+	struct nu_serial_platform_setup_args *arg);
 
 void
 nu_serial_puts(const struct nu_serial *s, const char *str);
@@ -31,16 +29,17 @@ nu_serial_puts(const struct nu_serial *s, const char *str);
 void PRINTF(2, 3)
 nu_serial_printf(const struct nu_serial *s, const char *fmt, ...);
 
+size_t
+nu_serial_rx(const struct nu_serial *s, void *dst, size_t n);
+
+size_t
+nu_serial_tx(const struct nu_serial *s, const void *src, size_t n);
+
 #if 0
 #include "nu/compiler.h"
 #include "nu/error_reporting.h"
 #include "nu/nu_types.h"
 #include <peripheral/uart.h>
-
-enum nu_serial_module_interrupt {
-    NU_USE_UART_INTERRUPT,
-    NU_NOT_USE_UART_INTERRUPT
-};
 
 struct nu_serial {
     struct nu_error_reporting_dev erd;
