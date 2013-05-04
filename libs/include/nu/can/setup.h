@@ -1,7 +1,7 @@
 #ifndef NU_CAN_SETUP_H
 #define NU_CAN_SETUP_H 1
 
-#include "nu/nu_types.h"
+#include "nu/types.h"
 #include <peripheral/CAN.h>
 #include <peripheral/int.h>
 

@@ -2,7 +2,7 @@
 #define NU_CAN_TX_H 1
 
 #include "nu/can/setup.h"
-#include "nu/nu_types.h"
+#include "nu/types.h"
 #include <peripheral/CAN.h>
 
 struct nu_can;

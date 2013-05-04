@@ -2,7 +2,7 @@
 #define NU_LTC6803_H 1
 
 #include "nu/compiler.h"
-#include "nu/nu_types.h"
+#include "nu/types.h"
 #include "nu/spi.h"
 #include "nu/utility.h"
 

@@ -2,7 +2,7 @@
 #define NU_DS18X20_H 1
 
 #include "nu/compiler.h"
-#include "nu/nu_types.h"
+#include "nu/types.h"
 #include "nu/onewire.h"
 #include "nu/utility.h"
 

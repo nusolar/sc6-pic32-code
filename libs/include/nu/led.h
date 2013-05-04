@@ -8,7 +8,7 @@
 
 #include "nu/compiler.h"
 #include "nu/error_reporting.h"
-#include "nu/nu_types.h"
+#include "nu/types.h"
 #include "nu/pinctl.h"
 #include "nu/utility.h"
 

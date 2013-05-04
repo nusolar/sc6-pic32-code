@@ -1,7 +1,7 @@
 #ifndef NU_PIC32MX_PARAM_H
 #define NU_PIC32MX_PARAM_H 1
 
-#include "nu/nu_types.h"
+#include "nu/types.h"
 #include "nu/param.h"
 #include <xc.h>
 

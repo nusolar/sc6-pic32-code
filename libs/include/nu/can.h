@@ -8,7 +8,7 @@
 #include "nu/can/add_channel_tx.h"
 #include "nu/can/add_filter.h"
 
-#include "nu/nu_types.h"
+#include "nu/types.h"
 #include "nu/compiler.h"
 #include "nu/error_reporting.h"
 #include <peripheral/CAN.h>

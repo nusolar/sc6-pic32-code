@@ -2,7 +2,7 @@
 #define NU_MCP49X2_H 1
 
 #include "nu/compiler.h"
-#include "nu/nu_types.h"
+#include "nu/types.h"
 #include "nu/pinctl.h"
 #include "nu/spi.h"
 

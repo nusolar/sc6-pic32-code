@@ -2,7 +2,7 @@
 #define NU_PINCTL_PIC32MX_H 1
 
 #include "nu/compiler.h"
-#include "nu/nu_types.h"
+#include "nu/types.h"
 #include <peripheral/ports.h>
 
 struct nu_pin {

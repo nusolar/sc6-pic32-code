@@ -1,7 +1,7 @@
 #ifndef NU_ONEWIRE_H
 #define NU_ONEWIRE_H 1
 
-#include "nu/nu_types.h"
+#include "nu/types.h"
 #include "nu/pinctl.h"
 
 union romcode {
