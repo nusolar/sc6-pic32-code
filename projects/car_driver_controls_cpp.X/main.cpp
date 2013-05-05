@@ -1,5 +1,4 @@
-#include "nu/common_pragmas.h"
-
+#include "nu/platform/common_pragmas.h"
 #include "nu/compiler.h"
 #include "nupp/enum.hpp"
 #include "nupp/timer.hpp"
@@ -14,17 +13,17 @@
 #include "nupp/wdt.hpp"
 
 namespace nu {
-	struct DriverControls: protected Nu32 {
+	struct DriverControls: public Nu32 {
 		can::Module ws_can, common_can;
 		Nokia5110 lcd;
 
-		Enum<Pin, 3> analog_ins;
+		Enum<AnalogIn, 3> analog_ins;
 		#define ANALOG_INS(X)\
 			X(regen_pedel,	B,	0)\
 			X(accel_pedel,	B,	1)\
 			X(airgap_pot,	B,	4)
 
-		Enum<Pin, 5> digital_ins;
+		Enum<DigitalIn, 5> digital_ins;
 		#define DIGITAL_INS(X)\
 			X(brake_pedal,		B,	2)\
 			X(headlight_switch,	B,	3)\
@@ -32,7 +31,7 @@ namespace nu {
 			X(regen_enable,		B,	8)\
 			X(reverse_switch,	B,	9)
 
-		Enum<Pin, 4> digital_outs;
+		Enum<DigitalOut, 4> digital_outs;
 		#define DIGITAL_OUTS(X)\
 			X(lights_brake,	D,	0)\
 			X(lights_l,		D,	1)\
@@ -69,27 +68,24 @@ namespace nu {
 		 * Setup CAN, input Pins, output Pins, and Nokia LCD.
 		 */
 		ALWAYSINLINE DriverControls(): Nu32(Nu32::V1), ws_can(CAN1), common_can(CAN2),
-			lcd(SPI(Pin(IOPORT_G, BIT_9), SPI_CHANNEL2), Pin(IOPORT_A, BIT_9), Pin(IOPORT_E, BIT_9))
+			lcd(Pin(Pin::G, 9), SPI_CHANNEL2, Pin(Pin::A, 9), Pin(Pin::E, 9))
 		{
 			WDT::clear();
-			#define DC_ENUMERATE(name, ltr, num, X_ITER) name##_k = X_ITER.enumerate(Pin(IOPORT_##ltr, BIT_##num, #name));
-			#define DC_AIN(...)  DC_ENUMERATE(__VA_ARGS__, analog_ins)
-			#define DC_DIN(...)  DC_ENUMERATE(__VA_ARGS__, digital_ins)
-			#define DC_DOUT(...) DC_ENUMERATE(__VA_ARGS__, digital_outs)
+			#define DC_ENUMERATE(Type, X_ITER, name, ltr, num, ...) name##_k = X_ITER.enumerate(Type(Pin(Pin::ltr, num, #name) __VA_ARGS__));
+			#define DC_AIN(...)  DC_ENUMERATE(AnalogIn, analog_ins, __VA_ARGS__)
+			#define DC_DIN(...)  DC_ENUMERATE(DigitalIn, digital_ins, __VA_ARGS__)
+			#define DC_DOUT(...) DC_ENUMERATE(DigitalOut, digital_outs, __VA_ARGS__)
 			ANALOG_INS(DC_AIN)
 			DIGITAL_INS(DC_DIN)
 			DIGITAL_OUTS(DC_DOUT)
 
-			common_can.setup();
 			common_can.in()  = can::RxChannel(can::Channel(common_can, CAN_CHANNEL0), CAN_RX_FULL_RECEIVE);
 			common_can.out() = can::TxChannel(can::Channel(common_can, CAN_CHANNEL1), CAN_HIGH_MEDIUM_PRIORITY);
 			common_can.err() = can::TxChannel(can::Channel(common_can, CAN_CHANNEL2), CAN_LOWEST_PRIORITY); // err chn
 
-			ws_can.setup();
 			ws_can.out() = can::TxChannel(can::Channel(ws_can, CAN_CHANNEL1), CAN_HIGH_MEDIUM_PRIORITY);
 
 			// TODO: configure ADC10
-			lcd.setup();
 		}
 
 
@@ -104,10 +100,10 @@ namespace nu {
 			if (state.accel > 1) state.accel = 1; // TODO: print warning
 			state.accel_en = state.accel > 0.05;
 
-			state.regen = ((float)ReadADC10(analog_ins[regen_pedel_k].num) + 0)/1024; // WARNING: disconnected
+			state.regen = ((float)analog_ins[regen_pedel_k].read() + 0)/1024; // WARNING: disconnected
 			state.regen_en = digital_ins[regen_enable_k].read()? 1: 0; // TODO: clamp
 
-			state.airgap = ((float)ReadADC10(analog_ins[airgap_pot_k].num) + 0)/1024; // WARNING: disconnected
+			state.airgap = ((float)analog_ins[airgap_pot_k].read() + 0)/1024; // WARNING: disconnected
 			state.airgap_en = digital_ins[airgap_enable_k].read()? 1: 0; // TODO: clamp
 
 			state.reverse_en	= digital_ins[reverse_switch_k].read();
@@ -128,15 +124,15 @@ namespace nu {
 			common_can.in().rx(incoming.bytes(), id);
 			switch (id) {
 				case (uint32_t)can::addr::sw::tx::buttons_k: {
-					can::frame::sw::tx::buttons btns(incoming);
+					can::frame::sw::tx::buttons btns{incoming};
 					state.lights_l = btns.frame.s.left;
 					state.lights_r = btns.frame.s.right;
 					state.lights_hazard = btns.frame.s.hazard;
-					state.sw_timer = timer_ms();
+					state.sw_timer = timer_ms(); // Reset SW time-out
 					return;
 				}
 				default:
-					uint32_t dc_time = timer_ms(); // Kill SW things if SW removed.
+					uint32_t dc_time = timer_ms(); // Kill SW things if SW times-out.
 					if ((dc_time > state.sw_timer + 500) || ((dc_time < state.sw_timer) && (dc_time > 500))) {
 						state.lights_l = 0;
 						state.lights_r = 0;
@@ -184,7 +180,7 @@ namespace nu {
 			led1.on(); delay_ms(100); led1.off(); // WARNING: WTF
 			ws_can.out().tx(drive.bytes(),
 							8,
-							(uint16_t)can::addr::ws20::rx::drive_cmd_k); // ERROR: CAN ADDRESS?
+							(uint16_t)can::addr::ws20::rx::drive_cmd_k);
 		}
 
 
@@ -209,8 +205,7 @@ namespace nu {
 		void ALWAYSINLINE demo() {
 			WDT::clear();
 			led1.toggle();
-			led2.on();
-			delay_ms(1000);
+			delay_s(0.5);
 		}
 	};
 }
@@ -223,6 +218,7 @@ using namespace nu;
  */
 int main(int argc, const char* argv[]) {
 	DriverControls dc{};
+	dc.led2.on();
 	while (true) {
 		dc.demo();
 	}

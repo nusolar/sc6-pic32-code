@@ -77,16 +77,14 @@ namespace nu {
 			CAN_MODULE mod;
 			char buf[32*32*CAN_TX_RX_MESSAGE_SIZE_BYTES];
 
-			ALWAYSINLINE Module(CAN_MODULE _mod = CAN1): mod(_mod), rx(Channel(*this)),
-				tx(Channel(*this), CAN_LOWEST_PRIORITY), ex(Channel(*this), CAN_LOWEST_PRIORITY) {}
+			Module(CAN_MODULE _mod = CAN1, uint32_t bus_speed = DEFAULT_BUS_SPEED_HZ,
+				   CAN_BIT_CONFIG *timings = &default_cfg,
+				   CAN_MODULE_EVENT interrupts = (CAN_MODULE_EVENT)0,
+				   INT_PRIORITY int_priority = INT_PRIORITY_DISABLED,
+				   CAN_MODULE_FEATURES features = (CAN_MODULE_FEATURES)0);
 			operator CAN_MODULE() const {return mod;}
-
-			int32_t setup(uint32_t bus_speed = DEFAULT_BUS_SPEED_HZ,
-						  CAN_BIT_CONFIG *timings = &default_cfg,
-						  CAN_MODULE_EVENT interrupts = (CAN_MODULE_EVENT)0,
-						  INT_PRIORITY int_priority = INT_PRIORITY_DISABLED,
-						  CAN_MODULE_FEATURES features = (CAN_MODULE_FEATURES)0);
-
+			
+			
 			RxChannel &in() {return rx;}
 			TxChannel &out() {return tx;}
 			TxChannel &err() {return ex;}

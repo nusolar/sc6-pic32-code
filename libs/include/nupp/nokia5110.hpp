@@ -41,13 +41,11 @@ namespace nu {
 			TEMP_COEFF_3           = 1<<7 | 1<<6
 		};
 
-		Pin reset, dc;
+		DigitalOut reset, dc;
 		static const uint16_t lcd_x = 84;
 		static const uint16_t lcd_y = 48;
 
-		ALWAYSINLINE Nokia5110(SPI spi, Pin _reset, Pin _dc): SPI(spi), reset(_reset), dc(_dc) {}
-
-		void setup();
+		Nokia5110(Pin _cs, SpiChannel _chn, Pin _reset, Pin _dc);
 		void cmd_func_set(cmd_func_set_options opts);
 		void cmd_set_vop(uint8_t vop);
 		void ALWAYSINLINE cmd_set_contrast(uint8_t vop) {cmd_set_vop(vop);}

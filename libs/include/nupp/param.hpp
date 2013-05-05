@@ -18,6 +18,7 @@ namespace nu {
 		static ALWAYSINLINE typeof(nu_hz)& Hz()     { return nu_hz; }
 		static ALWAYSINLINE typeof(NU_MHZ) MHz()    { return NU_MHZ; }
 
+		/** Set clock frequency, in MHz */
 		static ALWAYSINLINE typeof(nu_hz)&
 		MHz(typeof(NU_MHZ) mhz) { return Hz() = mhz/1000000; }
 

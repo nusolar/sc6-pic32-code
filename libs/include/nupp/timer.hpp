@@ -3,7 +3,7 @@
 
 #include "nupp/param.hpp"
 #include "nu/compiler.h"
-#include <stdint.h>
+#include <cstdint>
 
 #include "nu/utility.h"
 #include <xc.h>
@@ -26,14 +26,14 @@ namespace nu {
 
 		static ALWAYSINLINE void delay_ticks(uint32_t t) {
 			uint32_t start = timer_ticks();
-			while (timer_ticks() - start < (t/20))
+			while (timer_ticks() - start < (t))
 				Nop();   /* do nothing */
 		}
 
-#define delay_s(s)      delay_ticks(s_to_ticks(s))
-#define delay_ms(ms)    delay_ticks(ms_to_ticks(ms))
-#define delay_us(us)    delay_ticks(us_to_ticks(us))
-#define delay_ns(ns)    delay_ticks(ns_to_ticks(ns))
+#define delay_s(s)      delay_ticks((uint32_t)s_to_ticks(s))
+#define delay_ms(ms)    delay_ticks((uint32_t)ms_to_ticks(ms))
+#define delay_us(us)    delay_ticks((uint32_t)us_to_ticks(us))
+#define delay_ns(ns)    delay_ticks((uint32_t)ns_to_ticks(ns))
 	//}
 }
 #endif

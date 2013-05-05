@@ -3,6 +3,7 @@
 
 #include "nupp/can.hpp"
 #include "nupp/timer.hpp"
+#undef Module
 
 using namespace nu;
 using namespace can;
@@ -16,13 +17,19 @@ CAN_BIT_CONFIG Module::default_cfg = {
 	/* .syncJumpWidth          = */ CAN_BIT_1TQ
 };
 
-int32_t Module::setup(uint32_t bus_speed, CAN_BIT_CONFIG *timings, CAN_MODULE_EVENT interrupts, INT_PRIORITY int_priority, CAN_MODULE_FEATURES features) {
+Module::Module(CAN_MODULE _mod, uint32_t bus_speed,
+			   CAN_BIT_CONFIG *timings,
+			   CAN_MODULE_EVENT interrupts,
+			   INT_PRIORITY int_priority,
+			   CAN_MODULE_FEATURES features): mod(_mod), rx(Channel(*this)),
+			   tx(Channel(*this), CAN_LOWEST_PRIORITY), ex(Channel(*this), CAN_LOWEST_PRIORITY)
+{
 	CANEnableModule(mod, TRUE);
 
 	int32_t err_num = config_mode();
 	if (err_num < 0) {
 		normal_mode();
-		return err_num;
+//		return err_num; // WARNING
 	}
 
 	CANSetSpeed(mod, timings, NU_HZ, bus_speed);
@@ -45,7 +52,7 @@ int32_t Module::setup(uint32_t bus_speed, CAN_BIT_CONFIG *timings, CAN_MODULE_EV
 				break;
 			case CAN_NUMBER_OF_MODULES:
 			default:
-				return -EINVAL;
+				return /*-EINVAL*/; // WARNING
         }
 
         INTSetVectorPriority(int_vec, int_priority);
@@ -53,13 +60,12 @@ int32_t Module::setup(uint32_t bus_speed, CAN_BIT_CONFIG *timings, CAN_MODULE_EV
         INTEnable(int_src, INT_ENABLED);
 	}
 	change_features(features, TRUE);
-	if ((err_num = normal_mode()) < 0) return err_num;
+	if ((err_num = normal_mode()) < 0) return /*err_num*/; // WARNING
 
 	// TODO: Better collection
 	if(rx.chn != CAN_ALL_CHANNELS) rx.setup();
 	if(tx.chn != CAN_ALL_CHANNELS) tx.setup();
 	if(ex.chn != CAN_ALL_CHANNELS) ex.setup();
-	return 0;
 }
 
 

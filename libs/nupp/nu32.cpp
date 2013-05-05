@@ -1,4 +1,5 @@
 #include "nupp/nu32.hpp"
+#include "nupp/wdt.hpp"
 
 using namespace nu;
 
@@ -19,8 +20,5 @@ Nu32::Nu32(versions _version, uint32_t _hz): version(_version) LIST_OF_PINS_V1(N
 	my_OpenADC10(ADC_MODULE_OFF, ADC_VREF_AVDD_AVSS, 0, 0, 0);
 	EthEnable(0); // ethernet
 	mPMPDisable(); // parallel port
-
-	led1.setup();
-	led2.setup();
-	switch1.set_digital_in();
+	WDT::enable_clear(); // WARNING: Enable WDT?
 }

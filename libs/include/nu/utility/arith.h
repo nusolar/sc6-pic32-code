@@ -171,5 +171,21 @@ _floatEq(float _x, float _y, s32 maxUlps)
 }							\
 )
 
+#ifdef __cplusplus
+template <typename T>
+ALWAYSINLINE uint8_t floor_log2(T v) {
+	uint8_t r = 0;
+	while (v >>= 1) {
+		r++;
+	}
+	return r;
+}
+#endif
+
+static ALWAYSINLINE uint8_t popcount(uint32_t i) {
+	i = i - ((i >> 1) & 0x55555555);
+	i = (i & 0x33333333) + ((i >> 2) & 0x33333333);
+	return (uint8_t)(((i + (i >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24;
+}
 
 #endif

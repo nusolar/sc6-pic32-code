@@ -29,7 +29,7 @@ namespace nu {
 		std::stringstream s;
 		char _buffer[buffersize];
 
-		ALWAYSINLINE uLCD28PT(UART_MODULE mod): Serial(mod), s() {
+		ALWAYSINLINE uLCD28PT(UART_MODULE mod): Serial(mod, 115200), s() {
 			s.rdbuf()->pubsetbuf(_buffer, buffersize);
 		}
 

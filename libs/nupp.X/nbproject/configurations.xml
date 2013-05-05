@@ -399,6 +399,7 @@
       <itemPath>../nupp/spi.cpp</itemPath>
       <itemPath>../nupp/wdt.cpp</itemPath>
       <itemPath>../nupp/headers.cpp</itemPath>
+      <itemPath>../nupp/pinctl.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

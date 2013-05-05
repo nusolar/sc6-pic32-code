@@ -7,10 +7,10 @@
 
 using namespace nu;
 
-void Serial::setup(uint32_t baud, nu::Serial::module_interrupt use_interrupt,
+Serial::Serial(UART_MODULE _mod, uint32_t baud, nu::Serial::module_interrupt use_interrupt,
 				   INT_PRIORITY int_priority, UART_FIFO_MODE interrupt_modes,
 				   UART_LINE_CONTROL_MODE line_control_modes, UART_CONFIGURATION uart_config,
-				   UART_ENABLE_MODE enable_modes) {
+				   UART_ENABLE_MODE enable_modes): module(_mod) {
 	UARTConfigure(module, uart_config);
 	UARTSetFifoMode(module, interrupt_modes);
 	UARTSetLineControl(module, line_control_modes);

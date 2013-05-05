@@ -25,23 +25,19 @@ namespace nu {
 		 * Chip Select pin. Used to tell an SPI device to listen. Whether it's
 		 * high or low depends on the SPI Thing in question.
 		 */
-		Pin cs;
+		DigitalOut cs;
 		SpiChannel chn;
 		tx_options opt;
 
-		ALWAYSINLINE SPI(Pin _cs, SpiChannel _chn, tx_options _opt = (tx_options)(TX_WAIT_START|TX_WAIT_END)):
-			cs(_cs), chn(_chn), opt(_opt) {}
-		NOINLINE virtual ~SPI() {};
-
-		void ALWAYSINLINE setup(uint32_t bitrate, SpiOpenFlags oflags) {
+		ALWAYSINLINE SPI(Pin _cs, SpiChannel _chn, uint32_t bitrate, SpiOpenFlags oflags,
+						 tx_options _opt = (tx_options)(TX_WAIT_START|TX_WAIT_END)):
+			cs(_cs), chn(_chn), opt(_opt) {
+			cs.high();
 			SpiChnOpen(chn, oflags, (uint32_t) param::pbus_hz()/bitrate);
 		}
-		void ALWAYSINLINE setup_pin(uint32_t bitrate, SpiOpenFlags oflags) {
-			cs.set_digital_out();
-			cs.high();
-			setup(bitrate, oflags);
-		}
-
+		NOINLINE virtual ~SPI() {};
+			
+			
 		void rx(void *dst, size_t n);
 		void tx(const void *src, size_t n);
 		void ALWAYSINLINE puts(const char *str) {

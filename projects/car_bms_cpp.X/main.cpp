@@ -1,4 +1,4 @@
-#include "nu/common_pragmas.h"
+#include "nu/platform/common_pragmas.h"
 #include <cstdint>
 
 #include "nupp/timer.hpp"
@@ -30,7 +30,7 @@ namespace nu {
 			UNDER_TEMP // sanity check
 		};
 
-		Pin main_relay, array_relay;
+		DigitalOut main_relay, array_relay;
 		can::Module common_can, mppt_can;
 		Nokia5110 lcd1, lcd2;
 		AD7685 adc;
@@ -56,30 +56,23 @@ namespace nu {
 		 * TODO: Lots
 		 */
 		ALWAYSINLINE BatteryMs(): Nu32(Nu32::V1),
-			main_relay(IOPORT_D, BIT_2), array_relay(IOPORT_D, BIT_3), common_can(CAN1), mppt_can(CAN2),
-			lcd1(SPI(Pin(IOPORT_G, BIT_9), SPI_CHANNEL2), Pin(IOPORT_A, BIT_9), Pin(IOPORT_E, BIT_9)),
-			lcd2(SPI(Pin(IOPORT_E, BIT_8), SPI_CHANNEL2), Pin(IOPORT_A, BIT_10), Pin(IOPORT_E, BIT_9)),
-			adc (SPI(Pin(IOPORT_A, BIT_0), SPI_CHANNEL4), Pin(IOPORT_F, BIT_12), 2, // WARNING: GUESSED
+			main_relay(Pin(Pin::D, 2)), array_relay(Pin(Pin::D, 3)), common_can(CAN1), mppt_can(CAN2),
+			lcd1(Pin(Pin::G, 9), SPI_CHANNEL2, Pin(Pin::A, 9), Pin(Pin::E, 9)),
+			lcd2(Pin(Pin::E, 8), SPI_CHANNEL2, Pin(Pin::A, 10), Pin(Pin::E, 9)),
+			adc (Pin(Pin::A, 0), SPI_CHANNEL4, Pin(Pin::F, 12), 2, // WARNING: GUESSED
 			(AD7685::options) (2|AD7685::CHAIN_MODE|AD7685::NO_BUSY_INDICATOR)) // ERROR: SPI pin?
 		{
 			WDT::clear();
 			state.last_trip_module = 12345;
 
-			main_relay.set_digital_out();
-			main_relay.set();
-			array_relay.set_digital_out();
-			array_relay.set();
+			main_relay = true;
+			array_relay = true;
 
-			common_can.setup();
 			common_can.in() = can::RxChannel(can::Channel(common_can, CAN_CHANNEL0), CAN_RX_FULL_RECEIVE);
 			common_can.out() = can::TxChannel(can::Channel(common_can, CAN_CHANNEL1), CAN_HIGH_MEDIUM_PRIORITY);
 			common_can.err() = can::TxChannel(can::Channel(common_can, CAN_CHANNEL2), CAN_LOWEST_PRIORITY);
 			
-			mppt_can.setup();
 			mppt_can.out() = can::TxChannel(can::Channel(common_can, CAN_CHANNEL1), CAN_HIGH_MEDIUM_PRIORITY);
-			
-			lcd1.setup();
-			lcd2.setup();
 		}
 
 

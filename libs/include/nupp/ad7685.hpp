@@ -22,23 +22,16 @@ namespace nu {
 			BUSY_INDICATOR = 1<<2
 		};
 
-		Pin convert;
+		DigitalOut convert;
 		uint32_t num_devices;
 		options opts;
 
-		ALWAYSINLINE AD7685(SPI spi, Pin _convert, uint32_t _num, options _opts):
-			SPI(spi), convert(_convert), num_devices(_num), opts(_opts) {}
-
-		/**
-		 * Setup SPI and conversion pin.
-		 */
-		int32_t ALWAYSINLINE setup() {
+		ALWAYSINLINE AD7685(Pin _cs, SpiChannel _chn, Pin _convert, uint32_t _num, options _opts):
+			SPI(_cs, _chn, 100000, (SpiOpenFlags)(SPI_OPEN_CKE_REV|SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON)),
+			convert(_convert), num_devices(_num), opts(_opts) {
 			if ((FOUR_WIRE & opt && NO_BUSY_INDICATOR & opt) ||
 				(CHAIN_MODE & opt && BUSY_INDICATOR & opt))
-				return -EINVAL; // TODO: C++ exceptions
-			convert.set_digital_out();
-			SPI::setup(100000, (SpiOpenFlags)(SPI_OPEN_CKE_REV|SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON));
-			return 0;
+				return /*-EINVAL*/; // TODO: C++ exceptions
 		}
 
 		/**

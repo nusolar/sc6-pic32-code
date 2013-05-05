@@ -157,11 +157,10 @@ union instructions {
 	do {memset(&a, 0, sizeof(a)); a.fixed = 1;} while(0)
 
 
-void Nokia5110::setup() {
-	SPI::setup_pin(2000000, (SpiOpenFlags)(SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON));
-	dc.set_digital_out();
-	reset.set_digital_out();
-
+Nokia5110::Nokia5110(Pin _cs, SpiChannel _chn, Pin _reset, Pin _dc):
+	SPI(_cs, _chn, 2000000, (SpiOpenFlags)(SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON)),
+	reset(_reset), dc(_dc)
+{
 	reset.low();
 	reset.high();
 
@@ -220,7 +219,6 @@ void Nokia5110::cmd_set_disp_mode(cmd_func_set_options mode) {
 void Nokia5110::put_c(unsigned char c) {
 	write_data(0x00);
 	for (uint32_t ui = 0; ui < 5; ui++) {
-		WDT::clear();
 		write_data(ASCII[c - 0x20][ui]); // WARNING: ensure unsigned char
 	}
 	write_data(0x00);
@@ -261,7 +259,7 @@ void ALWAYSINLINE Nokia5110::set_pixel(uint8_t x, uint8_t y) {
 
 	// Write the updated pixel out to the LCD
 	goto_xy(x, y_row);
-	write_data(val); // WARNING: Clears all pixels in column?
+	write_data(val);
 }
 
 
@@ -269,8 +267,7 @@ void Nokia5110::lcd_clear() {
 	goto_xy(0,0);
 	// WARNING: Loops over lcd_y48, but only 6 rows?
 	for (uint32_t ui = 0; ui < (lcd_x * 6); ui++) {
-		WDT::clear();
-		write_data(0x00); // WARNING: Nokia auto-increments location?
+		write_data(0x00);
 	}
 }
 

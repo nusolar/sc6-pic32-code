@@ -27,18 +27,18 @@ namespace nu {
 		versions version;
 
 		#define LIST_OF_PINS_V1(X) \
-			X(Led, led1, Pin(IOPORT_A, BIT_4)) \
-			X(Led, led2, Pin(IOPORT_A, BIT_5)) \
-			X(Pin, switch1, IOPORT_C, BIT_13) \
-			X(Serial, serial1, UART1) \
-			X(Serial, serial2, UART4) \
+			X(Led, led1, Pin(Pin::A, 4)) \
+			X(Led, led2, Pin(Pin::A, 5)) \
+			X(DigitalIn, switch1, Pin(Pin::C, 13)) \
+			X(Serial, serial1, UART1, 115200) \
+			X(Serial, serial2, UART4, 115200) \
 
 		#define LIST_OF_PINS_V2(X) \
-			X(Led, led1, Pin(IOPORT_G, BIT_12)) \
-			X(Led, led2, Pin(IOPORT_G, BIT_13)) \
-			X(Pin, switch1, IOPORT_G, BIT_6) \
-			X(Serial, serial1, UART1) \
-			X(Serial, serial2, UART3) \
+			X(Led, led1, Pin(Pin::G, 12)) \
+			X(Led, led2, Pin(Pin::G, 13)) \
+			X(DigitalIn, switch1, Pin(Pin::G, 6)) \
+			X(Serial, serial1, UART1, 115200) \
+			X(Serial, serial2, UART3, 115200) \
 
 		// FUCK MPLAB
 		#define NU32_DECLARE(Type, name, ...) \
@@ -46,8 +46,8 @@ namespace nu {
 			LIST_OF_PINS_V1(NU32_DECLARE)
 
 		/**
-		 * Primary Setup. SuperConstructor-call this before ANY setup calls!
-		 * Call all setups from derived class's constructor!
+		 * Primary Setup. NECESSARILY call this before anything else!
+		 * Do all setups from derived class's constructor!
 		 */
 		Nu32(versions _version, uint32_t _hz = param::default_hz());
 	};

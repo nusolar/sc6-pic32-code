@@ -60,5 +60,6 @@
 #define ACCESS_ONCE(x) (*(volatile typeof(x) *)&(x))
 
 #define unreachable() __builtin_unreachable()
+#define COMMA_MARK ,
 
 #endif
