@@ -73,7 +73,7 @@ namespace nu {
 	};
 	
 	/**
-	 * Represents an Analog Pin, wrapped with an ADC.
+	 * An Analog input Pin, wrapped with an ADC.
 	 */
 	struct AnalogIn: protected Pin {
 		static uint16_t enabled_ADCs; // Permits 16 ADC's
@@ -107,7 +107,7 @@ namespace nu {
 		}
 
 		ALWAYSINLINE uint32_t read(){
-			while (!mAD1GetIntFlag());
+			while (!mAD1GetIntFlag()) Nop();
 			uint32_t val = ReadADC10(adc);
 			mAD1ClearIntFlag();
 			return val;

@@ -196,9 +196,9 @@ namespace nu {
 		/** Demo LED toggling */
 		void ALWAYSINLINE demo() {
 			WDT::clear();
-			delay_ms(2000);
 			led1.toggle();
 			led2.on();
+			delay_ms(1000);
 		}
 	};
 }

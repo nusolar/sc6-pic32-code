@@ -1,6 +1,7 @@
 #include "nupp/serial.hpp"
 #include "nupp/param.hpp"
 #include "nupp/wdt.hpp"
+
 #include <cstdio> /* Serial::printf requires these */
 #include <cstdarg>
 #include <alloca.h>
@@ -60,8 +61,7 @@ void Serial::tx(const void *src, size_t n) {
 	size_t ui;
 	for (ui = 0; ui < n; ++ui) {
 		WDT::clear();
-		while (!UARTTransmitterIsReady(module))
-			Nop();
+		while (!UARTTransmitterIsReady(module)) Nop();
 		UARTSendDataByte(module, ((const BYTE *)src)[ui]);
 	}
 }
@@ -70,6 +70,7 @@ void Serial::tx(const void *src, size_t n) {
 void Serial::rx(void *dst, size_t n) {
 	size_t ui;
 	for (ui = 0; ui < n && UARTReceivedDataIsAvailable(module); ++ui) {
+		WDT::clear();
 		((uint8_t *)dst)[ui] = UARTGetDataByte(module);
 	}
 }

@@ -15,7 +15,6 @@
 #include "nupp/led.hpp"
 #include "nupp/pinctl.hpp"
 #include "nupp/serial.hpp"
-
 #include <plib.h>
 
 namespace nu {

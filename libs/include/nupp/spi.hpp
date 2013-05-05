@@ -40,7 +40,7 @@ namespace nu {
 			
 		void rx(void *dst, size_t n);
 		void tx(const void *src, size_t n);
-		void ALWAYSINLINE puts(const char *str) {
+		virtual void ALWAYSINLINE puts(const char *str) {
 			tx(str, strlen(str));
 		}
 

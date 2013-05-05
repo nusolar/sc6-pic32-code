@@ -56,7 +56,7 @@ namespace nu {
 
 		void put_c(unsigned char c);
 		void puts(unsigned char *str);
-		void PRINTF(2,3) printf(const char *fmt, ...);
+		DEPRECATED void PRINTF(2,3) printf(const char *fmt, ...);
 
 		/**
 		 * Goto column x, line y. 84 columns, 6 lines.

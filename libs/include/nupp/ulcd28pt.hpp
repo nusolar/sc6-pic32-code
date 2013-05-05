@@ -23,7 +23,7 @@ namespace nu {
 		static const uint8_t record = '\x1E';
 		static const uint16_t buffersize = 512;
 		/**
-		 * WARNING: INITIALLY USES HEAP. HOWEVER, CONSTRUCTOR IMMEDIATELY
+		 * INITIALLY USES HEAP. HOWEVER, CONSTRUCTOR IMMEDIATELY
 		 * GIVES IT A STACK BUFFER.
 		 */
 		std::stringstream s;
@@ -50,7 +50,7 @@ namespace nu {
 		template <class V>
 		void write_key_val(const char *key, V &value) {
 			s << record << key << unit << value << record;
-			this->puts(s.str().c_str());
+			Serial::puts(s.str().c_str());
 			s.str("");
 		}
 	};
