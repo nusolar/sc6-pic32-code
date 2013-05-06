@@ -347,7 +347,6 @@
           <itemPath>../include/nu/mppt_race.h</itemPath>
           <itemPath>../include/nu/nokia5110.h</itemPath>
           <itemPath>../include/nu/nokia5110_debug.h</itemPath>
-          <itemPath>../include/nu/nu_types.h</itemPath>
           <itemPath>../include/nu/onewire.h</itemPath>
           <itemPath>../include/nu/param.h</itemPath>
           <itemPath>../include/nu/pinctl.h</itemPath>
@@ -360,6 +359,7 @@
           <itemPath>../include/nu/utility.h</itemPath>
           <itemPath>../include/nu/wdt.h</itemPath>
           <itemPath>../include/nu/ws20.h</itemPath>
+          <itemPath>../include/nu/types.h</itemPath>
         </logicalFolder>
         <logicalFolder name="nupp" displayName="nupp" projectFiles="true">
           <itemPath>../include/nupp/ad7685.hpp</itemPath>

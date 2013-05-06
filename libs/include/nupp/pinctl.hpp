@@ -89,7 +89,7 @@ namespace nu {
 			set_analog_in();
 
 			enabled_ADCs |= (typeof(enabled_ADCs)) (1 << adc); // PIC32 SPECIFIC
-			uint32_t count_enabled = popcount(enabled_ADCs); // 32bit cuz we bitshift below
+			uint32_t count_enabled = __builtin_popcount(enabled_ADCs); // 32bit cuz we bitshift below
 			
 			/* 1: Turn module on | ouput in integer | trigger mode auto | enable autosample
 			 * 2: ADC ref external    | disable offset test    | disable scan mode | perform 2 samples | use dual buffers | use alternate mode

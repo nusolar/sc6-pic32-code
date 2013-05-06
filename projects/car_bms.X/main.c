@@ -722,7 +722,7 @@ doVoltages(void)
     static uint32_t last_voltageConversion = 0;
 
     clear_wdt();
-    
+
     /* Start voltage conversion if none in progress */
     if (ticksToSecs(ReadCoreTimer() - last_openWireConversion) > interval_get_ow_voltages) {
         uint32_t ui;
@@ -821,7 +821,7 @@ doVoltages(void)
  *           trip_nomod(TRIP_OTHER);
  */
     /* Check for over/under-voltage */
-/*        
+/*
  *         for (ui = 0; ui < MODULE_COUNT; ui++) {
  *            ClearWDT();
  *            sum += voltages[ui];
@@ -875,7 +875,7 @@ doCurrents(void)
             trip_nomod(TRIP_OVER_CURRENT_CHRG);
         }
          */
-        
+
         cc_battery      += (ticksToSecs(ReadCoreTimer() - last_currents)*currentBattery)/3600;
         cc_array        += (ticksToSecs(ReadCoreTimer() - last_currents)*currentArray)/3600;
         last_currents = ReadCoreTimer();
@@ -893,7 +893,7 @@ doTemperatures(void)
     static uint32_t last_tempConvert = 0;
 
     ClearWDT();
-    
+
     if (tConvertStatus == TEMP_NONE &&
             ticksToSecs(ReadCoreTimer() - last_tempConvert) > interval_get_temps) {
         /* Start next temperature conversion */
@@ -1001,7 +1001,7 @@ doCanTx(void)
         ccTx(ADDR_BMS_TX_LAST_TRIP, lt);
         last_sendLastTrip = core_timer;
     }
-    
+
     if (ticksToSecs(core_timer - last_sendBattBypass) > interval_tx_battbypass) {
         struct can_bms_tx_batt_bypass bb = {
             .module = battBypass,
@@ -1009,7 +1009,7 @@ doCanTx(void)
         ccTx(ADDR_BMS_TX_BATT_BYPASS, bb);
         last_sendBattBypass = core_timer;
     }
-    
+
     if (ticksToSecs(core_timer - last_sendCurrents) > interval_tx_currents &&
             (!FEQ(currentArray, UNINIT) || !FEQ(currentBattery, UNINIT))) {
         struct can_bms_tx_current cur = {
@@ -1375,7 +1375,7 @@ main(void)
     WriteCoreTimer(0);
 
     ClearWDT();
-    
+
     while (1) {
         static uint32_t prevBattBypass = 0;
         static uint32_t last_uptime = 0;
