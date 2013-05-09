@@ -4,42 +4,32 @@
 #include "nu/compiler.h"
 #include "nu/types.h"
 #include "nu/pinctl.h"
-#include "nu/platform.h"
+/*
+ * NU_SPI_PLATFORM_INIT
+ * NU_INIT_SPI_PLATFORM
+ * nu_init_spi_platform_args_t
+ * (optional) nu_init_spi_platform_defaults
+ * nu_spi_platform_setup
+ * nu_spi_platform_setup_args_t
+ * (optional) nu_spi_platform_setup_defaults
+ */
+#include "nu/platform/spi.h"
 
-#if BOOST_PP_VARIADICS
-# define NU_SPI_CS_INIT(pin, ...) {pin, {__VA_ARGS__}}
-# define NU_SPI_INIT(...) {NU_PIN_INIT(NU_PIN_DEFAULT), {__VA_ARGS__}}
-# define NU_INIT_SPI_CS(s, cs, ...) \
-    __nu_init_spi_cs(s, cs, __VA_ARGS__)
-# define NU_INIT_SPI(s, ...) \
-    NU_INIT_SPI_CS(s, NU_PIN_DEFAULT, __VA_ARGS__)
-#endif
+struct nu_spi {
+    struct nu_pin cs;
+    struct nu_spi_platform platform;
+};
+#define NU_SPI_INIT(cs, platform) {cs, platform}
+#define NU_SPI(name, cs, platform) \
+    struct nu_spi name = NU_SPI_INIT(cs, platform)
 
-#if NU_ARCH == NU_ARCH_PIC32MX
-# include "spi_pic32mx.h"
-#endif
-
-struct nu_spi;
-
-#define NU_SPI_CS(name, cs_pin, spi)  \
-    struct nu_spi name = NU_SPI_CS_INIT(cs_pin, spi)
-#define NU_SPI(name, spi)  \
-    struct nu_spi name = NU_SPI_INIT(spi)
-
-static INLINE void
-NU_INIT_SPI_CS(struct nu_spi *s, struct nu_pin *cs_pin, SpiChannel chn,
-        enum nu_spi_options opt)
+static ALWAYSINLINE void
+NU_INIT_SPI(struct nu_spi *s,
+        const nu_init_pin_platform_args_t *pa,
+        const nu_init_spi_platform_args_t *a)
 {
-    s->cs = *cs_pin;
-    s->chn = chn;
-    s->opt = opt;
-}
-
-static INLINE void
-NU_INIT_SPI(struct nu_spi *s, SpiChannel chn, enum nu_spi_options opt)
-{
-    NU_PIN(tmp, NU_PIN_DEFAULT);
-    NU_INIT_SPI_CS(s, &tmp, chn, opt);
+    NU_INIT_PIN_PLATFORM(&(s->cs.platform), pa);
+    NU_INIT_SPI_PLATFORM(&(s->platform), a);
 }
 
 static ALWAYSINLINE void

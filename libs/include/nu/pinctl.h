@@ -1,61 +1,72 @@
 #ifndef NU_PINCTL_H
 #define NU_PINCTL_H 1
 
-/**
- * @file
- * Simple pin wrapper
- */
-
 #include "nu/types.h"
 
 /*
- * platform-specific pinctl will provide the following functions/macros:
- * __NU_PIN_INIT(...)
- * NU_INIT_PIN(struct nu_pin *p, ...)
- * NU_PIN(name, ...)
- *
- * It should also provide macros in the form NU_PIN_* that contain the
- * set of arguments that define each pin for the architecture.
- *
- * It can also provide inline implementations for the
- * nu_pin_* functions, but must then define NU_HAVE_PIN_FUNCTIONS
+ * NU_PIN_PLATFORM_INIT
+ * NU_INIT_PIN_PLATFORM
+ * nu_init_pin_platform_args_t
+ * (optional) nu_init_pin_platform_defaults
+ * nu_pin_platform_setup
+ * nu_pin_platform_setup_args_t
+ * (optional) nu_pin_platform_setup_defaults
  */
+#include "nu/platform/pinctl.h"
 
-#include "platform/pinctl.h"
+struct nu_pin {
+    struct nu_pin_platform platform;
+};
+#define NU_PIN_INIT(platform) {platform}
+#define NU_PIN(name, platform) \
+    struct nu_pin name = NU_PIN_INIT(platform)
 
-/* PIC32MX example:
- * NU_PIN(main_relay_pin, NU_PIN_A0)
- * will define an nu_pin named main_relay_pin on pin A0.
- */
-# define NU_PIN(name, pin) \
-    struct nu_pin name = NU_PIN_INIT(pin)
+static ALWAYSINLINE void
+NU_INIT_PIN(struct nu_pin *p, const nu_init_pin_platform_args_t *args)
+{
+    NU_INIT_PIN_PLATFORM(&(p->platform), args);
+}
 
-struct nu_pin;
+static ALWAYSINLINE void
+nu_pin_set_digital_out(const struct nu_pin *p)
+{
+    nu_pin_platform_set_digital_out(&(p->platform));
+}
 
-#ifndef NU_HAVE_PIN_FUNCTIONS
-void
-nu_pin_set_digital_out(const struct nu_pin *p);
+static ALWAYSINLINE void
+nu_pin_set_digital_in(const struct nu_pin *p)
+{
+    nu_pin_platform_set_digital_in(&(p->platform));
+}
 
-void
-nu_pin_set_digital_in(const struct nu_pin *p);
+static ALWAYSINLINE void
+nu_pin_set_analog_out(const struct nu_pin *p)
+{
+    nu_pin_platform_set_analog_out(&(p->platform));
+}
 
-void
-nu_pin_set_analog_out(const struct nu_pin *p);
+static ALWAYSINLINE u32
+nu_pin_read(const struct nu_pin *p)
+{
+    return nu_pin_platform_read(&(p->platform));
+}
 
-void
-nu_pin_set_analog_in(const struct nu_pin *p);
+static ALWAYSINLINE void
+nu_pin_set(const struct nu_pin *p)
+{
+    nu_pin_platform_set(&(p->platform));
+}
 
-u32
-nu_pin_read(const struct nu_pin *p);
+static ALWAYSINLINE void
+nu_pin_clear(const struct nu_pin *p)
+{
+    nu_pin_platform_clear(&(p->platform));
+}
 
-void
-nu_pin_set(const struct nu_pin *p);
-
-void
-nu_pin_clear(const struct nu_pin *p);
-
-void
-nu_pin_toggle(const struct nu_pin *p);
-#endif
+static ALWAYSINLINE void
+nu_pin_toggle(const struct nu_pin *p)
+{
+    nu_pin_platform_toggle(&(p->platform));
+}
 
 #endif
