@@ -95,7 +95,7 @@ namespace nu {
 		void ALWAYSINLINE read_ins() {
 			WDT::clear();
 			// TODO: Encapsulate ANALOG reading!
-			state.accel = ((float)ReadADC10(1) + 0)/1024; // scale 0-1023 to 0-1
+			state.accel = ((float)analog_ins[accel_pedel_k].read() + 0)/1024; // scale 0-1023 to 0-1
 			if (state.accel < 0) state.accel = 0; // TODO: print warning, clamp
 			if (state.accel > 1) state.accel = 1; // TODO: print warning
 			state.accel_en = state.accel > 0.05;
@@ -163,7 +163,7 @@ namespace nu {
 		void ALWAYSINLINE set_motor() {
 			WDT::clear();
 
-			can::frame::ws20::rx::drive_cmd drive; // Zero-init [current, velocity]
+			can::frame::ws20::rx::drive_cmd drive{}; // Zero-init [current, velocity]
 
 			if (state.brake_en) {
 				state.cruise_en = 0;
@@ -177,7 +177,7 @@ namespace nu {
 			if (state.reverse_en)
 				drive.frame.s.motorVelocity *= -1;
 
-			led1.on(); delay_ms(100); led1.off(); // WARNING: WTF
+			led1.on(); delay_ms(1); led1.off(); // WARNING: WTF
 			ws_can.out().tx(drive.bytes(),
 							8,
 							(uint16_t)can::addr::ws20::rx::drive_cmd_k);
@@ -205,7 +205,7 @@ namespace nu {
 		void ALWAYSINLINE demo() {
 			WDT::clear();
 			led1.toggle();
-			delay_s(0.5);
+			delay_s(1.0);
 		}
 	};
 }

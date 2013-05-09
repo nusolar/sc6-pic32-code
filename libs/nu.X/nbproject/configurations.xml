@@ -108,19 +108,19 @@
                    projectFiles="true">
       <logicalFolder name="f1" displayName="platform" projectFiles="true">
         <logicalFolder name="f1" displayName="pic32mx" projectFiles="true">
-          <itemPath>../nu/platform/pic32mx/serial.c</itemPath>
-          <itemPath>../nu/platform/pic32mx/nu32.c</itemPath>
-          <itemPath>../nu/platform/pic32mx/nu32_led.c</itemPath>
-          <itemPath>../nu/platform/pic32mx/nu32_serial.c</itemPath>
-          <itemPath>../nu/platform/pic32mx/spi.c</itemPath>
+          <itemPath>../src/platform/pic32mx/nu32.c</itemPath>
+          <itemPath>../src/platform/pic32mx/nu32_led.c</itemPath>
+          <itemPath>../src/platform/pic32mx/nu32_serial.c</itemPath>
+          <itemPath>../src/platform/pic32mx/serial.c</itemPath>
+          <itemPath>../src/platform/pic32mx/spi.c</itemPath>
         </logicalFolder>
       </logicalFolder>
-      <itemPath>../nu/error_reporting.c</itemPath>
-      <itemPath>../nu/serial.c</itemPath>
-      <itemPath>../nu/led.c</itemPath>
-      <itemPath>../nu/param.c</itemPath>
-      <itemPath>../nu/wdt.c</itemPath>
-      <itemPath>../nu/spi.c</itemPath>
+      <itemPath>../src/nu/error_reporting.c</itemPath>
+      <itemPath>../src/nu/led.c</itemPath>
+      <itemPath>../src/nu/param.c</itemPath>
+      <itemPath>../src/nu/serial.c</itemPath>
+      <itemPath>../src/nu/spi.c</itemPath>
+      <itemPath>../src/nu/wdt.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

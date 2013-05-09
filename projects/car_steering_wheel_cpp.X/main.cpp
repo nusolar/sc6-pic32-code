@@ -15,7 +15,7 @@
 #include <cstdlib>
 
 namespace nu {
-	struct SteeringWheel: public Nu32 {
+	struct SteeringWheel {
 		can::Module common_can;
 		uLCD28PT lcd;
 
@@ -64,14 +64,14 @@ namespace nu {
 		/**
 		 * Setup NU32, CAN, LEDs, and uLCD Display.
 		 */
-		ALWAYSINLINE SteeringWheel(): Nu32(Nu32::V2), common_can(CAN2), lcd(UART3) {
+		ALWAYSINLINE SteeringWheel(): common_can(CAN2), lcd(UART3) {
 			WDT::clear();
 			#define SW_INIT_BTNS(name, ltr, num) name##_k = buttons.enumerate(Button(Pin(Pin::ltr, num, #name), 10, 5));
 			#define SW_INIT_LEDS(name, ltr, num) led_##name##_k = leds.enumerate(Led(Pin(Pin::ltr, num, #name)));
 			DIGITAL_IN_PINS(SW_INIT_BTNS)
 			LED_PINS(SW_INIT_LEDS)
 
-			common_can.in() = can::RxChannel(can::Channel(common_can, CAN_CHANNEL0), CAN_RX_FULL_RECEIVE);
+			common_can.in()  = can::RxChannel(can::Channel(common_can, CAN_CHANNEL0), CAN_RX_FULL_RECEIVE);
 			common_can.out() = can::TxChannel(can::Channel(common_can, CAN_CHANNEL1), CAN_HIGH_MEDIUM_PRIORITY);
 			common_can.err() = can::TxChannel(can::Channel(common_can, CAN_CHANNEL2), CAN_LOWEST_PRIORITY);
 		}
@@ -196,8 +196,7 @@ namespace nu {
 		/** Demo LED toggling */
 		void ALWAYSINLINE demo() {
 			WDT::clear();
-			led1.toggle();
-			led2.on();
+			leds[0].toggle();
 			delay_ms(1000);
 		}
 	};
