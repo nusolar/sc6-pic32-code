@@ -56,25 +56,25 @@ _nu_delay_ticks(tick_t t)
 /* limited to 20s */
 #define nu_s_to_ticks(s) \
     (__builtin_constant_p(s) ? \
-        ((s) < 0 || (s) > 20 ? _nu_s_to_ticks_value_out_of_range() : _const_nu_s_to_ticks(s)) : \
+        ((s) > 20 ? _nu_s_to_ticks_value_out_of_range() : _const_nu_s_to_ticks(s)) : \
         _nu_s_to_ticks(s))
 
 /* limited to 2000ms */
 #define nu_ms_to_ticks(ms) \
     (__builtin_constant_p(ms) ? \
-        ((ms) < 0 || (ms) > 2000 ? _nu_ms_to_ticks_value_out_of_range() : _const_nu_ms_to_ticks(ms)) : \
+        ((ms) > 2000 ? _nu_ms_to_ticks_value_out_of_range() : _const_nu_ms_to_ticks(ms)) : \
         _nu_ms_to_ticks(ms))
 
 /* limited to 2000us */
 #define nu_us_to_ticks(us) \
     (__builtin_constant_p(us) ? \
-        ((us) < 0 || (us) > 2000 ? _nu_us_to_ticks_value_out_of_range() : _const_nu_us_to_ticks(us)) : \
+        ((us) > 2000 ? _nu_us_to_ticks_value_out_of_range() : _const_nu_us_to_ticks(us)) : \
         _nu_us_to_ticks(us))
 
 /* limited to 2000ns */
 #define nu_ns_to_ticks(ns) \
     (__builtin_constant_p(ns) ? \
-        ((ns) < 0 || (ns) > 2000 ? _nu_ns_to_ticks_value_out_of_range() : _const_nu_ns_to_ticks(ns)) : \
+        ((ns) > 2000 ? _nu_ns_to_ticks_value_out_of_range() : _const_nu_ns_to_ticks(ns)) : \
         _nu_ns_to_ticks(ns))
 
 #define nu_delay_ticks(ticks) \
