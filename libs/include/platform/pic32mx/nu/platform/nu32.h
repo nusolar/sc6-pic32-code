@@ -14,28 +14,20 @@
 #include "nu/led.h"
 #include "nu/param.h"
 #include "nu/pinctl.h"
+/* #include "nu/platform/nu32_pinctl.h" */
 #include "nu/serial.h"
 
-enum nu_nu32_version {
+enum _nu_nu32_version {
     NU_NU32_V1,
     NU_NU32_V2
 };
 
-/* recommendation: DON'T use the combination nu_nu32_led0 and nu_nu32_led2 */
-DEPRECATED extern struct nu_led *nu_nu32_led0;
-extern struct nu_led *nu_nu32_led1;
-extern struct nu_led *nu_nu32_led2;
+typedef enum _nu_nu32_version nu_nu32_version_t;
+
 extern struct nu_pin *nu_nu32_switch;
 #define nu_nu32_user nu_nu32_switch
-/* recommendation: DON'T use combination nu_nu32_serial and nu_nu32_serial1 */
-DEPRECATED extern struct nu_serial *nu_nu32_serial;
-extern struct nu_serial *nu_nu32_serial1;
-extern struct nu_serial *nu_nu32_serial2;
 
-/**
- * @brief Sets up the clock, leds, and serial ports on the NU32 board
- */
 void
-nu_nu32_setup(enum nu_nu32_version version, unsigned long hz);
+nu_nu32_setup(nu_nu32_version_t version, nu_hz_t hz);
 
 #endif
