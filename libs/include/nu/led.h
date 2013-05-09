@@ -1,12 +1,6 @@
 #ifndef NU_LED_H
 #define NU_LED_H 1
 
-/**
- * @file
- * Little wrapper for LEDs
- */
-
-#include "boost/preprocessor.hpp"
 #include "nu/compiler.h"
 #include "nu/error_reporting.h"
 #include "nu/types.h"
