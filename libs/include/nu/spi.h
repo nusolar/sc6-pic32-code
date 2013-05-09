@@ -4,6 +4,7 @@
 #include "nu/compiler.h"
 #include "nu/types.h"
 #include "nu/pinctl.h"
+
 /*
  * NU_SPI_PLATFORM_INIT
  * NU_INIT_SPI_PLATFORM
@@ -14,6 +15,13 @@
  * (optional) nu_spi_platform_setup_defaults
  */
 #include "nu/platform/spi.h"
+
+extern const struct nu_spi_platform_ops {
+    void (*setup)   (struct nu_spi_platform *p, u32 bitrate,
+            const struct nu_spi_platform_setup_args *args);
+    s32 (*putchar)  (const struct nu_spi_platform *p, s32 c);
+    s32 (*getchar)  (const struct nu_spi_platform *p);
+} nu_spi_platform_ops;
 
 struct nu_spi {
     struct nu_pin cs;
@@ -33,39 +41,25 @@ NU_INIT_SPI(struct nu_spi *s,
 }
 
 static ALWAYSINLINE void
-nu_spi_drive_cs_high(const struct nu_spi *s)
+nu_spi_cs_high(const struct nu_spi *s)
 {
     nu_pin_set(&(s->cs));
 }
 
 static ALWAYSINLINE void
-nu_spi_drive_cs_low(const struct nu_spi *s)
+nu_spi_cs_low(const struct nu_spi *s)
 {
     nu_pin_clear(&(s->cs));
 }
 
-enum nu_spi_tx_options {
-    NU_SPI_TX_WAIT_START = 1<<0,    /* wait until current transmission complete before starting */
-    NU_SPI_TX_WAIT_END   = 1<<1     /* wait until current transmission complete before ending */
-};
-
 void
-nu_spi_tx(const struct nu_spi *s, const void *src, size_t n,
-        enum nu_spi_tx_options opt);
+nu_spi_setup(struct nu_spi *s, u32 bitrate,
+        const struct nu_spi_platform_setup_args *args);
 
-static ALWAYSINLINE void
-nu_spi_puts(const struct nu_spi *s, const char *str, enum nu_spi_tx_options opt)
-{
-    nu_spi_tx(s, str, strlen(str), opt);
-}
+size_t
+nu_spi_tx(const struct nu_spi *s, const void *src, size_t n);
 
-void
+size_t
 nu_spi_rx(const struct nu_spi *s, void *dst, size_t n);
-
-void
-nu_spi_setup(const struct nu_spi *s, u32 bitrate, SpiOpenFlags oflags);
-
-void
-nu_spi_cs_setup(const struct nu_spi *s, u32 bitrate, SpiOpenFlags oflags);
 
 #endif
