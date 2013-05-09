@@ -248,36 +248,6 @@ void Nokia5110::printf(const char *fmt, ...) {
 
 #pragma mark - Location
 
-
-/**
- * Set one pixel. UNUSED
- * The LCD has 6 rows, with 8 pixels per row.
- * 'y_row' is the row that the pixel is in.
- * 'y_pix' is the pixel in that row we want to enable/disable
- */
-void ALWAYSINLINE Nokia5110::set_pixel(uint8_t x, uint8_t y) {
-	uint8_t y_row = (uint8_t)(y >> 3);          // >>3 divides by 8
-	uint8_t y_pix = (uint8_t)(y-(y_row << 3));  // <<3 multiplies by 8
-	uint8_t val   = (uint8_t)(1 << y_pix);
-
-	if (x >= lcd_x || y >= lcd_y)
-		return;
-
-	// Write the updated pixel out to the LCD
-	goto_xy(x, y_row);
-	write_data(val);
-}
-
-
-void Nokia5110::lcd_clear() {
-	goto_xy(0,0);
-	// WARNING: Loops over lcd_y48, but only 6 rows?
-	for (uint32_t ui = 0; ui < (lcd_x * 6); ui++) {
-		write_data(0x00);
-	}
-}
-
-
 /** @param x should be in the range 0-83 */
 void Nokia5110::cmd_set_ram_x_addr(uint8_t x) {
 	instructions inst;
