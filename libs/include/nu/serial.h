@@ -4,6 +4,17 @@
 #include "nu/compiler.h"
 #include "nu/error_reporting.h"
 #include "nu/utility/data.h"
+
+struct nu_serial_platform;
+struct nu_serial_platform_setup_args;
+
+struct nu_serial_platform_ops {
+    void (*setup)   (struct nu_serial_platform *p, u32 baud,
+                        const struct nu_serial_platform_setup_args *args);
+    s32 (*putchar)  (const struct nu_serial_platform *p, s32 c);
+    s32 (*getchar)  (const struct nu_serial_platform *p);
+};
+
 /* NU_SERIAL_PLATFORM_INIT
  * NU_INIT_SERIAL_PLATFORM
  * nu_init_serial_platform_args_t */

@@ -5,6 +5,16 @@
 #include "nu/types.h"
 #include "nu/pinctl.h"
 
+struct nu_spi_platform;
+struct nu_spi_platform_setup_args;
+
+struct nu_spi_platform_ops {
+    void (*setup)   (struct nu_spi_platform *p, u32 bitrate,
+            const struct nu_spi_platform_setup_args *args);
+    s32 (*putchar)  (const struct nu_spi_platform *p, s32 c);
+    s32 (*getchar)  (const struct nu_spi_platform *p);
+};
+
 /*
  * NU_SPI_PLATFORM_INIT
  * NU_INIT_SPI_PLATFORM
@@ -15,13 +25,6 @@
  * (optional) nu_spi_platform_setup_defaults
  */
 #include "nu/platform/spi.h"
-
-extern const struct nu_spi_platform_ops {
-    void (*setup)   (struct nu_spi_platform *p, u32 bitrate,
-            const struct nu_spi_platform_setup_args *args);
-    s32 (*putchar)  (const struct nu_spi_platform *p, s32 c);
-    s32 (*getchar)  (const struct nu_spi_platform *p);
-} nu_spi_platform_ops;
 
 struct nu_spi {
     struct nu_pin cs;

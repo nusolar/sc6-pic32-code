@@ -1,7 +1,8 @@
 #include "nu/param.h"
 #include "nu/platform/serial.h"
+#include "nu/serial.h"
 
-void
+static void
 nu_serial_platform_setup(struct nu_serial_platform *platform, u32 baud,
 	const struct nu_serial_platform_setup_args *arg)
 {
@@ -49,7 +50,7 @@ nu_serial_platform_setup(struct nu_serial_platform *platform, u32 baud,
     }
 }
 
-s32
+static s32
 nu_serial_platform_putchar(const struct nu_serial_platform *p, s32 c)
 {
     while (!UARTTransmitterIsReady(p->module))
@@ -58,9 +59,15 @@ nu_serial_platform_putchar(const struct nu_serial_platform *p, s32 c)
     return c;
 }
 
-s32
+static s32
 nu_serial_platform_getchar(const struct nu_serial_platform *p)
 {
     return UARTReceivedDataIsAvailable(p->module) ?
         UARTGetDataByte(p->module) : EOF;
 }
+
+const struct nu_serial_platform_ops nu_serial_platform_ops = {
+    nu_serial_platform_setup,
+    nu_serial_platform_putchar,
+    nu_serial_platform_getchar
+};

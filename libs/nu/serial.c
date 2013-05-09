@@ -4,6 +4,9 @@
 #include <stdarg.h>
 #include <stdio.h>
 
+#undef getchar
+#undef putchar
+
 static COLD void
 nu_serial_report(struct nu_error_reporting_dev *e,
                     const char *file, const char *func, u32 line,
@@ -27,17 +30,20 @@ const struct nu_vtbl_error_reporting_dev nu_serial_erd_ops = {
 void nu_serial_setup(struct nu_serial *s, u32 baud,
         const struct nu_serial_platform_setup_args *args)
 {
-    nu_serial_platform_setup(&(s->platform), baud, args);
+    if (nu_serial_platform_ops.setup)
+        nu_serial_platform_ops.setup(&(s->platform), baud, args);
 }
 
 size_t
 nu_serial_rx(const struct nu_serial *s, void *dst, size_t n)
 {
     size_t ui;
+    if (!nu_serial_platform_ops.getchar)
+        return 0;
     for (ui = 0; ui < n; ++ui) {
         s32 c;
         nu_wdt_clear();
-        if ((c = nu_serial_platform_getchar(&(s->platform))) < 0)
+        if ((c = nu_serial_platform_ops.getchar(&(s->platform))) < 0)
             return ui;
         ((u8 *)dst)[ui] = (u8)c;
     }
@@ -48,9 +54,11 @@ size_t
 nu_serial_tx(const struct nu_serial *s, const void *src, size_t n)
 {
     size_t ui;
+    if (!nu_serial_platform_ops.putchar)
+        return 0;
     for (ui = 0; ui < n; ++ui) {
         nu_wdt_clear();
-        if (nu_serial_platform_putchar(&(s->platform), ((const u8 *)src)[ui]) < 0)
+        if (nu_serial_platform_ops.putchar(&(s->platform), ((const u8 *)src)[ui]) < 0)
             break;
     }
     return ui;

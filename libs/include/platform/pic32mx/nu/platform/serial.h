@@ -4,6 +4,8 @@
 #include "nu/compiler.h"
 #include <peripheral/uart.h>
 
+extern const struct nu_serial_platform_ops nu_serial_platform_ops;
+
 typedef struct nu_serial_platform {
     UART_MODULE module;
 } nu_init_serial_platform_args_t;
@@ -42,16 +44,6 @@ static const struct nu_serial_platform_setup_args {
     (UART_CONFIGURATION)0,
     (UART_ENABLE_MODE)(UART_ENABLE|UART_TX|UART_RX),
 };
-
-void
-nu_serial_platform_setup(struct nu_serial_platform *platform, u32 baud,
-        const struct nu_serial_platform_setup_args *arg);
-
-s32
-nu_serial_platform_putchar(const struct nu_serial_platform *p, s32 c);
-
-s32
-nu_serial_platform_getchar(const struct nu_serial_platform *p);
 
 #endif
 

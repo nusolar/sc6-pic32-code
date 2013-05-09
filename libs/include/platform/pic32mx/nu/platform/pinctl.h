@@ -2,6 +2,7 @@
 #define NU_PINCTL_PIC32MX_H 1
 
 #include "nu/compiler.h"
+#include "nu/pinctl.h"
 #include "nu/types.h"
 #include <peripheral/ports.h>
 
@@ -156,5 +157,15 @@ nu_pin_platform_toggle(const struct nu_pin_platform *p)
 {
     PORTToggleBits(p->ltr, p->num);
 }
+
+static const struct nu_pin_platform_ops nu_pin_platform_ops = {
+    nu_pin_platform_set_digital_out,
+    nu_pin_platform_set_digital_in,
+    nu_pin_platform_set_analog_out,
+    nu_pin_platform_read,
+    nu_pin_platform_set,
+    nu_pin_platform_clear,
+    nu_pin_platform_toggle
+};
 
 #endif

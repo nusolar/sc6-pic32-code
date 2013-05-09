@@ -5,6 +5,8 @@
 #include "nu/types.h"
 #include <peripheral/spi.h>
 
+extern const struct nu_spi_platform_ops nu_spi_platform_ops;
+
 typedef struct nu_spi_platform {
     SpiChannel chn;
 } nu_init_spi_platform_args_t;
