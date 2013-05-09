@@ -84,7 +84,6 @@
         <itemPath>../include/nu/mppt_race.h</itemPath>
         <itemPath>../include/nu/nokia5110.h</itemPath>
         <itemPath>../include/nu/nokia5110_debug.h</itemPath>
-        <itemPath>../include/nu/nu_types.h</itemPath>
         <itemPath>../include/nu/onewire.h</itemPath>
         <itemPath>../include/nu/param.h</itemPath>
         <itemPath>../include/nu/pinctl.h</itemPath>
@@ -96,7 +95,6 @@
         <itemPath>../include/nu/wdt.h</itemPath>
         <itemPath>../include/nu/ws20.h</itemPath>
         <itemPath>../include/nu/async_io.h</itemPath>
-        <itemPath>../include/nu/can.def.h</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="LinkerScript"

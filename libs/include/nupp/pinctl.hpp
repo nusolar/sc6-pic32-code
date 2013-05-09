@@ -9,7 +9,6 @@
 #include "nu/compiler.h"
 #include <cstdint>
 
-#include <nu/utility/arith.h>
 #include <string>
 #include <plib.h>
 

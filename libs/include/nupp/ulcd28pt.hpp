@@ -5,7 +5,6 @@
 #include <cstddef>
 
 #include <sstream>
-
 #include "nupp/serial.hpp"
 #include "nupp/pinctl.hpp"
 #include "nupp/can.hpp"

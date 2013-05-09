@@ -354,7 +354,6 @@
           <itemPath>../include/nu/safestring.h</itemPath>
           <itemPath>../include/nu/serial.h</itemPath>
           <itemPath>../include/nu/spi.h</itemPath>
-          <itemPath>../include/nu/spi_pic32mx.h</itemPath>
           <itemPath>../include/nu/timer.h</itemPath>
           <itemPath>../include/nu/utility.h</itemPath>
           <itemPath>../include/nu/wdt.h</itemPath>
@@ -392,7 +391,6 @@
         <itemPath>../src/nu/param.c</itemPath>
       </logicalFolder>
       <logicalFolder name="nupp" displayName="nupp" projectFiles="true">
-        <itemPath>../src/nupp/ad7685.cpp</itemPath>
         <itemPath>../src/nupp/can.cpp</itemPath>
         <itemPath>../src/nupp/headers.cpp</itemPath>
         <itemPath>../src/nupp/nokia5110.cpp</itemPath>

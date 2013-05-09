@@ -46,7 +46,7 @@ namespace nu {
 			
 			// start conversion
 			convert.high();
-			delay_ns(100);  // .1 us
+			timer::delay_ns(100);  // .1 us
 			
 			if (BUSY_INDICATOR & opt) {
 				if (THREE_WIRE & opt)
@@ -55,7 +55,7 @@ namespace nu {
 					cs.high();
 			}
 			
-			delay_ns(2300); // 2.3 us
+			timer::delay_ns(2300); // 2.3 us
 			
 			if (THREE_WIRE & opt && NO_BUSY_INDICATOR & opt)
 				cs.low();
@@ -64,7 +64,7 @@ namespace nu {
 			read_uv(dst);
 			
 			cs.low();
-			delay_us(5);
+			timer::delay_us(5);
 		}
 
 	private:

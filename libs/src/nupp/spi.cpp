@@ -14,7 +14,7 @@ void ALWAYSINLINE SPI::wait_busy() {
 	while (SpiChnIsBusy(chn)) {
 		Nop();
 	}
-	delay_ns(bit_tims_ns);
+	timer::delay_ns(bit_tims_ns);
 }
 
 void SPI::tx(const void *src, size_t n) {

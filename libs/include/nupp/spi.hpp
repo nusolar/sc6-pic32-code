@@ -4,9 +4,9 @@
 #include "nupp/param.hpp"
 #include <cstddef> // size_t
 
-#include "nupp/pinctl.hpp"
 #include <cstring> // strlen
 #include <plib.h>
+#include "nupp/pinctl.hpp"
 
 namespace nu {
 	/**

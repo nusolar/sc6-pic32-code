@@ -128,11 +128,11 @@ namespace nu {
 					state.lights_l = btns.frame.s.left;
 					state.lights_r = btns.frame.s.right;
 					state.lights_hazard = btns.frame.s.hazard;
-					state.sw_timer = timer_ms(); // Reset SW time-out
+					state.sw_timer = timer::ms(); // Reset SW time-out
 					return;
 				}
 				default:
-					uint32_t dc_time = timer_ms(); // Kill SW things if SW times-out.
+					uint32_t dc_time = timer::ms(); // Kill SW things if SW times-out.
 					if ((dc_time > state.sw_timer + 500) || ((dc_time < state.sw_timer) && (dc_time > 500))) {
 						state.lights_l = 0;
 						state.lights_r = 0;
@@ -151,7 +151,7 @@ namespace nu {
 			digital_outs[headlights_k]		= state.lights_head;
 			digital_outs[lights_brake_k]	= state.lights_brake;
 
-			bool tick = timer_s()%2;// Even or Odd, change every second
+			bool tick = timer::s()%2;// Even or Odd, change every second
 			digital_outs[lights_l_k] = state.lights_l||state.lights_hazard? tick: 0;
 			digital_outs[lights_r_k] = state.lights_r||state.lights_hazard? tick: 0;
 		}
@@ -177,7 +177,7 @@ namespace nu {
 			if (state.reverse_en)
 				drive.frame.s.motorVelocity *= -1;
 
-			led1.on(); delay_ms(1); led1.off(); // WARNING: WTF
+			led1.on(); timer::delay_ms(1); led1.off(); // WARNING: WTF
 			ws_can.out().tx(drive.bytes(),
 							8,
 							(uint16_t)can::addr::ws20::rx::drive_cmd_k);
@@ -205,7 +205,7 @@ namespace nu {
 		void ALWAYSINLINE demo() {
 			WDT::clear();
 			led1.toggle();
-			delay_s(1.0);
+			timer::delay_s(1.0);
 		}
 	};
 }

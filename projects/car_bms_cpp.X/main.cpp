@@ -87,7 +87,7 @@ namespace nu {
 			lcd2.goto_xy(0, 3);
 			lcd2.printf("I: %0.9f", state.current_battery);
 			led1.toggle();
-			delay_s(10);
+			timer::delay_s(1);
 		}
 	};
 }

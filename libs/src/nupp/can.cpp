@@ -3,6 +3,7 @@
 
 #include "nupp/can.hpp"
 #include "nupp/timer.hpp"
+#include "nu/utility/bits.h"
 #undef Module
 
 using namespace nu;
@@ -71,9 +72,9 @@ Module::Module(CAN_MODULE _mod, uint32_t bus_speed,
 
 ALWAYSINLINE
 int32_t Module::switch_mode(CAN_OP_MODE op_mode, uint32_t timeout_ms) {
-	uint32_t start = timer_us();
+	uint32_t start = timer::us();
 	CANSetOperatingMode(mod, op_mode);
-	while (timer_us() - start < timeout_ms*1000)
+	while (timer::us() - start < timeout_ms*1000)
 		if (CANGetOperatingMode(mod) == op_mode)
 			return 0;
 	return -ETIMEOUT;
