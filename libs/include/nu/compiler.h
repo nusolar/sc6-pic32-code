@@ -59,7 +59,17 @@
  */
 #define ACCESS_ONCE(x) (*(volatile typeof(x) *)&(x))
 
+#ifdef __cplusplus
+static template<typename T>
+__inline__ __attribute__((alwaysinline)) T volatile &access_once(T &t) {
+    return static_cast<T volatile &>(t);
+}
+# undef ACCESS_ONCE
+# define ACCESS_ONCE(x) access_once(x)
+#endif
+
 #define unreachable() __builtin_unreachable()
 #define COMMA_MARK ,
 
 #endif
+
