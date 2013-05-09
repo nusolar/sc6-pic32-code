@@ -389,17 +389,19 @@
                    displayName="Source Files"
                    projectFiles="true">
       <logicalFolder name="f1" displayName="nu" projectFiles="true">
-        <itemPath>../nu/param.c</itemPath>
+        <itemPath>../src/nu/param.c</itemPath>
       </logicalFolder>
-      <itemPath>../nupp/ad7685.cpp</itemPath>
-      <itemPath>../nupp/can.cpp</itemPath>
-      <itemPath>../nupp/nokia5110.cpp</itemPath>
-      <itemPath>../nupp/nu32.cpp</itemPath>
-      <itemPath>../nupp/serial.cpp</itemPath>
-      <itemPath>../nupp/spi.cpp</itemPath>
-      <itemPath>../nupp/wdt.cpp</itemPath>
-      <itemPath>../nupp/headers.cpp</itemPath>
-      <itemPath>../nupp/pinctl.cpp</itemPath>
+      <logicalFolder name="nupp" displayName="nupp" projectFiles="true">
+        <itemPath>../src/nupp/ad7685.cpp</itemPath>
+        <itemPath>../src/nupp/can.cpp</itemPath>
+        <itemPath>../src/nupp/headers.cpp</itemPath>
+        <itemPath>../src/nupp/nokia5110.cpp</itemPath>
+        <itemPath>../src/nupp/nu32.cpp</itemPath>
+        <itemPath>../src/nupp/pinctl.cpp</itemPath>
+        <itemPath>../src/nupp/serial.cpp</itemPath>
+        <itemPath>../src/nupp/spi.cpp</itemPath>
+        <itemPath>../src/nupp/wdt.cpp</itemPath>
+      </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -409,7 +411,7 @@
   </logicalFolder>
   <sourceRootList>
     <Elem>../include</Elem>
-    <Elem>../nu</Elem>
+    <Elem>../src/nupp</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -531,6 +533,67 @@
         <property key="save-temps" value="false"/>
       </C32Global>
       <PICkit3PlatformTool>
+        <property key="ADC 1" value="true"/>
+        <property key="AutoSelectMemRanges" value="auto"/>
+        <property key="CHANGE NOTICE" value="true"/>
+        <property key="COMPARATOR" value="true"/>
+        <property key="DMA" value="true"/>
+        <property key="Freeze All Other Peripherals" value="true"/>
+        <property key="I2C1" value="true"/>
+        <property key="I2C2" value="true"/>
+        <property key="I2C3" value="true"/>
+        <property key="I2C4" value="true"/>
+        <property key="I2C5" value="true"/>
+        <property key="INPUT CAPTURE 1" value="true"/>
+        <property key="INPUT CAPTURE 2" value="true"/>
+        <property key="INPUT CAPTURE 3" value="true"/>
+        <property key="INPUT CAPTURE 4" value="true"/>
+        <property key="INPUT CAPTURE 5" value="true"/>
+        <property key="INTERRUPT CONTROL" value="true"/>
+        <property key="OUTPUT COMPARE 1" value="true"/>
+        <property key="OUTPUT COMPARE 2" value="true"/>
+        <property key="OUTPUT COMPARE 3" value="true"/>
+        <property key="OUTPUT COMPARE 4" value="true"/>
+        <property key="OUTPUT COMPARE 5" value="true"/>
+        <property key="PARALLEL MASTER/SLAVE PORT" value="true"/>
+        <property key="REAL TIME CLOCK" value="true"/>
+        <property key="SecureSegment.SegmentProgramming" value="FullChipProgramming"/>
+        <property key="TIMER1" value="true"/>
+        <property key="TIMER2" value="true"/>
+        <property key="TIMER3" value="true"/>
+        <property key="TIMER4" value="true"/>
+        <property key="TIMER5" value="true"/>
+        <property key="ToolFirmwareFilePath"
+                  value="Press to browse for a specific firmware version"/>
+        <property key="ToolFirmwareOption.UseLatestFirmware" value="true"/>
+        <property key="UART1" value="true"/>
+        <property key="UART2" value="true"/>
+        <property key="UART3" value="true"/>
+        <property key="UART4" value="true"/>
+        <property key="UART5" value="true"/>
+        <property key="UART6" value="true"/>
+        <property key="hwtoolclock.frcindebug" value="false"/>
+        <property key="memories.aux" value="false"/>
+        <property key="memories.bootflash" value="false"/>
+        <property key="memories.configurationmemory" value="false"/>
+        <property key="memories.eeprom" value="false"/>
+        <property key="memories.flashdata" value="true"/>
+        <property key="memories.id" value="false"/>
+        <property key="memories.programmemory" value="true"/>
+        <property key="memories.programmemory.end" value="0x1d07ffff"/>
+        <property key="memories.programmemory.start" value="0x1d000000"/>
+        <property key="poweroptions.powerenable" value="false"/>
+        <property key="programmertogo.imagename" value=""/>
+        <property key="programoptions.eraseb4program" value="true"/>
+        <property key="programoptions.pgmspeed" value="2"/>
+        <property key="programoptions.preserveeeprom" value="false"/>
+        <property key="programoptions.preserveprogramrange" value="false"/>
+        <property key="programoptions.preserveprogramrange.end" value="0x1d07ffff"/>
+        <property key="programoptions.preserveprogramrange.start" value="0x1d000000"/>
+        <property key="programoptions.preserveuserid" value="false"/>
+        <property key="programoptions.usehighvoltageonmclr" value="false"/>
+        <property key="programoptions.uselvpprogramming" value="false"/>
+        <property key="voltagevalue" value="3.25"/>
       </PICkit3PlatformTool>
     </conf>
   </confs>
