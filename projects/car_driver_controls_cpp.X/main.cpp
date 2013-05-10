@@ -14,37 +14,25 @@
 
 namespace nu {
 	struct DriverControls: public Nu32 {
+		
+		#define DC_PINS(X)\
+			X(AnalogIn, regen_pedel,	B,	0)\
+			X(AnalogIn, accel_pedel,	B,	1)\
+			X(AnalogIn, airgap_pot,		B,	4)\
+			X(DigitalIn, brake_pedal,		B,	2)\
+			X(DigitalIn, headlight_switch,	B,	3)\
+			X(DigitalIn, airgap_enable,		B,	5)\
+			X(DigitalIn, regen_enable,		B,	8)\
+			X(DigitalIn, reverse_switch,	B,	9)\
+			X(DigitalOut, lights_brake,	D,	0)\
+			X(DigitalOut, lights_l,		D,	1)\
+			X(DigitalOut, lights_r,		D,	2)\
+			X(DigitalOut, headlights,	D,	3)
+		
+#define DC_DECLARE(Type, name, ltr, num) Type name; // FUCK MPLAB
+		DC_PINS(DC_DECLARE)
 		can::Module ws_can, common_can;
 		Nokia5110 lcd;
-
-		Enum<AnalogIn, 3> analog_ins;
-		#define ANALOG_INS(X)\
-			X(regen_pedel,	B,	0)\
-			X(accel_pedel,	B,	1)\
-			X(airgap_pot,	B,	4)
-
-		Enum<DigitalIn, 5> digital_ins;
-		#define DIGITAL_INS(X)\
-			X(brake_pedal,		B,	2)\
-			X(headlight_switch,	B,	3)\
-			X(airgap_enable,	B,	5)\
-			X(regen_enable,		B,	8)\
-			X(reverse_switch,	B,	9)
-
-		Enum<DigitalOut, 4> digital_outs;
-		#define DIGITAL_OUTS(X)\
-			X(lights_brake,	D,	0)\
-			X(lights_l,		D,	1)\
-			X(lights_r,		D,	2)\
-			X(headlights,	D,	3)
-
-		/*
-		 * Enumeration constants.
-		 */
-		#define DC_DECLARE(name, ltr, num) uint16_t name##_k; // FUCK MPLAB
-		ANALOG_INS(DC_DECLARE)
-		DIGITAL_INS(DC_DECLARE)
-		DIGITAL_OUTS(DC_DECLARE)
 
 		/**
 		 * State of DriverControls-relevant parameters.
@@ -64,20 +52,16 @@ namespace nu {
 		} state;
 
 
+#define DC_INITIALIZE(Type, name, ltr, num) name(Pin(Pin::ltr, num, #name)),
+
 		/**
 		 * Setup CAN, input Pins, output Pins, and Nokia LCD.
 		 */
-		ALWAYSINLINE DriverControls(): Nu32(Nu32::V1), ws_can(CAN1), common_can(CAN2),
+		ALWAYSINLINE DriverControls(): Nu32(Nu32::V1), DC_PINS(DC_INITIALIZE)
+			ws_can(CAN1), common_can(CAN2),
 			lcd(Pin(Pin::G, 9), SPI_CHANNEL2, Pin(Pin::A, 9), Pin(Pin::E, 9))
 		{
 			WDT::clear();
-			#define DC_ENUMERATE(Type, X_ITER, name, ltr, num, ...) name##_k = X_ITER.enumerate(Type(Pin(Pin::ltr, num, #name) __VA_ARGS__));
-			#define DC_AIN(...)  DC_ENUMERATE(AnalogIn, analog_ins, __VA_ARGS__)
-			#define DC_DIN(...)  DC_ENUMERATE(DigitalIn, digital_ins, __VA_ARGS__)
-			#define DC_DOUT(...) DC_ENUMERATE(DigitalOut, digital_outs, __VA_ARGS__)
-			ANALOG_INS(DC_AIN)
-			DIGITAL_INS(DC_DIN)
-			DIGITAL_OUTS(DC_DOUT)
 
 			common_can.in()  = can::RxChannel(can::Channel(common_can, CAN_CHANNEL0), CAN_RX_FULL_RECEIVE);
 			common_can.out() = can::TxChannel(can::Channel(common_can, CAN_CHANNEL1), CAN_HIGH_MEDIUM_PRIORITY);
@@ -95,23 +79,23 @@ namespace nu {
 		void ALWAYSINLINE read_ins() {
 			WDT::clear();
 			// TODO: Encapsulate ANALOG reading!
-			state.accel = ((float)analog_ins[accel_pedel_k].read() + 0)/1024; // scale 0-1023 to 0-1
+			state.accel = ((float)accel_pedel.read() + 0)/1024; // scale 0-1023 to 0-1
 			if (state.accel < 0) state.accel = 0; // TODO: print warning, clamp
 			if (state.accel > 1) state.accel = 1; // TODO: print warning
 			state.accel_en = state.accel > 0.05;
 
-			state.regen = ((float)analog_ins[regen_pedel_k].read() + 0)/1024; // WARNING: disconnected
-			state.regen_en = digital_ins[regen_enable_k].read()? 1: 0; // TODO: clamp
+			state.regen = ((float)regen_pedel.read() + 0)/1024; // WARNING: disconnected
+			state.regen_en = regen_enable.read()? 1: 0; // TODO: clamp
 
-			state.airgap = ((float)analog_ins[airgap_pot_k].read() + 0)/1024; // WARNING: disconnected
-			state.airgap_en = digital_ins[airgap_enable_k].read()? 1: 0; // TODO: clamp
+			state.airgap = ((float)airgap_pot.read() + 0)/1024; // WARNING: disconnected
+			state.airgap_en = airgap_enable.read()? 1: 0; // TODO: clamp
 
-			state.reverse_en	= digital_ins[reverse_switch_k].read();
+			state.reverse_en	= reverse_switch.read();
 
-			state.brake_en		= digital_ins[brake_pedal_k].read()? 1: 0;
+			state.brake_en		= brake_pedal.read()? 1: 0;
 			state.lights_brake = state.brake_en;
 
-			state.lights_head	= digital_ins[headlight_switch_k].read()? 1: 0;
+			state.lights_head	= headlight_switch.read()? 1: 0;
 		}
 
 
@@ -148,12 +132,12 @@ namespace nu {
 		 */
 		void ALWAYSINLINE set_lights() {
 			WDT::clear();
-			digital_outs[headlights_k]		= state.lights_head;
-			digital_outs[lights_brake_k]	= state.lights_brake;
+			headlights		= state.lights_head;
+			lights_brake	= state.lights_brake;
 
 			bool tick = timer::s()%2;// Even or Odd, change every second
-			digital_outs[lights_l_k] = state.lights_l||state.lights_hazard? tick: 0;
-			digital_outs[lights_r_k] = state.lights_r||state.lights_hazard? tick: 0;
+			lights_l = state.lights_l||state.lights_hazard? tick: 0;
+			lights_r = state.lights_r||state.lights_hazard? tick: 0;
 		}
 
 
@@ -177,7 +161,7 @@ namespace nu {
 			if (state.reverse_en)
 				drive.frame.s.motorVelocity *= -1;
 
-			led1.on(); timer::delay_ms(1); led1.off(); // WARNING: WTF
+			led1.on(); timer::delay_ms(1); led1.off(); // WARNING: bottleneck
 			ws_can.out().tx(drive.bytes(),
 							8,
 							(uint16_t)can::addr::ws20::rx::drive_cmd_k);
