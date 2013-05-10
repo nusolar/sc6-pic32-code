@@ -388,17 +388,17 @@
                    displayName="Source Files"
                    projectFiles="true">
       <logicalFolder name="f1" displayName="nu" projectFiles="true">
-        <itemPath>../src/nu/param.c</itemPath>
+        <itemPath>../nu/param.c</itemPath>
       </logicalFolder>
       <logicalFolder name="nupp" displayName="nupp" projectFiles="true">
-        <itemPath>../src/nupp/can.cpp</itemPath>
-        <itemPath>../src/nupp/headers.cpp</itemPath>
-        <itemPath>../src/nupp/nokia5110.cpp</itemPath>
-        <itemPath>../src/nupp/nu32.cpp</itemPath>
-        <itemPath>../src/nupp/pinctl.cpp</itemPath>
-        <itemPath>../src/nupp/serial.cpp</itemPath>
-        <itemPath>../src/nupp/spi.cpp</itemPath>
-        <itemPath>../src/nupp/wdt.cpp</itemPath>
+        <itemPath>../nupp/can.cpp</itemPath>
+        <itemPath>../nupp/headers.cpp</itemPath>
+        <itemPath>../nupp/nokia5110.cpp</itemPath>
+        <itemPath>../nupp/nu32.cpp</itemPath>
+        <itemPath>../nupp/pinctl.cpp</itemPath>
+        <itemPath>../nupp/serial.cpp</itemPath>
+        <itemPath>../nupp/spi.cpp</itemPath>
+        <itemPath>../nupp/wdt.cpp</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
