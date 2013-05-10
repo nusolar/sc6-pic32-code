@@ -2,10 +2,10 @@
 #define NUPP_ENUM_HPP 1
 
 #include "nu/compiler.h" // MAXIMUM WARNING MAXIMUM ERROR WTF. MUST BE INCLUDED FIRST
-
 #if defined(__DEBUG)
 #undef inline
 #endif
+
 #include <array>
 #include <cstddef>
 

@@ -205,7 +205,7 @@ namespace nu {
 		void ALWAYSINLINE demo() {
 			WDT::clear();
 			led1.toggle();
-			timer::delay_s(1.0);
+			timer::delay_s(1);
 		}
 	};
 }
