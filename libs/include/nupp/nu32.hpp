@@ -49,6 +49,7 @@ namespace nu {
 		 * Do all setups from derived class's constructor!
 		 */
 		Nu32(versions _version, uint32_t _hz = param::default_hz());
+		virtual ~Nu32() {}
 	};
 }
 

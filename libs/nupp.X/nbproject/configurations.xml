@@ -377,6 +377,9 @@
           <itemPath>../include/nupp/timer.hpp</itemPath>
           <itemPath>../include/nupp/ulcd28pt.hpp</itemPath>
           <itemPath>../include/nupp/wdt.hpp</itemPath>
+          <itemPath>../include/nupp/bms.hpp</itemPath>
+          <itemPath>../include/nupp/driver_controls.hpp</itemPath>
+          <itemPath>../include/nupp/steering_wheel.hpp</itemPath>
         </logicalFolder>
       </logicalFolder>
     </logicalFolder>

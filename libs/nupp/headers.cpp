@@ -13,3 +13,7 @@
 #include "nupp/timer.hpp"
 #include "nupp/ulcd28pt.hpp"
 #include "nupp/wdt.hpp"
+
+#include "nupp/bms.hpp"
+#include "nupp/steering_wheel.hpp"
+#include "nupp/driver_controls.hpp"
