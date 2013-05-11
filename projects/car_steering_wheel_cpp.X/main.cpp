@@ -9,6 +9,6 @@ int main() {
 	SteeringWheel sw{};
 	sw.animate_leds();
 	while (true) {
-		sw.demo();
+		sw.run();
 	}
 }

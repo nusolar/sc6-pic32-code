@@ -39,13 +39,13 @@ namespace nu {
 			can::frame::ws20::tx::motor_velocity velo;
 			can::frame::ws20::tx::current_vector curr;
 
-			state(): btns(0), leds(0), lights(), velo(), curr() {}
+			ALWAYSINLINE state(): btns(0), leds(0), lights(), velo(), curr() {}
 		} state;
 		
 		/*
 		 * Pin definitions
 		 */
-		#define DIGITAL_IN_PINS(_BTN)	\
+		#define SW_BTNS(_BTN)	\
 			_BTN(yes,          E, 0)	\
 			_BTN(no,           G, 12)	\
 			_BTN(maybe,        E, 2)	\
@@ -53,7 +53,7 @@ namespace nu {
 			_BTN(cruise_mode,  D, 8)	\
 			_BTN(cruise_up,    D, 10)	\
 			_BTN(cruise_down,  A, 15)
-		#define LED_PINS(_LED)			\
+		#define SW_LEDS(_LED)			\
 			_LED(left,         D, 7)    \
 			_LED(right,        D, 3)    \
 			_LED(radio,        E, 5)    \
@@ -69,20 +69,18 @@ namespace nu {
 		
 #define SW_DECLARE_BTNS(name, ltr, num) size_t name##_k;
 #define SW_DECLARE_LEDS(name, ltr, num) size_t led_##name##_k;
-		DIGITAL_IN_PINS(SW_DECLARE_BTNS)
-		LED_PINS(SW_DECLARE_LEDS)
+		SW_BTNS(SW_DECLARE_BTNS)
+		SW_LEDS(SW_DECLARE_LEDS)
 		
 		
 #define SW_INIT_BTNS(name, ltr, num) , name##_k(buttons.enumerate(Button(Pin(Pin::ltr, num, #name), 10, 5)))
 #define SW_INIT_LEDS(name, ltr, num) , led_##name##_k(leds.enumerate(Led(Pin(Pin::ltr, num, #name))))
 
-
 		/**
 		 * Setup NU32, CAN, LEDs, and uLCD Display.
 		 */
 		ALWAYSINLINE SteeringWheel(): common_can(CAN2), lcd(UART3),
-		buttons(), leds(), state()
-		DIGITAL_IN_PINS(SW_INIT_BTNS) LED_PINS(SW_INIT_LEDS)
+		buttons(), leds(), state() SW_BTNS(SW_INIT_BTNS) SW_LEDS(SW_INIT_LEDS)
 		{
 			WDT::clear();
 			
