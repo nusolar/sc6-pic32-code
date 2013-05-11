@@ -12,35 +12,25 @@ namespace nu {
 	/**
 	 * Digital Button on one pin. Button contacts are flimsy, so
 	 * call update() often to "debounce" the value.
-	 * 
+	 *
 	 */
-	struct Button: protected DigitalIn {
+	class Button: protected DigitalIn {
 		int32_t debounce;
 		uint8_t debounce_max;
 		uint8_t thresh;
 
-
+	public:
 		ALWAYSINLINE Button(Pin btn = Pin(), uint8_t _debounce_max = 10, uint8_t _thresh = 5):
 			DigitalIn(Pin(btn)), debounce(0), debounce_max(_debounce_max), thresh(_thresh) {}
-		
+
+		/** Get whether button is pressed, according to update()'s counter. */
+		ALWAYSINLINE bool pressed()		{return debounce >= thresh;}
+		ALWAYSINLINE operator bool()	{return debounce >= thresh;}
+
 		/**
-		 * Get whether button is pressed, according to Button::update() counter.
+		 * CallMe often relative to threshold to maintain current button value.
 		 */
-		bool ALWAYSINLINE pressed() {
-			return debounce >= thresh;
-		}
-		
-		/**
-		 * Alias to Button::pressed(), which may go away soon.
-		 */
-		ALWAYSINLINE operator bool() {
-			return debounce >= thresh;
-		}
-		
-		/**
-		 * Call this often relative to threshold to keep button value current.
-		 */
-		void ALWAYSINLINE update() {
+		ALWAYSINLINE void update() {
 			debounce += (read()? 1: -1);
 			if (debounce < 0) debounce = 0;
 			if (debounce > debounce_max) debounce = debounce_max;

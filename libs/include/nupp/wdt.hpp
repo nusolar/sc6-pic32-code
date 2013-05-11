@@ -20,7 +20,7 @@ namespace nu {
 		static ALWAYSINLINE void disable_clear(void) {
 			clear = disabled_clear_wdt;
 		}
-		
+
 	private:
 		static ALWAYSINLINE void enabled_clear_wdt (void) { ClearWDT(); }
 		static ALWAYSINLINE void disabled_clear_wdt(void) {}

@@ -27,14 +27,13 @@ namespace nu {
 				   UART_CONFIGURATION uart_config = (UART_CONFIGURATION)0,
 				   UART_ENABLE_MODE enable_modes = (UART_ENABLE_MODE)(UART_ENABLE|UART_RX|UART_TX));
 		virtual ~Serial() {}
-		
-		
+
 		void rx(void *dst, size_t n);
 		void tx(const void *src, size_t n);
 		ALWAYSINLINE virtual void puts(const char *str) {
 			tx(str, strlen(str));
 		}
-		
+
 		DEPRECATED void PRINTF(2, 3) printf(const char *fmt, ...);
 	};
 }

@@ -28,10 +28,10 @@ namespace nu {
 	struct SteeringWheel {
 		can::Module common_can;
 		uLCD28PT lcd;
-		
+
 		Enum<Button, 13> buttons;
 		Enum<Led, 12> leds;
-		
+
 		/** State of Steering Wheel & car */
 		struct state {
 			std::bitset<32> btns, leds; // state of buttons & LEDs
@@ -41,7 +41,7 @@ namespace nu {
 
 			ALWAYSINLINE state(): btns(0), leds(0), lights(), velo(), curr() {}
 		} state;
-		
+
 		/*
 		 * Pin definitions
 		 */
@@ -66,13 +66,13 @@ namespace nu {
 			_LED(horn,         D, 5)    \
 			_LED(cruise_mode,  D, 9)    \
 			_LED(cruise_down,  A, 15)
-		
+
 #define SW_DECLARE_BTNS(name, ltr, num) size_t name##_k;
 #define SW_DECLARE_LEDS(name, ltr, num) size_t led_##name##_k;
 		SW_BTNS(SW_DECLARE_BTNS)
 		SW_LEDS(SW_DECLARE_LEDS)
-		
-		
+
+
 #define SW_INIT_BTNS(name, ltr, num) , name##_k(buttons.enumerate(Button(Pin(Pin::ltr, num, #name), 10, 5)))
 #define SW_INIT_LEDS(name, ltr, num) , led_##name##_k(leds.enumerate(Led(Pin(Pin::ltr, num, #name))))
 
@@ -80,16 +80,15 @@ namespace nu {
 		 * Setup NU32, CAN, LEDs, and uLCD Display.
 		 */
 		ALWAYSINLINE SteeringWheel(): common_can(CAN2), lcd(UART3),
-		buttons(), leds(), state() SW_BTNS(SW_INIT_BTNS) SW_LEDS(SW_INIT_LEDS)
+			buttons(), leds(), state() SW_BTNS(SW_INIT_BTNS) SW_LEDS(SW_INIT_LEDS)
 		{
 			WDT::clear();
-			
 			common_can.in()  = can::RxChannel(can::Channel(common_can, CAN_CHANNEL0), CAN_RX_FULL_RECEIVE);
 			common_can.out() = can::TxChannel(can::Channel(common_can, CAN_CHANNEL1), CAN_HIGH_MEDIUM_PRIORITY);
 			common_can.err() = can::TxChannel(can::Channel(common_can, CAN_CHANNEL2), CAN_LOWEST_PRIORITY);
 		}
-		
-		
+
+
 		/**
 		 * Animate LEDs on startup.
 		 */
@@ -108,8 +107,8 @@ namespace nu {
 				timer::delay_ms(100); // ok. WDT timeout ~ 2s
 			}
 		}
-		
-		
+
+
 		/**
 		 * Read value of Button & LED Pins, update internal state.
 		 */
@@ -124,8 +123,8 @@ namespace nu {
 			for (unsigned i = 0; i < leds.size(); i++)
 				state.leds[i] = (bool)leds[i];
 		}
-		
-		
+
+
 		/**
 		 * Receive data to draw on LCD. Also receive any commands.
 		 */
@@ -134,7 +133,7 @@ namespace nu {
 			can::frame::Packet incoming;
 			uint32_t id;
 			common_can.in().rx(incoming.bytes(), id);
-			
+
 			switch (id) {
 				case (uint32_t)can::addr::sw::rx::lights_k:
 					state.lights.data() = incoming.data();
@@ -150,8 +149,8 @@ namespace nu {
 					break;
 			}
 		}
-		
-		
+
+
 		/**
 		 * Set each LED according to Steering Wheel's state.
 		 */
@@ -160,8 +159,8 @@ namespace nu {
 				leds[i] = state.leds[i];
 			}
 		}
-		
-		
+
+
 		/**
 		 * Read the car's state from CAN, draw to dashboard LCD.
 		 */
@@ -170,42 +169,42 @@ namespace nu {
 			uint32_t msg = 0x004e4550;
 			lcd.printf("\x1Etext\x1F%s%s%u\x1E", "Alert: ", (char *)&msg, 0xF);
 		}
-		
-		
+
+
 		/**
 		 * Send CAN update of Steering Wheel status (LEDs and Buttons).
 		 */
 		void ALWAYSINLINE send_can() {
 			WDT::clear();
-			
+
 			can::frame::sw::tx::buttons btns_pkt;
 			btns_pkt.data() = state.btns.to_ullong();
 			common_can.out().tx(btns_pkt.bytes(),
 								4, // 64->32 ok. WARNING BIT ORDER?
 								(uint16_t)can::addr::sw::tx::buttons_k);
-			
+
 			can::frame::sw::tx::lights lts_pkt;
 			lts_pkt.data() = state.leds.to_ullong();
 			common_can.out().tx(lts_pkt.bytes(),
 								4, // 64->32 ok. WARNING BIT ORDER?
 								(uint16_t)can::addr::sw::tx::lights_k);
 		}
-		
+
 		/**
 		 * A function to be called repeatedly.
 		 */
 		void ALWAYSINLINE run() {
 			WDT::clear();
-			
-			read_ins();
-			recv_can();
-			
+
+			read_ins(); //updates 10x, reads once
+			recv_can(); //recv 1 packet
+
 			set_leds();
 			draw_lcd();
-			
+
 			send_can();
 		}
-		
+
 		/** Demo LED toggling */
 		void ALWAYSINLINE demo() {
 			WDT::clear();

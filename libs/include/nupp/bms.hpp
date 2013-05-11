@@ -39,13 +39,13 @@ namespace nu {
 			OVER_TEMP,
 			UNDER_TEMP // sanity check
 		};
-		
+
 		DigitalOut main_relay, array_relay;
 		can::Module common_can, mppt_can;
 		Nokia5110 lcd1, lcd2;
 		AD7685 adc;
-		
-		
+
+
 		/**
 		 * The state of the Batteries and the BMS.
 		 */
@@ -58,35 +58,35 @@ namespace nu {
 			double cc_battery, cc_array, wh_battery, wh_array;
 			double cc_mppt[3], wh_mppt_in[3], wh_mppt_out[3];
 		} state;
-		
-		
+
+
 		/**
 		 * Setup Relays, CAN modules, Nokia LCDs, Current sensors, Voltage sensors,
 		 * Temperature sensors, and more.
 		 * TODO: Lots
 		 */
-		ALWAYSINLINE BatteryMs(): Nu32(Nu32::V1),
-		main_relay(Pin(Pin::D, 2)), array_relay(Pin(Pin::D, 3)), common_can(CAN1), mppt_can(CAN2),
-		lcd1(Pin(Pin::G, 9), SPI_CHANNEL2, Pin(Pin::A, 9), Pin(Pin::E, 9)),
-		lcd2(Pin(Pin::E, 8), SPI_CHANNEL2, Pin(Pin::A, 10), Pin(Pin::E, 9)),
-		adc (Pin(Pin::A, 0), SPI_CHANNEL4, Pin(Pin::F, 12), 2, // WARNING: GUESSED
-			 (AD7685::options) (2|AD7685::CHAIN_MODE|AD7685::NO_BUSY_INDICATOR)), // ERROR: SPI pin?
-		state()
+		ALWAYSINLINE BatteryMs(): Nu32(Nu32::V1), main_relay(Pin(Pin::D, 2)),
+			array_relay(Pin(Pin::D, 3)), common_can(CAN1), mppt_can(CAN2),
+			lcd1(Pin(Pin::G, 9), SPI_CHANNEL2, Pin(Pin::A, 9), Pin(Pin::E, 9)),
+			lcd2(Pin(Pin::E, 8), SPI_CHANNEL2, Pin(Pin::A, 10), Pin(Pin::E, 9)),
+			adc (Pin(Pin::A, 0), SPI_CHANNEL4, Pin(Pin::F, 12), 2, // WARNING: GUESSED
+				 (AD7685::options) (2|AD7685::CHAIN_MODE|AD7685::NO_BUSY_INDICATOR)), // ERROR: SPI pin?
+			state()
 		{
 			WDT::clear();
 			state.last_trip_module = 12345;
-			
+
 			main_relay = true;
 			array_relay = true;
-			
+
 			common_can.in() = can::RxChannel(can::Channel(common_can, CAN_CHANNEL0), CAN_RX_FULL_RECEIVE);
 			common_can.out() = can::TxChannel(can::Channel(common_can, CAN_CHANNEL1), CAN_HIGH_MEDIUM_PRIORITY);
 			common_can.err() = can::TxChannel(can::Channel(common_can, CAN_CHANNEL2), CAN_LOWEST_PRIORITY);
-			
+
 			mppt_can.out() = can::TxChannel(can::Channel(common_can, CAN_CHANNEL1), CAN_HIGH_MEDIUM_PRIORITY);
 		}
-		
-		
+
+
 		/**
 		 * A function to be called repeatedly
 		 */

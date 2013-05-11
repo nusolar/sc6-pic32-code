@@ -65,7 +65,7 @@ namespace nu {
 			cmd_set_ram_x_addr(x);
 			cmd_set_ram_y_addr(y);
 		}
-		
+
 		/**
 		 * Set one pixel. UNUSED
 		 * The LCD has 6 rows, with 8 pixels per row.
@@ -74,21 +74,21 @@ namespace nu {
 		 */
 		UNUSED void set_pixel(uint8_t x, uint8_t y) {
 			if (x >= lcd_x || y >= lcd_y) return;
-			
+
 			uint8_t y_row = (uint8_t)(y >> 3);          // >>3 divides by 8
 			uint8_t y_pix = (uint8_t)(y-(y_row << 3));  // <<3 multiplies by 8
 			uint8_t val   = (uint8_t)(1 << y_pix);
-			
+
 			goto_xy(x, y_row); // Write pixel out to LCD
 			write_data(val);
 		}
-		
+
 		ALWAYSINLINE void lcd_clear(){
 			goto_xy(0,0);
 			for (uint32_t ui = 0; ui < (lcd_x * 6); ui++) // WARNING
 				write_data(0x00);
 		}
-		
+
 	private:
 		ALWAYSINLINE void write_cmd(uint8_t cmd) {
 			dc.low();

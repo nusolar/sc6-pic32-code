@@ -10,8 +10,9 @@
 
 namespace nu {
 	namespace timer {
-		static ALWAYSINLINE void reset() {WriteCoreTimer(0);}
+		/** Ticks happen every other clockcycle */
 		static ALWAYSINLINE uint32_t ticks() {return ReadCoreTimer();}
+		static ALWAYSINLINE void reset() {WriteCoreTimer(0);}
 
 		static ALWAYSINLINE uint64_t  s_to_ticks(uint64_t s)  {return s *(uint64_t)param::Hz() /2;}
 		static ALWAYSINLINE uint64_t ms_to_ticks(uint64_t ms) {return ms*(uint64_t)param::Hz() /2000;}
@@ -26,9 +27,9 @@ namespace nu {
 		static ALWAYSINLINE void delay_ticks(uint32_t t) {
 			uint32_t start = ticks();
 			while (ticks() - start < (t))
-				Nop();   /* do nothing */
+				Nop();   // do nothing
 		}
-		
+
 		static ALWAYSINLINE void delay_s (uint64_t s)  {delay_ticks((uint32_t)s_to_ticks(s));}
 		static ALWAYSINLINE void delay_ms(uint64_t ms) {delay_ticks((uint32_t)ms_to_ticks(ms));}
 		static ALWAYSINLINE void delay_us(uint64_t us) {delay_ticks((uint32_t)us_to_ticks(us));}

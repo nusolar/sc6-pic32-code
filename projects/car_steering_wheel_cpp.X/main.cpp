@@ -3,12 +3,12 @@
 
 using namespace std;
 using namespace nu;
-using namespace can;
 
-int main() {
+int main(int argc, const char* argv[]) {
 	SteeringWheel sw{};
 	sw.animate_leds();
 	while (true) {
 		sw.run();
 	}
+	return 0;
 }

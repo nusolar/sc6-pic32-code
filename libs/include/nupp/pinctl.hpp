@@ -23,7 +23,7 @@ namespace nu {
 		Port port;
 		uint8_t bit;
 		const char *name;
-		
+
 		IoPortId ltr() {return (IoPortId)(port);}; // PIC32 SPECIFIC
 		uint32_t num() {return (1 << bit);} // PIC32 SPECIFIC
 
@@ -38,7 +38,7 @@ namespace nu {
 
 	protected:
 		/**
-		 * Call one of these four setters in your Setup.
+		 * Call one of these four setters in your subclass.
 		 */
 		void ALWAYSINLINE set_digital_out()	{PORTSetPinsDigitalOut(ltr(), num());}
 		void ALWAYSINLINE set_digital_in()	{PORTSetPinsDigitalIn(ltr(), num());}
@@ -51,33 +51,36 @@ namespace nu {
 		virtual void ALWAYSINLINE clear()	{PORTClearBits(ltr(), num());}
 		virtual void ALWAYSINLINE toggle()	{PORTToggleBits(ltr(), num());}
 	};
-	
+
 	struct DigitalIn: protected Pin {
 		ALWAYSINLINE DigitalIn(Pin p = Pin()): Pin(p) {set_digital_in();}
 		uint32_t ALWAYSINLINE read() {return Pin::read();} // returns 0 or any non-0
 	};
-	
-	struct DigitalOut: protected Pin {
+
+	class DigitalOut: protected Pin {
 		bool _status;
-		
+
+	public:
 		ALWAYSINLINE DigitalOut(Pin p = Pin()): Pin(p), _status(false) {set_digital_out();}
-		
+
 		ALWAYSINLINE void high()	{set();}
 		ALWAYSINLINE void low()		{clear();}
+		ALWAYSINLINE bool status() {return _status;}
+
 		ALWAYSINLINE DigitalOut &operator= (bool rhs) {
 			if (rhs) set();
 			else clear();
 			return *this;
 		}
 	};
-	
+
 	/**
 	 * An Analog input Pin, wrapped with an ADC.
 	 */
 	struct AnalogIn: protected Pin {
 		static uint16_t enabled_ADCs; // Permits 16 ADC's
 		uint8_t adc;
-		
+
 		/**
 		 * @param p For PIC32MX795F512L, p.ltr is always IOPORT_B
 		 * @param _adc For PIC32MX795F512L, this number == p.bit
@@ -89,17 +92,17 @@ namespace nu {
 
 			enabled_ADCs |= (typeof(enabled_ADCs)) (1 << adc); // PIC32 SPECIFIC
 			uint32_t count_enabled = __builtin_popcount(enabled_ADCs); // 32bit cuz we bitshift below
-			
+
 			/* 1: Turn module on | ouput in integer | trigger mode auto | enable autosample
 			 * 2: ADC ref external    | disable offset test    | disable scan mode | perform 2 samples | use dual buffers | use alternate mode
 			 * 3: use ADC internal clock | set sample time
 			 * 4: enable all ANX not in use
 			 * 5: do not assign other channels to scan */
-#define PARAM1	ADC_MODULE_ON | ADC_FORMAT_INTG | ADC_CLK_AUTO | ADC_AUTO_SAMPLING_ON
-#define PARAM2	ADC_VREF_AVDD_AVSS | ADC_OFFSET_CAL_DISABLE | ADC_SCAN_ON | (count_enabled << _AD1CON2_SMPI_POSITION) | ADC_ALT_BUF_OFF | ADC_ALT_INPUT_OFF // use Channel A only
-#define PARAM3	ADC_CONV_CLK_INTERNAL_RC | ADC_SAMPLE_TIME_15
-#define PARAM4	ENABLE_AN0_ANA | ENABLE_AN1_ANA
-#define PARAM5	SKIP_SCAN_ALL
+			#define PARAM1	ADC_MODULE_ON | ADC_FORMAT_INTG | ADC_CLK_AUTO | ADC_AUTO_SAMPLING_ON
+			#define PARAM2	ADC_VREF_AVDD_AVSS | ADC_OFFSET_CAL_DISABLE | ADC_SCAN_ON | (count_enabled << _AD1CON2_SMPI_POSITION) | ADC_ALT_BUF_OFF | ADC_ALT_INPUT_OFF // use Channel A only
+			#define PARAM3	ADC_CONV_CLK_INTERNAL_RC | ADC_SAMPLE_TIME_15
+			#define PARAM4	ENABLE_AN0_ANA | ENABLE_AN1_ANA
+			#define PARAM5	SKIP_SCAN_ALL
 
 			OpenADC10( PARAM1, PARAM2, PARAM3, enabled_ADCs, ~enabled_ADCs ); // setup ADC
 			EnableADC10();

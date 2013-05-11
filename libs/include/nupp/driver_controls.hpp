@@ -24,7 +24,7 @@
 
 namespace nu {
 	struct DriverControls: public Nu32 {
-		
+
 		#define DC_PINS(X)\
 			X(AnalogIn, regen_pedel,	B,	0)\
 			X(AnalogIn, accel_pedel,	B,	1)\
@@ -38,12 +38,12 @@ namespace nu {
 			X(DigitalOut, lights_l,		D,	1)\
 			X(DigitalOut, lights_r,		D,	2)\
 			X(DigitalOut, headlights,	D,	3)
-		
+
 #define DC_DECLARE(Type, name, ltr, num) Type name; // FUCK MPLAB
 		DC_PINS(DC_DECLARE)
 		can::Module ws_can, common_can;
 		Nokia5110 lcd;
-		
+
 		/**
 		 * State of DriverControls-relevant parameters.
 		 * TODO: Implement extensible, polymorphic, car-wide state management.
@@ -54,35 +54,32 @@ namespace nu {
 			accel_en, brake_en, reverse_en, regen_en, airgap_en, cruise_en;
 			float accel, regen, airgap, cruise; // FUCK MPLAB
 			uint32_t sw_timer;
-			
+
 			ALWAYSINLINE state(): lights_l(0), lights_r(0), lights_hazard(0),
-			lights_head(0), lights_brake(0), horn(0),
-			accel_en(0), brake_en(0), reverse_en(0), regen_en(0), airgap_en(0), cruise_en(0),
-			accel(0), regen(0), airgap(0), cruise(0), sw_timer(0) {}
+				lights_head(0), lights_brake(0), horn(0),
+				accel_en(0), brake_en(0), reverse_en(0), regen_en(0), airgap_en(0), cruise_en(0),
+				accel(0), regen(0), airgap(0), cruise(0), sw_timer(0) {}
 		} state;
-		
-		
+
+
 #define DC_INITIALIZE(Type, name, ltr, num) name(Pin(Pin::ltr, num, #name)),
-		
+
 		/**
 		 * Setup CAN, input Pins, output Pins, and Nokia LCD.
 		 */
 		ALWAYSINLINE DriverControls(): Nu32(Nu32::V1), DC_PINS(DC_INITIALIZE)
-		ws_can(CAN1), common_can(CAN2),
-		lcd(Pin(Pin::G, 9), SPI_CHANNEL2, Pin(Pin::A, 9), Pin(Pin::E, 9)), state()
+			ws_can(CAN1), common_can(CAN2),
+			lcd(Pin(Pin::G, 9), SPI_CHANNEL2, Pin(Pin::A, 9), Pin(Pin::E, 9)), state()
 		{
 			WDT::clear();
-			
 			common_can.in()  = can::RxChannel(can::Channel(common_can, CAN_CHANNEL0), CAN_RX_FULL_RECEIVE);
 			common_can.out() = can::TxChannel(can::Channel(common_can, CAN_CHANNEL1), CAN_HIGH_MEDIUM_PRIORITY);
 			common_can.err() = can::TxChannel(can::Channel(common_can, CAN_CHANNEL2), CAN_LOWEST_PRIORITY); // err chn
-			
 			ws_can.out() = can::TxChannel(can::Channel(ws_can, CAN_CHANNEL1), CAN_HIGH_MEDIUM_PRIORITY);
-			
 			// TODO: configure ADC10
 		}
-		
-		
+
+
 		/**
 		 * Read all input Pins. Store result in state.
 		 */
@@ -93,22 +90,22 @@ namespace nu {
 			if (state.accel < 0) state.accel = 0; // TODO: print warning, clamp
 			if (state.accel > 1) state.accel = 1; // TODO: print warning
 			state.accel_en = state.accel > 0.05;
-			
+
 			state.regen = ((float)regen_pedel.read() + 0)/1024; // WARNING: disconnected
 			state.regen_en = regen_enable.read()? 1: 0; // TODO: clamp
-			
+
 			state.airgap = ((float)airgap_pot.read() + 0)/1024; // WARNING: disconnected
 			state.airgap_en = airgap_enable.read()? 1: 0; // TODO: clamp
-			
+
 			state.reverse_en	= reverse_switch.read();
-			
+
 			state.brake_en		= brake_pedal.read()? 1: 0;
 			state.lights_brake = state.brake_en;
-			
+
 			state.lights_head	= headlight_switch.read()? 1: 0;
 		}
-		
-		
+
+
 		/**
 		 * Read car state from CAN.
 		 */
@@ -135,8 +132,8 @@ namespace nu {
 					}
 			}
 		}
-		
-		
+
+
 		/**
 		 * Update all light Outputs, to conform to state.
 		 */
@@ -144,21 +141,21 @@ namespace nu {
 			WDT::clear();
 			headlights		= state.lights_head;
 			lights_brake	= state.lights_brake;
-			
+
 			bool tick = timer::s()%2;// Even or Odd, change every second
 			lights_l = state.lights_l||state.lights_hazard? tick: 0;
 			lights_r = state.lights_r||state.lights_hazard? tick: 0;
 		}
-		
-		
+
+
 		/**
 		 * Command motor, from accel_pedel, brake, & cruise control input.
 		 */
 		void ALWAYSINLINE set_motor() {
 			WDT::clear();
-			
+
 			can::frame::ws20::rx::drive_cmd drive{}; // Zero-init [current, velocity]
-			
+
 			if (state.brake_en) {
 				state.cruise_en = 0;
 				if (state.regen_en)
@@ -167,34 +164,34 @@ namespace nu {
 					Nop(); // Normal braking.
 			} else if (state.accel_en)
 				drive.frame.s = {101, state.accel}; // [Max 101m/s, accel percent]
-			
+
 			if (state.reverse_en)
 				drive.frame.s.motorVelocity *= -1;
-			
+
 			led1.on(); timer::delay_ms(1); led1.off(); // WARNING: bottleneck
 			ws_can.out().tx(drive.bytes(),
 							8,
 							(uint16_t)can::addr::ws20::rx::drive_cmd_k);
 		}
-		
-		
+
+
 		/**
 		 * A function to be called repeatedly.
 		 */
 		void ALWAYSINLINE run() {
 			WDT::clear();
-			
+
 			read_ins();
 			recv_can();
 			set_lights();
 			set_motor();
-			
+
 			lcd.lcd_clear();
 			lcd.goto_xy(0, 0);
 			lcd.printf("%f", 25.0);
 		}
-		
-		
+
+
 		/** Demo LED toggling */
 		void ALWAYSINLINE demo() {
 			WDT::clear();

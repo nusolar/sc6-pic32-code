@@ -36,11 +36,10 @@ namespace nu {
 			SpiChnOpen(chn, oflags, (uint32_t) param::pbus_hz()/bitrate);
 		}
 		NOINLINE virtual ~SPI() {};
-			
-			
+
 		void rx(void *dst, size_t n);
 		void tx(const void *src, size_t n);
-		virtual void ALWAYSINLINE puts(const char *str) {
+		ALWAYSINLINE virtual void puts(const char *str) {
 			tx(str, strlen(str));
 		}
 

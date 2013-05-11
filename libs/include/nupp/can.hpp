@@ -84,8 +84,8 @@ namespace nu {
 				   INT_PRIORITY int_priority = INT_PRIORITY_DISABLED,
 				   CAN_MODULE_FEATURES features = (CAN_MODULE_FEATURES)0);
 			operator CAN_MODULE() const {return mod;}
-			
-			
+
+
 			RxChannel &in() {return rx;}
 			TxChannel &out() {return tx;}
 			TxChannel &err() {return ex;}

@@ -43,26 +43,26 @@ namespace nu {
 		void convert_read_uv(uint32_t *dst){
 			if (FOUR_WIRE & opt && BUSY_INDICATOR & opt)
 				cs.high();
-			
+
 			// start conversion
 			convert.high();
 			timer::delay_ns(100);  // .1 us
-			
+
 			if (BUSY_INDICATOR & opt) {
 				if (THREE_WIRE & opt)
 					convert.low();
 				else if (FOUR_WIRE & opt)
 					cs.high();
 			}
-			
+
 			timer::delay_ns(2300); // 2.3 us
-			
+
 			if (THREE_WIRE & opt && NO_BUSY_INDICATOR & opt)
 				cs.low();
-			
+
 			// read in the actual voltage reading(s) over SPI
 			read_uv(dst);
-			
+
 			cs.low();
 			timer::delay_us(5);
 		}
@@ -70,7 +70,7 @@ namespace nu {
 	private:
 		void read_uv(uint32_t *dst){
 			uint16_t *buffer = (uint16_t *)alloca(sizeof(*buffer) * num_devices);
-			
+
 			rx(buffer, sizeof(*buffer)*num_devices);
 			for (unsigned int ui=0; ui < num_devices; ui++) {
 				// swap byte order
