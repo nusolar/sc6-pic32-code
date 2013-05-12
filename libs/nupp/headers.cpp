@@ -1,4 +1,5 @@
 #include "nupp/ad7685.hpp"
+#include <nupp/allocator.hpp>
 #include "nupp/button.hpp"
 #include "nupp/can.hpp"
 #include "nupp/enum.hpp"

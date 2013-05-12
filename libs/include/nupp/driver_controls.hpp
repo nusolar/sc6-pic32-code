@@ -197,7 +197,7 @@ namespace nu {
 			led1.toggle();
 			timer::delay_s(1);
 		}
-		
+
 		static NORETURN void main();
 	};
 }

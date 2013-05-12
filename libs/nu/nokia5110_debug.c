@@ -1,4 +1,4 @@
-#include "../include/nokia5110_debug.h"
+#include "../include/nu/nokia5110_debug.h"
 
 const struct nokia5110 *debugScreen;
 

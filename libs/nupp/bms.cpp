@@ -7,6 +7,7 @@
 //
 
 #include "nupp/bms.hpp"
+#include <alloca.h>
 
 using namespace nu;
 

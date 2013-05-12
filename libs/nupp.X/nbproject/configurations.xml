@@ -382,6 +382,7 @@
           <itemPath>../include/nupp/steering_wheel.hpp</itemPath>
           <itemPath>../include/nupp/buffer.hpp</itemPath>
           <itemPath>../include/nupp/short_alloc.hpp</itemPath>
+          <itemPath>../include/nupp/allocator.hpp</itemPath>
         </logicalFolder>
       </logicalFolder>
     </logicalFolder>
@@ -429,7 +430,7 @@
         <targetPluginBoard></targetPluginBoard>
         <platformTool>PICkit3PlatformTool</platformTool>
         <languageToolchain>XC32</languageToolchain>
-        <languageToolchainVersion>1.20</languageToolchainVersion>
+        <languageToolchainVersion>1.21</languageToolchainVersion>
         <platform>4</platform>
       </toolsSet>
       <compileType>
@@ -541,9 +542,12 @@
       <PICkit3PlatformTool>
         <property key="ADC 1" value="true"/>
         <property key="AutoSelectMemRanges" value="auto"/>
+        <property key="CAN1" value="true"/>
+        <property key="CAN2" value="true"/>
         <property key="CHANGE NOTICE" value="true"/>
         <property key="COMPARATOR" value="true"/>
         <property key="DMA" value="true"/>
+        <property key="ETHERNET CONTROLLER" value="true"/>
         <property key="Freeze All Other Peripherals" value="true"/>
         <property key="I2C1" value="true"/>
         <property key="I2C2" value="true"/>
