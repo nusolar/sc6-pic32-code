@@ -5,6 +5,7 @@ using namespace std;
 using namespace nu;
 
 int main(int argc, const char* argv[]) {
+	WDT::enable_clear();
 	SteeringWheel sw{};
 	sw.animate_leds();
 	while (true) {

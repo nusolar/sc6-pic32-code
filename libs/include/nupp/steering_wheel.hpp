@@ -93,14 +93,12 @@ namespace nu {
 		 * Animate LEDs on startup.
 		 */
 		void ALWAYSINLINE animate_leds() {
-			WDT::clear();
 			// FUCK MPLAB
 			for (unsigned i=0; i<leds.size(); i++){
 				WDT::clear();
 				leds[i].on();
 				timer::delay_ms(100); // ok. WDT timeout ~ 2s
 			}
-			WDT::clear();
 			for (unsigned i=0; i<leds.size(); i++){
 				WDT::clear();
 				leds[i].off();

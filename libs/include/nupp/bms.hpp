@@ -90,7 +90,7 @@ namespace nu {
 		/**
 		 * A function to be called repeatedly
 		 */
-		void ALWAYSINLINE run() {
+		ALWAYSINLINE void run() {
 			lcd2.goto_xy(0, 1);
 			lcd2.printf("V: %0.9f", state.voltages[31]);
 			lcd2.goto_xy(0, 2);

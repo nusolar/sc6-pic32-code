@@ -40,7 +40,7 @@ namespace nu {
 		/**
 		 * Gets the actual voltage reading(s) (not raw data).
 		 */
-		void convert_read_uv(uint32_t *dst){
+		ALWAYSINLINE void convert_read_uv(uint32_t *dst){
 			if (FOUR_WIRE & opt && BUSY_INDICATOR & opt)
 				cs.high();
 
@@ -68,7 +68,7 @@ namespace nu {
 		}
 
 	private:
-		void read_uv(uint32_t *dst){
+		ALWAYSINLINE void read_uv(uint32_t *dst){
 			uint16_t *buffer = (uint16_t *)alloca(sizeof(*buffer) * num_devices);
 
 			rx(buffer, sizeof(*buffer)*num_devices);

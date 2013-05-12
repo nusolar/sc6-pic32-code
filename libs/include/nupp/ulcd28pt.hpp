@@ -32,22 +32,22 @@ namespace nu {
 			s.rdbuf()->pubsetbuf(_buffer, buffersize);
 		}
 
-		uLCD28PT& operator << (const can::frame::ws20::tx::motor_velocity& x) {
+		ALWAYSINLINE uLCD28PT& operator << (const can::frame::ws20::tx::motor_velocity& x) {
 			write_key_val("velo", x.frame.s.vehicleVelocity);
 			return *this;
 		}
-		uLCD28PT& operator << (const can::frame::ws20::tx::current_vector& x) {
+		ALWAYSINLINE uLCD28PT& operator << (const can::frame::ws20::tx::current_vector& x) {
 			write_key_val("curr", x.frame.s.currentRe);
 			return *this;
 		}
-		uLCD28PT& operator << (const char * x) {
+		ALWAYSINLINE uLCD28PT& operator << (const char * x) {
 			write_key_val("text", x);
 			return *this;
 		}
 
 	private:
 		template <class V>
-		void write_key_val(const char *key, V &value) {
+		ALWAYSINLINE void write_key_val(const char *key, V &value) {
 			s << record << key << unit << value << record;
 			Serial::puts(s.str().c_str());
 			s.str("");

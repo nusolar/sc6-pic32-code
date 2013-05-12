@@ -8,6 +8,7 @@ using namespace nu;
  * Instantiate DriverControls object
  */
 int main(int argc, const char* argv[]) {
+	WDT::enable_clear();
 	DriverControls dc{};
 	dc.led1.on();
 	while (true) {
