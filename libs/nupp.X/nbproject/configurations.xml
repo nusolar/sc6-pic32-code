@@ -381,6 +381,7 @@
           <itemPath>../include/nupp/driver_controls.hpp</itemPath>
           <itemPath>../include/nupp/steering_wheel.hpp</itemPath>
           <itemPath>../include/nupp/buffer.hpp</itemPath>
+          <itemPath>../include/nupp/short_alloc.hpp</itemPath>
         </logicalFolder>
       </logicalFolder>
     </logicalFolder>

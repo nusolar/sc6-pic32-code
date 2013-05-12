@@ -9,6 +9,7 @@
 #define	NU_BUFFER_HPP
 
 #include <sstream>
+//#include "nupp/short_alloc.hpp"
 
 namespace nu {
 	/**
