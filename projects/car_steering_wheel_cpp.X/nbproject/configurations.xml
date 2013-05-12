@@ -40,7 +40,23 @@
       <compileType>
         <linkerTool>
           <linkerLibItems>
-            <linkerLibFileItem>../../libs/nupp.X/dist/default/production/nupp.X.a</linkerLibFileItem>
+            <linkerLibProjectItem>
+              <makeArtifact PL="../../libs/nupp.X"
+                            CT="3"
+                            CN="default"
+                            AC="true"
+                            BL="true"
+                            WD="../../libs/nupp.X"
+                            BC="${MAKE}  -j 8 -f Makefile CONF=default"
+                            DBC="${MAKE}  -j 8 -f Makefile CONF=default TYPE_IMAGE=DEBUG_RUN"
+                            CC="rm -rf &quot;build/default&quot; &quot;dist/default&quot;"
+                            OP="dist/default/production/nupp.X.a"
+                            DOP="dist/default/debug/nupp.X.a"
+                            FL="dist/default/production/nupp.X.a"
+                            PD="dist/default/production/nupp.X."
+                            DD="dist/default/debug/nupp.X.">
+              </makeArtifact>
+            </linkerLibProjectItem>
           </linkerLibItems>
         </linkerTool>
         <loading>

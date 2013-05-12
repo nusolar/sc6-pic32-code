@@ -32,14 +32,21 @@
         <logicalFolder name="f2" displayName="platform" projectFiles="true">
           <logicalFolder name="f2" displayName="generic" projectFiles="true">
             <logicalFolder name="f1" displayName="platform" projectFiles="true">
-              <itemPath>../include/nu/platform/generic/platform/pinctl.h</itemPath>
+              <itemPath>../include/platform/generic/nu/platform/param.h</itemPath>
+              <itemPath>../include/platform/generic/nu/platform/pinctl.h</itemPath>
             </logicalFolder>
           </logicalFolder>
           <logicalFolder name="f1" displayName="pic32mx" projectFiles="true">
             <logicalFolder name="f1" displayName="platform" projectFiles="true">
-              <itemPath>../include/nu/platform/pic32mx/platform/pinctl.h</itemPath>
-              <itemPath>../include/nu/platform/pic32mx/platform/common_pragmas.h</itemPath>
-              <itemPath>../include/nu/platform/pic32mx/platform/nu32.h</itemPath>
+              <itemPath>../include/platform/pic32mx/nu/platform/common_pragmas.h</itemPath>
+              <itemPath>../include/platform/pic32mx/nu/platform/nu32.h</itemPath>
+              <itemPath>../include/platform/pic32mx/nu/platform/nu32_led.h</itemPath>
+              <itemPath>../include/platform/pic32mx/nu/platform/nu32_serial.h</itemPath>
+              <itemPath>../include/platform/pic32mx/nu/platform/param.h</itemPath>
+              <itemPath>../include/platform/pic32mx/nu/platform/pinctl.h</itemPath>
+              <itemPath>../include/platform/pic32mx/nu/platform/platform.h</itemPath>
+              <itemPath>../include/platform/pic32mx/nu/platform/serial.h</itemPath>
+              <itemPath>../include/platform/pic32mx/nu/platform/spi.h</itemPath>
             </logicalFolder>
           </logicalFolder>
         </logicalFolder>
@@ -126,6 +133,10 @@
       <itemPath>Makefile</itemPath>
     </logicalFolder>
   </logicalFolder>
+  <sourceRootList>
+    <Elem>../include/platform/generic/nu/platform</Elem>
+    <Elem>../include/platform/pic32mx/nu/platform</Elem>
+  </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
     <conf name="default" type="3">
@@ -136,8 +147,8 @@
         <targetPluginBoard></targetPluginBoard>
         <platformTool>PICkit3PlatformTool</platformTool>
         <languageToolchain>XC32</languageToolchain>
-        <languageToolchainVersion>1.20</languageToolchainVersion>
-        <platform>3</platform>
+        <languageToolchainVersion>1.21</languageToolchainVersion>
+        <platform>4</platform>
       </toolsSet>
       <compileType>
         <archiverTool>
@@ -157,17 +168,17 @@
         <property key="enable-app-io" value="false"/>
         <property key="enable-omit-frame-pointer" value="false"/>
         <property key="enable-symbols" value="true"/>
-        <property key="enable-unroll-loops" value="false"/>
+        <property key="enable-unroll-loops" value="true"/>
         <property key="exclude-floating-point" value="true"/>
         <property key="extra-include-directories"
                   value="../include;../include/platform/pic32mx"/>
         <property key="generate-16-bit-code" value="false"/>
-        <property key="isolate-each-function" value="false"/>
+        <property key="isolate-each-function" value="true"/>
         <property key="make-warnings-into-errors" value="true"/>
-        <property key="optimization-level" value=""/>
-        <property key="place-data-into-section" value="false"/>
-        <property key="post-instruction-scheduling" value="no-schedule-insns2"/>
-        <property key="pre-instruction-scheduling" value="no-schedule-insns"/>
+        <property key="optimization-level" value="-O1"/>
+        <property key="place-data-into-section" value="true"/>
+        <property key="post-instruction-scheduling" value="schedule-insns2"/>
+        <property key="pre-instruction-scheduling" value="schedule-insns"/>
         <property key="preprocessor-macros"
                   value="inline=__inline__;__STRICT_ANSI__;IS_NU_LIBRARY"/>
         <property key="strict-ansi" value="false"/>
@@ -208,9 +219,9 @@
         <property key="map-file" value=""/>
         <property key="no-startup-files" value="false"/>
         <property key="oXC32ld-extra-opts" value=""/>
-        <property key="optimization-level" value=""/>
+        <property key="optimization-level" value="-O1"/>
         <property key="preprocessor-macros" value=""/>
-        <property key="remove-unused-sections" value="false"/>
+        <property key="remove-unused-sections" value="true"/>
         <property key="report-memory-usage" value="false"/>
         <property key="stack-size" value=""/>
         <property key="symbol-stripping" value=""/>
