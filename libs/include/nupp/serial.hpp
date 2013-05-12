@@ -3,7 +3,9 @@
 
 #include "nu/compiler.h"
 #include <cstdint>
+#include <ostream>
 
+#include "nupp/buffer.hpp"
 #include <cstring> // strlen
 #include <plib.h>
 
@@ -11,13 +13,14 @@ namespace nu {
 	/**
 	 * Encapsulate Serial/UART reading/writing.
 	 */
-	struct Serial {
+	struct Serial: public std::ostream {
 		enum module_interrupt {
 			USE_UART_INTERRUPT,
 			NOT_USE_UART_INTERRUPT
 		};
 
 		UART_MODULE module;
+		Buffer<Serial> _buffer;
 
 		Serial(UART_MODULE _mod, uint32_t baud,
 				   module_interrupt use_interrupt = NOT_USE_UART_INTERRUPT,
@@ -33,8 +36,7 @@ namespace nu {
 		ALWAYSINLINE virtual void puts(const char *str) {
 			tx(str, strlen(str));
 		}
-
-		DEPRECATED void PRINTF(2, 3) printf(const char *fmt, ...);
+//		DEPRECATED void PRINTF(2, 3) printf(const char *fmt, ...);
 	};
 }
 

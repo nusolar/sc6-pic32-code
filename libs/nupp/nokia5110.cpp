@@ -216,9 +216,6 @@ void Nokia5110::cmd_set_disp_mode(const cmd_func_set_options mode) {
 }
 
 
-#pragma mark - Printing
-
-
 void Nokia5110::put_c(const uint8_t c) {
 	write_data(0x00);
 	for (uint32_t ui = 0; ui < 5; ui++) {
@@ -234,7 +231,7 @@ void Nokia5110::puts(const uint8_t *str) {
 	}
 }
 
-void Nokia5110::printf(const char *fmt, ...) {
+/*void Nokia5110::printf(const char *fmt, ...) {
 	char buffer[72];
 	va_list fmtargs;
 	va_start(fmtargs, fmt);
@@ -243,10 +240,7 @@ void Nokia5110::printf(const char *fmt, ...) {
 		puts((uint8_t *)buffer);
 	}
 	va_end(fmtargs);
-}
-
-
-#pragma mark - Location
+}*/
 
 /** @param x should be in the range 0-83 */
 void Nokia5110::cmd_set_ram_x_addr(const uint8_t x) {

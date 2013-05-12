@@ -6,7 +6,6 @@
 #undef inline
 #endif
 
-#include <array>
 #include <cstddef>
 
 namespace nu {
@@ -15,10 +14,16 @@ namespace nu {
 	 * incrementing values as enumerate() is called, to facilitate enumeration.
 	 */
 	template <class _Tp, size_t _Size>
-	struct Enum: public std::array<_Tp, _Size> {
+	struct Enum {
 		size_t len; // FUCK MPLAB
+		_Tp _array[_Size];
+
+		ALWAYSINLINE size_t size() {return _Size;}
+		_Tp& operator[] (const size_t index) {
+		    return _array[index];
+		}
 		size_t enumerate(_Tp &&rvalue) {
-			if (unlikely(len == this->size()))
+			if (unlikely(len == _Size))
 				return len-1;
 			(*this)[len] = rvalue;
 			return len++;

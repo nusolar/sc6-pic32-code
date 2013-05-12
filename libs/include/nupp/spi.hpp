@@ -4,15 +4,17 @@
 #include "nupp/param.hpp"
 #include <cstddef> // size_t
 
+#include <ostream>
+#include <nupp/buffer.hpp>
+#include "nupp/pinctl.hpp"
 #include <cstring> // strlen
 #include <plib.h>
-#include "nupp/pinctl.hpp"
 
 namespace nu {
 	/**
 	 * Encapsulate SPI reading/writing.
 	 */
-	struct SPI { // chip select pin
+	struct SPI: public std::ostream { // chip select pin
 		enum UNUSED options {
 			DEFAULT = 0,
 		};
@@ -22,16 +24,17 @@ namespace nu {
 		};
 
 		/**
-		 * Chip Select pin. Used to tell an SPI device to listen. Whether it's
-		 * high or low depends on the SPI Thing in question.
+		 * Chip Select pin. Used to tell an SPI device to listen.
+		 * Set it high or low depending on the SPI Thing in question.
 		 */
 		DigitalOut cs;
 		SpiChannel chn;
 		tx_options opt;
+		Buffer<SPI> _buffer;
 
 		ALWAYSINLINE SPI(Pin _cs, SpiChannel _chn, uint32_t bitrate, SpiOpenFlags oflags,
 						 tx_options _opt = (tx_options)(TX_WAIT_START|TX_WAIT_END)):
-			cs(_cs), chn(_chn), opt(_opt) {
+			cs(_cs), chn(_chn), opt(_opt), _buffer(*this) {
 			cs.high();
 			SpiChnOpen(chn, oflags, (uint32_t) param::pbus_hz()/bitrate);
 		}
@@ -39,7 +42,7 @@ namespace nu {
 
 		void rx(void *dst, size_t n);
 		void tx(const void *src, size_t n);
-		ALWAYSINLINE virtual void puts(const char *str) {
+		virtual void puts(const char *str) {
 			tx(str, strlen(str));
 		}
 

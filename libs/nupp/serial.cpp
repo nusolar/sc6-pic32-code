@@ -9,9 +9,11 @@
 using namespace nu;
 
 Serial::Serial(UART_MODULE _mod, uint32_t baud, nu::Serial::module_interrupt use_interrupt,
-				   INT_PRIORITY int_priority, UART_FIFO_MODE interrupt_modes,
-				   UART_LINE_CONTROL_MODE line_control_modes, UART_CONFIGURATION uart_config,
-				   UART_ENABLE_MODE enable_modes): module(_mod) {
+			   INT_PRIORITY int_priority, UART_FIFO_MODE interrupt_modes,
+			   UART_LINE_CONTROL_MODE line_control_modes, UART_CONFIGURATION uart_config,
+			   UART_ENABLE_MODE enable_modes):
+	ostream(&_buffer), module(_mod), _buffer(*this)
+{
 	UARTConfigure(module, uart_config);
 	UARTSetFifoMode(module, interrupt_modes);
 	UARTSetLineControl(module, line_control_modes);
@@ -76,7 +78,7 @@ void Serial::rx(void *dst, size_t n) {
 }
 
 
-void Serial::printf(const char *fmt, ...) {
+/*void Serial::printf(const char *fmt, ...) {
 	char *buf;
 	int res;
 	va_list fmtargs;
@@ -87,5 +89,5 @@ void Serial::printf(const char *fmt, ...) {
 		tx(buf, (size_t)res);
 	}
 	va_end(fmtargs);
-}
+}*/
 

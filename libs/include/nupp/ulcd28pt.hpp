@@ -5,7 +5,6 @@
 #include <cstdint>
 #include <cstddef>
 
-#include <sstream>
 #include "nupp/serial.hpp"
 #include "nupp/pinctl.hpp"
 #include "nupp/can.hpp"
@@ -21,26 +20,14 @@ namespace nu {
 	class uLCD28PT: protected Serial {
 		static const uint8_t unit = '\x1F';
 		static const uint8_t record = '\x1E';
-		static const uint16_t buffersize = 512;
-		/**
-		 * INITIALLY USES HEAP. HOWEVER, CONSTRUCTOR IMMEDIATELY
-		 * GIVES IT STACK BUFFER.
-		 */
-		std::stringstream s;
-		char _buffer[buffersize];
 		
 		template <class V>
 		ALWAYSINLINE void write_key_val(const char *key, V &value) {
-			s << record << key << unit << value << record;
-			Serial::puts(s.str().c_str());
-			s.str("");
+			*this << record << key << unit << value << record << std::flush;
 		}
 
 	public:
-		ALWAYSINLINE uLCD28PT(UART_MODULE mod): Serial(mod, 115200)//, s()
-		{
-			s.rdbuf()->pubsetbuf(_buffer, buffersize);
-		}
+		ALWAYSINLINE uLCD28PT(UART_MODULE mod): Serial(mod, 115200) {}
 
 		ALWAYSINLINE uLCD28PT& operator << (const can::frame::ws20::tx::motor_velocity& x) {
 			write_key_val("velo", x.frame.s.vehicleVelocity);

@@ -213,6 +213,6 @@ namespace nu {
 
 		static NORETURN void main();
 	};
-}
+};
 
 #endif /* defined(__nusolar_lib__steering_wheel__) */

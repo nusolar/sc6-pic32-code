@@ -187,7 +187,7 @@ namespace nu {
 
 			lcd.lcd_clear();
 			lcd.goto_xy(0, 0);
-			lcd.printf("%f", 25.0);
+			lcd << 25.0 << std::flush;
 		}
 
 

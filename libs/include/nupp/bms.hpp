@@ -92,11 +92,11 @@ namespace nu {
 		 */
 		ALWAYSINLINE void run() {
 			lcd2.goto_xy(0, 1);
-			lcd2.printf("V: %0.9f", state.voltages[31]);
+			lcd2 << "V: %0.9f" << state.voltages[31] << std::flush;
 			lcd2.goto_xy(0, 2);
-			lcd2.printf("T: %0.9f", state.temperatures[31]);
+			lcd2 << "T: %0.9f" << state.temperatures[31] << std::flush;
 			lcd2.goto_xy(0, 3);
-			lcd2.printf("I: %0.9f", state.current_battery);
+			lcd2 << "I: %0.9f" <<  state.current_battery << std::flush;
 			led1.toggle();
 			timer::delay_s(1);
 		}
