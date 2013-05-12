@@ -12,7 +12,7 @@
 using namespace nu;
 
 void BatteryMs::main() {
-	WDT::enable_clear();
+	WDT::enable();
 	BatteryMs bms{};
 	while (true) {
 		bms.run();

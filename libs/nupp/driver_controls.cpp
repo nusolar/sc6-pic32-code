@@ -11,7 +11,7 @@
 using namespace nu;
 
 void DriverControls::main() {
-	WDT::enable_clear();
+	WDT::enable();
 	DriverControls dc{};
 	dc.led1.on();
 	while (true) {

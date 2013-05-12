@@ -11,7 +11,7 @@
 using namespace nu;
 
 void SteeringWheel::main() {
-	WDT::enable_clear();
+	WDT::enable();
 	SteeringWheel sw{};
 	sw.animate_leds();
 	while (true) {
