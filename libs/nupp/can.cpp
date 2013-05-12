@@ -77,7 +77,7 @@ int32_t Module::switch_mode(CAN_OP_MODE op_mode, uint32_t timeout_ms) {
 	while (timer::us() - start < timeout_ms*1000)
 		if (CANGetOperatingMode(mod) == op_mode)
 			return 0;
-	return -ETIMEOUT;
+	return -error::ETIMEOUT;
 }
 
 
@@ -133,7 +133,7 @@ int32_t TxChannel::setup() {
 
 size_t RxChannel::rx(void *dest, uint32_t &id) {
 	CANRxMessageBuffer *buffer = CANGetRxMessage(mod, chn);
-	if (buffer == NULL) return -ENODATA;
+	if (buffer == NULL) return -error::ENODATA;
 
 	id = (buffer->msgEID.IDE == STANDARD_ID)?
 	buffer->msgSID.SID: buffer->msgEID.EID|buffer->msgSID.SID;
@@ -148,7 +148,7 @@ size_t RxChannel::rx(void *dest, uint32_t &id) {
 
 int32_t TxChannel::tx(const void *data, size_t num_bytes, uint16_t std_id, uint32_t ext_id, id_type type) {
 	CANTxMessageBuffer *msg = CANGetTxMessageBuffer(mod, chn);
-	if (num_bytes > 8) return -EINVAL; // Maximum of 8 data bytes in CAN frame
+	if (num_bytes > 8) return -error::EINVAL; // Maximum of 8 data bytes in CAN frame
 
 	int32_t err = mod.normal_mode();
 	if (err < 0) return err;

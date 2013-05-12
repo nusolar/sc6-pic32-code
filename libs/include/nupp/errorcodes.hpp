@@ -44,24 +44,26 @@
     NU_ERROR(EREPORTNOFREEDEVS)
 
 namespace nu {
-	/** Standard error codes, which index error_names[] below */
-	enum errors {
-		#define NU_ERROR(x) x,
-			NU_ERRORS
-		#undef NU_ERROR
-		NUM_ERRORS
-	};
+	namespace error {
+		/** Standard error codes, which index error_names[] below */
+		enum errors {
+			#define NU_ERROR(x) x,
+				NU_ERRORS
+			#undef NU_ERROR
+			NUM_ERRORS
+		};
 
-	/** Array of the string representations of the standard error codes */
-	static const char *error_names[] = {
-		#define NU_ERROR(x) #x,
-			NU_ERRORS
-		#undef NU_ERROR
-	};
+		/** Array of the string representations of the standard error codes */
+		static const char *names[] = {
+			#define NU_ERROR(x) #x,
+				NU_ERRORS
+			#undef NU_ERROR
+		};
 
-	/** A wrapper to get (without failure) an error name */
-	inline const char *error_get_name(errors err) {
-		return error_names[err < NUM_ERRORS? err: EOTHER];
+		/** A wrapper to get (without failure) an error name */
+		inline const char *get_name(errors err) {
+			return names[err < NUM_ERRORS? err: EOTHER];
+		}
 	}
 }
 #endif
