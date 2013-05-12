@@ -175,7 +175,7 @@ Nokia5110::Nokia5110(Pin _cs, SpiChannel _chn, Pin _reset, Pin _dc):
 }
 
 
-void Nokia5110::cmd_func_set(cmd_func_set_options opts) {
+void Nokia5110::cmd_func_set(const cmd_func_set_options opts) {
 	instructions inst;
 	PREPARE_CMD(inst.func_set);
 	inst.func_set.addr_mode = !!((ADDRESSING_VERTICAL | ADDRESSING_HORIZONTAL) & opts);
@@ -185,7 +185,7 @@ void Nokia5110::cmd_func_set(cmd_func_set_options opts) {
 }
 
 /* NOTE: vop setting is 7-bits wide, going from 0-127 */
-void Nokia5110::cmd_set_vop(uint8_t vop) {
+void Nokia5110::cmd_set_vop(const uint8_t vop) {
 	instructions inst;
 	PREPARE_CMD(inst.extended.set_vop);
 	inst.extended.set_vop.vop = BITFIELD_CAST(vop,7);  // 7 bits
@@ -193,7 +193,7 @@ void Nokia5110::cmd_set_vop(uint8_t vop) {
 }
 
 /* temp coefficient */
-void Nokia5110::cmd_set_temp_coeff(cmd_func_set_options coeff) {
+void Nokia5110::cmd_set_temp_coeff(const cmd_func_set_options coeff) {
     instructions inst;
     PREPARE_CMD(inst.extended.temp_control);
     inst.extended.temp_control.temp_coeff = BITFIELD_CAST(coeff, 2) ;
@@ -201,14 +201,14 @@ void Nokia5110::cmd_set_temp_coeff(cmd_func_set_options coeff) {
 }
 
 /* bias, which is 3-bits wide ranging from 0-7 */
-void Nokia5110::cmd_set_bias(uint8_t bias) {
+void Nokia5110::cmd_set_bias(const uint8_t bias) {
     instructions inst;
     PREPARE_CMD(inst.extended.bias);
     inst.extended.bias.bias = BITFIELD_CAST(bias, 3);  // 3 bits
     write_cmd(inst.cmd_byte);
 }
 
-void Nokia5110::cmd_set_disp_mode(cmd_func_set_options mode) {
+void Nokia5110::cmd_set_disp_mode(const cmd_func_set_options mode) {
     instructions inst;
     PREPARE_CMD(inst.basic.disp_control);
     inst.basic.disp_control.disp_mode = BITFIELD_CAST(mode, 3);
@@ -219,7 +219,7 @@ void Nokia5110::cmd_set_disp_mode(cmd_func_set_options mode) {
 #pragma mark - Printing
 
 
-void Nokia5110::put_c(unsigned char c) {
+void Nokia5110::put_c(const uint8_t c) {
 	write_data(0x00);
 	for (uint32_t ui = 0; ui < 5; ui++) {
 		write_data(ASCII[c - 0x20][ui]); // WARNING: ensure unsigned char
@@ -227,7 +227,7 @@ void Nokia5110::put_c(unsigned char c) {
 	write_data(0x00);
 }
 
-void Nokia5110::puts(unsigned char *str) {
+void Nokia5110::puts(const uint8_t *str) {
 	while (*str) {
 		WDT::clear();
 		put_c(*str++);
@@ -240,7 +240,7 @@ void Nokia5110::printf(const char *fmt, ...) {
 	va_start(fmtargs, fmt);
 	if (likely(vsnprintf(NULL, 0, fmt, fmtargs) >= 0)) {
 		vsprintf(buffer, fmt, fmtargs);
-		puts((unsigned char *)buffer);
+		puts((uint8_t *)buffer);
 	}
 	va_end(fmtargs);
 }
@@ -249,7 +249,7 @@ void Nokia5110::printf(const char *fmt, ...) {
 #pragma mark - Location
 
 /** @param x should be in the range 0-83 */
-void Nokia5110::cmd_set_ram_x_addr(uint8_t x) {
+void Nokia5110::cmd_set_ram_x_addr(const uint8_t x) {
 	instructions inst;
 	PREPARE_CMD(inst.basic.set_ram_x_addr);
 	inst.basic.set_ram_x_addr.addr = BITFIELD_CAST(x, 7); // 7 bits
@@ -257,7 +257,7 @@ void Nokia5110::cmd_set_ram_x_addr(uint8_t x) {
 }
 
 /** @param y should be in the range 0-5 */
-void Nokia5110::cmd_set_ram_y_addr(uint8_t y) {
+void Nokia5110::cmd_set_ram_y_addr(const uint8_t y) {
 	instructions inst;
 	PREPARE_CMD(inst.basic.set_ram_y_addr);
 	inst.basic.set_ram_y_addr.addr = BITFIELD_CAST(y, 3); // 3 bits

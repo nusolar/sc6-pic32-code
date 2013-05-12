@@ -2,4 +2,4 @@
 
 using namespace nu;
 
-void (*WDT::clear)(void) = &WDT::disabled_clear_wdt;
+void (*WDT::clear)(void) = WDT::disabled_clear_wdt;

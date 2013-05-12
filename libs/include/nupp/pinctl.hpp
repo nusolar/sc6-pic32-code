@@ -52,10 +52,12 @@ namespace nu {
 		virtual void ALWAYSINLINE toggle()	{PORTToggleBits(ltr(), num());}
 	};
 
+
 	struct DigitalIn: protected Pin {
 		ALWAYSINLINE DigitalIn(Pin p = Pin()): Pin(p) {set_digital_in();}
 		uint32_t ALWAYSINLINE read() {return Pin::read();} // returns 0 or any non-0
 	};
+
 
 	class DigitalOut: protected Pin {
 		bool _status;
@@ -67,12 +69,13 @@ namespace nu {
 		ALWAYSINLINE void low()		{clear();}
 		ALWAYSINLINE bool status() {return _status;}
 
-		ALWAYSINLINE DigitalOut &operator= (bool rhs) {
+		ALWAYSINLINE DigitalOut &operator= (const bool rhs) {
 			if (rhs) set();
 			else clear();
 			return *this;
 		}
 	};
+
 
 	/**
 	 * An Analog input Pin, wrapped with an ADC.

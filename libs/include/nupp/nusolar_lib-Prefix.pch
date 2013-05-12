@@ -22,6 +22,7 @@
 
 #define section(arg) section(".rlogseg,RLOG_DATA")
 #define nomips16 used
+#define MIPSEL
 
 #define Nop()
 

@@ -1,6 +1,7 @@
 #ifndef NUPP_ULCD28PT_HPP
 #define NUPP_ULCD28PT_HPP 1
 
+#include "nu/compiler.h"
 #include <cstdint>
 #include <cstddef>
 
@@ -17,19 +18,28 @@ namespace nu {
 	 * and colon (':') is the unit separator ('\x1F').
 	 * The key, "text", must be 4 letters.
 	 */
-	struct uLCD28PT: public Serial {
+	class uLCD28PT: protected Serial {
 		static const uint8_t unit = '\x1F';
 		static const uint8_t record = '\x1E';
 		static const uint16_t buffersize = 512;
 		/**
 		 * INITIALLY USES HEAP. HOWEVER, CONSTRUCTOR IMMEDIATELY
-		 * GIVES IT A STACK BUFFER.
+		 * GIVES IT STACK BUFFER.
 		 */
-		std::stringstream s;
+//		std::stringstream s;
 		char _buffer[buffersize];
+		
+		template <class V>
+		ALWAYSINLINE void write_key_val(const char *key, V &value) {
+//			s << record << key << unit << value << record;
+//			Serial::puts(s.str().c_str());
+//			s.str("");
+		}
 
-		ALWAYSINLINE uLCD28PT(UART_MODULE mod): Serial(mod, 115200), s() {
-			s.rdbuf()->pubsetbuf(_buffer, buffersize);
+	public:
+		ALWAYSINLINE uLCD28PT(UART_MODULE mod): Serial(mod, 115200)//, s()
+		{
+//			s.rdbuf()->pubsetbuf(_buffer, buffersize);
 		}
 
 		ALWAYSINLINE uLCD28PT& operator << (const can::frame::ws20::tx::motor_velocity& x) {
@@ -43,14 +53,6 @@ namespace nu {
 		ALWAYSINLINE uLCD28PT& operator << (const char * x) {
 			write_key_val("text", x);
 			return *this;
-		}
-
-	private:
-		template <class V>
-		ALWAYSINLINE void write_key_val(const char *key, V &value) {
-			s << record << key << unit << value << record;
-			Serial::puts(s.str().c_str());
-			s.str("");
 		}
 	};
 }

@@ -19,13 +19,13 @@ namespace nu {
 		static ALWAYSINLINE uint64_t us_to_ticks(uint64_t us) {return us*(uint64_t)param::MHz()/2;}
 		static ALWAYSINLINE uint64_t ns_to_ticks(uint64_t ns) {return ns*(uint64_t)param::MHz()/2000;}
 
-		static ALWAYSINLINE uint32_t  s(void) { return ticks()*2	/param::Hz(); }
-		static ALWAYSINLINE uint32_t ms(void) { return ticks()*2000 /param::Hz(); }
-		static ALWAYSINLINE uint32_t us(void) { return ticks()*2	/param::MHz(); }
-		static ALWAYSINLINE uint32_t ns(void) { return ticks()*2000	/param::MHz(); }
+		static ALWAYSINLINE uint32_t  s() { return ticks()*2	/param::Hz(); }
+		static ALWAYSINLINE uint32_t ms() { return ticks()*2000 /param::Hz(); }
+		static ALWAYSINLINE uint32_t us() { return ticks()*2	/param::MHz(); }
+		static ALWAYSINLINE uint32_t ns() { return ticks()*2000	/param::MHz(); }
 
-		static ALWAYSINLINE void delay_ticks(uint32_t t) {
-			uint32_t start = ticks();
+		static ALWAYSINLINE void delay_ticks(const uint32_t t) {
+			const uint32_t start = ticks();
 			while (ticks() - start < (t))
 				Nop();   // do nothing
 		}

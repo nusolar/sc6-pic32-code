@@ -112,8 +112,8 @@ namespace nu {
 					uint8_t bytes[8];
 				} frame;
 				virtual ~Packet() {}
-				ALWAYSINLINE virtual uint64_t &data() {return frame.data;};
-				ALWAYSINLINE virtual uint8_t  *bytes() {return frame.bytes;};
+				virtual uint64_t &data() {return frame.data;};
+				virtual uint8_t  *bytes() {return frame.bytes;};
 				Packet(): frame{0} {}
 				Packet(uint64_t &_i): frame{_i} {}
 				Packet(Packet& p): frame{p.data()} {}

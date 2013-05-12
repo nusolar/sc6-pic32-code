@@ -1,19 +1,9 @@
 #include "nu/platform/common_pragmas.h"
 #include "nupp/driver_controls.hpp"
 
-using namespace std;
-using namespace nu;
-
-/**
- * Instantiate DriverControls object
- */
+/** Call DriverControls::main(), NEVER RETURN */
 int main(int argc, const char* argv[]) {
-	WDT::enable_clear();
-	DriverControls dc{};
-	dc.led1.on();
-	while (true) {
-		dc.demo();
-	}
+	nu::DriverControls::main();
 	return 0;
 }
 

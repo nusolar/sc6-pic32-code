@@ -10,37 +10,39 @@
 #define __nusolar_lib__driver_controls__
 
 #include "nu/compiler.h"
-#include "nupp/enum.hpp"
 #include "nupp/timer.hpp"
 #include <cstdint>
 #include <cstddef>
 
 #include "nupp/nu32.hpp"
-#include "nupp/nokia5110.hpp"
-#include "nupp/can.hpp"
-#include "nupp/spi.hpp"
 #include "nupp/pinctl.hpp"
+#include "nupp/nokia5110.hpp"
+#include "nupp/spi.hpp"
+#include "nupp/can.hpp"
 #include "nupp/wdt.hpp"
+
+
+#define DC_PINS(X)\
+	X(AnalogIn, regen_pedel,	B,	0)\
+	X(AnalogIn, accel_pedel,	B,	1)\
+	X(AnalogIn, airgap_pot,		B,	4)\
+	X(DigitalIn, brake_pedal,		B,	2)\
+	X(DigitalIn, headlight_switch,	B,	3)\
+	X(DigitalIn, airgap_enable,		B,	5)\
+	X(DigitalIn, regen_enable,		B,	8)\
+	X(DigitalIn, reverse_switch,	B,	9)\
+	X(DigitalOut, lights_brake,	D,	0)\
+	X(DigitalOut, lights_l,		D,	1)\
+	X(DigitalOut, lights_r,		D,	2)\
+	X(DigitalOut, headlights,	D,	3)
+
+#define DC_DECLARE(Type, name, ltr, num) Type name;
+#define DC_INITIALIZE(Type, name, ltr, num) name(Pin(Pin::ltr, num, #name)),
+
 
 namespace nu {
 	struct DriverControls: public Nu32 {
-
-		#define DC_PINS(X)\
-			X(AnalogIn, regen_pedel,	B,	0)\
-			X(AnalogIn, accel_pedel,	B,	1)\
-			X(AnalogIn, airgap_pot,		B,	4)\
-			X(DigitalIn, brake_pedal,		B,	2)\
-			X(DigitalIn, headlight_switch,	B,	3)\
-			X(DigitalIn, airgap_enable,		B,	5)\
-			X(DigitalIn, regen_enable,		B,	8)\
-			X(DigitalIn, reverse_switch,	B,	9)\
-			X(DigitalOut, lights_brake,	D,	0)\
-			X(DigitalOut, lights_l,		D,	1)\
-			X(DigitalOut, lights_r,		D,	2)\
-			X(DigitalOut, headlights,	D,	3)
-
-#define DC_DECLARE(Type, name, ltr, num) Type name; // FUCK MPLAB
-		DC_PINS(DC_DECLARE)
+		DC_PINS(DC_DECLARE) // FUCK MPLAB
 		can::Module ws_can, common_can;
 		Nokia5110 lcd;
 
@@ -60,9 +62,6 @@ namespace nu {
 				accel_en(0), brake_en(0), reverse_en(0), regen_en(0), airgap_en(0), cruise_en(0),
 				accel(0), regen(0), airgap(0), cruise(0), sw_timer(0) {}
 		} state;
-
-
-#define DC_INITIALIZE(Type, name, ltr, num) name(Pin(Pin::ltr, num, #name)),
 
 		/**
 		 * Setup CAN, input Pins, output Pins, and Nokia LCD.
@@ -198,6 +197,8 @@ namespace nu {
 			led1.toggle();
 			timer::delay_s(1);
 		}
+		
+		static NORETURN void main();
 	};
 }
 

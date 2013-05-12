@@ -9,23 +9,54 @@
 #ifndef __nusolar_lib__steering_wheel__
 #define __nusolar_lib__steering_wheel__
 
+#include "nu/compiler.h" // MAXIMUM WARNING MAXIMUM ERROR WTF. MUST BE INCLUDED FIRST
+
+#include <cstdio>
 #include <bitset>
-#include <cstdlib>
+#include "nupp/ulcd28pt.hpp"
 #include "nupp/enum.hpp"
 #include "nupp/timer.hpp"
-
 #include "nupp/nu32.hpp"
 #include "nupp/button.hpp"
 #include "nupp/led.hpp"
-#include "nupp/ulcd28pt.hpp"
 #include "nupp/can.hpp"
 #include "nupp/wdt.hpp"
 
-#include <bitset>
-#include <cstdlib>
+
+// Pin definitions
+#define SW_BTNS(_BTN)	\
+	_BTN(yes,          E, 0)	\
+	_BTN(no,           G, 12)	\
+	_BTN(maybe,        E, 2)	\
+	_BTN(cruise_en,    D, 0)	\
+	_BTN(cruise_mode,  D, 8)	\
+	_BTN(cruise_up,    D, 10)	\
+	_BTN(cruise_down,  A, 15)
+#define SW_LEDS(_LED)			\
+	_LED(left,         D, 7)    \
+	_LED(right,        D, 3)    \
+	_LED(radio,        E, 5)    \
+	_LED(yes,          E, 1)    \
+	_LED(hazard,       D, 13)   \
+	_LED(cruise_en,    D, 1)    \
+	_LED(cruise_up,    D, 11)   \
+	_LED(maybe,        E, 2)    \
+	_LED(no,           G, 13)   \
+	_LED(horn,         D, 5)    \
+	_LED(cruise_mode,  D, 9)    \
+	_LED(cruise_down,  A, 15)
+
+#define SW_DECLARE_BTNS(name, ltr, num) size_t name##_k;
+#define SW_DECLARE_LEDS(name, ltr, num) size_t led_##name##_k;
+#define SW_INIT_BTNS(name, ltr, num) name##_k(buttons.enumerate(Button(Pin(Pin::ltr, num, #name), 10, 5))),
+#define SW_INIT_LEDS(name, ltr, num) led_##name##_k(leds.enumerate(Led(Pin(Pin::ltr, num, #name)))),
+
 
 namespace nu {
 	struct SteeringWheel {
+		SW_BTNS(SW_DECLARE_BTNS)
+		SW_LEDS(SW_DECLARE_LEDS)
+
 		can::Module common_can;
 		uLCD28PT lcd;
 
@@ -34,7 +65,7 @@ namespace nu {
 
 		/** State of Steering Wheel & car */
 		struct state {
-			std::bitset<32> btns, leds; // state of buttons & LEDs
+			std::bitset<13> btns, leds; // state of buttons & LEDs
 			can::frame::sw::rx::lights lights; // requested LED state
 			can::frame::ws20::tx::motor_velocity velo;
 			can::frame::ws20::tx::current_vector curr;
@@ -42,45 +73,13 @@ namespace nu {
 			ALWAYSINLINE state(): btns(0), leds(0), lights(), velo(), curr() {}
 		} state;
 
-		/*
-		 * Pin definitions
-		 */
-		#define SW_BTNS(_BTN)	\
-			_BTN(yes,          E, 0)	\
-			_BTN(no,           G, 12)	\
-			_BTN(maybe,        E, 2)	\
-			_BTN(cruise_en,    D, 0)	\
-			_BTN(cruise_mode,  D, 8)	\
-			_BTN(cruise_up,    D, 10)	\
-			_BTN(cruise_down,  A, 15)
-		#define SW_LEDS(_LED)			\
-			_LED(left,         D, 7)    \
-			_LED(right,        D, 3)    \
-			_LED(radio,        E, 5)    \
-			_LED(yes,          E, 1)    \
-			_LED(hazard,       D, 13)   \
-			_LED(cruise_en,    D, 1)    \
-			_LED(cruise_up,    D, 11)   \
-			_LED(maybe,        E, 2)    \
-			_LED(no,           G, 13)   \
-			_LED(horn,         D, 5)    \
-			_LED(cruise_mode,  D, 9)    \
-			_LED(cruise_down,  A, 15)
-
-#define SW_DECLARE_BTNS(name, ltr, num) size_t name##_k;
-#define SW_DECLARE_LEDS(name, ltr, num) size_t led_##name##_k;
-		SW_BTNS(SW_DECLARE_BTNS)
-		SW_LEDS(SW_DECLARE_LEDS)
-
-
-#define SW_INIT_BTNS(name, ltr, num) , name##_k(buttons.enumerate(Button(Pin(Pin::ltr, num, #name), 10, 5)))
-#define SW_INIT_LEDS(name, ltr, num) , led_##name##_k(leds.enumerate(Led(Pin(Pin::ltr, num, #name))))
 
 		/**
 		 * Setup NU32, CAN, LEDs, and uLCD Display.
 		 */
-		ALWAYSINLINE SteeringWheel(): common_can(CAN2), lcd(UART3),
-			buttons(), leds(), state() SW_BTNS(SW_INIT_BTNS) SW_LEDS(SW_INIT_LEDS)
+		ALWAYSINLINE SteeringWheel(): SW_BTNS(SW_INIT_BTNS) SW_LEDS(SW_INIT_LEDS)
+			common_can(CAN2), lcd(UART3),
+			buttons(), leds(), state()
 		{
 			WDT::clear();
 			common_can.in()  = can::RxChannel(can::Channel(common_can, CAN_CHANNEL0), CAN_RX_FULL_RECEIVE);
@@ -165,7 +164,9 @@ namespace nu {
 		void ALWAYSINLINE draw_lcd(){
 			lcd << state.velo << state.curr;
 			uint32_t msg = 0x004e4550;
-			lcd.printf("\x1Etext\x1F%s%s%u\x1E", "Alert: ", (char *)&msg, 0xF);
+			char *alert = NULL;
+			sprintf(alert, "\x1Etext\x1F%s%s%u\x1E", "Alert: ", (char *)&msg, 0xF);
+			lcd << alert;
 		}
 
 
@@ -209,6 +210,8 @@ namespace nu {
 			leds[0].toggle();
 			timer::delay_s(1);
 		}
+
+		static NORETURN void main();
 	};
 }
 

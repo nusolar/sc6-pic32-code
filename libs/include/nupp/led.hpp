@@ -29,7 +29,7 @@ namespace nu {
 		ALWAYSINLINE operator bool()	{return _led_status;}
 
 		/** Turn LED [on/off] by assigning it to [true/false] respectively. */
-		ALWAYSINLINE Led& operator= (bool rhs) {
+		ALWAYSINLINE Led& operator= (const bool rhs) {
 			if (rhs) on();
 			else off();
 			return *this;

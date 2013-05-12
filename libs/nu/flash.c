@@ -1,4 +1,4 @@
-#include "../include/flash.h"
+#include "../include/nu/flash.h"
 
 #define CONST_FLASH_SIZE_WORDS (((CONST_FLASH_SIZE_BYTES)-1)>>2)+1
 

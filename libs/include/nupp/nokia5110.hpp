@@ -46,33 +46,33 @@ namespace nu {
 		static const uint16_t lcd_y = 48;
 
 		Nokia5110(Pin _cs, SpiChannel _chn, Pin _reset, Pin _dc);
-		void cmd_func_set(cmd_func_set_options opts);
-		void cmd_set_vop(uint8_t vop);
-		void ALWAYSINLINE cmd_set_contrast(uint8_t vop) {cmd_set_vop(vop);}
-		void cmd_set_temp_coeff(cmd_func_set_options coeff);
-		void cmd_set_bias(uint8_t bias);
-		void cmd_set_disp_mode(cmd_func_set_options mode);
+		void cmd_func_set(const cmd_func_set_options opts);
+		void cmd_set_vop(const uint8_t vop);
+		void ALWAYSINLINE cmd_set_contrast(const uint8_t vop) {cmd_set_vop(vop);}
+		void cmd_set_temp_coeff(const cmd_func_set_options coeff);
+		void cmd_set_bias(const uint8_t bias);
+		void cmd_set_disp_mode(const cmd_func_set_options mode);
 
 
-		void put_c(unsigned char c);
-		void puts(unsigned char *str);
+		void put_c(const uint8_t c);
+		void puts(const uint8_t *str);
 		DEPRECATED void PRINTF(2,3) printf(const char *fmt, ...);
 
 		/**
 		 * Goto column x, line y. 84 columns, 6 lines.
 		 */
-		ALWAYSINLINE void goto_xy(uint8_t x, uint8_t y) {
+		ALWAYSINLINE void goto_xy(const uint8_t x, const uint8_t y) {
 			cmd_set_ram_x_addr(x);
 			cmd_set_ram_y_addr(y);
 		}
 
 		/**
-		 * Set one pixel. UNUSED
+		 * Set one pixel.
 		 * The LCD has 6 rows, with 8 pixels per row.
 		 * 'y_row' is the row that the pixel is in.
 		 * 'y_pix' is the pixel in that row we want to enable/disable
 		 */
-		UNUSED void set_pixel(uint8_t x, uint8_t y) {
+		UNUSED void set_pixel(const uint8_t x, const uint8_t y) {
 			if (x >= lcd_x || y >= lcd_y) return;
 
 			uint8_t y_row = (uint8_t)(y >> 3);          // >>3 divides by 8
@@ -84,23 +84,23 @@ namespace nu {
 		}
 
 		ALWAYSINLINE void lcd_clear(){
-			goto_xy(0,0);
+			goto_xy(0, 0);
 			for (uint32_t ui = 0; ui < (lcd_x * 6); ui++) // WARNING
 				write_data(0x00);
 		}
 
 	private:
-		ALWAYSINLINE void write_cmd(uint8_t cmd) {
+		ALWAYSINLINE void write_cmd(const uint8_t cmd) {
 			dc.low();
 			tx(&cmd, 1);
 		}
-		ALWAYSINLINE void write_data(uint8_t data) {
+		ALWAYSINLINE void write_data(const uint8_t data) {
 			dc.high();
 			tx(&data, 1);
 		}
 
-		void cmd_set_ram_x_addr(uint8_t x);
-		void cmd_set_ram_y_addr(uint8_t y);
+		void cmd_set_ram_x_addr(const uint8_t x);
+		void cmd_set_ram_y_addr(const uint8_t y);
 	};
 }
 

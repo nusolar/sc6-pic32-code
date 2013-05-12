@@ -402,6 +402,9 @@
         <itemPath>../nupp/serial.cpp</itemPath>
         <itemPath>../nupp/spi.cpp</itemPath>
         <itemPath>../nupp/wdt.cpp</itemPath>
+        <itemPath>../nupp/bms.cpp</itemPath>
+        <itemPath>../nupp/driver_controls.cpp</itemPath>
+        <itemPath>../nupp/steering_wheel.cpp</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
@@ -443,7 +446,7 @@
       <C32>
         <property key="additional-warnings" value="true"/>
         <property key="enable-app-io" value="false"/>
-        <property key="enable-omit-frame-pointer" value="true"/>
+        <property key="enable-omit-frame-pointer" value="false"/>
         <property key="enable-symbols" value="true"/>
         <property key="enable-unroll-loops" value="true"/>
         <property key="exclude-floating-point" value="false"/>
@@ -508,7 +511,7 @@
         <property key="check-new" value="false"/>
         <property key="eh-specs" value="false"/>
         <property key="enable-app-io" value="false"/>
-        <property key="enable-omit-frame-pointer" value="true"/>
+        <property key="enable-omit-frame-pointer" value="false"/>
         <property key="enable-symbols" value="true"/>
         <property key="enable-unroll-loops" value="true"/>
         <property key="exceptions" value="false"/>
