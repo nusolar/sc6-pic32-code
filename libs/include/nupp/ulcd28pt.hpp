@@ -26,20 +26,20 @@ namespace nu {
 		 * INITIALLY USES HEAP. HOWEVER, CONSTRUCTOR IMMEDIATELY
 		 * GIVES IT STACK BUFFER.
 		 */
-//		std::stringstream s;
+		std::stringstream s;
 		char _buffer[buffersize];
 		
 		template <class V>
 		ALWAYSINLINE void write_key_val(const char *key, V &value) {
-//			s << record << key << unit << value << record;
-//			Serial::puts(s.str().c_str());
-//			s.str("");
+			s << record << key << unit << value << record;
+			Serial::puts(s.str().c_str());
+			s.str("");
 		}
 
 	public:
 		ALWAYSINLINE uLCD28PT(UART_MODULE mod): Serial(mod, 115200)//, s()
 		{
-//			s.rdbuf()->pubsetbuf(_buffer, buffersize);
+			s.rdbuf()->pubsetbuf(_buffer, buffersize);
 		}
 
 		ALWAYSINLINE uLCD28PT& operator << (const can::frame::ws20::tx::motor_velocity& x) {
