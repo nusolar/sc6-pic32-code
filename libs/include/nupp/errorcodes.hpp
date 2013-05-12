@@ -1,8 +1,8 @@
 #ifndef NUPP_ERRORCODES_HPP
 #define NUPP_ERRORCODES_HPP 1
 
+#include "nu/compiler.h"
 #include <cstdint>
-#include "nu/utility/data.h"
 
 /* Library Conflicts */
 #ifdef EOTHER
@@ -23,45 +23,45 @@
  * This is to avoid having to manually update the cstring array in
  * errorcodes.c
  */
-#define NU_ERRORS \
-    NU_ERROR(ENONE)            /* no error (success) */                            \
-    NU_ERROR(EOTHER)           /* unspecified error */                             \
-    NU_ERROR(EINVALIDOP)       /* invalid operation */                             \
-    NU_ERROR(EINVAL)           /* invalid argument */                              \
-    NU_ERROR(ENULPTR)          /* null pointer (similar to EINVAL) */              \
-    NU_ERROR(ETIMEOUT)         /* operation timed out */                           \
-    NU_ERROR(ENODATA)          /* no data available */                             \
-    NU_ERROR(ECRC)             /* CRC did not match expected CRC */                \
-    NU_ERROR(ENODEV)           /* no device detected */                            \
-    NU_ERROR(EEXCEEDSFLASHSIZ) /* exceeded set flash size on flash read/write */   \
-    NU_ERROR(ETRUNCATED)       /* data/msg too long & truncated on operation */    \
-    NU_ERROR(ETRIP)            /* car is tripping...this is currently unused
-                                * and could potentially be removed */              \
-    NU_ERROR(ELTC6803CFG)      /* LTC6803 cfg did not match expected */            \
-    NU_ERROR(ELTC6803ADC)      /* LTC6803 ADC failure */                           \
-    NU_ERROR(ELTC6803MUX)      /* LTC6803 MUX failure */                           \
-    NU_ERROR(ELTC6803REF)      /* LTC6803 VREF failure */                          \
-    NU_ERROR(EREPORTNOFREEDEVS)
+#define NU_ERRORS(X) \
+	X(ENONE)			/* no error (success) */                            \
+	X(EOTHER)			/* unspecified error */                             \
+	X(EINVALIDOP)		/* invalid operation */                             \
+	X(EINVAL)			/* invalid argument */                              \
+	X(ENULPTR)			/* null pointer (similar to EINVAL) */              \
+	X(ETIMEOUT)			/* operation timed out */                           \
+	X(ENODATA)			/* no data available */                             \
+	X(ECRC)				/* CRC did not match expected CRC */                \
+	X(ENODEV)			/* no device detected */                            \
+	X(EEXCEEDSFLASHSIZ)	/* exceeded set flash size on flash read/write */   \
+	X(ETRUNCATED)		/* data/msg too long & truncated on operation */    \
+	X(ETRIP)			/* car is tripping...this is currently unused
+						 * and could potentially be removed */              \
+	X(ELTC6803CFG)		/* LTC6803 cfg did not match expected */            \
+	X(ELTC6803ADC)		/* LTC6803 ADC failure */                           \
+	X(ELTC6803MUX)		/* LTC6803 MUX failure */                           \
+	X(ELTC6803REF)		/* LTC6803 VREF failure */                          \
+	X(EREPORTNOFREEDEVS)
+
+#define NU_ERROR_ENUM(x) x,
+#define NU_ERROR_NAMES(x) #x,
+
 
 namespace nu {
 	namespace error {
 		/** Standard error codes, which index error_names[] below */
 		enum errors {
-			#define NU_ERROR(x) x,
-				NU_ERRORS
-			#undef NU_ERROR
+			NU_ERRORS(NU_ERROR_ENUM)
 			NUM_ERRORS
 		};
 
 		/** Array of the string representations of the standard error codes */
 		static const char *names[] = {
-			#define NU_ERROR(x) #x,
-				NU_ERRORS
-			#undef NU_ERROR
+			NU_ERRORS(NU_ERROR_NAMES)
 		};
 
 		/** A wrapper to get (without failure) an error name */
-		inline const char *get_name(errors err) {
+		ALWAYSINLINE const char *get_name(errors err) {
 			return names[err < NUM_ERRORS? err: EOTHER];
 		}
 	}
