@@ -82,12 +82,12 @@ namespace nu {
 			for (unsigned i=0; i<leds.size(); i++){
 				WDT::clear();
 				leds[i].on();
-				timer::delay_ms(100); // ok. WDT timeout ~ 2s
+				timer::delay_ms<100>(); // ok. WDT timeout ~ 2s
 			}
 			for (unsigned i=0; i<leds.size(); i++){
 				WDT::clear();
 				leds[i].off();
-				timer::delay_ms(100); // ok. WDT timeout ~ 2s
+				timer::delay_ms<100>(); // ok. WDT timeout ~ 2s
 			}
 		}
 
@@ -189,7 +189,7 @@ namespace nu {
 		void ALWAYSINLINE demo() {
 			WDT::clear();
 			leds[0].toggle();
-			timer::delay_s(1);
+			timer::delay_s<1>();
 		}
 
 		static NORETURN void main();

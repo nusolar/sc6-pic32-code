@@ -32,8 +32,6 @@ namespace nu {
 		ALWAYSINLINE Pin(Port _port = D, uint8_t _bit = 0):
 			port(_port), bit(_bit) {}
 		NOINLINE virtual ~Pin() {}
-		ALWAYSINLINE Pin(const Pin& p): port(p.port), bit(p.bit) {}
-		ALWAYSINLINE Pin& operator =(const Pin& p) {port=p.port; bit=p.bit; return *this;}
 
 	protected:
 		/**

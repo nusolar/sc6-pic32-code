@@ -98,7 +98,7 @@ namespace nu {
 			lcd2.goto_xy(0, 3);
 			lcd2 << "I: %0.9f" <<  state.current_battery << std::flush;
 			led1.toggle();
-			timer::delay_s(1);
+			timer::delay_s<1>();
 		}
 		
 		static NORETURN void main();

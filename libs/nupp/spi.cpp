@@ -10,11 +10,11 @@ uint32_t ALWAYSINLINE SPI::get_bitrate(SpiChannel chn) {
 }
 
 void ALWAYSINLINE SPI::wait_busy() {
-	uint32_t bit_tims_ns = 1000000000/this->get_bitrate(chn);
+	uint32_t bit_time_ns = 1000000000/this->get_bitrate(chn);
 	while (SpiChnIsBusy(chn)) {
 		Nop();
 	}
-	timer::delay_ns(bit_tims_ns);
+	timer::delay_ns(bit_time_ns);
 }
 
 void SPI::tx(const void *src, size_t n) {

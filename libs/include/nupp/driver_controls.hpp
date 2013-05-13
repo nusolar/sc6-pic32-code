@@ -167,7 +167,7 @@ namespace nu {
 			if (state.reverse_en)
 				drive.frame.s.motorVelocity *= -1;
 
-			led1.on(); timer::delay_ms(1); led1.off(); // WARNING: bottleneck
+			led1.on(); timer::delay_ms<1>(); led1.off(); // WARNING: bottleneck
 			ws_can.out().tx(drive.bytes(),
 							8,
 							(uint16_t)can::addr::ws20::rx::drive_cmd_k);
@@ -195,7 +195,7 @@ namespace nu {
 		void ALWAYSINLINE demo() {
 			WDT::clear();
 			led1.toggle();
-			timer::delay_s(1);
+			timer::delay_s<1>();
 		}
 
 		static NORETURN void main();
