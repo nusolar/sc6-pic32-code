@@ -1,5 +1,6 @@
 #include "nupp/ad7685.hpp"
 #include <nupp/allocator.hpp>
+#include "nupp/bitset.hpp"
 #include "nupp/button.hpp"
 #include "nupp/can.hpp"
 #include "nupp/enum.hpp"
@@ -18,3 +19,5 @@
 #include "nupp/bms.hpp"
 #include "nupp/driver_controls.hpp"
 #include "nupp/steering_wheel.hpp"
+
+using namespace nu;

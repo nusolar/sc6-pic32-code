@@ -9,10 +9,9 @@
 #ifndef __nusolar_lib__steering_wheel__
 #define __nusolar_lib__steering_wheel__
 
-#include "nu/compiler.h" // MAXIMUM WARNING MAXIMUM ERROR WTF. MUST BE INCLUDED FIRST
-
+#include "nu/compiler.h"
 #include <cstdio>
-#include <bitset>
+#include "nupp/bitset.hpp"
 #include "nupp/ulcd28pt.hpp"
 #include "nupp/enum.hpp"
 #include "nupp/timer.hpp"
@@ -65,7 +64,7 @@ namespace nu {
 
 		/** State of Steering Wheel & car */
 		struct state {
-			std::bitset<13> btns, leds; // state of buttons & LEDs
+			Bitset<13> btns, leds; // state of buttons & LEDs
 			can::frame::sw::rx::lights lights; // requested LED state
 			can::frame::ws20::tx::motor_velocity velo;
 			can::frame::ws20::tx::current_vector curr;
@@ -78,8 +77,7 @@ namespace nu {
 		 * Setup NU32, CAN, LEDs, and uLCD Display.
 		 */
 		ALWAYSINLINE SteeringWheel(): SW_BTNS(SW_INIT_BTNS) SW_LEDS(SW_INIT_LEDS)
-			common_can(CAN2), lcd(UART3),
-			buttons(), leds(), state()
+			common_can(CAN2), lcd(UART3), buttons(), leds(), state()
 		{
 			WDT::clear();
 			common_can.in()  = can::RxChannel(can::Channel(common_can, CAN_CHANNEL0), CAN_RX_FULL_RECEIVE);
@@ -177,13 +175,13 @@ namespace nu {
 			WDT::clear();
 
 			can::frame::sw::tx::buttons btns_pkt;
-			btns_pkt.data() = state.btns.to_ullong();
+			btns_pkt.data() = (uint64_t) state.btns;
 			common_can.out().tx(btns_pkt.bytes(),
 								4, // 64->32 ok. WARNING BIT ORDER?
 								(uint16_t)can::addr::sw::tx::buttons_k);
 
 			can::frame::sw::tx::lights lts_pkt;
-			lts_pkt.data() = state.leds.to_ullong();
+			lts_pkt.data() = (uint64_t) state.leds;
 			common_can.out().tx(lts_pkt.bytes(),
 								4, // 64->32 ok. WARNING BIT ORDER?
 								(uint16_t)can::addr::sw::tx::lights_k);
