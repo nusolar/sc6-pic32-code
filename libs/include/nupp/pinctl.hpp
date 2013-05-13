@@ -8,9 +8,9 @@
 
 #include "nu/compiler.h"
 #include <cstdint>
-
 #include <string>
-#include <plib.h>
+#include <peripheral/adc10.h>
+#include <peripheral/ports.h>
 
 namespace nu {
 	/**
@@ -44,19 +44,16 @@ namespace nu {
 		void ALWAYSINLINE set_analog_out()	{PORTSetPinsAnalogOut(ltr(), num());}
 		void ALWAYSINLINE set_analog_in()	{PORTSetPinsAnalogIn(ltr(), num());}
 
-
 		virtual uint32_t ALWAYSINLINE read() {return PORTReadBits(ltr(), num());} // returns 0 or any non-0
 		virtual void ALWAYSINLINE set()		{PORTSetBits(ltr(), num());}
 		virtual void ALWAYSINLINE clear()	{PORTClearBits(ltr(), num());}
 		virtual void ALWAYSINLINE toggle()	{PORTToggleBits(ltr(), num());}
 	};
 
-
 	struct DigitalIn: protected Pin {
 		ALWAYSINLINE DigitalIn(Pin p = Pin()): Pin(p) {set_digital_in();}
 		uint32_t ALWAYSINLINE read() {return Pin::read();} // returns 0 or any non-0
 	};
-
 
 	class DigitalOut: protected Pin {
 		bool _status;
@@ -74,7 +71,6 @@ namespace nu {
 			return *this;
 		}
 	};
-
 
 	/**
 	 * An Analog input Pin, wrapped with an ADC.
