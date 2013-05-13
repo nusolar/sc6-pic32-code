@@ -1,3 +1,9 @@
+/*
+ * Taken from Howard Hinnent's stack_alloc page.
+ * http://home.roadrunner.com/~hinnant/stack_alloc.html
+ */
+
+
 #ifndef SHORT_ALLOC_H
 #define SHORT_ALLOC_H
 
@@ -9,8 +15,7 @@ namespace nu {
 	template <std::size_t N>
 	class arena {
 		static const std::size_t alignment = 16;
-//		alignas(alignment)
-		char buf_[N];
+		__attribute__((aligned(16))) char buf_[N];
 		char* ptr_;
 
 		std::size_t align_up(std::size_t n) {return n + ((alignment-1) & ~(alignment-1));}
