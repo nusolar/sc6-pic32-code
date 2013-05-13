@@ -22,7 +22,6 @@ namespace nu {
 
 		Port port;
 		uint8_t bit;
-		const char *name;
 
 		IoPortId ltr() {return (IoPortId)(port);}; // PIC32 SPECIFIC
 		uint32_t num() {return (1 << bit);} // PIC32 SPECIFIC
@@ -30,11 +29,11 @@ namespace nu {
 		/**
 		 * Construct with Pin's (letter, number) combination.
 		 */
-		ALWAYSINLINE Pin(Port _port = D, uint8_t _bit = 0, const char *_name = ""):
-			port(_port), bit(_bit), name(_name) {}
+		ALWAYSINLINE Pin(Port _port = D, uint8_t _bit = 0):
+			port(_port), bit(_bit) {}
 		NOINLINE virtual ~Pin() {}
-		ALWAYSINLINE Pin(const Pin& p): port(p.port), bit(p.bit), name(p.name) {}
-		ALWAYSINLINE Pin& operator =(const Pin& p) {port=p.port; bit=p.bit; name=p.name; return *this;}
+		ALWAYSINLINE Pin(const Pin& p): port(p.port), bit(p.bit) {}
+		ALWAYSINLINE Pin& operator =(const Pin& p) {port=p.port; bit=p.bit; return *this;}
 
 	protected:
 		/**

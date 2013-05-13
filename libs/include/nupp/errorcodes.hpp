@@ -2,7 +2,6 @@
 #define NUPP_ERRORCODES_HPP 1
 
 #include "nu/compiler.h"
-#include <cstdint>
 
 /* Library Conflicts */
 #ifdef EOTHER

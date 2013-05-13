@@ -37,7 +37,7 @@
 	X(DigitalOut, headlights,	D,	3)
 
 #define DC_DECLARE(Type, name, ltr, num) Type name;
-#define DC_INITIALIZE(Type, name, ltr, num) name(Pin(Pin::ltr, num, #name)),
+#define DC_INITIALIZE(Type, name, ltr, num) name(Pin(Pin::ltr, num)),
 
 
 namespace nu {

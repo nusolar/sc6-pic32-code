@@ -1,16 +1,7 @@
-//
-//  steering_wheel.h
-//  nusolar_lib
-//
-//  Created by Al Chandel on 5/11/13.
-//  Copyright (c) 2013 Alex Chandel. All rights reserved.
-//
-
-#ifndef __nusolar_lib__steering_wheel__
-#define __nusolar_lib__steering_wheel__
+#ifndef NUPP_STEERING_WHEEL_HPP
+#define NUPP_STEERING_WHEEL_HPP 1
 
 #include "nu/compiler.h"
-#include <cstdio>
 #include "nupp/bitset.hpp"
 #include "nupp/ulcd28pt.hpp"
 #include "nupp/enum.hpp"
@@ -20,7 +11,7 @@
 #include "nupp/led.hpp"
 #include "nupp/can.hpp"
 #include "nupp/wdt.hpp"
-
+#include <cstdio>
 
 // Pin definitions
 #define SW_BTNS(_BTN)	\
@@ -47,9 +38,8 @@
 
 #define SW_DECLARE_BTNS(name, ltr, num) size_t name##_k;
 #define SW_DECLARE_LEDS(name, ltr, num) size_t led_##name##_k;
-#define SW_INIT_BTNS(name, ltr, num) name##_k(buttons.enumerate(Button(Pin(Pin::ltr, num, #name), 10, 5))),
-#define SW_INIT_LEDS(name, ltr, num) led_##name##_k(leds.enumerate(Led(Pin(Pin::ltr, num, #name)))),
-
+#define SW_INIT_BTNS(name, ltr, num) name##_k(buttons.enumerate(Button(Pin(Pin::ltr, num), 10, 5))),
+#define SW_INIT_LEDS(name, ltr, num) led_##name##_k(leds.enumerate(Led(Pin(Pin::ltr, num)))),
 
 namespace nu {
 	struct SteeringWheel {
@@ -72,7 +62,6 @@ namespace nu {
 			ALWAYSINLINE state(): btns(0), leds(0), lights(), velo(), curr() {}
 		} state;
 
-
 		/**
 		 * Setup NU32, CAN, LEDs, and uLCD Display.
 		 */
@@ -84,7 +73,6 @@ namespace nu {
 			common_can.out() = can::TxChannel(can::Channel(common_can, CAN_CHANNEL1), CAN_HIGH_MEDIUM_PRIORITY);
 			common_can.err() = can::TxChannel(can::Channel(common_can, CAN_CHANNEL2), CAN_LOWEST_PRIORITY);
 		}
-
 
 		/**
 		 * Animate LEDs on startup.
@@ -103,7 +91,6 @@ namespace nu {
 			}
 		}
 
-
 		/**
 		 * Read value of Button & LED Pins, update internal state.
 		 */
@@ -118,7 +105,6 @@ namespace nu {
 			for (unsigned i = 0; i < leds.size(); i++)
 				state.leds[i] = (bool)leds[i];
 		}
-
 
 		/**
 		 * Receive data to draw on LCD. Also receive any commands.
@@ -145,7 +131,6 @@ namespace nu {
 			}
 		}
 
-
 		/**
 		 * Set each LED according to Steering Wheel's state.
 		 */
@@ -154,7 +139,6 @@ namespace nu {
 				leds[i] = state.leds[i];
 			}
 		}
-
 
 		/**
 		 * Read the car's state from CAN, draw to dashboard LCD.
@@ -166,7 +150,6 @@ namespace nu {
 			sprintf(alert, "\x1Etext\x1F%s%s%u\x1E", "Alert: ", (char *)&msg, 0xF);
 			lcd << alert;
 		}
-
 
 		/**
 		 * Send CAN update of Steering Wheel status (LEDs and Buttons).
