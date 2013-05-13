@@ -1,6 +1,14 @@
 #ifndef NU_COMPILER_H
 #define NU_COMPILER_H 1
 
+/* workaround needed to prevent keywords from being defined before
+ * C++ header is included. <limits> could actually in theory be any
+ * C++ header.
+ */
+#ifdef __cplusplus
+# include <limits>
+#endif
+
 /**
  * @file
  * Compiler-specific keywords
@@ -69,7 +77,5 @@ static ALWAYSINLINE T volatile &access_once(T &t) {
 #endif
 
 #define unreachable() __builtin_unreachable()
-#define COMMA_MARK ,
 
 #endif
-
