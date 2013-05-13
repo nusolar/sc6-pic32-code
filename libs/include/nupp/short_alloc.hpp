@@ -7,6 +7,7 @@
 #ifndef SHORT_ALLOC_H
 #define SHORT_ALLOC_H
 
+#include "nu/compiler.h"
 #include <cstddef>
 #include <cassert>
 
@@ -15,7 +16,7 @@ namespace nu {
 	template <std::size_t N>
 	class arena {
 		static const std::size_t alignment = 16;
-		__attribute__((aligned(16))) char buf_[N];
+		ALIGNED(16) char buf_[N];
 		char* ptr_;
 
 		std::size_t align_up(std::size_t n) {return n + ((alignment-1) & ~(alignment-1));}
