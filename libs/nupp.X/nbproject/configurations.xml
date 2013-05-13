@@ -43,6 +43,7 @@
                    projectFiles="true">
       <logicalFolder name="f1" displayName="nu" projectFiles="true">
         <itemPath>../nu/param.c</itemPath>
+        <itemPath>../nu/wdt.c</itemPath>
       </logicalFolder>
       <logicalFolder name="nupp" displayName="nupp" projectFiles="true">
         <itemPath>../nupp/can.cpp</itemPath>
@@ -52,7 +53,6 @@
         <itemPath>../nupp/pinctl.cpp</itemPath>
         <itemPath>../nupp/serial.cpp</itemPath>
         <itemPath>../nupp/spi.cpp</itemPath>
-        <itemPath>../nupp/wdt.cpp</itemPath>
         <itemPath>../nupp/bms.cpp</itemPath>
         <itemPath>../nupp/driver_controls.cpp</itemPath>
         <itemPath>../nupp/steering_wheel.cpp</itemPath>
