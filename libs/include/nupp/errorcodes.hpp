@@ -6,16 +6,16 @@
 
 /* Library Conflicts */
 #ifdef EOTHER
-#undef EOTHER
+# undef EOTHER
 #endif
 #ifdef EINVAL
-#undef EINVAL
+# undef EINVAL
 #endif
 #ifdef ENODATA
-#undef ENODATA
+# undef ENODATA
 #endif
 #ifdef ENODEV
-#undef ENODEV
+# undef ENODEV
 #endif
 
 /* "The X Macro" technique from Dr. Dobb's
@@ -46,7 +46,6 @@
 #define NU_ERROR_ENUM(x) x,
 #define NU_ERROR_NAMES(x) #x,
 
-
 namespace nu {
 	namespace error {
 		/** Standard error codes, which index error_names[] below */
@@ -56,13 +55,11 @@ namespace nu {
 		};
 
 		/** Array of the string representations of the standard error codes */
-		static const char *names[] = {
-			NU_ERRORS(NU_ERROR_NAMES)
-		};
+		extern const char *names[];
 
 		/** A wrapper to get (without failure) an error name */
-		ALWAYSINLINE const char *get_name(errors err) {
-			return names[err < NUM_ERRORS? err: EOTHER];
+		static ALWAYSINLINE const char *get_name(errors err) {
+			return names[err < NUM_ERRORS ? err: EOTHER];
 		}
 	}
 }

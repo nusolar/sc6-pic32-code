@@ -19,5 +19,3 @@
 #include "nupp/bms.hpp"
 #include "nupp/driver_controls.hpp"
 #include "nupp/steering_wheel.hpp"
-
-using namespace nu;

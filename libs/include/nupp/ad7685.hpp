@@ -1,15 +1,14 @@
 #ifndef NUPP_AD7685_HPP
 #define NUPP_AD7685_HPP 1
 
-#include <cstdint>
 #include "nu/compiler.h"
 #include "nupp/errorcodes.hpp"
-
-#include <alloca.h>
-#include <sys/endian.h>
-#include "nupp/timer.hpp"
 #include "nupp/pinctl.hpp"
 #include "nupp/spi.hpp"
+#include "nupp/timer.hpp"
+#include <alloca.h>
+#include <cstdint>
+#include <sys/endian.h>
 
 namespace nu {
 	/**
