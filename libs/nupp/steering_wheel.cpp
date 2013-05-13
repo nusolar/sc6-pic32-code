@@ -7,10 +7,12 @@
 //
 
 #include "nupp/steering_wheel.hpp"
+#include "nupp/allocator.hpp"
 
 using namespace nu;
 
 void SteeringWheel::main() {
+	NU_GIFT(4096);
 	WDT::enable();
 	SteeringWheel sw{};
 	sw.animate_leds();

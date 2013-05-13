@@ -7,11 +7,12 @@
 //
 
 #include "nupp/bms.hpp"
-#include <alloca.h>
+#include "nupp/allocator.hpp"
 
 using namespace nu;
 
 void BatteryMs::main() {
+	NU_GIFT(4096);
 	WDT::enable();
 	BatteryMs bms{};
 	while (true) {
