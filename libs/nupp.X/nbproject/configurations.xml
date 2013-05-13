@@ -31,6 +31,7 @@
         <itemPath>../include/nupp/timer.hpp</itemPath>
         <itemPath>../include/nupp/ulcd28pt.hpp</itemPath>
         <itemPath>../include/nupp/wdt.hpp</itemPath>
+        <itemPath>../include/nupp/bitset.hpp</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="LinkerScript"

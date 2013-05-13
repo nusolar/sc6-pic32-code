@@ -10,7 +10,7 @@
 
 #include "nu/compiler.h"
 #include <alloca.h>
-#include <cstdlib>
+//#include <cstdlib>
 #include <cstddef>
 #include <new>
 
@@ -25,7 +25,7 @@ namespace nu {
 		static char *stack_base;
 		static char *ptr;
 
-		static bool pointer_in_buffer(char *p) {
+		ALWAYSINLINE static bool pointer_in_buffer(char *p) {
 			return stack_base <= p && p  <= stack_base + N;
 		}
 	};
@@ -33,7 +33,7 @@ namespace nu {
 
 	template <typename T>
 	class Allocator {
-		Allocator& operator=(const Allocator&);
+		ALWAYSINLINE Allocator& operator=(const Allocator&);
 
 	public:
 		typedef T * pointer;
@@ -44,14 +44,14 @@ namespace nu {
 		typedef size_t size_type;
 		typedef ptrdiff_t difference_type;
 
-		T *address(T& r) const {
+		ALWAYSINLINE T *address(T& r) const {
 			return &r;
 		}
-		const T *address(const T& s) const {
+		ALWAYSINLINE const T *address(const T& s) const {
 			return &s;
 		}
 
-		size_t max_size() const {
+		ALWAYSINLINE size_t max_size() const {
 			return (static_cast<size_t>(0) - static_cast<size_t>(1)) / sizeof(T);
 		}
 
@@ -59,20 +59,20 @@ namespace nu {
 			typedef Allocator<U> other;
 		};
 
-		void construct(T * const p, const T& t) const {
+		ALWAYSINLINE void construct(T * const p, const T& t) const {
 			void * const pv = static_cast<void *>(p);
 			new (pv) T(t);
 		}
-		void destroy(T * const p) const {
+		ALWAYSINLINE void destroy(T * const p) const {
 			p->~T();
 		}
 
-		T *allocate(const size_t n) const {
+		ALWAYSINLINE T *allocate(const size_t n) const {
 			if (n == 0) {
 				return NULL;
 			}
 			if (n > max_size()) {
-	//			throw std::length_error("Allocator<T>::allocate() - Integer overflow.");
+//				throw std::length_error("Allocator<T>::allocate() - Integer overflow.");
 			}
 
 			char *pv = NULL;
@@ -80,15 +80,15 @@ namespace nu {
 				pv = Arena::ptr;
 				Arena::ptr += n;
 			} else {
-				pv = (char *)malloc(n * sizeof(T));
+//				pv = (char *)malloc(n * sizeof(T));
 			}
 			if (pv == NULL) {
-	//			throw std::bad_alloc();
+//				throw std::bad_alloc();
 			}
 			return static_cast<T *>(pv);
 		}
 
-		void deallocate(T * const p, const size_t n) const {
+		ALWAYSINLINE void deallocate(T * const p, const size_t n) const {
 			if (likely(Arena::pointer_in_buffer((char *)p))) {
 				if ((char *)p + n == Arena::ptr) {
 					Arena::ptr = (char *)p;
@@ -96,20 +96,20 @@ namespace nu {
 					// WARNING unimplemented
 				}
 			} else {
-				free(p);
+//				free(p);
 			}
 		}
 
 		/** Allocator is Stateless */
-		Allocator() { }
-		Allocator(const Allocator&) { }
-		template <typename U> Allocator(const Allocator<U>&) { }
-		~Allocator() { }
-		bool operator!=(const Allocator& other) const {return !(*this == other);}
-		bool operator==(const Allocator& other) const {return true;}
+		ALWAYSINLINE Allocator() { }
+		ALWAYSINLINE Allocator(const Allocator&) { }
+		template <typename U> ALWAYSINLINE Allocator(const Allocator<U>&) { }
+		ALWAYSINLINE ~Allocator() { }
+		ALWAYSINLINE bool operator!=(const Allocator& other) const {return !(*this == other);}
+		ALWAYSINLINE bool operator==(const Allocator& other) const {return true;}
 
 		/** ignores hint */
-		template <typename U> T * allocate(const size_t n, const U*) const {
+		template <typename U> ALWAYSINLINE T *allocate(const size_t n, const U*) const {
 			return allocate(n);
 		}
 	};
