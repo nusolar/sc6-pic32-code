@@ -408,6 +408,7 @@
         <itemPath>../nupp/bms.cpp</itemPath>
         <itemPath>../nupp/driver_controls.cpp</itemPath>
         <itemPath>../nupp/steering_wheel.cpp</itemPath>
+        <itemPath>../nupp/allocator.cpp</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
@@ -418,7 +419,6 @@
   </logicalFolder>
   <sourceRootList>
     <Elem>../include</Elem>
-    <Elem>../src/nupp</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>

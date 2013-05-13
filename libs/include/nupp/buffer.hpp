@@ -12,12 +12,13 @@
 #include "nupp/allocator.hpp"
 
 namespace nu {
+	typedef std::basic_stringbuf<char, std::char_traits<char>, Allocator<char>> stackbuf;
 	/**
 	 * USES HEAP.
 	 * @todo write & instantiate std::allocator that uses Stack
 	 */
 	template <class _Parent>
-	class Buffer: public std::stringbuf {
+	class Buffer: public stackbuf {
 		_Parent &parent;
 		virtual int sync() {
 			parent.puts(str().c_str()); // WARNING: Deep copy str
@@ -25,7 +26,7 @@ namespace nu {
 			return 0;
 		}
 	public:
-		ALWAYSINLINE Buffer(_Parent &_parent): std::stringbuf(), parent(_parent) {}
+		ALWAYSINLINE Buffer(_Parent &_parent): stackbuf(), parent(_parent) {}
 	};
 }
 #endif	/* NU_BUFFER_HPP */
