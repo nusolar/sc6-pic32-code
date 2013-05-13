@@ -4,386 +4,33 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
-      <logicalFolder name="include" displayName="include" projectFiles="true">
-        <logicalFolder name="boost" displayName="boost" projectFiles="true">
-          <logicalFolder name="preprocessor"
-                         displayName="preprocessor"
-                         projectFiles="true">
-            <logicalFolder name="arithmetic" displayName="arithmetic" projectFiles="true">
-              <logicalFolder name="detail" displayName="detail" projectFiles="true">
-                <itemPath>../include/boost/preprocessor/arithmetic/detail/div_base.hpp</itemPath>
-              </logicalFolder>
-              <itemPath>../include/boost/preprocessor/arithmetic/add.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/arithmetic/dec.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/arithmetic/div.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/arithmetic/inc.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/arithmetic/mod.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/arithmetic/mul.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/arithmetic/sub.hpp</itemPath>
-            </logicalFolder>
-            <logicalFolder name="array" displayName="array" projectFiles="true">
-              <itemPath>../include/boost/preprocessor/array/data.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/array/elem.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/array/enum.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/array/insert.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/array/pop_back.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/array/pop_front.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/array/push_back.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/array/push_front.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/array/remove.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/array/replace.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/array/reverse.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/array/size.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/array/to_list.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/array/to_seq.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/array/to_tuple.hpp</itemPath>
-            </logicalFolder>
-            <logicalFolder name="comparison" displayName="comparison" projectFiles="true">
-              <itemPath>../include/boost/preprocessor/comparison/equal.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/comparison/greater.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/comparison/greater_equal.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/comparison/less.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/comparison/less_equal.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/comparison/not_equal.hpp</itemPath>
-            </logicalFolder>
-            <logicalFolder name="config" displayName="config" projectFiles="true">
-              <itemPath>../include/boost/preprocessor/config/config.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/config/limits.hpp</itemPath>
-            </logicalFolder>
-            <logicalFolder name="control" displayName="control" projectFiles="true">
-              <logicalFolder name="detail" displayName="detail" projectFiles="true">
-                <logicalFolder name="dmc" displayName="dmc" projectFiles="true">
-                  <itemPath>../include/boost/preprocessor/control/detail/dmc/while.hpp</itemPath>
-                </logicalFolder>
-                <logicalFolder name="edg" displayName="edg" projectFiles="true">
-                  <itemPath>../include/boost/preprocessor/control/detail/edg/while.hpp</itemPath>
-                </logicalFolder>
-                <logicalFolder name="msvc" displayName="msvc" projectFiles="true">
-                  <itemPath>../include/boost/preprocessor/control/detail/msvc/while.hpp</itemPath>
-                </logicalFolder>
-                <itemPath>../include/boost/preprocessor/control/detail/while.hpp</itemPath>
-              </logicalFolder>
-              <itemPath>../include/boost/preprocessor/control/deduce_d.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/control/expr_if.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/control/expr_iif.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/control/if.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/control/iif.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/control/while.hpp</itemPath>
-            </logicalFolder>
-            <logicalFolder name="debug" displayName="debug" projectFiles="true">
-              <itemPath>../include/boost/preprocessor/debug/assert.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/debug/error.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/debug/line.hpp</itemPath>
-            </logicalFolder>
-            <logicalFolder name="detail" displayName="detail" projectFiles="true">
-              <logicalFolder name="dmc" displayName="dmc" projectFiles="true">
-                <itemPath>../include/boost/preprocessor/detail/dmc/auto_rec.hpp</itemPath>
-              </logicalFolder>
-              <itemPath>../include/boost/preprocessor/detail/auto_rec.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/detail/check.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/detail/is_binary.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/detail/is_unary.hpp</itemPath>
-            </logicalFolder>
-            <logicalFolder name="facilities" displayName="facilities" projectFiles="true">
-              <itemPath>../include/boost/preprocessor/facilities/apply.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/facilities/empty.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/facilities/expand.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/facilities/identity.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/facilities/intercept.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/facilities/overload.hpp</itemPath>
-            </logicalFolder>
-            <logicalFolder name="iteration" displayName="iteration" projectFiles="true">
-              <itemPath>../include/boost/preprocessor/iteration/iterate.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/iteration/local.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/iteration/self.hpp</itemPath>
-            </logicalFolder>
-            <logicalFolder name="list" displayName="list" projectFiles="true">
-              <logicalFolder name="detail" displayName="detail" projectFiles="true">
-                <logicalFolder name="dmc" displayName="dmc" projectFiles="true">
-                  <itemPath>../include/boost/preprocessor/list/detail/dmc/fold_left.hpp</itemPath>
-                </logicalFolder>
-                <logicalFolder name="edg" displayName="edg" projectFiles="true">
-                  <itemPath>../include/boost/preprocessor/list/detail/edg/fold_left.hpp</itemPath>
-                  <itemPath>../include/boost/preprocessor/list/detail/edg/fold_right.hpp</itemPath>
-                </logicalFolder>
-                <itemPath>../include/boost/preprocessor/list/detail/fold_left.hpp</itemPath>
-                <itemPath>../include/boost/preprocessor/list/detail/fold_right.hpp</itemPath>
-              </logicalFolder>
-              <itemPath>../include/boost/preprocessor/list/adt.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/list/append.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/list/at.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/list/cat.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/list/enum.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/list/filter.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/list/first_n.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/list/fold_left.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/list/fold_right.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/list/for_each.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/list/for_each_i.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/list/for_each_product.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/list/rest_n.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/list/reverse.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/list/size.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/list/to_array.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/list/to_seq.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/list/to_tuple.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/list/transform.hpp</itemPath>
-            </logicalFolder>
-            <logicalFolder name="logical" displayName="logical" projectFiles="true">
-              <itemPath>../include/boost/preprocessor/logical/and.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/logical/bitand.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/logical/bitnor.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/logical/bitor.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/logical/bitxor.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/logical/bool.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/logical/compl.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/logical/nor.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/logical/not.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/logical/or.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/logical/xor.hpp</itemPath>
-            </logicalFolder>
-            <logicalFolder name="punctuation" displayName="punctuation" projectFiles="true">
-              <itemPath>../include/boost/preprocessor/punctuation/comma.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/punctuation/comma_if.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/punctuation/paren.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/punctuation/paren_if.hpp</itemPath>
-            </logicalFolder>
-            <logicalFolder name="repetition" displayName="repetition" projectFiles="true">
-              <logicalFolder name="detail" displayName="detail" projectFiles="true">
-                <logicalFolder name="dmc" displayName="dmc" projectFiles="true">
-                  <itemPath>../include/boost/preprocessor/repetition/detail/dmc/for.hpp</itemPath>
-                </logicalFolder>
-                <logicalFolder name="edg" displayName="edg" projectFiles="true">
-                  <itemPath>../include/boost/preprocessor/repetition/detail/edg/for.hpp</itemPath>
-                </logicalFolder>
-                <logicalFolder name="msvc" displayName="msvc" projectFiles="true">
-                  <itemPath>../include/boost/preprocessor/repetition/detail/msvc/for.hpp</itemPath>
-                </logicalFolder>
-                <itemPath>../include/boost/preprocessor/repetition/detail/for.hpp</itemPath>
-              </logicalFolder>
-              <itemPath>../include/boost/preprocessor/repetition/deduce_r.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/repetition/deduce_z.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/repetition/enum.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/repetition/enum_binary_params.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/repetition/enum_params.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/repetition/enum_params_with_a_default.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/repetition/enum_params_with_defaults.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/repetition/enum_shifted.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/repetition/enum_shifted_binary_params.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/repetition/enum_shifted_params.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/repetition/enum_trailing.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/repetition/enum_trailing_binary_params.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/repetition/enum_trailing_params.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/repetition/for.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/repetition/repeat.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/repetition/repeat_from_to.hpp</itemPath>
-            </logicalFolder>
-            <logicalFolder name="selection" displayName="selection" projectFiles="true">
-              <itemPath>../include/boost/preprocessor/selection/max.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/selection/min.hpp</itemPath>
-            </logicalFolder>
-            <logicalFolder name="seq" displayName="seq" projectFiles="true">
-              <logicalFolder name="detail" displayName="detail" projectFiles="true">
-                <itemPath>../include/boost/preprocessor/seq/detail/binary_transform.hpp</itemPath>
-                <itemPath>../include/boost/preprocessor/seq/detail/split.hpp</itemPath>
-              </logicalFolder>
-              <itemPath>../include/boost/preprocessor/seq/cat.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/seq/elem.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/seq/enum.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/seq/filter.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/seq/first_n.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/seq/fold_left.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/seq/fold_right.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/seq/for_each.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/seq/for_each_i.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/seq/for_each_product.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/seq/insert.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/seq/pop_back.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/seq/pop_front.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/seq/push_back.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/seq/push_front.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/seq/remove.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/seq/replace.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/seq/rest_n.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/seq/reverse.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/seq/seq.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/seq/size.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/seq/subseq.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/seq/to_array.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/seq/to_list.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/seq/to_tuple.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/seq/transform.hpp</itemPath>
-            </logicalFolder>
-            <logicalFolder name="slot" displayName="slot" projectFiles="true">
-              <logicalFolder name="detail" displayName="detail" projectFiles="true">
-                <itemPath>../include/boost/preprocessor/slot/detail/counter.hpp</itemPath>
-                <itemPath>../include/boost/preprocessor/slot/detail/def.hpp</itemPath>
-                <itemPath>../include/boost/preprocessor/slot/detail/shared.hpp</itemPath>
-                <itemPath>../include/boost/preprocessor/slot/detail/slot1.hpp</itemPath>
-                <itemPath>../include/boost/preprocessor/slot/detail/slot2.hpp</itemPath>
-                <itemPath>../include/boost/preprocessor/slot/detail/slot3.hpp</itemPath>
-                <itemPath>../include/boost/preprocessor/slot/detail/slot4.hpp</itemPath>
-                <itemPath>../include/boost/preprocessor/slot/detail/slot5.hpp</itemPath>
-              </logicalFolder>
-              <itemPath>../include/boost/preprocessor/slot/slot.hpp</itemPath>
-            </logicalFolder>
-            <logicalFolder name="tuple" displayName="tuple" projectFiles="true">
-              <itemPath>../include/boost/preprocessor/tuple/eat.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/tuple/elem.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/tuple/enum.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/tuple/rem.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/tuple/reverse.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/tuple/size.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/tuple/to_array.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/tuple/to_list.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/tuple/to_seq.hpp</itemPath>
-            </logicalFolder>
-            <logicalFolder name="variadic" displayName="variadic" projectFiles="true">
-              <itemPath>../include/boost/preprocessor/variadic/elem.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/variadic/size.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/variadic/to_array.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/variadic/to_list.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/variadic/to_seq.hpp</itemPath>
-              <itemPath>../include/boost/preprocessor/variadic/to_tuple.hpp</itemPath>
-            </logicalFolder>
-            <itemPath>../include/boost/preprocessor/arithmetic.hpp</itemPath>
-            <itemPath>../include/boost/preprocessor/array.hpp</itemPath>
-            <itemPath>../include/boost/preprocessor/cat.hpp</itemPath>
-            <itemPath>../include/boost/preprocessor/comparison.hpp</itemPath>
-            <itemPath>../include/boost/preprocessor/control.hpp</itemPath>
-            <itemPath>../include/boost/preprocessor/debug.hpp</itemPath>
-            <itemPath>../include/boost/preprocessor/facilities.hpp</itemPath>
-            <itemPath>../include/boost/preprocessor/iteration.hpp</itemPath>
-            <itemPath>../include/boost/preprocessor/library.hpp</itemPath>
-            <itemPath>../include/boost/preprocessor/list.hpp</itemPath>
-            <itemPath>../include/boost/preprocessor/logical.hpp</itemPath>
-            <itemPath>../include/boost/preprocessor/punctuation.hpp</itemPath>
-            <itemPath>../include/boost/preprocessor/repetition.hpp</itemPath>
-            <itemPath>../include/boost/preprocessor/selection.hpp</itemPath>
-            <itemPath>../include/boost/preprocessor/seq.hpp</itemPath>
-            <itemPath>../include/boost/preprocessor/slot.hpp</itemPath>
-            <itemPath>../include/boost/preprocessor/stringize.hpp</itemPath>
-            <itemPath>../include/boost/preprocessor/tuple.hpp</itemPath>
-            <itemPath>../include/boost/preprocessor/variadic.hpp</itemPath>
-          </logicalFolder>
-          <itemPath>../include/boost/preprocessor.hpp</itemPath>
-        </logicalFolder>
-        <logicalFolder name="nu" displayName="nu" projectFiles="true">
-          <logicalFolder name="can" displayName="can" projectFiles="true">
-            <logicalFolder name="nppBackup" displayName="nppBackup" projectFiles="true">
-            </logicalFolder>
-            <itemPath>../include/nu/can/add_channel_rx.h</itemPath>
-            <itemPath>../include/nu/can/add_channel_tx.h</itemPath>
-            <itemPath>../include/nu/can/add_filter.h</itemPath>
-            <itemPath>../include/nu/can/rx.h</itemPath>
-            <itemPath>../include/nu/can/setup.h</itemPath>
-            <itemPath>../include/nu/can/tx.h</itemPath>
-          </logicalFolder>
-          <logicalFolder name="platform" displayName="platform" projectFiles="true">
-            <logicalFolder name="generic" displayName="generic" projectFiles="true">
-              <logicalFolder name="f1" displayName="nu" projectFiles="true">
-                <logicalFolder name="f1" displayName="platform" projectFiles="true">
-                  <itemPath>../include/platform/generic/nu/platform/param.h</itemPath>
-                  <itemPath>../include/platform/generic/nu/platform/pinctl.h</itemPath>
-                </logicalFolder>
-              </logicalFolder>
-              <logicalFolder name="f2" displayName="nupp" projectFiles="true">
-              </logicalFolder>
-            </logicalFolder>
-            <logicalFolder name="pic32mx" displayName="pic32mx" projectFiles="true">
-              <logicalFolder name="f1" displayName="nu" projectFiles="true">
-                <logicalFolder name="f1" displayName="platform" projectFiles="true">
-                  <itemPath>../include/platform/pic32mx/nu/platform/common_pragmas.h</itemPath>
-                  <itemPath>../include/platform/pic32mx/nu/platform/nu32.h</itemPath>
-                  <itemPath>../include/platform/pic32mx/nu/platform/param.h</itemPath>
-                  <itemPath>../include/platform/pic32mx/nu/platform/pinctl.h</itemPath>
-                  <itemPath>../include/platform/pic32mx/nu/platform/platform.h</itemPath>
-                  <itemPath>../include/platform/pic32mx/nu/platform/serial.h</itemPath>
-                </logicalFolder>
-              </logicalFolder>
-              <logicalFolder name="f2" displayName="nupp" projectFiles="true">
-              </logicalFolder>
-            </logicalFolder>
-          </logicalFolder>
-          <logicalFolder name="utility" displayName="utility" projectFiles="true">
-            <logicalFolder name="nppBackup" displayName="nppBackup" projectFiles="true">
-            </logicalFolder>
-            <itemPath>../include/nu/utility/arith.h</itemPath>
-            <itemPath>../include/nu/utility/bits.h</itemPath>
-            <itemPath>../include/nu/utility/data.h</itemPath>
-            <itemPath>../include/nu/utility/preprocessor.h</itemPath>
-            <itemPath>../include/nu/utility/static.h</itemPath>
-          </logicalFolder>
-          <itemPath>../include/nu/ad7685.h</itemPath>
-          <itemPath>../include/nu/async_io.h</itemPath>
-          <itemPath>../include/nu/button.h</itemPath>
-          <itemPath>../include/nu/byteorder.h</itemPath>
-          <itemPath>../include/nu/can.h</itemPath>
-          <itemPath>../include/nu/can_addresses.h</itemPath>
-          <itemPath>../include/nu/can_all.h</itemPath>
-          <itemPath>../include/nu/can_bms.h</itemPath>
-          <itemPath>../include/nu/can_common.h</itemPath>
-          <itemPath>../include/nu/can_dc.h</itemPath>
-          <itemPath>../include/nu/can_mppt.h</itemPath>
-          <itemPath>../include/nu/can_steering_wheel.h</itemPath>
-          <itemPath>../include/nu/can_ws20.h</itemPath>
-          <itemPath>../include/nu/can_ws20_rx.h</itemPath>
-          <itemPath>../include/nu/can_ws20_tx.h</itemPath>
-          <itemPath>../include/nu/circ_buf.h</itemPath>
-          <itemPath>../include/nu/common_pragmas.h</itemPath>
-          <itemPath>../include/nu/compiler.h</itemPath>
-          <itemPath>../include/nu/crc.h</itemPath>
-          <itemPath>../include/nu/ds18x20.h</itemPath>
-          <itemPath>../include/nu/error_reporting.h</itemPath>
-          <itemPath>../include/nu/errorcodes.h</itemPath>
-          <itemPath>../include/nu/flash.h</itemPath>
-          <itemPath>../include/nu/hais50p.h</itemPath>
-          <itemPath>../include/nu/led.h</itemPath>
-          <itemPath>../include/nu/list.h</itemPath>
-          <itemPath>../include/nu/lock.h</itemPath>
-          <itemPath>../include/nu/ltc6803.h</itemPath>
-          <itemPath>../include/nu/mcp49x2.h</itemPath>
-          <itemPath>../include/nu/minunit.h</itemPath>
-          <itemPath>../include/nu/mppt_race.h</itemPath>
-          <itemPath>../include/nu/nokia5110.h</itemPath>
-          <itemPath>../include/nu/nokia5110_debug.h</itemPath>
-          <itemPath>../include/nu/onewire.h</itemPath>
-          <itemPath>../include/nu/param.h</itemPath>
-          <itemPath>../include/nu/pinctl.h</itemPath>
-          <itemPath>../include/nu/platform.h</itemPath>
-          <itemPath>../include/nu/safestring.h</itemPath>
-          <itemPath>../include/nu/serial.h</itemPath>
-          <itemPath>../include/nu/spi.h</itemPath>
-          <itemPath>../include/nu/timer.h</itemPath>
-          <itemPath>../include/nu/utility.h</itemPath>
-          <itemPath>../include/nu/wdt.h</itemPath>
-          <itemPath>../include/nu/ws20.h</itemPath>
-          <itemPath>../include/nu/types.h</itemPath>
-        </logicalFolder>
-        <logicalFolder name="nupp" displayName="nupp" projectFiles="true">
-          <itemPath>../include/nupp/ad7685.hpp</itemPath>
-          <itemPath>../include/nupp/button.hpp</itemPath>
-          <itemPath>../include/nupp/can.def.hpp</itemPath>
-          <itemPath>../include/nupp/can.hpp</itemPath>
-          <itemPath>../include/nupp/enum.hpp</itemPath>
-          <itemPath>../include/nupp/errorcodes.hpp</itemPath>
-          <itemPath>../include/nupp/led.hpp</itemPath>
-          <itemPath>../include/nupp/nokia5110.hpp</itemPath>
-          <itemPath>../include/nupp/nu32.hpp</itemPath>
-          <itemPath>../include/nupp/param.hpp</itemPath>
-          <itemPath>../include/nupp/pinctl.hpp</itemPath>
-          <itemPath>../include/nupp/serial.hpp</itemPath>
-          <itemPath>../include/nupp/spi.hpp</itemPath>
-          <itemPath>../include/nupp/timer.hpp</itemPath>
-          <itemPath>../include/nupp/ulcd28pt.hpp</itemPath>
-          <itemPath>../include/nupp/wdt.hpp</itemPath>
-          <itemPath>../include/nupp/bms.hpp</itemPath>
-          <itemPath>../include/nupp/driver_controls.hpp</itemPath>
-          <itemPath>../include/nupp/steering_wheel.hpp</itemPath>
-          <itemPath>../include/nupp/buffer.hpp</itemPath>
-          <itemPath>../include/nupp/short_alloc.hpp</itemPath>
-          <itemPath>../include/nupp/allocator.hpp</itemPath>
-        </logicalFolder>
+      <logicalFolder name="f2" displayName="nu" projectFiles="true">
+        <itemPath>../include/nu/param.h</itemPath>
+        <itemPath>../include/nu/compiler.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f1" displayName="nupp" projectFiles="true">
+        <itemPath>../include/nupp/ad7685.hpp</itemPath>
+        <itemPath>../include/nupp/allocator.hpp</itemPath>
+        <itemPath>../include/nupp/bms.hpp</itemPath>
+        <itemPath>../include/nupp/buffer.hpp</itemPath>
+        <itemPath>../include/nupp/button.hpp</itemPath>
+        <itemPath>../include/nupp/can.def.hpp</itemPath>
+        <itemPath>../include/nupp/can.hpp</itemPath>
+        <itemPath>../include/nupp/driver_controls.hpp</itemPath>
+        <itemPath>../include/nupp/enum.hpp</itemPath>
+        <itemPath>../include/nupp/errorcodes.hpp</itemPath>
+        <itemPath>../include/nupp/led.hpp</itemPath>
+        <itemPath>../include/nupp/nokia5110.hpp</itemPath>
+        <itemPath>../include/nupp/nu32.hpp</itemPath>
+        <itemPath>../include/nupp/param.hpp</itemPath>
+        <itemPath>../include/nupp/pinctl.hpp</itemPath>
+        <itemPath>../include/nupp/serial.hpp</itemPath>
+        <itemPath>../include/nupp/short_alloc.hpp</itemPath>
+        <itemPath>../include/nupp/spi.hpp</itemPath>
+        <itemPath>../include/nupp/steering_wheel.hpp</itemPath>
+        <itemPath>../include/nupp/timer.hpp</itemPath>
+        <itemPath>../include/nupp/ulcd28pt.hpp</itemPath>
+        <itemPath>../include/nupp/wdt.hpp</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
@@ -418,7 +65,8 @@
     </logicalFolder>
   </logicalFolder>
   <sourceRootList>
-    <Elem>../include</Elem>
+    <Elem>../include/nupp</Elem>
+    <Elem>../include/nu</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
