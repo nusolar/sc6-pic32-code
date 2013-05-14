@@ -1,4 +1,4 @@
-#include "errorcodes.hpp"
+#include "nupp/errorcodes.hpp"
 
 /** Array of the string representations of the standard error codes */
 const char *nu::error::names[] = {

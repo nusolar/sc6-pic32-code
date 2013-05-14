@@ -9,12 +9,14 @@ extern "C" {
 /**
  * Clear WatchDogTimer. Normally set to ~2 seconds.
  */
-namespace nu { namespace WDT {
-static ALWAYSINLINE void clear() { nu_wdt_clear(); }
-static ALWAYSINLINE void enable_clear() { nu_wdt_enable_clear(); }
-static ALWAYSINLINE void disable_clear() { nu_wdt_disable_clear(); }
-static ALWAYSINLINE void enable() { EnableWDT(); }
-static ALWAYSINLINE void disable() { DisableWDT(); }
-}}
+namespace nu {
+	namespace WDT {
+		static ALWAYSINLINE void clear() {nu_wdt_clear();}
+		static ALWAYSINLINE void enable_clear() {nu_wdt_enable_clear();}
+		static ALWAYSINLINE void disable_clear() {nu_wdt_disable_clear();}
+		static ALWAYSINLINE void enable() {EnableWDT();}
+		static ALWAYSINLINE void disable() {DisableWDT();}
+	}
+}
 
 #endif
