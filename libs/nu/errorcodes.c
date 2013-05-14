@@ -3,10 +3,9 @@
 #include "nu/utility/data.h"
 #include <stdlib.h>
 
-static const char *nu_error_names[] = {
-#define NU_ERROR(x) #x,
-    NU_ERRORS
-#undef NU_ERROR
+#define NU_ERROR_NAMES(x) #x,
+const char *nu_error_names[] = {
+    NU_ERRORS(NU_ERROR_NAMES)
 };
 
 #undef __must_be_array
