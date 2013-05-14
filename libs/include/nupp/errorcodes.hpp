@@ -17,7 +17,9 @@
 # undef ENODEV
 #endif
 
+extern "C" {
 #include "nu/errorcodes.h"
+}
 
 namespace nu {
 	namespace error {
@@ -28,7 +30,7 @@ namespace nu {
 		};
 
 		/** Array of the string representations of the standard error codes */
-		extern const char **names;
+		static const char **names = nu_error_names;
 
 		/** A wrapper to get (without failure) an error name */
 		static ALWAYSINLINE const char *get_name(errors err) {

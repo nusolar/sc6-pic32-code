@@ -1,5 +1,5 @@
-#ifndef NU_COMMON_PRAGMAS_H
-#define NU_COMMON_PRAGMAS_H 1
+#ifndef NU_PIC32MX_COMMON_PRAGMAS_H
+#define NU_PIC32MX_COMMON_PRAGMAS_H 1
 
 /**
  * @file
@@ -32,4 +32,4 @@
 /* 2.048s WDT timeout (1:2048 postscaler) */
 #pragma config WDTPS    = PS2048
 
-#endif
+#endif /* NU_PIC32MX_COMMON_PRAGMAS_H */

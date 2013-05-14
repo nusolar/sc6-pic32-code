@@ -1,4 +1,4 @@
-#include "nu/platform/common_pragmas.h"
+#include "nu/common_pragmas.h"
 #include "nupp/driver_controls.hpp"
 
 /** Call DriverControls::main(), NEVER RETURN */

@@ -1,4 +1,4 @@
-#include "nu/platform/common_pragmas.h"
+#include "nu/common_pragmas.h"
 #include "nupp/steering_wheel.hpp"
 
 /** Call SteeringWheel::main(), NEVER RETURN */
