@@ -6,6 +6,7 @@
 #include <new>
 
 #include <plib.h>
+#include "nupp/can_def.hpp"
 
 namespace nu {
 	namespace can {
@@ -99,129 +100,6 @@ namespace nu {
 			int32_t switch_mode(CAN_OP_MODE op_mode, uint32_t timeout_ms);
 			int32_t change_features(CAN_MODULE_FEATURES features, BOOL en);
 		};
-
-
-		/**
-		 * CAN frames are implemented as PACKED structs,
-		 * within namespaces for scoping.
-		 */
-		namespace frame {
-			struct Packet {
-				union frame_t {
-					uint64_t data;
-					uint8_t bytes[8];
-				} frame;
-				virtual ~Packet() {}
-				virtual uint64_t &data() {return frame.data;};
-				virtual uint8_t  *bytes() {return frame.bytes;};
-				Packet(): frame{0} {}
-				Packet(uint64_t &_i): frame{_i} {}
-				Packet(Packet& p): frame{p.data()} {}
-				Packet& operator= (uint64_t &_i) {data() = _i; return *this;}
-				Packet& operator= (Packet& p) {data() = p.data(); return *this;}
-			};
-
-			// Data Types:
-			#define Empty()
-			#define Module(u1, f1)\
-				uint32_t u1;\
-				float f1;
-			#define Double(d1)\
-				double d1;
-			#define Float2(f1, f2)\
-				float f1, f2;
-			#define UInt64(u1)\
-				uint64_t u1;
-			#define UInt2(u1, u2)\
-				uint32_t u1, u2;
-			#define Trip(s1, u1)\
-				int32_t s1;\
-				uint32_t u1;
-			#define Error()\
-				char msg[8];
-			#define Status(str, u1)\
-				char str[4];\
-				uint32_t u1;
-			// Specialty Data Types:
-			#define motor_Status()\
-				uint16_t limitFlags;\
-				uint16_t errorFlags;\
-				uint16_t activeMotor;\
-				uint16_t reserved __attribute__ ((__packed__));
-			#define sw_Lights()\
-				unsigned    left            :1;\
-				unsigned    right           :1;\
-				unsigned    radio           :1;\
-				unsigned    yes             :1;\
-				unsigned    hazard          :1;\
-				unsigned    cruise_en       :1;\
-				unsigned    cruise_up       :1;\
-				unsigned    maybe           :1;\
-				unsigned    no              :1;\
-				unsigned    horn            :1;\
-				unsigned    cruise_mode     :1;\
-				unsigned    cruise_down     :1;\
-				unsigned    reserved        :20;
-			#define sw_Buttons()\
-				unsigned    left            :1;\
-				unsigned    right           :1;\
-				unsigned    yes             :1;\
-				unsigned    no              :1;\
-				unsigned    maybe           :1;\
-				unsigned    hazard          :1;\
-				unsigned    horn            :1;\
-				unsigned    cruise_en       :1;\
-				unsigned    cruise_mode     :1;\
-				unsigned    cruise_up       :1;\
-				unsigned    cruise_down     :1;\
-				unsigned    reserved        :21;
-
-			// Declaration:
-			#define List(x) namespace x
-			#define Xbase const int base // FUCK MPLAB
-			#define X(name, type, ...)\
-				; struct name : public Packet {\
-					union frame_t {\
-						uint64_t data;\
-						uint8_t bytes[8];\
-						struct PACKED name##_t {\
-							type(__VA_ARGS__)\
-						} s;\
-					} frame;\
-					ALWAYSINLINE uint64_t &data() {return frame.data;}\
-					ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;};\
-					name(): frame{0} {}\
-					name(uint64_t &_i): frame{_i} {}\
-					name(Packet& p): frame{p.data()} {}\
-				};
-			#define Xinit(name, type, ...) X(name, type, __VA_ARGS__) const int zzz__##name
-			#define end ;
-				#include "nupp/can.def.hpp"
-			#undef end
-			#undef Xinit
-			#undef X
-			#undef Xbase
-			#undef List
-		}
-
-
-		/**
-		 * CAN addresses are uint16_t's,
-		 * within enum classes for scoping.
-		 */
-		namespace addr {
-			#define List(x) enum class x: uint16_t
-			#define Xbase base
-			#define X(name, type, ...) , name##_k
-			#define Xinit(name, type, ...) X(name, type, __VA_ARGS__)
-			#define end
-				#include "nupp/can.def.hpp"
-			#undef end
-			#undef Xinit
-			#undef X
-			#undef Xbase
-			#undef List
-		}
 	}
 }
 

@@ -37,7 +37,7 @@ namespace nu {
 
 	protected:
 		/**
-		 * Call one of these four setters in your subclass.
+		 * Call one of these four setters from your subclass constructor.
 		 */
 		void ALWAYSINLINE set_digital_out()	{PORTSetPinsDigitalOut(ltr(), num());}
 		void ALWAYSINLINE set_digital_in()	{PORTSetPinsDigitalIn(ltr(), num());}
