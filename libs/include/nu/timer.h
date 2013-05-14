@@ -1,11 +1,16 @@
 #ifndef NU_TIMER_H
 #define NU_TIMER_H 1
 
-#include <peripheral/timer.h>
 #include "nu/compiler.h"
 #include "nu/types.h"
 #include "nu/param.h"
 #include "nu/utility.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include <peripheral/timer.h>
 
 #define nu_timer_reset() WriteCoreTimer(0)
 #define nu_timer_ticks() ReadCoreTimer()
@@ -85,5 +90,9 @@ _nu_delay_ticks(tick_t t)
 #define nu_delay_ms(ms)    nu_delay_ticks(nu_ms_to_ticks(ms))
 #define nu_delay_us(us)    nu_delay_ticks(nu_us_to_ticks(us))
 #define nu_delay_ns(ns)    nu_delay_ticks(nu_ns_to_ticks(ns))
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif
 
 #endif

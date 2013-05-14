@@ -1,12 +1,14 @@
 #ifndef NU_COMPILER_H
 #define NU_COMPILER_H 1
 
+#ifdef __cplusplus
 /* workaround needed to prevent keywords from being defined before
  * C++ header is included. <limits> could actually in theory be any
  * C++ header.
  */
-#ifdef __cplusplus
 # include <limits>
+
+extern "C" {
 #endif
 
 /**
@@ -65,9 +67,15 @@
  * use is to mediate communication between process-level code and irq/NMI
  * handlers, all running on the same CPU.
  */
-#define ACCESS_ONCE(x) (*(volatile typeof(x) *)&(x))
+#ifndef ACCESS_ONCE
+# define ACCESS_ONCE(x) (*(volatile typeof(x) *)&(x))
+#endif
+
+#define unreachable() __builtin_unreachable()
 
 #ifdef __cplusplus
+} /* extern "C" */
+
 template<typename T>
 static ALWAYSINLINE T volatile &access_once(T &t) {
     return static_cast<T volatile &>(t);
@@ -75,7 +83,5 @@ static ALWAYSINLINE T volatile &access_once(T &t) {
 # undef ACCESS_ONCE
 # define ACCESS_ONCE(x) access_once(x)
 #endif
-
-#define unreachable() __builtin_unreachable()
 
 #endif

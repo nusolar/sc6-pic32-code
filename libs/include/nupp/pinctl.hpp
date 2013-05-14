@@ -9,8 +9,10 @@
 #include "nu/compiler.h"
 #include <cstdint>
 #include <string>
+extern "C" {
 #include <peripheral/adc10.h>
 #include <peripheral/ports.h>
+}
 
 namespace nu {
 	/**
