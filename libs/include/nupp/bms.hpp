@@ -9,15 +9,15 @@
 #ifndef __nusolar_lib__bms__
 #define __nusolar_lib__bms__
 
-#include <cstdint>
-
+#include "nu/compiler.h"
+#include "nupp/nokia5110.hpp"
+#include "nupp/ad7685.hpp" // ERROR breaks Symbol loading
 #include "nupp/timer.hpp"
 #include "nupp/nu32.hpp"
 #include "nupp/pinctl.hpp"
-#include "nupp/nokia5110.hpp"
 #include "nupp/can.hpp"
 #include "nupp/wdt.hpp"
-#include "nupp/ad7685.hpp"
+#include <cstdint>
 
 namespace nu {
 	/**

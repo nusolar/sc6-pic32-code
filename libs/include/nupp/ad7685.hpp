@@ -2,10 +2,10 @@
 #define NUPP_AD7685_HPP 1
 
 #include "nu/compiler.h"
-#include "nupp/errorcodes.hpp"
-#include "nupp/pinctl.hpp"
 #include "nupp/spi.hpp"
 #include "nupp/timer.hpp"
+#include "nupp/pinctl.hpp"
+#include "nupp/errorcodes.hpp"
 #include <alloca.h>
 #include <cstdint>
 #include <sys/endian.h>

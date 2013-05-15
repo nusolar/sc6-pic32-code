@@ -3,14 +3,14 @@
 
 #include "nu/compiler.h"
 #include "nupp/bitset.hpp"
-#include "nupp/ulcd28pt.hpp"
 #include "nupp/enum.hpp"
-#include "nupp/timer.hpp"
-#include "nupp/nu32.hpp"
+#include "nupp/ulcd28pt.hpp" // MAXIMUM WARNING MAXIMUM ERROR MUST COME BEFORE PIC32
 #include "nupp/button.hpp"
 #include "nupp/led.hpp"
 #include "nupp/can.hpp"
 #include "nupp/wdt.hpp"
+#include "nupp/timer.hpp"
+#include "nupp/nu32.hpp"
 #include <cstdio>
 
 // Pin definitions

@@ -11,15 +11,13 @@
 
 #include "nu/compiler.h"
 #include "nupp/timer.hpp"
-#include <cstdint>
-#include <cstddef>
-
+#include "nupp/nokia5110.hpp"// MAXIMUM WARNING MAXIMUM ERROR MUST COME BEFORE NU32
 #include "nupp/nu32.hpp"
 #include "nupp/pinctl.hpp"
-#include "nupp/nokia5110.hpp"
-#include "nupp/spi.hpp"
 #include "nupp/can.hpp"
 #include "nupp/wdt.hpp"
+#include <cstdint>
+#include <cstddef>
 
 
 #define DC_PINS(X)\
