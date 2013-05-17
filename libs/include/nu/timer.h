@@ -6,17 +6,13 @@
 #include "nu/param.h"
 #include "nu/utility.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <peripheral/timer.h>
 
 #define nu_timer_reset() WriteCoreTimer(0)
 #define nu_timer_ticks() ReadCoreTimer()
 
-typedef typeof(nu_timer_ticks()) tick_t;
-typedef typeof(NU_HZ) hz_t;
+typedef u32 tick_t;
+typedef u32 hz_t;
 
 /* undefined functions to get compile-time errors */
 extern tick_t _nu_s_to_ticks_value_out_of_range(void);
@@ -90,9 +86,5 @@ _nu_delay_ticks(tick_t t)
 #define nu_delay_ms(ms)    nu_delay_ticks(nu_ms_to_ticks(ms))
 #define nu_delay_us(us)    nu_delay_ticks(nu_us_to_ticks(us))
 #define nu_delay_ns(ns)    nu_delay_ticks(nu_ns_to_ticks(ns))
-
-#ifdef __cplusplus
-} /* extern "C" */
-#endif
 
 #endif

@@ -2,7 +2,9 @@
 #define NUPP_TIMER_HPP 1
 
 #include "nu/compiler.h"
+extern "C" {
 #include "nu/timer.h"
+}
 
 namespace nu {
 	namespace timer {

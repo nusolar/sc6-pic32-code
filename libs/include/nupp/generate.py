@@ -65,7 +65,9 @@ class X(object):
 		self.string = self.struct % {'name': name, 'members': T % tuple(args)}
 	def __add__(self, other):
 		self.name += ' = ' + str(other)
-		return self
+		return
+	def __str__(self):
+		return self.string
 
 
 namespace = ' namespace %s {\n%s}\n'
@@ -73,8 +75,8 @@ enum = ' enum %s {\n%s};\n'
 
 class Group:
 	def structs(self):
-		rxs = ''.join([x.string for x in self.rx().frames])
-		txs = ''.join([x.string for x in self.tx().frames])
+		rxs = ''.join([str(x) for x in self.rx().frames])
+		txs = ''.join([str(x) for x in self.tx().frames])
 		rxs = namespace % ('rx', rxs)
 		txs = namespace % ('tx', txs)
 		return namespace % (type(self).__name__, rxs + txs)
@@ -211,7 +213,7 @@ class CAN:
 	def enums(self):
 		inner = ''.join(x.enums() for x in self.ns.values())
 		return namespace % ('addr', inner)
-	def get(self):
+	def __str__(self):
 		return namespace % ('can', self.structs()+self.enums())
 
 doc = """
@@ -225,7 +227,7 @@ doc = """
 
 def main():
 	f = open('can_def.hpp', 'w')
-	f.write(doc + namespace % ('nu', CAN().get()))
+	f.write(doc + namespace % ('nu', str(CAN())))
 
 if __name__ == '__main__':
 	main()

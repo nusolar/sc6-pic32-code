@@ -10,8 +10,8 @@
 #define __nusolar_lib__driver_controls__
 
 #include "nu/compiler.h"
-#include "nupp/timer.hpp"
 #include "nupp/nokia5110.hpp"// MAXIMUM WARNING MAXIMUM ERROR MUST COME BEFORE NU32
+#include "nupp/timer.hpp"
 #include "nupp/nu32.hpp"
 #include "nupp/pinctl.hpp"
 #include "nupp/can.hpp"
