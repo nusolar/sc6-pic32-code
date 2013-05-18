@@ -1,6 +1,6 @@
-#include "ad7685.h"
-#include "errorcodes.h"
-#include "timer.h"
+#include "nu/ad7685.h"
+#include "nu/errorcodes.h"
+#include "nu/timer.h"
 #include <sys/endian.h>
 #include <alloca.h>
 
@@ -46,7 +46,7 @@ nu_ad7685_convert_read_uv(const struct nu_ad7685 *a, u32 *dst)
 
     /* start conversion */
     drive_cnv_high(a);
-    delay_ns(100);  /* .1 us */
+    nu_delay_ns(100);  /* .1 us */
 
     if (NU_AD7685_BUSY_INDICATOR & a->opt) {
         if (NU_AD7685_THREE_WIRE & a->opt)
@@ -55,7 +55,7 @@ nu_ad7685_convert_read_uv(const struct nu_ad7685 *a, u32 *dst)
             nu_spi_drive_cs_low(&(a->spi));
     }
 
-    delay_ns(2300); /* 2.3 us */
+    nu_delay_ns(2300); /* 2.3 us */
 
     if (NU_AD7685_THREE_WIRE & a->opt && NU_AD7685_NO_BUSY_INDICATOR & a->opt)
         drive_cnv_low(a);
@@ -64,5 +64,5 @@ nu_ad7685_convert_read_uv(const struct nu_ad7685 *a, u32 *dst)
     read_uv(a, dst);
 
     drive_cnv_low(a);
-    delay_us(5);
+    nu_delay_us(5);
 }

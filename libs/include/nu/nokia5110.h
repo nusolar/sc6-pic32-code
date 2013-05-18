@@ -53,7 +53,7 @@ struct nu_nokia5110 {
     struct nu_pin pin_dc;      /* data/command input */
 };
 #define _nu_erd_to_nokia5110(erdp) \
-    container_of((erdp), struct nokia5110, erd)
+    container_of((erdp), struct nu_nokia5110, erd)
 #define NU_NOKIA_ERD_INIT(min_priority, chn, cs_ltr, cs_num, reset_ltr, reset_num, dc_ltr, dc_num) \
     { \
     NU_ERD_INIT(min_priority, &nokia_erd_ops), \
@@ -82,13 +82,13 @@ ALIAS("nu_nokia_cmd_set_vop") void
 nu_nokia_cmd_set_contrast(const struct nu_nokia5110 *self, u8 vop);
 
 void
-nu_nokia_cmd_set_temp_coeff(const struct nu_nokia5110 *n, enum nu_nokia_temp_coeff coeff);
+nu_nokia_cmd_set_temp_coeff(const struct nu_nokia5110 *n, enum nu_nokia_cmd_func_set_options coeff);
 
 void
 nu_nokia_cmd_set_bias(const struct nu_nokia5110 *n, u8 bias);
 
 void
-nu_nokia_cmd_set_disp_mode(const struct nu_nokia5110 *n, enum nu_nokia_display_mode mode);
+nu_nokia_cmd_set_disp_mode(const struct nu_nokia5110 *n, enum nu_nokia_cmd_func_set_options mode);
 
 void
 nu_nokia_putc(const struct nu_nokia5110 *n, char c);
