@@ -4,7 +4,6 @@
 #include "nupp/param.hpp"
 #include <cstddef> // size_t
 
-#include <ostream>
 #include <nupp/buffer.hpp>
 #include "nupp/pinctl.hpp"
 #include <cstring> // strlen
@@ -14,7 +13,7 @@ namespace nu {
 	/**
 	 * Encapsulate SPI reading/writing.
 	 */
-	struct SPI: public std::ostream { // chip select pin
+	struct SPI: public OStream { // chip select pin
 		enum UNUSED options {
 			DEFAULT = 0,
 		};
@@ -30,11 +29,10 @@ namespace nu {
 		DigitalOut cs;
 		SpiChannel chn;
 		tx_options opt;
-		Buffer<SPI> _buffer;
 
 		ALWAYSINLINE SPI(Pin _cs, SpiChannel _chn, uint32_t bitrate, SpiOpenFlags oflags,
 						 tx_options _opt = (tx_options)(TX_WAIT_START|TX_WAIT_END)):
-			cs(_cs), chn(_chn), opt(_opt), _buffer(*this) {
+			OStream(), cs(_cs), chn(_chn), opt(_opt) {
 			cs.high();
 			SpiChnOpen(chn, oflags, (uint32_t) param::pbus_hz()/bitrate);
 		}

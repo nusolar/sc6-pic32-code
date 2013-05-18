@@ -3,9 +3,7 @@
 
 using namespace nu;
 
-#define NU32_MEMINIT(Type, name, ...) , name(__VA_ARGS__)
-Nu32::Nu32(versions _version, uint32_t _hz): version(_version) LIST_OF_PINS_V1(NU32_MEMINIT)
-{
+Nu32Init::Nu32Init(const uint32_t _hz) {
 	param::Hz() = _hz;
 
 	SYSTEMConfig(param::Hz(), SYS_CFG_ALL);

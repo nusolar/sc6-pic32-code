@@ -20,8 +20,8 @@ namespace nu {
 			set_digital_out();
 			off();
 		}
-		ALWAYSINLINE void off()		{set(); _led_status = false;}
-		ALWAYSINLINE void on()		{clear(); _led_status = true;}
+		ALWAYSINLINE void off()		{Pin::set(); _led_status = false;}
+		ALWAYSINLINE void on()		{Pin::clear(); _led_status = true;}
 		ALWAYSINLINE void toggle()	{Pin::toggle(); _led_status = !_led_status;}
 
 		/** Get whether LED is on or off. */

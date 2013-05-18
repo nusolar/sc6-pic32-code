@@ -70,21 +70,20 @@
         <makeCustomizationNormalizeHexFile>false</makeCustomizationNormalizeHexFile>
       </makeCustomizationType>
       <C32>
-        <property key="additional-warnings" value="true"/>
+        <property key="additional-warnings" value="false"/>
         <property key="enable-app-io" value="false"/>
         <property key="enable-omit-frame-pointer" value="false"/>
         <property key="enable-symbols" value="true"/>
         <property key="enable-unroll-loops" value="false"/>
         <property key="exclude-floating-point" value="false"/>
-        <property key="extra-include-directories"
-                  value="../../libs/include/;../../libs/include/platform/pic32mx/"/>
+        <property key="extra-include-directories" value=""/>
         <property key="generate-16-bit-code" value="false"/>
         <property key="isolate-each-function" value="false"/>
         <property key="make-warnings-into-errors" value="false"/>
         <property key="optimization-level" value=""/>
         <property key="place-data-into-section" value="false"/>
-        <property key="post-instruction-scheduling" value="no-schedule-insns2"/>
-        <property key="pre-instruction-scheduling" value="no-schedule-insns"/>
+        <property key="post-instruction-scheduling" value="default"/>
+        <property key="pre-instruction-scheduling" value="default"/>
         <property key="preprocessor-macros" value=""/>
         <property key="strict-ansi" value="false"/>
         <property key="support-ansi" value="false"/>
@@ -123,17 +122,17 @@
         <property key="map-file" value=""/>
         <property key="no-startup-files" value="false"/>
         <property key="oXC32ld-extra-opts" value=""/>
-        <property key="optimization-level" value=""/>
+        <property key="optimization-level" value="-O1"/>
         <property key="preprocessor-macros" value=""/>
         <property key="remove-unused-sections" value="false"/>
         <property key="report-memory-usage" value="false"/>
         <property key="stack-size" value=""/>
         <property key="symbol-stripping" value=""/>
         <property key="trace-symbols" value=""/>
-        <property key="warn-section-align" value="true"/>
+        <property key="warn-section-align" value="false"/>
       </C32-LD>
       <C32CPP>
-        <property key="additional-warnings" value="true"/>
+        <property key="additional-warnings" value="false"/>
         <property key="check-new" value="false"/>
         <property key="eh-specs" value="false"/>
         <property key="enable-app-io" value="false"/>
@@ -143,7 +142,7 @@
         <property key="exceptions" value="false"/>
         <property key="exclude-floating-point" value="false"/>
         <property key="extra-include-directories"
-                  value="../../libs/include/;../../libs/include/platform/pic32mx/"/>
+                  value="../../libs/include;../../libs/include/platform/pic32mx"/>
         <property key="generate-16-bit-code" value="false"/>
         <property key="isolate-each-function" value="false"/>
         <property key="make-warnings-into-errors" value="false"/>
@@ -156,10 +155,12 @@
         <property key="strict-ansi" value="false"/>
         <property key="use-cci" value="false"/>
         <property key="use-indirect-calls" value="false"/>
+        <appendMe value="-std=gnu++0x"/>
       </C32CPP>
       <C32Global>
         <property key="legacy-libc" value="false"/>
         <property key="save-temps" value="false"/>
+        <appendMe value="-Wno-unused-function"/>
       </C32Global>
       <PICkit3PlatformTool>
         <property key="ADC 1" value="true"/>
@@ -214,7 +215,7 @@
         <property key="memories.programmemory" value="true"/>
         <property key="memories.programmemory.end" value="0x1d07ffff"/>
         <property key="memories.programmemory.start" value="0x1d000000"/>
-        <property key="poweroptions.powerenable" value="false"/>
+        <property key="poweroptions.powerenable" value="true"/>
         <property key="programmertogo.imagename" value=""/>
         <property key="programoptions.eraseb4program" value="true"/>
         <property key="programoptions.pgmspeed" value="2"/>

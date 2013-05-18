@@ -19,9 +19,12 @@ extern "C" {
  * GCC so that everything still compiles.
  */
 
+typedef unsigned int reg_t;
+
 #define inline          __inline__
 #define likely(x)       __builtin_expect((x),1)
 #define unlikely(x)     __builtin_expect((x),0)
+#define typeof(x)		__typeof__(x)
 
 #define NOINLINE        __attribute__((noinline))
 #if !defined(__DEBUG) || defined(NDEBUG)

@@ -12,7 +12,7 @@ Serial::Serial(UART_MODULE _mod, uint32_t baud, nu::Serial::module_interrupt use
 			   INT_PRIORITY int_priority, UART_FIFO_MODE interrupt_modes,
 			   UART_LINE_CONTROL_MODE line_control_modes, UART_CONFIGURATION uart_config,
 			   UART_ENABLE_MODE enable_modes):
-	ostream(&_buffer), module(_mod), _buffer(*this)
+	OStream(), module(_mod)
 {
 	UARTConfigure(module, uart_config);
 	UARTSetFifoMode(module, interrupt_modes);

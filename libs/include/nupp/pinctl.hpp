@@ -26,7 +26,7 @@ namespace nu {
 		uint8_t bit;
 
 		IoPortId ltr() {return (IoPortId)(port);}; // PIC32 SPECIFIC
-		uint32_t num() {return (1 << bit);} // PIC32 SPECIFIC
+		reg_t num() {return (1 << bit);} // PIC32 SPECIFIC
 
 		/**
 		 * Construct with Pin's (letter, number) combination.
@@ -39,20 +39,20 @@ namespace nu {
 		/**
 		 * Call one of these four setters from your subclass constructor.
 		 */
-		void ALWAYSINLINE set_digital_out()	{PORTSetPinsDigitalOut(ltr(), num());}
-		void ALWAYSINLINE set_digital_in()	{PORTSetPinsDigitalIn(ltr(), num());}
-		void ALWAYSINLINE set_analog_out()	{PORTSetPinsAnalogOut(ltr(), num());}
-		void ALWAYSINLINE set_analog_in()	{PORTSetPinsAnalogIn(ltr(), num());}
+		ALWAYSINLINE void set_digital_out()	{PORTSetPinsDigitalOut(ltr(), num());}
+		ALWAYSINLINE void set_digital_in()	{PORTSetPinsDigitalIn(ltr(), num());}
+		ALWAYSINLINE void set_analog_out()	{PORTSetPinsAnalogOut(ltr(), num());}
+		ALWAYSINLINE void set_analog_in()	{PORTSetPinsAnalogIn(ltr(), num());}
 
-		virtual uint32_t ALWAYSINLINE read() {return PORTReadBits(ltr(), num());} // returns 0 or any non-0
-		virtual void ALWAYSINLINE set()		{PORTSetBits(ltr(), num());}
-		virtual void ALWAYSINLINE clear()	{PORTClearBits(ltr(), num());}
-		virtual void ALWAYSINLINE toggle()	{PORTToggleBits(ltr(), num());}
+		virtual INLINE reg_t read()		{return PORTReadBits(ltr(), num());} // returns 0 or any non-0
+		virtual INLINE void set()		{PORTSetBits(ltr(), num());}
+		virtual INLINE void clear()		{PORTClearBits(ltr(), num());}
+		virtual INLINE void toggle()	{PORTToggleBits(ltr(), num());}
 	};
 
 	struct DigitalIn: protected Pin {
 		ALWAYSINLINE DigitalIn(Pin p = Pin()): Pin(p) {set_digital_in();}
-		uint32_t ALWAYSINLINE read() {return Pin::read();} // returns 0 or any non-0
+		ALWAYSINLINE uint32_t read() {return Pin::read();} // returns 0 or any non-0
 	};
 
 	class DigitalOut: protected Pin {
@@ -106,9 +106,9 @@ namespace nu {
 			EnableADC10();
 		}
 
-		ALWAYSINLINE uint32_t read(){
+		ALWAYSINLINE reg_t read(){
 			while (!mAD1GetIntFlag()) Nop();
-			uint32_t val = ReadADC10(adc);
+			reg_t val = ReadADC10(adc);
 			mAD1ClearIntFlag();
 			return val;
 		}

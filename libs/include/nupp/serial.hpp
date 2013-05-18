@@ -3,7 +3,6 @@
 
 #include "nu/compiler.h"
 #include <cstdint>
-#include <ostream>
 
 #include "nupp/buffer.hpp"
 #include <cstring> // strlen
@@ -13,14 +12,13 @@ namespace nu {
 	/**
 	 * Encapsulate Serial/UART reading/writing.
 	 */
-	struct Serial: public std::ostream {
+	struct Serial: public OStream {
 		enum module_interrupt {
 			USE_UART_INTERRUPT,
 			NOT_USE_UART_INTERRUPT
 		};
 
 		UART_MODULE module;
-		Buffer<Serial> _buffer;
 
 		Serial(UART_MODULE _mod, uint32_t baud,
 				   module_interrupt use_interrupt = NOT_USE_UART_INTERRUPT,
