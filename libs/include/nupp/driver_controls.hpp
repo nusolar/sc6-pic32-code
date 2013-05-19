@@ -73,7 +73,6 @@ namespace nu {
 			common_can.out() = can::TxChannel(can::Channel(common_can, CAN_CHANNEL1), CAN_HIGH_MEDIUM_PRIORITY);
 			common_can.err() = can::TxChannel(can::Channel(common_can, CAN_CHANNEL2), CAN_LOWEST_PRIORITY); // err chn
 			ws_can.out() = can::TxChannel(can::Channel(ws_can, CAN_CHANNEL1), CAN_HIGH_MEDIUM_PRIORITY);
-			// TODO: configure ADC10
 		}
 
 
@@ -185,7 +184,7 @@ namespace nu {
 
 			lcd.lcd_clear();
 			lcd.goto_xy(0, 0);
-			lcd << 25.0 << std::flush;
+			lcd << 25.0 << end;
 		}
 
 

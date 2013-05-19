@@ -23,7 +23,7 @@ namespace nu {
 
 		template <class V>
 		ALWAYSINLINE void write_key_val(const char *key, V &value) {
-			OStream::operator<< (record) << (key) <<  (unit) << (value) << (record) << (std::flush);
+			OStream::operator<< (record) << (key) <<  (unit) << (value) << (record) << (end);
 		}
 
 	public:

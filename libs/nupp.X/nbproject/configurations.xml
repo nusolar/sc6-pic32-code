@@ -17,7 +17,6 @@
         <itemPath>../include/nupp/bms.hpp</itemPath>
         <itemPath>../include/nupp/buffer.hpp</itemPath>
         <itemPath>../include/nupp/button.hpp</itemPath>
-        <itemPath>../include/nupp/can.def.hpp</itemPath>
         <itemPath>../include/nupp/can.hpp</itemPath>
         <itemPath>../include/nupp/driver_controls.hpp</itemPath>
         <itemPath>../include/nupp/enum.hpp</itemPath>
@@ -35,6 +34,7 @@
         <itemPath>../include/nupp/ulcd28pt.hpp</itemPath>
         <itemPath>../include/nupp/wdt.hpp</itemPath>
         <itemPath>../include/nupp/bitset.hpp</itemPath>
+        <itemPath>../include/nupp/can_def.hpp</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
@@ -74,6 +74,7 @@
     <Elem>../include/nu</Elem>
     <Elem>../nu</Elem>
     <Elem>../nupp</Elem>
+    <Elem>../include/nupp</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>

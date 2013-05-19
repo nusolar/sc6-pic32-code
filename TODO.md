@@ -1,17 +1,22 @@
 TODO
 ====
 
-NUSolar API (highest priority first)
+NU++ API
 ----
-* param
-* error_reporting
-* serial (get in semi-stable state for use in nu32)
-* led
+BMS and BMS error reporting are unimplemented. I leave that to C for now.
+
+Steering Wheel:
+* Draw highest Battery temp, Cruise Control velocity, and percent charge remaining to LCD
+
+Driver Controls:
+* Cruise control
+* Apply Exponential Smoothing to Acceleration Pedal, and sent Motor Current
+* Scale Motor Current with BMS maximum-current packets, to prevent tripping when driver floors pedal and when batteries are almost empty.
+
+NU API (highest priority first)
+----
 * pinctl (done?)
-* nu32
 * timer
-* spi
-* nokia5110
 * w1
 * ds18x20
 * ad7685
@@ -24,44 +29,15 @@ NUSolar API (highest priority first)
 * mppt
 * async_io
 
-Projects (highest priority first)
-----
-* BMS
-* driver controls
-* steering wheel
-
-steering wheel
-----
-
-* add all button PINs
-* btn_update call frequency may need tweeking
-
-Algorithm sketch:
-* check if btn_pressed
-* determine all Pressed Buttons
-* send CAN packet each cycle, of pressed buttons
-* Implement LEDs
-* Draw speed on LCD
-
-driver controls
-----
-* read pins
-* send CAN status updates
-* send CAN motor controller commands
-* Draw LCD
-* listen for commands, implement
-
-ws20
-----
+#### ws20
 * remove old struct/op notation.
 * ERD vtbl is never declared.
 * both old and new CAN address names are used.
 * enum PhaseSeg2TimeSelect and SampleTimes don't exist.
 * nu_ws20_setup and nu_ws20_new_easy aren't implemented. nu_ws20_init() is used instead.
-* can_all.h doesn't compile
 
-CAN
----
+#### CAN
+* can_all.h doesn't compile
 * many pedantic "ignoring result of" errors.
 * the longstanding `container_of` error
 * the ERD pointer type error.
@@ -69,11 +45,31 @@ CAN
 * why is `CAN_BIT_CONFIG *default_cfg` commented out?
 * `nu_can_new_easy()` isn't implemented
 
-
-Error reporting
-----
+#### Error reporting
 * fix error report definition inconsistency
 
-SPI Hardware
-----
-* fix nokia5110.h enum errors
+#### SPI Hardware
+* fix errors in ltc6803/ad7685/everything
+
+### Projects (highest priority first)
+* BMS
+* driver controls
+* steering wheel
+
+#### steering wheel
+* add all button PINs
+* btn_update call frequency may need tweeking
+
+Algorithm sketch:
+* check if btn_pressed
+* determine all Pressed Buttons
+* send CAN packet of pressed buttons each cycle
+* Implement LEDs
+* Draw speed on LCD (LCD UNIMPLEMENTED)
+
+#### driver controls
+* read pins
+* send CAN status updates
+* send CAN motor controller commands
+* Draw LCD
+* listen for commands, implement

@@ -58,8 +58,10 @@ namespace nu {
 			can::frame::sw::rx::lights lights; // requested LED state
 			can::frame::ws20::tx::motor_velocity velo;
 			can::frame::ws20::tx::current_vector curr;
-
-			ALWAYSINLINE state(): btns(0), leds(0), lights(), velo(), curr() {}
+			bool cc_en_on;
+			bool cc_en_toggling;
+			ALWAYSINLINE state(): btns(0), leds(0), lights(), velo(), curr(), 
+				cc_en_on(0), cc_en_toggling(0) {}
 		} state;
 
 		/**
@@ -104,6 +106,14 @@ namespace nu {
 				state.btns[i] = (bool)buttons[i];
 			for (unsigned i = 0; i < leds.size(); i++)
 				state.leds[i] = (bool)leds[i];
+
+			if (state.btns[cruise_en_k] != state.cc_en_toggling) {
+				state.cc_en_toggling = state.btns[cruise_en_k];
+				if (state.cc_en_toggling == false) {
+					state.cc_en_on = !state.cc_en_on; // Toggle value on button release
+					state.btns[cruise_en_k] = state.cc_en_on; // Set cc_en
+				}
+			}
 		}
 
 		/**

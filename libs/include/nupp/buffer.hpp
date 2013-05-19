@@ -11,15 +11,14 @@
 #include <cstdlib>
 #include <sstream>
 #include "nupp/allocator.hpp"
-
+using namespace std;
 namespace nu {
 	typedef std::basic_ostringstream <char, std::char_traits<char>, Allocator<char>> oss;
-//	typedef std::stringbuf stackbuf;
 
 	/**
 	 * USES HEAP.
 	 * @todo write & instantiate std::allocator that uses Stack
-	 
+	typedef std::stringbuf stackbuf;
 	template <class _Parent>
 	class Buffer: public stackbuf {
 		_Parent * parent;
@@ -40,7 +39,7 @@ namespace nu {
 		}
 	};*/
 
-	struct OStream;
+	/*struct OStream;
 
 	class StringStream: public std::ostringstream {
 		OStream *parent;
@@ -55,12 +54,12 @@ namespace nu {
 				memcpy(this, &rval, sizeof(*this));
 			} return *this;
 		}
-	};
+	};*/
 
 	class OStream {
-		StringStream out;
+		std::ostringstream out;
 	public:
-		ALWAYSINLINE OStream(): out(this) {}
+		ALWAYSINLINE OStream(): out() {}
 		virtual ~OStream() {}
 		virtual void puts(const char *){}
 
@@ -68,12 +67,21 @@ namespace nu {
 		ALWAYSINLINE OStream& operator<< (const T &val) {out << val; return *this;}
 
 		/**
-		 * Handle stream manipulators.
+		 * Forward all std stream manipulators.
 		 * @warning Inlining breaks MPLAB symbol loading.
          */
-		NOINLINE OStream& operator<< (std::ostream&(*m)(std::ostream&)) {
-			out << m; return *this;
+		/*NOINLINE OStream& operator<< (std::ostream&(*m)(std::ostream&)) {
+			out << m;
+			return *this;
+		}*/
+
+		friend OStream& end(OStream& os);
+		ALWAYSINLINE OStream& operator<< (OStream&(*m)(OStream&)) {
+			m(*this);
+			return *this;
 		}
 	};
+
+	OStream& end(OStream& os);
 }
 #endif	/* NU_BUFFER_HPP */

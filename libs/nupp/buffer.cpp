@@ -1,9 +1,7 @@
 #include "nupp/buffer.hpp"
 
-using namespace nu;
-
-int StringStream::sync() {
-	parent->puts(str().c_str()); // WARNING: Deep copy str
-	this->str("");
-	return 0;
+nu::OStream& nu::end(nu::OStream& os) {
+	os.puts(os.out.str().c_str()); // WARNING: Deep copy str
+	os.out.str("");
+	return os;
 }

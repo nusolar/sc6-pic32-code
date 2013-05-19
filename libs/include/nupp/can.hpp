@@ -14,7 +14,7 @@ namespace nu {
 
 		/**
 		 * Base type of RxChannel and TxChannel. Declared before Module so that
-		 * a Module can have a Channel[32], but RxChannel and TxChannel
+		 * a Module can contain Channels, but RxChannel and TxChannel
 		 * can have a &reference to their Module.
 		 */
 		struct Channel {
@@ -61,8 +61,8 @@ namespace nu {
 
 
 		/**
-		 * CAN Module. Has a default CAN Channel.
-		 * TODO: Implement multiple CAN channels.
+		 * CAN Module. Has can::Channel fields.
+		 * @todo: Allow all 32 CAN channels, setup Channels.
 		 */
 		struct Module {
 			enum phase_seg2_time_select {
@@ -91,7 +91,7 @@ namespace nu {
 			TxChannel &out() {return tx;}
 			TxChannel &err() {return ex;}
 
-			/** INTRA-NAMESPACE USE ONLY, BUT CAN'T BE PRIVATE */
+			/** FOR USE BY RxChannel & TxChannel ONLY */
 			int32_t ALWAYSINLINE normal_mode() {return switch_mode(CAN_NORMAL_OPERATION, 1);}
 			int32_t ALWAYSINLINE config_mode() {return switch_mode(CAN_CONFIGURATION, 1);}
 		private:
