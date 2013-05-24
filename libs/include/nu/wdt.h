@@ -1,9 +1,6 @@
 #ifndef NU_WDT_H
 #define NU_WDT_H 1
 
-#include <xc.h>
-#include <peripheral/wdt.h>
-
 /**
  * Clear WatchDogTimer
  */

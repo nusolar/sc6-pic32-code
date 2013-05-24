@@ -106,47 +106,45 @@ static const uint8_t ASCII[96][5] = {
 	,{0x00, 0x06, 0x09, 0x09, 0x06} /* 7f ? */
 }; /* end char ASCII[96][5] */
 
-union instructions {
-    union {
-        PACKED struct {
-            unsigned    use_extended    :1;
-            unsigned    addr_mode       :1;
-            unsigned    chip_active     :1;
-            unsigned    reserved        :2;
-            unsigned    fixed           :1;  /* should be 1 */
-            unsigned    reserved2       :2;
-        } func_set;
-    };
-    union { /* (useExtended = 0) */
-        PACKED struct {
+union PACKED ALIGNED(1) instructions {
+	struct PACKED ALIGNED(1) func_set {
+		unsigned    use_extended    :1;
+		unsigned    addr_mode       :1;
+		unsigned    chip_active     :1;
+		unsigned    reserved        :2;
+		unsigned    fixed           :1;  /* should be 1 */
+		unsigned    reserved2       :2;
+    } func_set;
+    union PACKED ALIGNED(1) basic { /* (useExtended = 0) */
+        struct PACKED ALIGNED(1) disp_control {
             unsigned    disp_mode       :3;
             unsigned    fixed           :1; /* should be 1 */
             unsigned    reserved        :4;
         } disp_control;
-        PACKED struct {
+        struct PACKED ALIGNED(1) set_ram_y_addr {
             unsigned    addr            :3;
             unsigned    reserved        :3;
             unsigned    fixed           :1; /* should be 1 */
             unsigned    reserved2       :1;
         } set_ram_y_addr;
-        PACKED struct {
+        struct PACKED ALIGNED(1) set_ram_x_addr {
             unsigned    addr            :7;
             unsigned    fixed           :1; /* should be 1*/
         } set_ram_x_addr;
     } basic;
-    union { /* (useExtended = 1 ) */
-        PACKED struct {
+    union PACKED ALIGNED(1) extended { /* (useExtended = 1 ) */
+        struct PACKED ALIGNED(1) temp_control {
             unsigned    temp_coeff      :2;
             unsigned    fixed           :1; /* should be 1 */
             unsigned    reserved        :5;
         } temp_control;
-        PACKED struct {
+        struct PACKED ALIGNED(1) bias {
             unsigned    bias            :3;
             unsigned    reserved        :1;
             unsigned    fixed           :1; /* 1 */
             unsigned    reserved2       :3;
         } bias;
-        PACKED struct {
+        struct PACKED ALIGNED(1) set_vop {
             unsigned    vop             :7;
             unsigned    fixed           :1; /* 1 */
         } set_vop;
@@ -154,7 +152,7 @@ union instructions {
     uint8_t cmd_byte;
 };
 #define PREPARE_CMD(a)\
-	do {memset(&a, 0, sizeof(a)); a.fixed = 1;} while(0)
+	do {memset(&a, 0, 1); a.fixed = 1;} while(0)
 
 
 Nokia5110::Nokia5110(Pin _cs, SpiChannel _chn, Pin _reset, Pin _dc):
@@ -164,12 +162,18 @@ Nokia5110::Nokia5110(Pin _cs, SpiChannel _chn, Pin _reset, Pin _dc):
 	reset.low();
 	reset.high();
 
-	cmd_func_set((cmd_func_set_options)(ADDRESSING_HORIZONTAL|ACTIVE|INSTRUCTIONS_EXTENDED));
+	/*cmd_func_set((cmd_func_set_options)(ADDRESSING_HORIZONTAL|ACTIVE|INSTRUCTIONS_EXTENDED));
 	cmd_set_contrast(57);
 	cmd_set_temp_coeff(TEMP_COEFF_0);
 	cmd_set_bias(4);
 	cmd_func_set((cmd_func_set_options)(ADDRESSING_HORIZONTAL|ACTIVE|INSTRUCTIONS_BASIC));
-	cmd_set_disp_mode(DISP_MODE_NORMAL);
+	cmd_set_disp_mode(DISP_MODE_NORMAL);*/
+	write_cmd(0x21); // THIS IS WHAT HAPPENS WHEN YOU DONT COME TO MECHATRONICS WITH ME
+	write_cmd(0xB0);
+	write_cmd(0x04);
+	write_cmd(0x14);
+	write_cmd(0x20);
+	write_cmd(0x0C);
 
 	lcd_clear();
 }
@@ -219,15 +223,15 @@ void Nokia5110::cmd_set_disp_mode(const cmd_func_set_options mode) {
 void Nokia5110::put_c(const uint8_t c) {
 	write_data(0x00);
 	for (uint32_t ui = 0; ui < 5; ui++) {
-		write_data(ASCII[c - 0x20][ui]); // WARNING: ensure unsigned char
+		write_data(ASCII[c - 0x20][ui]); // ASSERT(c >= 0x20)
 	}
 	write_data(0x00);
 }
 
-void Nokia5110::puts(const uint8_t *str) {
+void Nokia5110::puts(const char *str) {
 	while (*str) {
 		WDT::clear();
-		put_c(*str++);
+		put_c((uint8_t)*str++); // cast prevents negative ASCII[][] indexing
 	}
 }
 
