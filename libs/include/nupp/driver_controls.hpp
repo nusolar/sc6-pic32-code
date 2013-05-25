@@ -192,9 +192,7 @@ namespace nu {
 		void ALWAYSINLINE demo() {
 			WDT::clear();
 			lcd.lcd_clear();
-			lcd.goto_xy(0, 0);
-			lcd << 69.0 << end;
-			lcd << "C++WINS" << end;
+			lcd << 69.0 << "C++WINS" << end;
 			led1.toggle();
 			timer::delay_s<1>();
 		}

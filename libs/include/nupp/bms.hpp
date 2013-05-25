@@ -100,6 +100,14 @@ namespace nu {
 			led1.toggle();
 			timer::delay_s<1>();
 		}
+
+		ALWAYSINLINE void demo() {
+			WDT::clear();
+			lcd2.lcd_clear();
+			lcd2 << "C++WINS" << end;
+			led1.toggle();
+			timer::delay_s<1>();
+		}
 		
 		static NORETURN void main();
 	};

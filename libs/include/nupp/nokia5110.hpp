@@ -80,6 +80,7 @@ namespace nu {
 			goto_xy(0, 0);
 			for (uint32_t ui = 0; ui < (lcd_x * 6); ui++) // WARNING
 				write_data(0x88); // Clear with 2 dots to prevent fading
+			goto_xy(0, 0);
 		}
 
 	private:

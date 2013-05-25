@@ -219,6 +219,22 @@ void Nokia5110::cmd_set_disp_mode(const cmd_func_set_options mode) {
     write_cmd(inst.cmd_byte);
 }
 
+/** @param x should be in the range 0-83 */
+void Nokia5110::cmd_set_ram_x_addr(const uint8_t x) {
+	instructions inst;
+	PREPARE_CMD(inst.basic.set_ram_x_addr);
+	inst.basic.set_ram_x_addr.addr = BITFIELD_CAST(x, 7); // 7 bits
+	write_cmd(inst.cmd_byte);
+}
+
+/** @param y should be in the range 0-5 */
+void Nokia5110::cmd_set_ram_y_addr(const uint8_t y) {
+	instructions inst;
+	PREPARE_CMD(inst.basic.set_ram_y_addr);
+	inst.basic.set_ram_y_addr.addr = BITFIELD_CAST(y, 3); // 3 bits
+	write_cmd(inst.cmd_byte);
+}
+
 
 void Nokia5110::put_c(const uint8_t c) {
 	write_data(0x00);
@@ -245,21 +261,5 @@ void Nokia5110::puts(const char *str) {
 	}
 	va_end(fmtargs);
 }*/
-
-/** @param x should be in the range 0-83 */
-void Nokia5110::cmd_set_ram_x_addr(const uint8_t x) {
-	instructions inst;
-	PREPARE_CMD(inst.basic.set_ram_x_addr);
-	inst.basic.set_ram_x_addr.addr = BITFIELD_CAST(x, 7); // 7 bits
-	write_cmd(inst.cmd_byte);
-}
-
-/** @param y should be in the range 0-5 */
-void Nokia5110::cmd_set_ram_y_addr(const uint8_t y) {
-	instructions inst;
-	PREPARE_CMD(inst.basic.set_ram_y_addr);
-	inst.basic.set_ram_y_addr.addr = BITFIELD_CAST(y, 3); // 3 bits
-	write_cmd(inst.cmd_byte);
-}
 
 
