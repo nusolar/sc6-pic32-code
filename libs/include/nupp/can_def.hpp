@@ -210,6 +210,492 @@
  namespace tx {
 }
 }
+ namespace bms {
+ namespace rx {
+
+		struct trip: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED members_t {
+					int32_t trip_code; uint32_t module;
+				} s;
+			} frame;
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			trip(): frame{0} {}
+			trip(uint64_t &_i): frame{_i} {}
+			trip(Packet& p): frame{p.data()} {}
+		};
+
+		struct reset_cc_batt: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED members_t {
+					
+				} s;
+			} frame;
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			reset_cc_batt(): frame{0} {}
+			reset_cc_batt(uint64_t &_i): frame{_i} {}
+			reset_cc_batt(Packet& p): frame{p.data()} {}
+		};
+
+		struct reset_cc_array: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED members_t {
+					
+				} s;
+			} frame;
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			reset_cc_array(): frame{0} {}
+			reset_cc_array(uint64_t &_i): frame{_i} {}
+			reset_cc_array(Packet& p): frame{p.data()} {}
+		};
+
+		struct reset_cc_mppt1: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED members_t {
+					
+				} s;
+			} frame;
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			reset_cc_mppt1(): frame{0} {}
+			reset_cc_mppt1(uint64_t &_i): frame{_i} {}
+			reset_cc_mppt1(Packet& p): frame{p.data()} {}
+		};
+
+		struct reset_cc_mppt2: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED members_t {
+					
+				} s;
+			} frame;
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			reset_cc_mppt2(): frame{0} {}
+			reset_cc_mppt2(uint64_t &_i): frame{_i} {}
+			reset_cc_mppt2(Packet& p): frame{p.data()} {}
+		};
+
+		struct reset_cc_mppt3: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED members_t {
+					
+				} s;
+			} frame;
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			reset_cc_mppt3(): frame{0} {}
+			reset_cc_mppt3(uint64_t &_i): frame{_i} {}
+			reset_cc_mppt3(Packet& p): frame{p.data()} {}
+		};
+
+		struct reset_cc_Wh: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED members_t {
+					
+				} s;
+			} frame;
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			reset_cc_Wh(): frame{0} {}
+			reset_cc_Wh(uint64_t &_i): frame{_i} {}
+			reset_cc_Wh(Packet& p): frame{p.data()} {}
+		};
+
+		struct reset_cc_all: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED members_t {
+					
+				} s;
+			} frame;
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			reset_cc_all(): frame{0} {}
+			reset_cc_all(uint64_t &_i): frame{_i} {}
+			reset_cc_all(Packet& p): frame{p.data()} {}
+		};
+
+		struct max: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED members_t {
+					
+				} s;
+			} frame;
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			max(): frame{0} {}
+			max(uint64_t &_i): frame{_i} {}
+			max(Packet& p): frame{p.data()} {}
+		};
+}
+ namespace tx {
+
+		struct heartbeat: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED members_t {
+					char bms_str[4]; uint32_t reserved;
+				} s;
+			} frame;
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			heartbeat(): frame{0} {}
+			heartbeat(uint64_t &_i): frame{_i} {}
+			heartbeat(Packet& p): frame{p.data()} {}
+		};
+
+		struct error: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED members_t {
+					char msg[8];
+				} s;
+			} frame;
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			error(): frame{0} {}
+			error(uint64_t &_i): frame{_i} {}
+			error(Packet& p): frame{p.data()} {}
+		};
+
+		struct uptime: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED members_t {
+					double seconds;
+				} s;
+			} frame;
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			uptime(): frame{0} {}
+			uptime(uint64_t &_i): frame{_i} {}
+			uptime(Packet& p): frame{p.data()} {}
+		};
+
+		struct last_reset: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED members_t {
+					int32_t last_reset_code; uint32_t reserved;
+				} s;
+			} frame;
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			last_reset(): frame{0} {}
+			last_reset(uint64_t &_i): frame{_i} {}
+			last_reset(Packet& p): frame{p.data()} {}
+		};
+
+		struct batt_bypass: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED members_t {
+					uint32_t module; float reserved;
+				} s;
+			} frame;
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			batt_bypass(): frame{0} {}
+			batt_bypass(uint64_t &_i): frame{_i} {}
+			batt_bypass(Packet& p): frame{p.data()} {}
+		};
+
+		struct current: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED members_t {
+					float array, battery;
+				} s;
+			} frame;
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			current(): frame{0} {}
+			current(uint64_t &_i): frame{_i} {}
+			current(Packet& p): frame{p.data()} {}
+		};
+
+		struct cc_array: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED members_t {
+					double count;
+				} s;
+			} frame;
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			cc_array(): frame{0} {}
+			cc_array(uint64_t &_i): frame{_i} {}
+			cc_array(Packet& p): frame{p.data()} {}
+		};
+
+		struct cc_batt: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED members_t {
+					double count;
+				} s;
+			} frame;
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			cc_batt(): frame{0} {}
+			cc_batt(uint64_t &_i): frame{_i} {}
+			cc_batt(Packet& p): frame{p.data()} {}
+		};
+
+		struct cc_mppt1: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED members_t {
+					double count;
+				} s;
+			} frame;
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			cc_mppt1(): frame{0} {}
+			cc_mppt1(uint64_t &_i): frame{_i} {}
+			cc_mppt1(Packet& p): frame{p.data()} {}
+		};
+
+		struct cc_mppt2: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED members_t {
+					double count;
+				} s;
+			} frame;
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			cc_mppt2(): frame{0} {}
+			cc_mppt2(uint64_t &_i): frame{_i} {}
+			cc_mppt2(Packet& p): frame{p.data()} {}
+		};
+
+		struct cc_mppt3: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED members_t {
+					double count;
+				} s;
+			} frame;
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			cc_mppt3(): frame{0} {}
+			cc_mppt3(uint64_t &_i): frame{_i} {}
+			cc_mppt3(Packet& p): frame{p.data()} {}
+		};
+
+		struct Wh_batt: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED members_t {
+					double count;
+				} s;
+			} frame;
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			Wh_batt(): frame{0} {}
+			Wh_batt(uint64_t &_i): frame{_i} {}
+			Wh_batt(Packet& p): frame{p.data()} {}
+		};
+
+		struct Wh_mppt1: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED members_t {
+					double count;
+				} s;
+			} frame;
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			Wh_mppt1(): frame{0} {}
+			Wh_mppt1(uint64_t &_i): frame{_i} {}
+			Wh_mppt1(Packet& p): frame{p.data()} {}
+		};
+
+		struct Wh_mppt2: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED members_t {
+					double count;
+				} s;
+			} frame;
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			Wh_mppt2(): frame{0} {}
+			Wh_mppt2(uint64_t &_i): frame{_i} {}
+			Wh_mppt2(Packet& p): frame{p.data()} {}
+		};
+
+		struct Wh_mppt3: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED members_t {
+					double count;
+				} s;
+			} frame;
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			Wh_mppt3(): frame{0} {}
+			Wh_mppt3(uint64_t &_i): frame{_i} {}
+			Wh_mppt3(Packet& p): frame{p.data()} {}
+		};
+
+		struct voltage: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED members_t {
+					uint32_t module; float voltage;
+				} s;
+			} frame;
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			voltage(): frame{0} {}
+			voltage(uint64_t &_i): frame{_i} {}
+			voltage(Packet& p): frame{p.data()} {}
+		};
+
+		struct owVoltage: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED members_t {
+					uint32_t module; float ow_voltage;
+				} s;
+			} frame;
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			owVoltage(): frame{0} {}
+			owVoltage(uint64_t &_i): frame{_i} {}
+			owVoltage(Packet& p): frame{p.data()} {}
+		};
+
+		struct temp: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED members_t {
+					uint32_t sensor; float temp;
+				} s;
+			} frame;
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			temp(): frame{0} {}
+			temp(uint64_t &_i): frame{_i} {}
+			temp(Packet& p): frame{p.data()} {}
+		};
+
+		struct trip: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED members_t {
+					int32_t trip_code; uint32_t module;
+				} s;
+			} frame;
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			trip(): frame{0} {}
+			trip(uint64_t &_i): frame{_i} {}
+			trip(Packet& p): frame{p.data()} {}
+		};
+
+		struct last_trip: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED members_t {
+					int32_t trip_code; uint32_t module;
+				} s;
+			} frame;
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			last_trip(): frame{0} {}
+			last_trip(uint64_t &_i): frame{_i} {}
+			last_trip(Packet& p): frame{p.data()} {}
+		};
+
+		struct trip_pt_current: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED members_t {
+					float low, high;
+				} s;
+			} frame;
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			trip_pt_current(): frame{0} {}
+			trip_pt_current(uint64_t &_i): frame{_i} {}
+			trip_pt_current(Packet& p): frame{p.data()} {}
+		};
+
+		struct trip_pt_voltage: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED members_t {
+					float low, high;
+				} s;
+			} frame;
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			trip_pt_voltage(): frame{0} {}
+			trip_pt_voltage(uint64_t &_i): frame{_i} {}
+			trip_pt_voltage(Packet& p): frame{p.data()} {}
+		};
+
+		struct trip_pt_temp: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED members_t {
+					float low, high;
+				} s;
+			} frame;
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			trip_pt_temp(): frame{0} {}
+			trip_pt_temp(uint64_t &_i): frame{_i} {}
+			trip_pt_temp(Packet& p): frame{p.data()} {}
+		};
+}
+}
  namespace ws20 {
  namespace rx {
 
@@ -505,492 +991,6 @@
 		};
 }
 }
- namespace bms {
- namespace rx {
-
-		struct trip: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					float trip_code, module;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			trip(): frame{0} {}
-			trip(uint64_t &_i): frame{_i} {}
-			trip(Packet& p): frame{p.data()} {}
-		};
-
-		struct reset_cc_batt: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			reset_cc_batt(): frame{0} {}
-			reset_cc_batt(uint64_t &_i): frame{_i} {}
-			reset_cc_batt(Packet& p): frame{p.data()} {}
-		};
-
-		struct reset_cc_array: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			reset_cc_array(): frame{0} {}
-			reset_cc_array(uint64_t &_i): frame{_i} {}
-			reset_cc_array(Packet& p): frame{p.data()} {}
-		};
-
-		struct reset_cc_mppt1: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			reset_cc_mppt1(): frame{0} {}
-			reset_cc_mppt1(uint64_t &_i): frame{_i} {}
-			reset_cc_mppt1(Packet& p): frame{p.data()} {}
-		};
-
-		struct reset_cc_mppt2: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			reset_cc_mppt2(): frame{0} {}
-			reset_cc_mppt2(uint64_t &_i): frame{_i} {}
-			reset_cc_mppt2(Packet& p): frame{p.data()} {}
-		};
-
-		struct reset_cc_mppt3: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			reset_cc_mppt3(): frame{0} {}
-			reset_cc_mppt3(uint64_t &_i): frame{_i} {}
-			reset_cc_mppt3(Packet& p): frame{p.data()} {}
-		};
-
-		struct reset_cc_Wh: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			reset_cc_Wh(): frame{0} {}
-			reset_cc_Wh(uint64_t &_i): frame{_i} {}
-			reset_cc_Wh(Packet& p): frame{p.data()} {}
-		};
-
-		struct reset_cc_all: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			reset_cc_all(): frame{0} {}
-			reset_cc_all(uint64_t &_i): frame{_i} {}
-			reset_cc_all(Packet& p): frame{p.data()} {}
-		};
-
-		struct max: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			max(): frame{0} {}
-			max(uint64_t &_i): frame{_i} {}
-			max(Packet& p): frame{p.data()} {}
-		};
-}
- namespace tx {
-
-		struct heartbeat: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					char bmsStr[4]; uint32_t reserved;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			heartbeat(): frame{0} {}
-			heartbeat(uint64_t &_i): frame{_i} {}
-			heartbeat(Packet& p): frame{p.data()} {}
-		};
-
-		struct error: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					char msg[8];
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			error(): frame{0} {}
-			error(uint64_t &_i): frame{_i} {}
-			error(Packet& p): frame{p.data()} {}
-		};
-
-		struct uptime: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					double seconds;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			uptime(): frame{0} {}
-			uptime(uint64_t &_i): frame{_i} {}
-			uptime(Packet& p): frame{p.data()} {}
-		};
-
-		struct last_reset: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					int32_t lastResetCode; uint32_t reserved;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			last_reset(): frame{0} {}
-			last_reset(uint64_t &_i): frame{_i} {}
-			last_reset(Packet& p): frame{p.data()} {}
-		};
-
-		struct batt_bypass: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					uint32_t module; float reserved;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			batt_bypass(): frame{0} {}
-			batt_bypass(uint64_t &_i): frame{_i} {}
-			batt_bypass(Packet& p): frame{p.data()} {}
-		};
-
-		struct current: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					float array, battery;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			current(): frame{0} {}
-			current(uint64_t &_i): frame{_i} {}
-			current(Packet& p): frame{p.data()} {}
-		};
-
-		struct cc_array: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					double count;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			cc_array(): frame{0} {}
-			cc_array(uint64_t &_i): frame{_i} {}
-			cc_array(Packet& p): frame{p.data()} {}
-		};
-
-		struct cc_batt: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					double count;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			cc_batt(): frame{0} {}
-			cc_batt(uint64_t &_i): frame{_i} {}
-			cc_batt(Packet& p): frame{p.data()} {}
-		};
-
-		struct cc_mppt1: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					double count;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			cc_mppt1(): frame{0} {}
-			cc_mppt1(uint64_t &_i): frame{_i} {}
-			cc_mppt1(Packet& p): frame{p.data()} {}
-		};
-
-		struct cc_mppt2: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					double count;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			cc_mppt2(): frame{0} {}
-			cc_mppt2(uint64_t &_i): frame{_i} {}
-			cc_mppt2(Packet& p): frame{p.data()} {}
-		};
-
-		struct cc_mppt3: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					double count;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			cc_mppt3(): frame{0} {}
-			cc_mppt3(uint64_t &_i): frame{_i} {}
-			cc_mppt3(Packet& p): frame{p.data()} {}
-		};
-
-		struct Wh_batt: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					double count;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			Wh_batt(): frame{0} {}
-			Wh_batt(uint64_t &_i): frame{_i} {}
-			Wh_batt(Packet& p): frame{p.data()} {}
-		};
-
-		struct Wh_mppt1: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					double count;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			Wh_mppt1(): frame{0} {}
-			Wh_mppt1(uint64_t &_i): frame{_i} {}
-			Wh_mppt1(Packet& p): frame{p.data()} {}
-		};
-
-		struct Wh_mppt2: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					double count;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			Wh_mppt2(): frame{0} {}
-			Wh_mppt2(uint64_t &_i): frame{_i} {}
-			Wh_mppt2(Packet& p): frame{p.data()} {}
-		};
-
-		struct Wh_mppt3: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					double count;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			Wh_mppt3(): frame{0} {}
-			Wh_mppt3(uint64_t &_i): frame{_i} {}
-			Wh_mppt3(Packet& p): frame{p.data()} {}
-		};
-
-		struct voltage: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					uint32_t module; float voltage;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			voltage(): frame{0} {}
-			voltage(uint64_t &_i): frame{_i} {}
-			voltage(Packet& p): frame{p.data()} {}
-		};
-
-		struct owVoltage: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					uint32_t module; float owVoltage;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			owVoltage(): frame{0} {}
-			owVoltage(uint64_t &_i): frame{_i} {}
-			owVoltage(Packet& p): frame{p.data()} {}
-		};
-
-		struct temp: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					uint32_t sensor; float temp;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			temp(): frame{0} {}
-			temp(uint64_t &_i): frame{_i} {}
-			temp(Packet& p): frame{p.data()} {}
-		};
-
-		struct trip: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					int32_t tripCode; uint32_t module;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			trip(): frame{0} {}
-			trip(uint64_t &_i): frame{_i} {}
-			trip(Packet& p): frame{p.data()} {}
-		};
-
-		struct last_trip: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					int32_t tripCode; uint32_t module;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			last_trip(): frame{0} {}
-			last_trip(uint64_t &_i): frame{_i} {}
-			last_trip(Packet& p): frame{p.data()} {}
-		};
-
-		struct trip_pt_current: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					float low, high;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			trip_pt_current(): frame{0} {}
-			trip_pt_current(uint64_t &_i): frame{_i} {}
-			trip_pt_current(Packet& p): frame{p.data()} {}
-		};
-
-		struct trip_pt_voltage: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					float low, high;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			trip_pt_voltage(): frame{0} {}
-			trip_pt_voltage(uint64_t &_i): frame{_i} {}
-			trip_pt_voltage(Packet& p): frame{p.data()} {}
-		};
-
-		struct trip_pt_temp: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					float low, high;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			trip_pt_temp(): frame{0} {}
-			trip_pt_temp(uint64_t &_i): frame{_i} {}
-			trip_pt_temp(Packet& p): frame{p.data()} {}
-		};
-}
-}
  namespace mppt {
  namespace rx {
 
@@ -999,7 +999,7 @@
 				uint64_t data;
 				uint8_t bytes[8];
 				struct PACKED members_t {
-					;
+					
 				} s;
 			} frame;
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
@@ -1014,7 +1014,7 @@
 				uint64_t data;
 				uint8_t bytes[8];
 				struct PACKED members_t {
-					;
+					
 				} s;
 			} frame;
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
@@ -1029,7 +1029,7 @@
 				uint64_t data;
 				uint8_t bytes[8];
 				struct PACKED members_t {
-					;
+					
 				} s;
 			} frame;
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
@@ -1046,7 +1046,7 @@
 				uint64_t data;
 				uint8_t bytes[8];
 				struct PACKED members_t {
-					;
+					
 				} s;
 			} frame;
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
@@ -1061,7 +1061,7 @@
 				uint64_t data;
 				uint8_t bytes[8];
 				struct PACKED members_t {
-					;
+					
 				} s;
 			} frame;
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
@@ -1076,7 +1076,7 @@
 				uint64_t data;
 				uint8_t bytes[8];
 				struct PACKED members_t {
-					;
+					
 				} s;
 			} frame;
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
@@ -1113,33 +1113,6 @@ cruise_velocity_current_k};
  namespace tx {
  enum addrs {
 };
-}
-}
- namespace ws20 {
- namespace rx {
- enum addrs {
-driver_controls_id_k = 1024,
-drive_cmd_k,
-power_cmd_k,
-reset_cmd_k};
-}
- namespace tx {
- enum addrs {
-motor_id_k = 1280,
-motor_status_info_k,
-motor_bus_k,
-motor_velocity_k,
-motor_phase_k,
-voltage_vector_k,
-current_vector_k,
-backemf_k,
-rail_15v_1pt65v_k,
-rail_2pt5v_1pt2v_k,
-fanspeed_k,
-sinks_temp_k,
-cpu_airin_temp_k,
-cap_airout_temp_k,
-odom_bus_ah_k};
 }
 }
  namespace bms {
@@ -1180,6 +1153,33 @@ last_trip_k,
 trip_pt_current_k,
 trip_pt_voltage_k,
 trip_pt_temp_k};
+}
+}
+ namespace ws20 {
+ namespace rx {
+ enum addrs {
+driver_controls_id_k = 1024,
+drive_cmd_k,
+power_cmd_k,
+reset_cmd_k};
+}
+ namespace tx {
+ enum addrs {
+motor_id_k = 1024,
+motor_status_info_k,
+motor_bus_k,
+motor_velocity_k,
+motor_phase_k,
+voltage_vector_k,
+current_vector_k,
+backemf_k,
+rail_15v_1pt65v_k,
+rail_2pt5v_1pt2v_k,
+fanspeed_k,
+sinks_temp_k,
+cpu_airin_temp_k,
+cap_airout_temp_k,
+odom_bus_ah_k};
 }
 }
  namespace mppt {

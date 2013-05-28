@@ -12,11 +12,10 @@
 using namespace nu;
 
 void SteeringWheel::main() {
-	NU_GIFT(4096);
 	WDT::enable();
 	SteeringWheel sw{};
 	sw.animate_leds();
 	while (true) {
-		sw.run();
+		sw.demo();
 	}
 }

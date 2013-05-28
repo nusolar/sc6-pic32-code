@@ -3,7 +3,6 @@
 
 #include "nu/compiler.h"
 #include "nupp/bitset.hpp"
-#include "nupp/enum.hpp"
 #include "nupp/ulcd28pt.hpp" // MAXIMUM WARNING MAXIMUM ERROR MUST COME BEFORE PIC32
 #include "nupp/button.hpp"
 #include "nupp/led.hpp"
@@ -13,44 +12,59 @@
 #include "nupp/nu32.hpp"
 #include <cstdio>
 
-// Pin definitions
+/* //Pin definitions. L/R/Haz/Horn are wired to MAYBE.
 #define SW_BTNS(_BTN)	\
-	_BTN(yes,          E, 0)	\
-	_BTN(no,           G, 12)	\
-	_BTN(maybe,        E, 2)	\
-	_BTN(cruise_en,    D, 0)	\
-	_BTN(cruise_mode,  D, 8)	\
-	_BTN(cruise_up,    D, 10)	\
-	_BTN(cruise_down,  A, 15)
-#define SW_LEDS(_LED)			\
-	_LED(left,         D, 7)    \
-	_LED(right,        D, 3)    \
-	_LED(radio,        E, 5)    \
-	_LED(yes,          E, 1)    \
-	_LED(hazard,       D, 13)   \
-	_LED(cruise_en,    D, 1)    \
-	_LED(cruise_up,    D, 11)   \
-	_LED(maybe,        E, 2)    \
-	_LED(no,           G, 13)   \
-	_LED(horn,         D, 5)    \
-	_LED(cruise_mode,  D, 9)    \
-	_LED(cruise_down,  A, 15)
+	_BTN(left,			D, 0)\
+	_BTN(right,			D, 0)\
+	_BTN(yes,			E, 0)	\
+	_BTN(no,			G, 12)	\
+	_BTN(maybe,			E, 2)	\
+	_BTN(hazard,		D, 0)\
+	_BTN(horn,			D, 0)\
+	_BTN(cruise_en,		D, 0)	\
+	_BTN(cruise_mode,	D, 8)	\
+	_BTN(cruise_up,		D, 10)	\
+	_BTN(cruise_down,	A, 15)
 
-#define SW_DECLARE_BTNS(name, ltr, num) size_t name##_k;
-#define SW_DECLARE_LEDS(name, ltr, num) size_t led_##name##_k;
-#define SW_INIT_BTNS(name, ltr, num) name##_k(buttons.enumerate(Button(Pin(Pin::ltr, num), 10, 5))),
-#define SW_INIT_LEDS(name, ltr, num) led_##name##_k(leds.enumerate(Led(Pin(Pin::ltr, num)))),
+#define SW_BTNS(_BTN)	\
+	_BTN(yes,			E, 0)	\
+	_BTN(no,			G, 12)	\
+	_BTN(maybe,			E, 2)	\
+	_BTN(cruise_en,		D, 0)	\
+	_BTN(cruise_mode,	D, 8)	\
+	_BTN(cruise_up,		D, 10)	\
+	_BTN(cruise_down,	A, 15)
+#define SW_LEDS(_LED)			\
+	_LED(left,			D, 7)   \
+	_LED(right,			D, 3)   \
+	_LED(radio,			E, 5)   \
+	_LED(yes,			E, 1)   \
+	_LED(hazard,		D, 13)  \
+	_LED(cruise_en,		D, 1)   \
+	_LED(cruise_up,		D, 11)  \
+	_LED(maybe,			E, 3)   \
+	_LED(no,			G, 13)  \
+	_LED(horn,			D, 5)   \
+	_LED(cruise_mode,	D, 9)   \
+	_LED(cruise_down,	A, 15)*/
+
+//#define SW_DECLARE_BTNS(name, ltr, num) size_t name##_k;
+//#define SW_DECLARE_LEDS(name, ltr, num) size_t led_##name##_k;
+//#define SW_INIT_BTNS(name, ltr, num) name##_k(buttons.enumerate(Button(Pin(Pin::ltr, num), 10, 5))),
+//#define SW_INIT_LEDS(name, ltr, num) led_##name##_k(leds.enumerate(Led(Pin(Pin::ltr, num)))),
+#define SW_N_BTNS 7
+#define SW_N_LEDS 13
 
 namespace nu {
 	struct SteeringWheel {
-		SW_BTNS(SW_DECLARE_BTNS)
-		SW_LEDS(SW_DECLARE_LEDS)
+		Button yes, no, maybe, cruise_en, cruise_mode, cruise_up, cruise_down;
+		Led led_left, led_right, led_radio, led_yes, led_hazard, led_cruise_en,
+			led_cruise_up, led_maybe, led_no, led_horn, led_cruise_mode, led_cruise_down;
 
+		Button *buttons[SW_N_BTNS];
+		Led *leds[SW_N_LEDS];
 		can::Module common_can;
 		uLCD28PT lcd;
-
-		Enum<Button, 13> buttons;
-		Enum<Led, 12> leds;
 
 		/** State of Steering Wheel & car */
 		struct state {
@@ -64,51 +78,79 @@ namespace nu {
 				cc_en_on(0), cc_en_toggling(0) {}
 		} state;
 
+
 		/**
 		 * Setup NU32, CAN, LEDs, and uLCD Display.
 		 */
-		ALWAYSINLINE SteeringWheel(): SW_BTNS(SW_INIT_BTNS) SW_LEDS(SW_INIT_LEDS)
-			common_can(CAN2), lcd(UART3), buttons(), leds(), state()
-		{
+		ALWAYSINLINE SteeringWheel(): 
+			yes			(Button(Pin(Pin::E,  0), 10, 5)),
+			no			(Button(Pin(Pin::G, 12), 10, 5)),
+			maybe		(Button(Pin(Pin::E,  2), 10, 5)),
+			cruise_en	(Button(Pin(Pin::D,  0), 10, 5)),
+			cruise_mode	(Button(Pin(Pin::D,  8), 10, 5)),
+			cruise_up	(Button(Pin(Pin::D, 10), 10, 5)),
+			cruise_down	(Button(Pin(Pin::A, 15), 10, 5)),
+
+			led_left		(Led(Pin(Pin::D,  7))),
+			led_right		(Led(Pin(Pin::D,  2))),
+			led_radio		(Led(Pin(Pin::E,  5))),
+			led_yes			(Led(Pin(Pin::E,  1))),
+			led_hazard		(Led(Pin(Pin::D, 13))),
+			led_cruise_en	(Led(Pin(Pin::D,  1))),
+			led_cruise_up	(Led(Pin(Pin::D, 11))),
+			led_maybe		(Led(Pin(Pin::E,  3))),
+			led_no			(Led(Pin(Pin::G, 13))),
+			led_horn		(Led(Pin(Pin::D,  5))),
+			led_cruise_mode	(Led(Pin(Pin::D,  9))),
+			led_cruise_down	(Led(Pin(Pin::A, 14))),
+
+			buttons {&yes, &no, &maybe, &cruise_en, &cruise_mode, &cruise_up, &cruise_down},
+			leds {&led_left, &led_right, &led_radio, &led_yes, &led_hazard,
+				&led_cruise_en, &led_cruise_up, &led_maybe, &led_no, &led_horn,
+				&led_cruise_mode, &led_cruise_down},
+
+			common_can(CAN2), lcd(UART3), state() {
+			
 			WDT::clear();
-			common_can.in()  = can::RxChannel(can::Channel(common_can, CAN_CHANNEL0), CAN_RX_FULL_RECEIVE);
-			common_can.out() = can::TxChannel(can::Channel(common_can, CAN_CHANNEL1), CAN_HIGH_MEDIUM_PRIORITY);
-			common_can.err() = can::TxChannel(can::Channel(common_can, CAN_CHANNEL2), CAN_LOWEST_PRIORITY);
+			common_can.in().setup_rx();
+			common_can.in().add_filter(CAN_FILTER0, CAN_SID, 0x400, CAN_FILTER_MASK0, CAN_FILTER_MASK_IDE_TYPE, 0x7F8);
+			common_can.out().setup_tx(CAN_HIGH_MEDIUM_PRIORITY);
+			common_can.err().setup_tx(CAN_LOWEST_PRIORITY);
 		}
+
 
 		/**
 		 * Animate LEDs on startup.
 		 */
 		void ALWAYSINLINE animate_leds() {
-			// FUCK MPLAB
-			for (unsigned i=0; i<leds.size(); i++){
+			for (unsigned i=0; i<SW_N_LEDS; i++){
 				WDT::clear();
-				leds[i].on();
+				leds[i]->on();
 				timer::delay_ms<100>(); // ok. WDT timeout ~ 2s
 			}
-			for (unsigned i=0; i<leds.size(); i++){
+			for (unsigned i=0; i<SW_N_LEDS; i++){
 				WDT::clear();
-				leds[i].off();
+				leds[i]->off();
 				timer::delay_ms<100>(); // ok. WDT timeout ~ 2s
 			}
 		}
-
+#if 0
 		/**
 		 * Read value of Button & LED Pins, update internal state.
 		 */
 		void ALWAYSINLINE read_ins() {
 			WDT::clear();
 			for (int repeat = 0; repeat < 10; repeat++) // re-update 10x
-				for (unsigned i = 0; i < buttons.size(); i++)
+				for (unsigned i = 0; i < SW_N_BTNS; i++)
 					buttons[i].update();
 			// WARNING: Should zero bitset?
-			for (unsigned i = 0; i < buttons.size(); i++)
+			for (unsigned i = 0; i < SW_N_BTNS; i++)
 				state.btns[i] = (bool)buttons[i];
-			for (unsigned i = 0; i < leds.size(); i++)
+			for (unsigned i = 0; i < SW_N_LEDS; i++)
 				state.leds[i] = (bool)leds[i];
 
 			if (state.btns[cruise_en_k] != state.cc_en_toggling) {
-				state.cc_en_toggling = state.btns[cruise_en_k];
+				state.cc_en_toggling = (bool)cruise_en;
 				if (state.cc_en_toggling == false) {
 					state.cc_en_on = !state.cc_en_on; // Toggle value on button release
 					state.btns[cruise_en_k] = state.cc_en_on; // Set cc_en
@@ -194,16 +236,17 @@ namespace nu {
 
 			send_can();
 		}
+#endif
 
 		/** Demo LED toggling */
 		void ALWAYSINLINE demo() {
 			WDT::clear();
-			leds[0].toggle();
+			leds[0]->toggle();
 			timer::delay_s<1>();
 		}
 
 		static NORETURN void main();
 	};
-};
+}
 
 #endif /* defined(__nusolar_lib__steering_wheel__) */

@@ -79,11 +79,11 @@ namespace nu {
 			main_relay = true;
 			array_relay = true;
 
-			common_can.in() = can::RxChannel(can::Channel(common_can, CAN_CHANNEL0), CAN_RX_FULL_RECEIVE);
-			common_can.out() = can::TxChannel(can::Channel(common_can, CAN_CHANNEL1), CAN_HIGH_MEDIUM_PRIORITY);
-			common_can.err() = can::TxChannel(can::Channel(common_can, CAN_CHANNEL2), CAN_LOWEST_PRIORITY);
+			common_can.in().setup_rx();
+			common_can.out().setup_tx(CAN_HIGH_MEDIUM_PRIORITY);
+			common_can.err().setup_tx(CAN_LOWEST_PRIORITY);
 
-			mppt_can.out() = can::TxChannel(can::Channel(common_can, CAN_CHANNEL1), CAN_HIGH_MEDIUM_PRIORITY);
+			mppt_can.out().setup_tx(CAN_HIGH_MEDIUM_PRIORITY);
 		}
 
 
@@ -91,20 +91,20 @@ namespace nu {
 		 * A function to be called repeatedly
 		 */
 		ALWAYSINLINE void run() {
-			lcd2.goto_xy(0, 1);
-			lcd2 << "V: %0.9f" << state.voltages[31] << end;
-			lcd2.goto_xy(0, 2);
-			lcd2 << "T: %0.9f" << state.temperatures[31] << end;
-			lcd2.goto_xy(0, 3);
-			lcd2 << "I: %0.9f" <<  state.current_battery << end;
+			lcd1.goto_xy(0, 1);
+			lcd1 << "V: %0.9f" << state.voltages[31] << end;
+			lcd1.goto_xy(0, 2);
+			lcd1 << "T: %0.9f" << state.temperatures[31] << end;
+			lcd1.goto_xy(0, 3);
+			lcd1 << "I: %0.9f" <<  state.current_battery << end;
 			led1.toggle();
 			timer::delay_s<1>();
 		}
 
 		ALWAYSINLINE void demo() {
 			WDT::clear();
-			lcd2.lcd_clear();
-			lcd2 << "C++WINS" << end;
+			lcd1.lcd_clear();
+			lcd1 << "C++WINS" << end;
 			led1.toggle();
 			timer::delay_s<1>();
 		}

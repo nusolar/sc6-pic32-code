@@ -15,7 +15,7 @@ namespace nu {
 	 */
 	struct SPI: public OStream { // chip select pin
 		enum UNUSED options {
-			DEFAULT = 0,
+			DEFAULT = 0
 		};
 		enum tx_options {
 			TX_WAIT_START = 1<<0,

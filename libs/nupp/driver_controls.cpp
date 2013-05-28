@@ -12,7 +12,6 @@
 using namespace nu;
 
 void DriverControls::main() {
-	NU_GIFT(4096);
 	WDT::enable();
 	DriverControls dc{};
 	dc.led1.on();

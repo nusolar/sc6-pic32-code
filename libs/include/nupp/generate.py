@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-Empty = ";"
+Empty = ""
 Module = "uint32_t %s; float %s;"
 Double = "double %s;"
 Float2 = "float %s, %s;"
@@ -65,7 +65,7 @@ class X(object):
 		self.string = self.struct % {'name': name, 'members': T % tuple(args)}
 	def __add__(self, other):
 		self.name += ' = ' + str(other)
-		return
+		return self
 	def __str__(self):
 		return self.string
 
@@ -81,10 +81,10 @@ class Group:
 		txs = namespace % ('tx', txs)
 		return namespace % (type(self).__name__, rxs + txs)
 	def enums(self):
-		inner = ''.join([
-			namespace % (zx.__name__, enum % ('addrs',
-				',\n'.join([x.name for x in zx.frames])
-			)) for zx in (self.rx, self.tx)])
+		inner = ''.join([namespace %
+			(zx.__name__,
+				enum % ('addrs',',\n'.join([x.name for x in zx.frames]))
+			) for zx in (self.rx, self.tx)])
 		return namespace % (type(self).__name__, inner)
 
 
@@ -92,7 +92,7 @@ class bms(Group):
 	class rx:
 		base = 0x200
 		frames = (
-			X('trip', Float2, 'trip_code', 'module') + base,
+			X('trip', Trip, 'trip_code', 'module') + base,
 			X('reset_cc_batt', Empty),
 			X('reset_cc_array', Empty),
 			X('reset_cc_mppt1', Empty),
@@ -104,10 +104,10 @@ class bms(Group):
 	class tx:
 		base = 0x210
 		frames = (
-			X('heartbeat', Status, 'bmsStr', 'reserved') + base,
+			X('heartbeat', Status, 'bms_str', 'reserved') + base,
 			X('error', Error),
 			X('uptime', Double, 'seconds'),
-			X('last_reset', Trip, 'lastResetCode', 'reserved'),
+			X('last_reset', Trip, 'last_reset_code', 'reserved'),
 			X('batt_bypass', Module, 'module', 'reserved'),
 			X('current', Float2, 'array', 'battery'),
 			X('cc_array', Double, 'count'),
@@ -120,10 +120,10 @@ class bms(Group):
 			X('Wh_mppt2', Double, 'count'),
 			X('Wh_mppt3', Double, 'count'),
 			X('voltage', Module, 'module', 'voltage'),
-			X('owVoltage', Module, 'module', 'owVoltage'),
+			X('owVoltage', Module, 'module', 'ow_voltage'),
 			X('temp', Module, 'sensor', 'temp'),
-			X('trip', Trip, 'tripCode', 'module'),
-			X('last_trip', Trip, 'tripCode', 'module'),
+			X('trip', Trip, 'trip_code', 'module'),
+			X('last_trip', Trip, 'trip_code', 'module'),
 			X('trip_pt_current', Float2, 'low', 'high'),
 			X('trip_pt_voltage', Float2, 'low', 'high'),
 			X('trip_pt_temp', Float2, 'low', 'high'))
@@ -136,7 +136,7 @@ class ws20(Group):
 			X('power_cmd', Float2, 'reserved', 'busCurrent'),
 			X('reset_cmd', UInt2, 'unused1', 'unused2'))
 	class tx:
-		base = 0x500
+		base = 0x400
 		frames = (
 			X('motor_id', Status, 'tritiumId', 'serialNo') + base,
 			X('motor_status_info', motor_Status),

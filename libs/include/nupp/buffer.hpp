@@ -8,12 +8,15 @@
 #ifndef NU_BUFFER_HPP
 #define	NU_BUFFER_HPP
 
+#include "nu/compiler.h"
 #include <cstdlib>
-#include <sstream>
-#include "nupp/allocator.hpp"
-using namespace std;
+#include <cstddef>
+#include <cstdint>
+#include <string>
+//#include "nupp/allocator.hpp"
+
 namespace nu {
-	typedef std::basic_ostringstream <char, std::char_traits<char>, Allocator<char>> oss;
+//	typedef std::basic_ostringstream <char, std::char_traits<char>, Allocator<char>> oss;
 
 	/**
 	 * USES HEAP.
@@ -57,14 +60,15 @@ namespace nu {
 	};*/
 
 	class OStream {
-		std::ostringstream out;
+		std::string _str;
+		char _buffer[72];
 	public:
-		ALWAYSINLINE OStream(): out() {}
+		ALWAYSINLINE OStream(): _str("") {}
 		virtual ~OStream() {}
 		virtual void puts(const char *){}
 
-		template <typename T>
-		ALWAYSINLINE OStream& operator<< (const T &val) {out << val; return *this;}
+//		template <typename T>
+//		ALWAYSINLINE OStream& operator<< (const T &val) {out << val; return *this;}
 
 		/**
 		 * Forward all std stream manipulators.
@@ -75,11 +79,52 @@ namespace nu {
 			return *this;
 		}*/
 
+		ALWAYSINLINE OStream& operator<< (const double val) {
+			if (likely(snprintf(NULL, 0, "%f", val) <= 72)) {
+				sprintf(_buffer, "%f", val);
+				_str += _buffer;
+			}
+			return *this;
+		}
+
+		ALWAYSINLINE OStream& operator<< (const uint64_t val) {
+			if (likely(snprintf(NULL, 0, "%llu", val) <= 72)) {
+				sprintf(_buffer, "%llu", val);
+				_str += _buffer;
+			}
+			return *this;
+		}
+
+		ALWAYSINLINE OStream& operator<< (const uint32_t val) {
+			if (likely(snprintf(NULL, 0, "%u", val) <= 72)) {
+				sprintf(_buffer, "%u", val);
+				_str += _buffer;
+			}
+			return *this;
+		}
+
+		ALWAYSINLINE OStream& operator<< (const char val) {
+			_str += val;
+			return *this;
+		}
+
+		ALWAYSINLINE OStream& operator<< (const char *val) {
+			_str += val;
+			return *this;
+		}
+
+		ALWAYSINLINE OStream& operator<< (bool val) {
+			_str += val? '0': '1';
+			return *this;
+		}
+
 		friend OStream& end(OStream& os);
 		ALWAYSINLINE OStream& operator<< (OStream&(*m)(OStream&)) {
 			m(*this);
 			return *this;
 		}
+
+		void PRINTF(2,3) printf(const char *fmt, ...);
 	};
 
 	OStream& end(OStream& os);
