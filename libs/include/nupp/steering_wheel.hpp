@@ -48,12 +48,8 @@
 	_LED(cruise_mode,	D, 9)   \
 	_LED(cruise_down,	A, 15)*/
 
-//#define SW_DECLARE_BTNS(name, ltr, num) size_t name##_k;
-//#define SW_DECLARE_LEDS(name, ltr, num) size_t led_##name##_k;
-//#define SW_INIT_BTNS(name, ltr, num) name##_k(buttons.enumerate(Button(Pin(Pin::ltr, num), 10, 5))),
-//#define SW_INIT_LEDS(name, ltr, num) led_##name##_k(leds.enumerate(Led(Pin(Pin::ltr, num)))),
 #define SW_N_BTNS 7
-#define SW_N_LEDS 13
+#define SW_N_LEDS 12
 
 namespace nu {
 	struct SteeringWheel {
@@ -109,7 +105,8 @@ namespace nu {
 				&led_cruise_en, &led_cruise_up, &led_maybe, &led_no, &led_horn,
 				&led_cruise_mode, &led_cruise_down},
 
-			common_can(CAN2), lcd(UART3), state() {
+			common_can(CAN2), lcd(UART3), state()
+		{
 			
 			WDT::clear();
 			common_can.in().setup_rx();
@@ -243,8 +240,7 @@ namespace nu {
 		/** Demo LED toggling */
 		void ALWAYSINLINE demo() {
 			WDT::clear();
-			leds[0]->toggle();
-			timer::delay_s<1>();
+			animate_leds();
 		}
 
 		static NORETURN void main();
