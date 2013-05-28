@@ -134,11 +134,12 @@ namespace nu {
 				timer::delay_ms<100>(); // ok. WDT timeout ~ 2s
 			}
 		}
-#if 0
+
 		/**
 		 * Read value of Button & LED Pins, update internal state.
 		 */
 		void ALWAYSINLINE read_ins() {
+#if 0
 			WDT::clear();
 			for (int repeat = 0; repeat < 10; repeat++) // re-update 10x
 				for (unsigned i = 0; i < SW_N_BTNS; i++)
@@ -156,6 +157,7 @@ namespace nu {
 					state.btns[cruise_en_k] = state.cc_en_on; // Set cc_en
 				}
 			}
+#endif
 		}
 
 		/**
@@ -187,8 +189,8 @@ namespace nu {
 		 * Set each LED according to Steering Wheel's state.
 		 */
 		void ALWAYSINLINE set_leds() {
-			for (unsigned i=0; i < leds.len; i++) {
-				leds[i] = state.leds[i];
+			for (unsigned i=0; i < SW_N_LEDS; i++) {
+				*leds[i] = state.leds[i];
 			}
 		}
 
@@ -236,7 +238,7 @@ namespace nu {
 
 			send_can();
 		}
-#endif
+
 
 		/** Demo LED toggling */
 		void ALWAYSINLINE demo() {
