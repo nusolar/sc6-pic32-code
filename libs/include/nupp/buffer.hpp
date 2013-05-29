@@ -81,12 +81,12 @@ namespace nu {
 			return *this;
 		}
 
-		friend OStream& end(OStream& os);
 		ALWAYSINLINE OStream& operator<< (OStream&(*m)(OStream&)) {
 			m(*this);
 			return *this;
 		}
 
+		friend OStream& end(OStream& os);
 		void PRINTF(2,3) printf(const char *fmt, ...);
 	};
 

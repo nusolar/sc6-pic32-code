@@ -66,11 +66,12 @@ namespace nu {
 		struct state {
 			Bitset<SW_N_BTNS> btns; // state of buttons & LEDs
 			Bitset<SW_N_LEDS> leds;
+			can::frame::sw::rx::buttons buttons;
 			can::frame::sw::rx::lights lights; // requested LED state
 			can::frame::ws20::tx::motor_velocity velo;
 			can::frame::ws20::tx::current_vector curr;
 
-			ALWAYSINLINE state(): btns(0), leds(0), lights(), velo(), curr() {}
+			ALWAYSINLINE state(): btns(0), leds(0), buttons(), lights(), velo(), curr() {}
 		} state;
 
 
@@ -109,7 +110,7 @@ namespace nu {
 			
 			WDT::clear();
 			common_can.in().setup_rx();
-			common_can.in().add_filter(CAN_FILTER0, CAN_SID, 0x400, CAN_FILTER_MASK0, CAN_FILTER_MASK_IDE_TYPE, 0x7F8);
+			common_can.in().add_filter(CAN_FILTER0, CAN_SID, 0x300, CAN_FILTER_MASK0, CAN_FILTER_MASK_IDE_TYPE, 0x7F8);
 			common_can.out().setup_tx(CAN_HIGH_MEDIUM_PRIORITY);
 			common_can.err().setup_tx(CAN_LOWEST_PRIORITY);
 		}
@@ -136,12 +137,13 @@ namespace nu {
 		 */
 		void ALWAYSINLINE read_ins() {
 			WDT::clear();
-			for (int repeat = 0; repeat < 10; repeat++) // re-update 10x
+			for (int repeat = 0; repeat < 10; repeat++) // debounce 10x
 				for (unsigned i = 0; i < SW_N_BTNS; i++)
 					buttons[i]->update();
 
 			for (unsigned i=0; i < SW_N_BTNS; i++)
-				state.btns[i] = buttons[i]->toggled();
+				state.btns[i] |= buttons[i]->toggled();
+
 			for (unsigned i=0; i < SW_N_LEDS; i++)
 				state.leds[i] = (bool)*leds[i]; // WARNING: Should zero bitset?
 		}
@@ -156,6 +158,10 @@ namespace nu {
 			common_can.in().rx(incoming.bytes(), id);
 
 			switch (id) {
+				case (uint32_t)can::addr::sw::rx::buttons_k:
+					state.buttons.data() = incoming.data();
+					state.btns &= ~state.buttons.data();
+					break;
 				case (uint32_t)can::addr::sw::rx::lights_k:
 					state.lights.data() = incoming.data();
 					// WARNING: unimplemented

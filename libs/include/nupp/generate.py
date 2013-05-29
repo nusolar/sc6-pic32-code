@@ -63,11 +63,12 @@ class X(object):
 					%(members)s
 				} s;
 			} frame;
+			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			%(name)s(): frame{0} {}
-			%(name)s(uint64_t &_i): frame{_i} {}
-			%(name)s(Packet& p): frame{p.data()} {}
+			ALWAYSINLINE %(name)s(): frame{0} {}
+			ALWAYSINLINE %(name)s(const uint64_t _i): frame{_i} {}
+			ALWAYSINLINE %(name)s(const Packet& p): frame{p.data()} {}
 		};\n"""
 	def __init__(self, name, T, *args):
 		self.name = name+'_k'
@@ -179,7 +180,8 @@ class sw(Group):
 	class rx:
 		base = 0x300
 		frames = (
-			X('lights', sw_Lights) + base,)
+			X('buttons', sw_Buttons) + base,
+			X('lights', sw_Lights))
 	class tx:
 		base = 0x310
 		frames = (
@@ -208,13 +210,14 @@ class CAN:
 					uint8_t bytes[8];
 				} frame;
 				virtual ~Packet() {}
-				virtual uint64_t &data() {return frame.data;};
-				virtual uint8_t  *bytes() {return frame.bytes;};
-				Packet(): frame{0} {}
-				Packet(uint64_t &_i): frame{_i} {}
-				Packet(Packet& p): frame{p.data()} {}
-				Packet& operator= (uint64_t &_i) {data() = _i; return *this;}
-				Packet& operator= (Packet& p) {data() = p.data(); return *this;}
+				virtual uint64_t data() const {return frame.data;}
+				virtual uint64_t &data() {return frame.data;}
+				virtual uint8_t  *bytes() {return frame.bytes;}
+				ALWAYSINLINE Packet(): frame{0} {}
+				ALWAYSINLINE Packet(const uint64_t _i): frame{_i} {}
+				ALWAYSINLINE Packet(const Packet& p): frame{p.data()} {}
+				Packet& operator= (const uint64_t _i) {data() = _i; return *this;}
+				Packet& operator= (const Packet& p) {data() = p.data(); return *this;}
 			};\n"""
 	def structs(self):
 		inner = ''.join(x.structs() for x in self.ns.values())

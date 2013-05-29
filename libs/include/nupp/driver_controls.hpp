@@ -19,7 +19,6 @@
 #include <cstdint>
 #include <cstddef>
 
-
 #define DC_PINS(X)\
 	X(AnalogIn, regen_pedel,	B,	0)\
 	X(AnalogIn, accel_pedel,	B,	1)\
@@ -220,8 +219,10 @@ namespace nu {
 			lcd.goto_xy(0,4);
 			lcd << "RvRgArHd" << end;
 			lcd.goto_xy(0,5);
-			lcd << ((bool)reverse_switch.read()) << ((bool)regen_switch.read())
-				<< ((bool)airgap_switch.read()) << ((bool)headlight_switch.read()) << end;
+
+			read_ins();
+
+			lcd << state.reverse_en << state.regen_en << state.airgap_en << state.lights_head << end;
 			
 
 			if (id) led1.toggle();
