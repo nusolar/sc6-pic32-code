@@ -202,7 +202,7 @@ namespace nu {
 		void ALWAYSINLINE demo() {
 			WDT::clear();
 			lcd.lcd_clear();
-			lcd << (uint32_t)69 << "C++WINS " << timer::s() <<  end;
+			lcd << 69 << "C++WINS " << timer::s() <<  end;
 			
 			can::frame::bms::tx::trip tap;
 			tap.frame.s.trip_code = 3;

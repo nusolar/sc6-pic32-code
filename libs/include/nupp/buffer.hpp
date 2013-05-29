@@ -16,48 +16,7 @@
 //#include "nupp/allocator.hpp"
 
 namespace nu {
-//	typedef std::basic_ostringstream <char, std::char_traits<char>, Allocator<char>> oss;
-
-	/**
-	 * USES HEAP.
-	 * @todo write & instantiate std::allocator that uses Stack
-	typedef std::stringbuf stackbuf;
-	template <class _Parent>
-	class Buffer: public stackbuf {
-		_Parent * parent;
-		virtual int sync() {
-			parent->puts(str().c_str()); // WARNING: Deep copy str
-			str("");
-			return 0;
-		}
-	public:
-		ALWAYSINLINE Buffer(_Parent * _parent): stackbuf(), parent(_parent) {}
-		ALWAYSINLINE Buffer(const Buffer &rval): stackbuf(), parent(rval.parent) {
-			memcpy(this, &rval, sizeof(*this));
-		}
-		Buffer& operator= (const Buffer& rval) {
-			if (this != &rval) {
-				memcpy(this, &rval, sizeof(*this));
-			} return *this;
-		}
-	};*/
-
-	/*struct OStream;
-
-	class StringStream: public std::ostringstream {
-		OStream *parent;
-		virtual int sync();
-	public:
-		ALWAYSINLINE StringStream(OStream *_parent): std::ostringstream(), parent(_parent) {}
-		ALWAYSINLINE StringStream(const StringStream &rval): ios(), std::ostringstream(), parent(rval.parent) {
-			memcpy(this, &rval, sizeof(*this));
-		}
-		ALWAYSINLINE StringStream& operator= (const StringStream &rval) {
-			if (this != &rval) {
-				memcpy(this, &rval, sizeof(*this));
-			} return *this;
-		}
-	};*/
+//	typedef std::basic_string <char, std::char_traits<char>, Allocator<char>> nu_str;
 
 	class OStream {
 		std::string _str;
@@ -70,15 +29,6 @@ namespace nu {
 //		template <typename T>
 //		ALWAYSINLINE OStream& operator<< (const T &val) {out << val; return *this;}
 
-		/**
-		 * Forward all std stream manipulators.
-		 * @warning Inlining breaks MPLAB symbol loading.
-         */
-		/*NOINLINE OStream& operator<< (std::ostream&(*m)(std::ostream&)) {
-			out << m;
-			return *this;
-		}*/
-
 		ALWAYSINLINE OStream& operator<< (const double val) {
 			if (likely(snprintf(NULL, 0, "%f", val) <= 72)) {
 				sprintf(_buffer, "%f", val);
@@ -87,7 +37,7 @@ namespace nu {
 			return *this;
 		}
 
-		ALWAYSINLINE OStream& operator<< (const uint64_t val) {
+		ALWAYSINLINE OStream& operator<< (const unsigned long long val) {
 			if (likely(snprintf(NULL, 0, "%llu", val) <= 72)) {
 				sprintf(_buffer, "%llu", val);
 				_str += _buffer;
@@ -95,9 +45,17 @@ namespace nu {
 			return *this;
 		}
 
-		ALWAYSINLINE OStream& operator<< (const uint32_t val) {
+		ALWAYSINLINE OStream& operator<< (const unsigned int val) {
 			if (likely(snprintf(NULL, 0, "%u", val) <= 72)) {
 				sprintf(_buffer, "%u", val);
+				_str += _buffer;
+			}
+			return *this;
+		}
+
+		ALWAYSINLINE OStream& operator<< (const int val) {
+			if (likely(snprintf(NULL, 0, "%i", val) <= 72)) {
+				sprintf(_buffer, "%i", val);
 				_str += _buffer;
 			}
 			return *this;
@@ -113,7 +71,12 @@ namespace nu {
 			return *this;
 		}
 
-		ALWAYSINLINE OStream& operator<< (bool val) {
+		ALWAYSINLINE OStream& operator<< (const unsigned char val) {
+			_str += val;
+			return *this;
+		}
+
+		ALWAYSINLINE OStream& operator<< (const bool val) {
 			_str += val? '0': '1';
 			return *this;
 		}
