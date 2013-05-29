@@ -28,7 +28,7 @@ sw_Lights = """
 	unsigned    cruise_mode     :1;
 	unsigned    cruise_down     :1;
 	unsigned    reserved        :20;"""
-sw_Buttons = """
+sw_Buttons_old = """
 	unsigned    left            :1;
 	unsigned    right           :1;
 	unsigned    yes             :1;
@@ -41,6 +41,15 @@ sw_Buttons = """
 	unsigned    cruise_up       :1;
 	unsigned    cruise_down     :1;
 	unsigned    reserved        :21;"""
+sw_Buttons = """
+	unsigned    yes             :1;
+	unsigned    no              :1;
+	unsigned    maybe           :1;
+	unsigned    cruise_en       :1;
+	unsigned    cruise_mode     :1;
+	unsigned    cruise_up       :1;
+	unsigned    cruise_down     :1;
+	unsigned    reserved        :25;"""
 
 
 class X(object):

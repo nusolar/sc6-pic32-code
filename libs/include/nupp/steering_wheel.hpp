@@ -64,14 +64,13 @@ namespace nu {
 
 		/** State of Steering Wheel & car */
 		struct state {
-			Bitset<13> btns, leds; // state of buttons & LEDs
+			Bitset<SW_N_BTNS> btns; // state of buttons & LEDs
+			Bitset<SW_N_LEDS> leds;
 			can::frame::sw::rx::lights lights; // requested LED state
 			can::frame::ws20::tx::motor_velocity velo;
 			can::frame::ws20::tx::current_vector curr;
-			bool cc_en_on;
-			bool cc_en_toggling;
-			ALWAYSINLINE state(): btns(0), leds(0), lights(), velo(), curr(), 
-				cc_en_on(0), cc_en_toggling(0) {}
+
+			ALWAYSINLINE state(): btns(0), leds(0), lights(), velo(), curr() {}
 		} state;
 
 
@@ -136,25 +135,15 @@ namespace nu {
 		 * Read value of Button & LED Pins, update internal state.
 		 */
 		void ALWAYSINLINE read_ins() {
-#if 0
 			WDT::clear();
 			for (int repeat = 0; repeat < 10; repeat++) // re-update 10x
 				for (unsigned i = 0; i < SW_N_BTNS; i++)
-					buttons[i].update();
-			// WARNING: Should zero bitset?
-			for (unsigned i = 0; i < SW_N_BTNS; i++)
-				state.btns[i] = (bool)buttons[i];
-			for (unsigned i = 0; i < SW_N_LEDS; i++)
-				state.leds[i] = (bool)leds[i];
+					buttons[i]->update();
 
-			if (state.btns[cruise_en_k] != state.cc_en_toggling) {
-				state.cc_en_toggling = (bool)cruise_en;
-				if (state.cc_en_toggling == false) {
-					state.cc_en_on = !state.cc_en_on; // Toggle value on button release
-					state.btns[cruise_en_k] = state.cc_en_on; // Set cc_en
-				}
-			}
-#endif
+			for (unsigned i=0; i < SW_N_BTNS; i++)
+				state.btns[i] = buttons[i]->toggled();
+			for (unsigned i=0; i < SW_N_LEDS; i++)
+				state.leds[i] = (bool)*leds[i]; // WARNING: Should zero bitset?
 		}
 
 		/**
