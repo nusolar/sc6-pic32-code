@@ -55,12 +55,13 @@ namespace nu {
 			lights_head, lights_brake, horn, // HORN DISCONNECTED
 			accel_en, brake_en, reverse_en, regen_en, airgap_en, cruise_en;
 			float accel, regen, airgap, cruise; // FUCK MPLAB
+			float velocity;
 			uint32_t sw_timer;
 
 			ALWAYSINLINE state(): lights_l(0), lights_r(0), lights_hazard(0),
 				lights_head(0), lights_brake(0), horn(0),
 				accel_en(0), brake_en(0), reverse_en(0), regen_en(0), airgap_en(0), cruise_en(0),
-				accel(0), regen(0), airgap(0), cruise(0), sw_timer(0) {}
+				accel(0), regen(0), airgap(0), cruise(0), velocity(0), sw_timer(0) {}
 		} state;
 
 		/**
@@ -76,7 +77,7 @@ namespace nu {
 			common_can.out().setup_tx(CAN_HIGH_MEDIUM_PRIORITY);
 			common_can.err().setup_tx(CAN_LOWEST_PRIORITY); // error reporting channel
 			ws_can.in().setup_rx();
-			ws_can.in().add_filter(CAN_FILTER0, CAN_SID, 0x404, CAN_FILTER_MASK0, CAN_FILTER_MASK_IDE_TYPE, 0x7FC);
+			ws_can.in().add_filter(CAN_FILTER0, CAN_SID, 0x403, CAN_FILTER_MASK0, CAN_FILTER_MASK_IDE_TYPE, 0x7FC);
 			ws_can.out().setup_tx(CAN_HIGH_MEDIUM_PRIORITY);
 		}
 
@@ -117,6 +118,19 @@ namespace nu {
 		void ALWAYSINLINE recv_can() {
 			uint32_t id;
 			can::frame::Packet incoming;
+
+			ws_can.in().rx(incoming.bytes(), id);
+			switch (id) {
+				case can::addr::ws20::tx::motor_velocity_k: {
+					can::frame::ws20::tx::motor_velocity velo(incoming);
+					state.velocity = velo.frame.s.vehicleVelocity;
+					if (!state.cruise_en) state.cruise = state.velocity;
+					break;
+				}
+				default:
+					break;
+			}
+
 			common_can.in().rx(incoming.bytes(), id);
 			switch (id) {
 				case (uint32_t)can::addr::sw::tx::buttons_k: {
@@ -124,8 +138,19 @@ namespace nu {
 //					state.lights_l = btns.frame.s.left;
 //					state.lights_r = btns.frame.s.right;
 //					state.lights_hazard = btns.frame.s.hazard;
+					state.cruise_en ^= btns.frame.s.cruise_en;
+					state.cruise += (float) 2*btns.frame.s.cruise_up;
+					state.cruise -= (float) 2*btns.frame.s.cruise_down;
+
+					can::frame::sw::rx::buttons ack(0);
+					ack.frame.s.cruise_en = btns.frame.s.cruise_en;
+					ack.frame.s.cruise_up = btns.frame.s.cruise_up;
+					ack.frame.s.cruise_down = btns.frame.s.cruise_down;
+					ack.frame.s.cruise_mode = btns.frame.s.cruise_mode;
+					common_can.out().tx(ack.bytes(), 4, can::addr::sw::rx::buttons_k);
+
 					state.sw_timer = timer::ms(); // Reset SW time-out
-					return;
+					break;
 				}
 				default:
 					uint32_t dc_time = timer::ms(); // Kill SW things if SW times-out.
@@ -159,16 +184,20 @@ namespace nu {
 		void ALWAYSINLINE set_motor() {
 			WDT::clear();
 
-			can::frame::ws20::rx::drive_cmd drive{}; // Zero-init [current, velocity]
+			can::frame::ws20::rx::drive_cmd drive(0); // Zero-init [current, velocity]
 
 			if (state.brake_en) {
 				state.cruise_en = 0;
-				if (state.regen_en)
+				if (state.regen_en){
 					drive.frame.s.motorCurrent = 0.2; // REGEN_AMOUNT
-				else
+				} else{
 					Nop(); // Normal braking.
-			} else if (state.accel_en)
+				}
+			} else if (state.cruise_en) {
+				drive.frame.s = {state.cruise, 1};
+			} else if (state.accel_en) {
 				drive.frame.s = {101, state.accel}; // [Max 101m/s, accel percent]
+			}
 
 			if (state.reverse_en)
 				drive.frame.s.motorVelocity *= -1;
