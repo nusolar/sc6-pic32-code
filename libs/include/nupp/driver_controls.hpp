@@ -12,10 +12,10 @@
 #include "nu/compiler.h"
 #include "nupp/nokia5110.hpp"// MAXIMUM WARNING MAXIMUM ERROR MUST COME BEFORE NU32
 #include "nupp/timer.hpp"
-#include "nupp/nu32.hpp"
 #include "nupp/pinctl.hpp"
 #include "nupp/can.hpp"
 #include "nupp/wdt.hpp"
+#include "nupp/nu32.hpp"
 #include <cstdint>
 #include <cstddef>
 
@@ -220,8 +220,9 @@ namespace nu {
 			lcd.goto_xy(0,4);
 			lcd << "RvRgArHd" << end;
 			lcd.goto_xy(0,5);
-			lcd << ((bool)reverse_switch.read()) << ((bool)regen_switch.read()) << ((bool)airgap_switch.read());
-			lcd << ((bool)headlight_switch.read()) << end;
+			lcd << ((bool)reverse_switch.read()) << ((bool)regen_switch.read())
+				<< ((bool)airgap_switch.read()) << ((bool)headlight_switch.read()) << end;
+			
 
 			if (id) led1.toggle();
 			timer::delay_ms<250>();
