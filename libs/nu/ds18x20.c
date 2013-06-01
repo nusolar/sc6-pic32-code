@@ -1,5 +1,5 @@
-#include "ds18x20.h"
-#include "errorcodes.h"
+#include "nu/ds18x20.h"
+#include "nu/errorcodes.h"
 
 const u8            DS18B20_FAMILY_CODE = 0x28;
 const u8            DS18S20_FAMILY_CODE = 0x10;

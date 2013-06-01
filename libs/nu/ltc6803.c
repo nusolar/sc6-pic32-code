@@ -1,4 +1,4 @@
-#include "ltc6803.h"
+#include "nu/ltc6803.h"
 
 enum ltc6803_cmds {
     WRITECFGS   = 0x01,
