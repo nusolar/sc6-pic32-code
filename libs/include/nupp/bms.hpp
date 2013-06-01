@@ -43,7 +43,7 @@ namespace nu {
 		DigitalOut main_relay, array_relay;
 		can::Module common_can, mppt_can;
 		Nokia5110 lcd1, lcd2;
-		AD7685 adc;
+		AD7685<2> adc; // WARNING: GUESSED number
 
 
 		/**
@@ -69,8 +69,8 @@ namespace nu {
 			array_relay(Pin(Pin::D, 3)), common_can(CAN1), mppt_can(CAN2),
 			lcd1(Pin(Pin::G, 9), SPI_CHANNEL2, Pin(Pin::A, 9), Pin(Pin::E, 9)),
 			lcd2(Pin(Pin::E, 8), SPI_CHANNEL2, Pin(Pin::A, 10), Pin(Pin::E, 9)),
-			adc (Pin(Pin::A, 0), SPI_CHANNEL4, Pin(Pin::F, 12), 2, // WARNING: GUESSED
-				 (AD7685::options) (2|AD7685::CHAIN_MODE|AD7685::NO_BUSY_INDICATOR)), // ERROR: SPI pin?
+			adc (Pin(Pin::A, 0), SPI_CHANNEL4, Pin(Pin::F, 12),
+				 (AD7685<2>::options) (2|AD7685<2>::CHAIN_MODE|AD7685<2>::NO_BUSY_INDICATOR)), // ERROR: SPI pin?
 			state()
 		{
 			WDT::clear();
