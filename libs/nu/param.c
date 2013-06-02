@@ -1,3 +1,3 @@
 #include "nu/param.h"
 
-nu_hz_t nu_hz = 0;
+nu_hz_t nu_hz = NU_DEFAULT_HZ;

@@ -14,12 +14,13 @@ namespace nu {
 	 * Encapsulate SPI reading/writing.
 	 */
 	struct SPI: public OStream { // chip select pin
-		enum UNUSED options {
-			DEFAULT = 0,
+		enum options {
+			DEFAULT = 0
 		};
 		enum tx_options {
 			TX_WAIT_START = 1<<0,
-			TX_WAIT_END = 1<<1
+			TX_WAIT_END = 1<<1,
+			TX_DISABLE_AUTO_CS = 1<<2
 		};
 
 		/**

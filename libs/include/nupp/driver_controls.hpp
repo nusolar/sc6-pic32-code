@@ -12,13 +12,12 @@
 #include "nu/compiler.h"
 #include "nupp/nokia5110.hpp"// MAXIMUM WARNING MAXIMUM ERROR MUST COME BEFORE NU32
 #include "nupp/timer.hpp"
-#include "nupp/nu32.hpp"
 #include "nupp/pinctl.hpp"
 #include "nupp/can.hpp"
 #include "nupp/wdt.hpp"
+#include "nupp/nu32.hpp"
 #include <cstdint>
 #include <cstddef>
-
 
 #define DC_PINS(X)\
 	X(AnalogIn, regen_pedel,	B,	0)\
@@ -26,9 +25,12 @@
 	X(AnalogIn, airgap_pot,		B,	4)\
 	X(DigitalIn, brake_pedal,		B,	2)\
 	X(DigitalIn, headlight_switch,	B,	3)\
-	X(DigitalIn, airgap_enable,		B,	5)\
-	X(DigitalIn, regen_enable,		B,	8)\
+	X(DigitalIn, airgap_switch,		B,	5)\
+	X(DigitalIn, regen_switch,		B,	8)\
 	X(DigitalIn, reverse_switch,	B,	9)\
+	X(DigitalIn, left_sig,			B,	10)\
+	X(DigitalIn, right_sig,			B,	11)\
+	X(DigitalIn, hazard_sig,		B,	12)\
 	X(DigitalOut, lights_brake,	D,	0)\
 	X(DigitalOut, lights_l,		D,	1)\
 	X(DigitalOut, lights_r,		D,	2)\
@@ -53,12 +55,13 @@ namespace nu {
 			lights_head, lights_brake, horn, // HORN DISCONNECTED
 			accel_en, brake_en, reverse_en, regen_en, airgap_en, cruise_en;
 			float accel, regen, airgap, cruise; // FUCK MPLAB
+			float velocity;
 			uint32_t sw_timer;
 
 			ALWAYSINLINE state(): lights_l(0), lights_r(0), lights_hazard(0),
 				lights_head(0), lights_brake(0), horn(0),
 				accel_en(0), brake_en(0), reverse_en(0), regen_en(0), airgap_en(0), cruise_en(0),
-				accel(0), regen(0), airgap(0), cruise(0), sw_timer(0) {}
+				accel(0), regen(0), airgap(0), cruise(0), velocity(0), sw_timer(0) {}
 		} state;
 
 		/**
@@ -69,36 +72,43 @@ namespace nu {
 			lcd(Pin(Pin::G, 9), SPI_CHANNEL2, Pin(Pin::A, 9), Pin(Pin::E, 9)), state()
 		{
 			WDT::clear();
-			common_can.in()  = can::RxChannel(can::Channel(common_can, CAN_CHANNEL0), CAN_RX_FULL_RECEIVE);
-			common_can.out() = can::TxChannel(can::Channel(common_can, CAN_CHANNEL1), CAN_HIGH_MEDIUM_PRIORITY);
-			common_can.err() = can::TxChannel(can::Channel(common_can, CAN_CHANNEL2), CAN_LOWEST_PRIORITY); // err chn
-			ws_can.out() = can::TxChannel(can::Channel(ws_can, CAN_CHANNEL1), CAN_HIGH_MEDIUM_PRIORITY);
+			common_can.in().setup_rx();
+			common_can.in().add_filter(CAN_FILTER0, CAN_SID, 0x312, CAN_FILTER_MASK0, CAN_FILTER_MASK_IDE_TYPE, 0x7FF);
+			common_can.out().setup_tx(CAN_HIGH_MEDIUM_PRIORITY);
+			common_can.err().setup_tx(CAN_LOWEST_PRIORITY); // error reporting channel
+			ws_can.in().setup_rx();
+			ws_can.in().add_filter(CAN_FILTER0, CAN_SID, 0x404, CAN_FILTER_MASK0, CAN_FILTER_MASK_IDE_TYPE, 0x7FC); // WARNING should be 0x403
+			ws_can.out().setup_tx(CAN_HIGH_MEDIUM_PRIORITY);
 		}
 
 
 		/**
-		 * Read all input Pins. Store result in state.
+		 * Read all input Pins. Store result in this->state.
 		 */
 		void ALWAYSINLINE read_ins() {
 			WDT::clear();
-			// TODO: Encapsulate ANALOG reading!
+			
 			state.accel = ((float)accel_pedel.read() + 0)/1024; // scale 0-1023 to 0-1
 			if (state.accel < 0) state.accel = 0; // TODO: print warning, clamp
 			if (state.accel > 1) state.accel = 1; // TODO: print warning
 			state.accel_en = state.accel > 0.05;
 
+			state.reverse_en = (bool)reverse_switch.read();
+
 			state.regen = ((float)regen_pedel.read() + 0)/1024; // WARNING: disconnected
-			state.regen_en = regen_enable.read()? 1: 0; // TODO: clamp
+			state.regen_en = (bool)regen_switch.read(); // TODO: clamp
 
 			state.airgap = ((float)airgap_pot.read() + 0)/1024; // WARNING: disconnected
-			state.airgap_en = airgap_enable.read()? 1: 0; // TODO: clamp
-
-			state.reverse_en	= reverse_switch.read();
-
-			state.brake_en		= brake_pedal.read()? 1: 0;
+			state.airgap_en = (bool)airgap_switch.read(); // TODO: clamp
+			
+			state.brake_en		= (bool)brake_pedal.read();
 			state.lights_brake = state.brake_en;
 
-			state.lights_head	= headlight_switch.read()? 1: 0;
+			state.lights_head = (bool)headlight_switch.read();
+
+			state.lights_l = (bool)left_sig.read();
+			state.lights_r = (bool)right_sig.read();
+			state.lights_hazard = (bool)hazard_sig.read();
 		}
 
 
@@ -108,22 +118,46 @@ namespace nu {
 		void ALWAYSINLINE recv_can() {
 			uint32_t id;
 			can::frame::Packet incoming;
+
+			ws_can.in().rx(incoming.bytes(), id);
+			switch (id) {
+				case can::addr::ws20::tx::motor_velocity_k: {
+					can::frame::ws20::tx::motor_velocity velo(incoming);
+					state.velocity = velo.frame.s.vehicleVelocity;
+					if (!state.cruise_en) state.cruise = state.velocity;
+					break;
+				}
+				default:
+					break;
+			}
+
 			common_can.in().rx(incoming.bytes(), id);
 			switch (id) {
 				case (uint32_t)can::addr::sw::tx::buttons_k: {
-					can::frame::sw::tx::buttons btns{incoming};
-					state.lights_l = btns.frame.s.left;
-					state.lights_r = btns.frame.s.right;
-					state.lights_hazard = btns.frame.s.hazard;
+					can::frame::sw::tx::buttons btns(incoming);
+//					state.lights_l = btns.frame.s.left;
+//					state.lights_r = btns.frame.s.right;
+//					state.lights_hazard = btns.frame.s.hazard;
+					state.cruise_en ^= btns.frame.s.cruise_en;
+					state.cruise += (float) 2*btns.frame.s.cruise_up;
+					state.cruise -= (float) 2*btns.frame.s.cruise_down;
+
+					can::frame::sw::rx::buttons ack(0);
+					ack.frame.s.cruise_en = btns.frame.s.cruise_en;
+					ack.frame.s.cruise_up = btns.frame.s.cruise_up;
+					ack.frame.s.cruise_down = btns.frame.s.cruise_down;
+					ack.frame.s.cruise_mode = btns.frame.s.cruise_mode;
+					common_can.out().tx(ack.bytes(), 4, can::addr::sw::rx::buttons_k);
+
 					state.sw_timer = timer::ms(); // Reset SW time-out
-					return;
+					break;
 				}
 				default:
 					uint32_t dc_time = timer::ms(); // Kill SW things if SW times-out.
 					if ((dc_time > state.sw_timer + 500) || ((dc_time < state.sw_timer) && (dc_time > 500))) {
-						state.lights_l = 0;
-						state.lights_r = 0;
-						state.lights_hazard = 0;
+//						state.lights_l = 0;
+//						state.lights_r = 0;
+//						state.lights_hazard = 0;
 						state.cruise_en = 0;
 					}
 			}
@@ -150,16 +184,20 @@ namespace nu {
 		void ALWAYSINLINE set_motor() {
 			WDT::clear();
 
-			can::frame::ws20::rx::drive_cmd drive{}; // Zero-init [current, velocity]
+			can::frame::ws20::rx::drive_cmd drive(0); // Zero-init [current, velocity]
 
 			if (state.brake_en) {
 				state.cruise_en = 0;
-				if (state.regen_en)
+				if (state.regen_en){
 					drive.frame.s.motorCurrent = 0.2; // REGEN_AMOUNT
-				else
+				} else{
 					Nop(); // Normal braking.
-			} else if (state.accel_en)
+				}
+			} else if (state.cruise_en) {
+				drive.frame.s = {state.cruise, 1};
+			} else if (state.accel_en) {
 				drive.frame.s = {101, state.accel}; // [Max 101m/s, accel percent]
+			}
 
 			if (state.reverse_en)
 				drive.frame.s.motorVelocity *= -1;
@@ -191,8 +229,34 @@ namespace nu {
 		/** Demo LED toggling */
 		void ALWAYSINLINE demo() {
 			WDT::clear();
-			led1.toggle();
-			timer::delay_s<1>();
+			lcd.lcd_clear();
+			lcd << 69 << "C++WINS " << timer::s() <<  end;
+			
+			can::frame::bms::tx::trip tap;
+			tap.frame.s.trip_code = 3;
+			tap.frame.s.module = timer::s();
+			ws_can.out().tx(tap.bytes(), 8, can::addr::bms::tx::trip_k);
+
+			static can::frame::Packet frame;
+			static uint32_t id = 0;
+			ws_can.in().rx(frame.bytes(), id);
+			lcd.goto_xy(0,1);
+			lcd << "CAN id:" << id << end;
+			lcd.goto_xy(0,2);
+			lcd << (frame.data()) << end;
+
+			
+			read_ins();
+
+			lcd.goto_xy(0,3);
+			lcd << "RvRgArHd" << end;
+			lcd.goto_xy(0,4);
+			lcd << state.reverse_en << state.regen_en << state.airgap_en << state.lights_head << end;
+			lcd.goto_xy(0,5);
+			lcd << state.accel << end;
+			
+			if (id) led1.toggle();
+			timer::delay_ms<250>();
 		}
 
 		static NORETURN void main();

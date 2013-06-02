@@ -46,16 +46,9 @@ namespace nu {
 		static const uint16_t lcd_y = 48;
 
 		Nokia5110(Pin _cs, SpiChannel _chn, Pin _reset, Pin _dc);
-		void cmd_func_set(const cmd_func_set_options opts);
-		void cmd_set_vop(const uint8_t vop);
-		void ALWAYSINLINE cmd_set_contrast(const uint8_t vop) {cmd_set_vop(vop);}
-		void cmd_set_temp_coeff(const cmd_func_set_options coeff);
-		void cmd_set_bias(const uint8_t bias);
-		void cmd_set_disp_mode(const cmd_func_set_options mode);
-
 
 		void put_c(const uint8_t c);
-		void puts(const uint8_t *str);
+		void puts(const char *str);
 //		DEPRECATED void PRINTF(2,3) printf(const char *fmt, ...);
 
 		/**
@@ -86,7 +79,8 @@ namespace nu {
 		ALWAYSINLINE void lcd_clear(){
 			goto_xy(0, 0);
 			for (uint32_t ui = 0; ui < (lcd_x * 6); ui++) // WARNING
-				write_data(0x00);
+				write_data(0x88); // Clear with 2 dots to prevent fading
+			goto_xy(0, 0);
 		}
 
 	private:
@@ -99,6 +93,12 @@ namespace nu {
 			tx(&data, 1);
 		}
 
+		void cmd_func_set(const cmd_func_set_options opts);
+		void cmd_set_vop(const uint8_t vop);
+		void ALWAYSINLINE cmd_set_contrast(const uint8_t vop) {cmd_set_vop(vop);}
+		void cmd_set_temp_coeff(const cmd_func_set_options coeff);
+		void cmd_set_bias(const uint8_t bias);
+		void cmd_set_disp_mode(const cmd_func_set_options mode);
 		void cmd_set_ram_x_addr(const uint8_t x);
 		void cmd_set_ram_y_addr(const uint8_t y);
 	};

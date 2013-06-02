@@ -12,10 +12,9 @@
 using namespace nu;
 
 void BatteryMs::main() {
-	NU_GIFT(4096);
 	WDT::enable();
 	BatteryMs bms{};
 	while (true) {
-		bms.run();
+		bms.demo();
 	}
 }

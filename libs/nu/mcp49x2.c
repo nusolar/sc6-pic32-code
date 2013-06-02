@@ -1,6 +1,6 @@
-#include "mcp49x2.h"
-#include "errorcodes.h"
-#include "utility.h"
+#include "nu/mcp49x2.h"
+#include "nu/errorcodes.h"
+#include "nu/utility.h"
 
     #pragma pack(push, 1)
 PACKED struct mcp49x2_write_cmd {

@@ -1,4 +1,4 @@
-#include "hais50p.h"
+#include "nu/hais50p.h"
 
 static ALWAYSINLINE float
 voltageToCurrent(float voltage)
@@ -7,5 +7,5 @@ voltageToCurrent(float voltage)
      * V_ref = 2.5 +/- 0.025V
      * I_pn  = primary nominal curent = 50A for HAIS-50P
      * I_p   = primary current (measured current) */
-    return ((voltage-2.5)*80);
+    return ((voltage - 2.5) * 80);
 }

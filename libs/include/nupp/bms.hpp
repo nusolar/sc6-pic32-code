@@ -43,7 +43,7 @@ namespace nu {
 		DigitalOut main_relay, array_relay;
 		can::Module common_can, mppt_can;
 		Nokia5110 lcd1, lcd2;
-		AD7685 adc;
+		AD7685<2> adc; // WARNING: GUESSED number
 
 
 		/**
@@ -69,8 +69,8 @@ namespace nu {
 			array_relay(Pin(Pin::D, 3)), common_can(CAN1), mppt_can(CAN2),
 			lcd1(Pin(Pin::G, 9), SPI_CHANNEL2, Pin(Pin::A, 9), Pin(Pin::E, 9)),
 			lcd2(Pin(Pin::E, 8), SPI_CHANNEL2, Pin(Pin::A, 10), Pin(Pin::E, 9)),
-			adc (Pin(Pin::A, 0), SPI_CHANNEL4, Pin(Pin::F, 12), 2, // WARNING: GUESSED
-				 (AD7685::options) (2|AD7685::CHAIN_MODE|AD7685::NO_BUSY_INDICATOR)), // ERROR: SPI pin?
+			adc (Pin(Pin::A, 0), SPI_CHANNEL4, Pin(Pin::F, 12),
+				 (AD7685<2>::options) (2|AD7685<2>::CHAIN_MODE|AD7685<2>::NO_BUSY_INDICATOR)), // ERROR: SPI pin?
 			state()
 		{
 			WDT::clear();
@@ -79,11 +79,11 @@ namespace nu {
 			main_relay = true;
 			array_relay = true;
 
-			common_can.in() = can::RxChannel(can::Channel(common_can, CAN_CHANNEL0), CAN_RX_FULL_RECEIVE);
-			common_can.out() = can::TxChannel(can::Channel(common_can, CAN_CHANNEL1), CAN_HIGH_MEDIUM_PRIORITY);
-			common_can.err() = can::TxChannel(can::Channel(common_can, CAN_CHANNEL2), CAN_LOWEST_PRIORITY);
+			common_can.in().setup_rx();
+			common_can.out().setup_tx(CAN_HIGH_MEDIUM_PRIORITY);
+			common_can.err().setup_tx(CAN_LOWEST_PRIORITY);
 
-			mppt_can.out() = can::TxChannel(can::Channel(common_can, CAN_CHANNEL1), CAN_HIGH_MEDIUM_PRIORITY);
+			mppt_can.out().setup_tx(CAN_HIGH_MEDIUM_PRIORITY);
 		}
 
 
@@ -91,12 +91,20 @@ namespace nu {
 		 * A function to be called repeatedly
 		 */
 		ALWAYSINLINE void run() {
-			lcd2.goto_xy(0, 1);
-			lcd2 << "V: %0.9f" << state.voltages[31] << end;
-			lcd2.goto_xy(0, 2);
-			lcd2 << "T: %0.9f" << state.temperatures[31] << end;
-			lcd2.goto_xy(0, 3);
-			lcd2 << "I: %0.9f" <<  state.current_battery << end;
+			lcd1.goto_xy(0, 1);
+			lcd1 << "V: %0.9f" << state.voltages[31] << end;
+			lcd1.goto_xy(0, 2);
+			lcd1 << "T: %0.9f" << state.temperatures[31] << end;
+			lcd1.goto_xy(0, 3);
+			lcd1 << "I: %0.9f" <<  state.current_battery << end;
+			led1.toggle();
+			timer::delay_s<1>();
+		}
+
+		ALWAYSINLINE void demo() {
+			WDT::clear();
+			lcd1.lcd_clear();
+			lcd1 << "C++WINS" << end;
 			led1.toggle();
 			timer::delay_s<1>();
 		}

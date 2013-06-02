@@ -1,4 +1,4 @@
-#include "ltc6803.h"
+#include "nu/ltc6803.h"
 
 enum ltc6803_cmds {
     WRITECFGS   = 0x01,
@@ -73,7 +73,7 @@ enum ltc6803_cmds {
     STOW_DISCHRG9,
     STOW_DISCHRG10,
     STOW_DISCHRG11,
-    STOW_DISCHRG12,
+    STOW_DISCHRG12
 };
 
 static const u8 crctab[] =

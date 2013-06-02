@@ -39,11 +39,19 @@ namespace nu {
 				par.bits.array[pos/8] ^= (uint8_t)(((par.bits.array[pos/8]>>pos%8 & 1) != rvalue) << pos%8);
 				return *this;
 			}
+
+			ALWAYSINLINE bit& operator|= (bool rvalue) {
+				par.bits.array[pos/8] |= (uint8_t)((uint8_t)rvalue << pos%8);
+				return *this;
+			}
 		};
 
-		ALWAYSINLINE operator uint64_t() const {
-			return bits.ulong;
+		ALWAYSINLINE Bitset& operator&= (uint64_t rvalue) {
+			bits.ulong &= rvalue;
+			return *this;
 		}
+
+		ALWAYSINLINE operator uint64_t() const {return bits.ulong;}
 		ALWAYSINLINE bool operator[] (size_t pos) const {return (bool)bit(*this,pos);}
 		ALWAYSINLINE bit operator[] (size_t pos) {return bit(*this,pos);}
 		ALWAYSINLINE size_t size() const {return N;}

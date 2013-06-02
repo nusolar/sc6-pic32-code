@@ -31,10 +31,9 @@ namespace nu {
 
 		void rx(void *dst, size_t n);
 		void tx(const void *src, size_t n);
-		ALWAYSINLINE virtual void puts(const char *str) {
+		INLINE virtual void puts(const char *str) {
 			tx(str, strlen(str));
 		}
-//		DEPRECATED void PRINTF(2, 3) printf(const char *fmt, ...);
 	};
 }
 
