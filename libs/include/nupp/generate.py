@@ -139,7 +139,7 @@ class bms(Group):
 			X('trip_pt_temp', Float2, 'low', 'high'))
 class ws20(Group):
 	class rx:
-		base = 0x400
+		base = 0x500
 		frames = (
 			X('driver_controls_id', Status, 'drvId', 'serialNo') + base,
 			X('drive_cmd', Float2, 'motorVelocity', 'motorCurrent'),

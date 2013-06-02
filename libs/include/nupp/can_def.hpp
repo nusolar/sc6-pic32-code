@@ -26,6 +26,150 @@
 				Packet& operator= (const uint64_t _i) {data() = _i; return *this;}
 				Packet& operator= (const Packet& p) {data() = p.data(); return *this;}
 			};
+ namespace sw {
+ namespace rx {
+
+		struct buttons: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED members_t {
+					
+	unsigned    yes             :1;
+	unsigned    no              :1;
+	unsigned    maybe           :1;
+	unsigned    cruise_en       :1;
+	unsigned    cruise_mode     :1;
+	unsigned    cruise_up       :1;
+	unsigned    cruise_down     :1;
+	unsigned    reserved        :25;
+				} s;
+			} frame;
+			ALWAYSINLINE uint64_t data() const {return frame.data;}
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE buttons(): frame{0} {}
+			ALWAYSINLINE buttons(const uint64_t _i): frame{_i} {}
+			ALWAYSINLINE buttons(const Packet& p): frame{p.data()} {}
+		};
+
+		struct lights: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED members_t {
+					
+	unsigned    left            :1;
+	unsigned    right           :1;
+	unsigned    radio           :1;
+	unsigned    yes             :1;
+	unsigned    hazard          :1;
+	unsigned    cruise_en       :1;
+	unsigned    cruise_up       :1;
+	unsigned    maybe           :1;
+	unsigned    no              :1;
+	unsigned    horn            :1;
+	unsigned    cruise_mode     :1;
+	unsigned    cruise_down     :1;
+	unsigned    reserved        :20;
+				} s;
+			} frame;
+			ALWAYSINLINE uint64_t data() const {return frame.data;}
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE lights(): frame{0} {}
+			ALWAYSINLINE lights(const uint64_t _i): frame{_i} {}
+			ALWAYSINLINE lights(const Packet& p): frame{p.data()} {}
+		};
+}
+ namespace tx {
+
+		struct heartbeat: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED members_t {
+					char dcStr[4]; uint32_t reserved;
+				} s;
+			} frame;
+			ALWAYSINLINE uint64_t data() const {return frame.data;}
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE heartbeat(): frame{0} {}
+			ALWAYSINLINE heartbeat(const uint64_t _i): frame{_i} {}
+			ALWAYSINLINE heartbeat(const Packet& p): frame{p.data()} {}
+		};
+
+		struct error: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED members_t {
+					char msg[8];
+				} s;
+			} frame;
+			ALWAYSINLINE uint64_t data() const {return frame.data;}
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE error(): frame{0} {}
+			ALWAYSINLINE error(const uint64_t _i): frame{_i} {}
+			ALWAYSINLINE error(const Packet& p): frame{p.data()} {}
+		};
+
+		struct buttons: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED members_t {
+					
+	unsigned    yes             :1;
+	unsigned    no              :1;
+	unsigned    maybe           :1;
+	unsigned    cruise_en       :1;
+	unsigned    cruise_mode     :1;
+	unsigned    cruise_up       :1;
+	unsigned    cruise_down     :1;
+	unsigned    reserved        :25;
+				} s;
+			} frame;
+			ALWAYSINLINE uint64_t data() const {return frame.data;}
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE buttons(): frame{0} {}
+			ALWAYSINLINE buttons(const uint64_t _i): frame{_i} {}
+			ALWAYSINLINE buttons(const Packet& p): frame{p.data()} {}
+		};
+
+		struct lights: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED members_t {
+					
+	unsigned    left            :1;
+	unsigned    right           :1;
+	unsigned    radio           :1;
+	unsigned    yes             :1;
+	unsigned    hazard          :1;
+	unsigned    cruise_en       :1;
+	unsigned    cruise_up       :1;
+	unsigned    maybe           :1;
+	unsigned    no              :1;
+	unsigned    horn            :1;
+	unsigned    cruise_mode     :1;
+	unsigned    cruise_down     :1;
+	unsigned    reserved        :20;
+				} s;
+			} frame;
+			ALWAYSINLINE uint64_t data() const {return frame.data;}
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE lights(): frame{0} {}
+			ALWAYSINLINE lights(const uint64_t _i): frame{_i} {}
+			ALWAYSINLINE lights(const Packet& p): frame{p.data()} {}
+		};
+}
+}
  namespace bms {
  namespace rx {
 
@@ -646,76 +790,6 @@
 		};
 }
 }
- namespace dc {
- namespace rx {
-
-		struct horn: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					uint64_t enabled;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t data() const {return frame.data;}
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			ALWAYSINLINE horn(): frame{0} {}
-			ALWAYSINLINE horn(const uint64_t _i): frame{_i} {}
-			ALWAYSINLINE horn(const Packet& p): frame{p.data()} {}
-		};
-
-		struct signals: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					uint32_t l, r;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t data() const {return frame.data;}
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			ALWAYSINLINE signals(): frame{0} {}
-			ALWAYSINLINE signals(const uint64_t _i): frame{_i} {}
-			ALWAYSINLINE signals(const Packet& p): frame{p.data()} {}
-		};
-
-		struct cruise: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					uint64_t enabled;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t data() const {return frame.data;}
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			ALWAYSINLINE cruise(): frame{0} {}
-			ALWAYSINLINE cruise(const uint64_t _i): frame{_i} {}
-			ALWAYSINLINE cruise(const Packet& p): frame{p.data()} {}
-		};
-
-		struct cruise_velocity_current: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					float velocity, current;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t data() const {return frame.data;}
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			ALWAYSINLINE cruise_velocity_current(): frame{0} {}
-			ALWAYSINLINE cruise_velocity_current(const uint64_t _i): frame{_i} {}
-			ALWAYSINLINE cruise_velocity_current(const Packet& p): frame{p.data()} {}
-		};
-}
- namespace tx {
-}
-}
  namespace ws20 {
  namespace rx {
 
@@ -1030,152 +1104,92 @@
 		};
 }
 }
- namespace sw {
+ namespace dc {
  namespace rx {
 
-		struct buttons: public Packet {
+		struct horn: public Packet {
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
 				struct PACKED members_t {
-					
-	unsigned    yes             :1;
-	unsigned    no              :1;
-	unsigned    maybe           :1;
-	unsigned    cruise_en       :1;
-	unsigned    cruise_mode     :1;
-	unsigned    cruise_up       :1;
-	unsigned    cruise_down     :1;
-	unsigned    reserved        :25;
+					uint64_t enabled;
 				} s;
 			} frame;
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			ALWAYSINLINE buttons(): frame{0} {}
-			ALWAYSINLINE buttons(const uint64_t _i): frame{_i} {}
-			ALWAYSINLINE buttons(const Packet& p): frame{p.data()} {}
+			ALWAYSINLINE horn(): frame{0} {}
+			ALWAYSINLINE horn(const uint64_t _i): frame{_i} {}
+			ALWAYSINLINE horn(const Packet& p): frame{p.data()} {}
 		};
 
-		struct lights: public Packet {
+		struct signals: public Packet {
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
 				struct PACKED members_t {
-					
-	unsigned    left            :1;
-	unsigned    right           :1;
-	unsigned    radio           :1;
-	unsigned    yes             :1;
-	unsigned    hazard          :1;
-	unsigned    cruise_en       :1;
-	unsigned    cruise_up       :1;
-	unsigned    maybe           :1;
-	unsigned    no              :1;
-	unsigned    horn            :1;
-	unsigned    cruise_mode     :1;
-	unsigned    cruise_down     :1;
-	unsigned    reserved        :20;
+					uint32_t l, r;
 				} s;
 			} frame;
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			ALWAYSINLINE lights(): frame{0} {}
-			ALWAYSINLINE lights(const uint64_t _i): frame{_i} {}
-			ALWAYSINLINE lights(const Packet& p): frame{p.data()} {}
+			ALWAYSINLINE signals(): frame{0} {}
+			ALWAYSINLINE signals(const uint64_t _i): frame{_i} {}
+			ALWAYSINLINE signals(const Packet& p): frame{p.data()} {}
+		};
+
+		struct cruise: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED members_t {
+					uint64_t enabled;
+				} s;
+			} frame;
+			ALWAYSINLINE uint64_t data() const {return frame.data;}
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE cruise(): frame{0} {}
+			ALWAYSINLINE cruise(const uint64_t _i): frame{_i} {}
+			ALWAYSINLINE cruise(const Packet& p): frame{p.data()} {}
+		};
+
+		struct cruise_velocity_current: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED members_t {
+					float velocity, current;
+				} s;
+			} frame;
+			ALWAYSINLINE uint64_t data() const {return frame.data;}
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE cruise_velocity_current(): frame{0} {}
+			ALWAYSINLINE cruise_velocity_current(const uint64_t _i): frame{_i} {}
+			ALWAYSINLINE cruise_velocity_current(const Packet& p): frame{p.data()} {}
 		};
 }
  namespace tx {
-
-		struct heartbeat: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					char dcStr[4]; uint32_t reserved;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t data() const {return frame.data;}
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			ALWAYSINLINE heartbeat(): frame{0} {}
-			ALWAYSINLINE heartbeat(const uint64_t _i): frame{_i} {}
-			ALWAYSINLINE heartbeat(const Packet& p): frame{p.data()} {}
-		};
-
-		struct error: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					char msg[8];
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t data() const {return frame.data;}
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			ALWAYSINLINE error(): frame{0} {}
-			ALWAYSINLINE error(const uint64_t _i): frame{_i} {}
-			ALWAYSINLINE error(const Packet& p): frame{p.data()} {}
-		};
-
-		struct buttons: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					
-	unsigned    yes             :1;
-	unsigned    no              :1;
-	unsigned    maybe           :1;
-	unsigned    cruise_en       :1;
-	unsigned    cruise_mode     :1;
-	unsigned    cruise_up       :1;
-	unsigned    cruise_down     :1;
-	unsigned    reserved        :25;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t data() const {return frame.data;}
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			ALWAYSINLINE buttons(): frame{0} {}
-			ALWAYSINLINE buttons(const uint64_t _i): frame{_i} {}
-			ALWAYSINLINE buttons(const Packet& p): frame{p.data()} {}
-		};
-
-		struct lights: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					
-	unsigned    left            :1;
-	unsigned    right           :1;
-	unsigned    radio           :1;
-	unsigned    yes             :1;
-	unsigned    hazard          :1;
-	unsigned    cruise_en       :1;
-	unsigned    cruise_up       :1;
-	unsigned    maybe           :1;
-	unsigned    no              :1;
-	unsigned    horn            :1;
-	unsigned    cruise_mode     :1;
-	unsigned    cruise_down     :1;
-	unsigned    reserved        :20;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t data() const {return frame.data;}
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			ALWAYSINLINE lights(): frame{0} {}
-			ALWAYSINLINE lights(const uint64_t _i): frame{_i} {}
-			ALWAYSINLINE lights(const Packet& p): frame{p.data()} {}
-		};
 }
 }
 }
  namespace addr {
+ namespace sw {
+ namespace rx {
+ enum addrs {
+buttons_k = 768,
+lights_k};
+}
+ namespace tx {
+ enum addrs {
+heartbeat_k = 784,
+error_k,
+buttons_k,
+lights_k};
+}
+}
  namespace bms {
  namespace rx {
  enum addrs {
@@ -1230,23 +1244,10 @@ mppt2_k = 1808,
 mppt3_k = 1808};
 }
 }
- namespace dc {
- namespace rx {
- enum addrs {
-horn_k = 272,
-signals_k,
-cruise_k,
-cruise_velocity_current_k};
-}
- namespace tx {
- enum addrs {
-};
-}
-}
  namespace ws20 {
  namespace rx {
  enum addrs {
-driver_controls_id_k = 1024,
+driver_controls_id_k = 1280,
 drive_cmd_k,
 power_cmd_k,
 reset_cmd_k};
@@ -1270,18 +1271,17 @@ cap_airout_temp_k,
 odom_bus_ah_k};
 }
 }
- namespace sw {
+ namespace dc {
  namespace rx {
  enum addrs {
-buttons_k = 768,
-lights_k};
+horn_k = 272,
+signals_k,
+cruise_k,
+cruise_velocity_current_k};
 }
  namespace tx {
  enum addrs {
-heartbeat_k = 784,
-error_k,
-buttons_k,
-lights_k};
+};
 }
 }
 }
