@@ -35,6 +35,7 @@
         <itemPath>../include/nupp/wdt.hpp</itemPath>
         <itemPath>../include/nupp/bitset.hpp</itemPath>
         <itemPath>../include/nupp/can_def.hpp</itemPath>
+        <itemPath>../include/nupp/ltc6803.hpp</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
@@ -62,6 +63,7 @@
         <itemPath>../nupp/steering_wheel.cpp</itemPath>
         <itemPath>../nupp/allocator.cpp</itemPath>
         <itemPath>../nupp/buffer.cpp</itemPath>
+        <itemPath>../nupp/ltc6803.cpp</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
