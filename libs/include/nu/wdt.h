@@ -10,9 +10,9 @@
 extern void (*nu_wdt_clear) (void);
 
 void
-nu_wdt_enable_clear(void);
+nu_wdt_clear_enable(void);
 
 void
-nu_wdt_disable_clear(void);
+nu_wdt_clear_disable(void);
 
 #endif
