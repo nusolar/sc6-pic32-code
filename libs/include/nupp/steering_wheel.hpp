@@ -109,8 +109,10 @@ namespace nu {
 		{
 			
 			WDT::clear();
-			common_can.in().setup_rx();
-			common_can.in().add_filter(CAN_FILTER0, CAN_SID, 0x300, CAN_FILTER_MASK0, CAN_FILTER_MASK_IDE_TYPE, 0x7F8);
+			common_can.in ().setup_rx();
+			common_can.in ().add_filter(CAN_FILTER0, CAN_SID, 0x300, CAN_FILTER_MASK0, CAN_FILTER_MASK_IDE_TYPE, 0x7F8);
+			common_can.in1().setup_rx(); // Listen for MotorController
+			common_can.in1().add_filter(CAN_FILTER1, CAN_SID, 0x403, CAN_FILTER_MASK1, CAN_FILTER_MASK_IDE_TYPE, 0x7F8);
 			common_can.out().setup_tx(CAN_HIGH_MEDIUM_PRIORITY);
 			common_can.err().setup_tx(CAN_LOWEST_PRIORITY);
 		}

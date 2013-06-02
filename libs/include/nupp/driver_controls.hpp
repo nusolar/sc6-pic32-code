@@ -77,7 +77,7 @@ namespace nu {
 			common_can.out().setup_tx(CAN_HIGH_MEDIUM_PRIORITY);
 			common_can.err().setup_tx(CAN_LOWEST_PRIORITY); // error reporting channel
 			ws_can.in().setup_rx();
-			ws_can.in().add_filter(CAN_FILTER0, CAN_SID, 0x403, CAN_FILTER_MASK0, CAN_FILTER_MASK_IDE_TYPE, 0x7FC);
+			ws_can.in().add_filter(CAN_FILTER0, CAN_SID, 0x404, CAN_FILTER_MASK0, CAN_FILTER_MASK_IDE_TYPE, 0x7FC); // WARNING should be 0x403
 			ws_can.out().setup_tx(CAN_HIGH_MEDIUM_PRIORITY);
 		}
 
@@ -240,20 +240,21 @@ namespace nu {
 			static can::frame::Packet frame;
 			static uint32_t id = 0;
 			ws_can.in().rx(frame.bytes(), id);
-			lcd.goto_xy(0,2);
+			lcd.goto_xy(0,1);
 			lcd << "CAN id:" << id << end;
-			lcd.goto_xy(0,3);
+			lcd.goto_xy(0,2);
 			lcd << (frame.data()) << end;
 
-			lcd.goto_xy(0,4);
-			lcd << "RvRgArHd" << end;
-			lcd.goto_xy(0,5);
-
+			
 			read_ins();
 
+			lcd.goto_xy(0,3);
+			lcd << "RvRgArHd" << end;
+			lcd.goto_xy(0,4);
 			lcd << state.reverse_en << state.regen_en << state.airgap_en << state.lights_head << end;
+			lcd.goto_xy(0,5);
+			lcd << state.accel << end;
 			
-
 			if (id) led1.toggle();
 			timer::delay_ms<250>();
 		}

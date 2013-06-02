@@ -89,9 +89,11 @@ namespace nu {
 			ALWAYSINLINE Channel& channel(size_t num) {
 				return *(Channel *) (channel_buf + num*sizeof(Channel));
 			}
+
 			Channel& in () {return channel(0);}
 			Channel& out() {return channel(1);}
 			Channel& err() {return channel(2);}
+			Channel& in1() {return channel(3);}
 
 		private:
 			size_t channel_buf[32 * sizeof(Channel)];
