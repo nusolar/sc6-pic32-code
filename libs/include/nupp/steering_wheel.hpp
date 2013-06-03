@@ -14,13 +14,13 @@
 
 /* //Pin definitions. L/R/Haz/Horn are wired to MAYBE.
 #define SW_BTNS(_BTN)	\
-	_BTN(left,			D, 0)\
-	_BTN(right,			D, 0)\
+	_BTN(left,			D, 6)\
+	_BTN(right,			D, 3)\
 	_BTN(yes,			E, 0)	\
 	_BTN(no,			G, 12)	\
 	_BTN(maybe,			E, 2)	\
-	_BTN(hazard,		D, 0)\
-	_BTN(horn,			D, 0)\
+	_BTN(hazard,		D, 12)\
+	_BTN(horn,			D, 4)\
 	_BTN(cruise_en,		D, 0)	\
 	_BTN(cruise_mode,	D, 8)	\
 	_BTN(cruise_up,		D, 10)	\
@@ -36,7 +36,7 @@
 	_BTN(cruise_down,	A, 15)
 #define SW_LEDS(_LED)			\
 	_LED(left,			D, 7)   \
-	_LED(right,			D, 3)   \
+	_LED(right,			D, 2)   \
 	_LED(radio,			E, 5)   \
 	_LED(yes,			E, 1)   \
 	_LED(hazard,		D, 13)  \
@@ -46,7 +46,7 @@
 	_LED(no,			G, 13)  \
 	_LED(horn,			D, 5)   \
 	_LED(cruise_mode,	D, 9)   \
-	_LED(cruise_down,	A, 15)*/
+	_LED(cruise_down,	A, 14)*/
 
 #define SW_N_BTNS 7
 #define SW_N_LEDS 12

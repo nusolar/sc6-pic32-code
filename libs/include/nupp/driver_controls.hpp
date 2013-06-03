@@ -77,7 +77,7 @@ namespace nu {
 			common_can.out().setup_tx(CAN_HIGH_MEDIUM_PRIORITY);
 			common_can.err().setup_tx(CAN_LOWEST_PRIORITY); // error reporting channel
 			ws_can.in().setup_rx();
-			ws_can.in().add_filter(CAN_FILTER0, CAN_SID, 0x404, CAN_FILTER_MASK0, CAN_FILTER_MASK_IDE_TYPE, 0x7FC); // WARNING should be 0x403
+			ws_can.in().add_filter(CAN_FILTER0, CAN_SID, 0x403, CAN_FILTER_MASK0, CAN_FILTER_MASK_IDE_TYPE, 0x7FF); // 0x403 == motor current
 			ws_can.out().setup_tx(CAN_HIGH_MEDIUM_PRIORITY);
 		}
 
@@ -173,8 +173,8 @@ namespace nu {
 			lights_brake	= state.lights_brake;
 
 			bool tick = timer::s()%2;// Even or Odd, change every second
-			lights_l = state.lights_l||state.lights_hazard? tick: 0;
-			lights_r = state.lights_r||state.lights_hazard? tick: 0;
+			lights_l = (state.lights_l||state.lights_hazard)? tick: 0;
+			lights_r = (state.lights_r||state.lights_hazard)? tick: 0;
 		}
 
 
@@ -199,10 +199,10 @@ namespace nu {
 				drive.frame.s = {101, state.accel}; // [Max 101m/s, accel percent]
 			}
 
-			if (state.reverse_en)
+			if (state.reverse_en) {
 				drive.frame.s.motorVelocity *= -1;
+			}
 
-			led1.on(); timer::delay_ms<1>(); led1.off(); // WARNING: bottleneck
 			ws_can.out().tx(drive.bytes(),
 							8,
 							(uint16_t)can::addr::ws20::rx::drive_cmd_k);
@@ -222,7 +222,7 @@ namespace nu {
 
 			lcd.lcd_clear();
 			lcd.goto_xy(0, 0);
-			lcd << 25.0 << end;
+			lcd << timer::s() << end;
 		}
 
 
@@ -230,33 +230,52 @@ namespace nu {
 		void ALWAYSINLINE demo() {
 			WDT::clear();
 			lcd.lcd_clear();
-			lcd << 69 << "C++WINS " << timer::s() <<  end;
+
+			if (timer::ms() - timer::s() < 201) {
+				static can::frame::Packet frame;
+				static uint32_t id = 0;
+				ws_can.in().rx(frame.bytes(), id);
+				lcd.goto_xy(0,0);
+				lcd << "CAN id:" << id << end;
+				lcd.goto_xy(0,1);
+				
+				switch (id) {
+					case can::addr::ws20::tx::motor_velocity_k: {
+						can::frame::ws20::tx::motor_velocity mv(frame);
+						lcd << (mv.frame.s.motorVelocity) << end;
+					}
+					case can::addr::ws20::tx::motor_bus_k: {
+						can::frame::ws20::tx::motor_bus mb(frame);
+						lcd << mb.frame.s.busCurrent;
+					}
+				}
+				if (id) led1.toggle();
+			}
 			
-			can::frame::bms::tx::trip tap;
-			tap.frame.s.trip_code = 3;
-			tap.frame.s.module = timer::s();
-			ws_can.out().tx(tap.bytes(), 8, can::addr::bms::tx::trip_k);
-
-			static can::frame::Packet frame;
-			static uint32_t id = 0;
-			ws_can.in().rx(frame.bytes(), id);
-			lcd.goto_xy(0,1);
-			lcd << "CAN id:" << id << end;
-			lcd.goto_xy(0,2);
-			lcd << (frame.data()) << end;
-
 			
 			read_ins();
+			set_lights();
 
-			lcd.goto_xy(0,3);
-			lcd << "RvRgArHd" << end;
-			lcd.goto_xy(0,4);
-			lcd << state.reverse_en << state.regen_en << state.airgap_en << state.lights_head << end;
-			lcd.goto_xy(0,5);
-			lcd << state.accel << end;
+			can::frame::ws20::rx::drive_cmd drive(0);
+			drive.frame.s.motorCurrent = state.accel;
+			drive.frame.s.motorVelocity = 50;
+			if (state.reverse_en) {
+				drive.frame.s.motorVelocity *= -1;
+			}
 			
-			if (id) led1.toggle();
-			timer::delay_ms<250>();
+//			ws_can.out().tx(drive.bytes(), 8, (uint16_t)can::addr::ws20::rx::drive_cmd_k);
+			set_motor();
+
+			if (timer::ms() - timer::s() < 5) {
+				lcd.goto_xy(0,2);
+				lcd << "RvRgArHd" << end;
+				lcd.goto_xy(0,3);
+				lcd << state.reverse_en << state.regen_en << state.airgap_en << state.lights_head << end;
+				lcd.goto_xy(0,4);
+				lcd << drive.frame.s.motorCurrent << " " << timer::s() << end;
+				lcd.goto_xy(0,5); lcd << "vel: " << drive.frame.s.motorVelocity << end;
+			}
+			timer::delay_ms<1>();
 		}
 
 		static NORETURN void main();
