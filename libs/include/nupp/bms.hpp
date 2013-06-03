@@ -101,7 +101,7 @@ namespace nu {
 			timer::delay_s<1>();
 		}
 
-		ALWAYSINLINE void demo() {
+		ALWAYSINLINE void test() {
 			WDT::clear();
 			lcd1.lcd_clear();
 			lcd1 << "C++WINS" << end;

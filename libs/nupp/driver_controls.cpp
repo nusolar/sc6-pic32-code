@@ -16,6 +16,6 @@ void DriverControls::main() {
 	DriverControls dc{};
 	dc.led1.on();
 	while (true) {
-		dc.demo();
+		dc.test();
 	}
 }

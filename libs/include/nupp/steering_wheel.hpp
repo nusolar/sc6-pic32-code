@@ -121,7 +121,7 @@ namespace nu {
 		/**
 		 * Animate LEDs on startup.
 		 */
-		void ALWAYSINLINE animate_leds() {
+		ALWAYSINLINE void animate_leds() {
 			for (unsigned i=0; i<SW_N_LEDS; i++){
 				WDT::clear();
 				leds[i]->on();
@@ -137,7 +137,7 @@ namespace nu {
 		/**
 		 * Read value of Button & LED Pins, update internal state.
 		 */
-		void ALWAYSINLINE read_ins() {
+		ALWAYSINLINE void read_ins() {
 			WDT::clear();
 			for (int repeat = 0; repeat < 10; repeat++) // debounce 10x
 				for (unsigned i = 0; i < SW_N_BTNS; i++)
@@ -153,7 +153,7 @@ namespace nu {
 		/**
 		 * Receive data to draw on LCD. Also receive any commands.
 		 */
-		void ALWAYSINLINE recv_can() {
+		ALWAYSINLINE void recv_can() {
 			WDT::clear();
 			can::frame::Packet incoming;
 			uint32_t id;
@@ -182,7 +182,7 @@ namespace nu {
 		/**
 		 * Set each LED according to Steering Wheel's state.
 		 */
-		void ALWAYSINLINE set_leds() {
+		ALWAYSINLINE void set_leds() {
 			for (unsigned i=0; i < SW_N_LEDS; i++) {
 				*leds[i] = state.leds[i];
 			}
@@ -191,7 +191,7 @@ namespace nu {
 		/**
 		 * Read the car's state from CAN, draw to dashboard LCD.
 		 */
-		void ALWAYSINLINE draw_lcd(){
+		ALWAYSINLINE void draw_lcd(){
 			lcd << state.velo << state.curr;
 			uint32_t msg = 0x004e4550;
 			char *alert = NULL;
@@ -202,7 +202,7 @@ namespace nu {
 		/**
 		 * Send CAN update of Steering Wheel status (LEDs and Buttons).
 		 */
-		void ALWAYSINLINE send_can() {
+		ALWAYSINLINE void send_can() {
 			WDT::clear();
 
 			can::frame::sw::tx::buttons btns_pkt;
@@ -221,7 +221,7 @@ namespace nu {
 		/**
 		 * A function to be called repeatedly.
 		 */
-		void ALWAYSINLINE run() {
+		ALWAYSINLINE void run() {
 			WDT::clear();
 
 			read_ins(); //updates 10x, reads once
@@ -235,7 +235,7 @@ namespace nu {
 
 
 		/** Demo LED toggling */
-		void ALWAYSINLINE demo() {
+		ALWAYSINLINE void test() {
 			WDT::clear();
 			animate_leds();
 		}

@@ -15,6 +15,6 @@ void BatteryMs::main() {
 	WDT::enable();
 	BatteryMs bms{};
 	while (true) {
-		bms.demo();
+		bms.test();
 	}
 }

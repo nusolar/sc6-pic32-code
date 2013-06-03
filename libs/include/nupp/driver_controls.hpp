@@ -73,7 +73,7 @@ namespace nu {
 		{
 			WDT::clear();
 			common_can.in().setup_rx();
-			common_can.in().add_filter(CAN_FILTER0, CAN_SID, 0x312, CAN_FILTER_MASK0, CAN_FILTER_MASK_IDE_TYPE, 0x7FF);
+			common_can.in().add_filter(CAN_FILTER0, CAN_SID, 0x312, CAN_FILTER_MASK0, CAN_FILTER_MASK_IDE_TYPE, 0x7FF); // 0x312 == SW btns
 			common_can.out().setup_tx(CAN_HIGH_MEDIUM_PRIORITY);
 			common_can.err().setup_tx(CAN_LOWEST_PRIORITY); // error reporting channel
 			ws_can.in().setup_rx();
@@ -85,13 +85,13 @@ namespace nu {
 		/**
 		 * Read all input Pins. Store result in this->state.
 		 */
-		void ALWAYSINLINE read_ins() {
+		ALWAYSINLINE void read_ins() {
 			WDT::clear();
 			
 			state.accel = ((float)accel_pedel.read() + 0)/1024; // scale 0-1023 to 0-1
 			if (state.accel < 0) state.accel = 0; // TODO: print warning, clamp
 			if (state.accel > 1) state.accel = 1; // TODO: print warning
-			state.accel_en = state.accel > 0.05;
+			state.accel_en = state.accel > 0.02;
 
 			state.reverse_en = (bool)reverse_switch.read();
 
@@ -115,7 +115,7 @@ namespace nu {
 		/**
 		 * Read car state from CAN.
 		 */
-		void ALWAYSINLINE recv_can() {
+		ALWAYSINLINE void recv_can() {
 			uint32_t id;
 			can::frame::Packet incoming;
 
@@ -125,6 +125,10 @@ namespace nu {
 					can::frame::ws20::tx::motor_velocity velo(incoming);
 					state.velocity = velo.frame.s.vehicleVelocity;
 					if (!state.cruise_en) state.cruise = state.velocity;
+					break;
+				}
+				case can::addr::ws20::tx::motor_bus_k: {
+					can::frame::ws20::tx::motor_bus bus(incoming);
 					break;
 				}
 				default:
@@ -167,7 +171,7 @@ namespace nu {
 		/**
 		 * Update all light Outputs, to conform to state.
 		 */
-		void ALWAYSINLINE set_lights() {
+		ALWAYSINLINE void set_lights() {
 			WDT::clear();
 			headlights		= state.lights_head;
 			lights_brake	= state.lights_brake;
@@ -181,7 +185,7 @@ namespace nu {
 		/**
 		 * Command motor, from accel_pedel, brake, & cruise control input.
 		 */
-		void ALWAYSINLINE set_motor() {
+		ALWAYSINLINE void set_motor() {
 			WDT::clear();
 
 			can::frame::ws20::rx::drive_cmd drive(0); // Zero-init [current, velocity]
@@ -212,7 +216,7 @@ namespace nu {
 		/**
 		 * A function to be called repeatedly.
 		 */
-		void ALWAYSINLINE run() {
+		ALWAYSINLINE void run() {
 			WDT::clear();
 
 			read_ins();
@@ -225,55 +229,46 @@ namespace nu {
 			lcd << timer::s() << end;
 		}
 
-
-		/** Demo LED toggling */
-		void ALWAYSINLINE demo() {
+		/** testing */
+		ALWAYSINLINE void test() {
 			WDT::clear();
-			lcd.lcd_clear();
+			
+			read_ins();
+			recv_can();
+			set_lights();
+			set_motor();
 
-			if (timer::ms() - timer::s() < 201) {
-				static can::frame::Packet frame;
-				static uint32_t id = 0;
-				ws_can.in().rx(frame.bytes(), id);
+			static can::frame::Packet frame(0);
+			static uint32_t id = 0;
+			ws_can.in().rx(frame.bytes(), id);
+
+			if (timer::ms() - timer::s() < 2) {
+				lcd.lcd_clear();
 				lcd.goto_xy(0,0);
 				lcd << "CAN id:" << id << end;
 				lcd.goto_xy(0,1);
-				
 				switch (id) {
 					case can::addr::ws20::tx::motor_velocity_k: {
 						can::frame::ws20::tx::motor_velocity mv(frame);
 						lcd << (mv.frame.s.motorVelocity) << end;
+						break;
 					}
 					case can::addr::ws20::tx::motor_bus_k: {
 						can::frame::ws20::tx::motor_bus mb(frame);
-						lcd << mb.frame.s.busCurrent;
+						lcd << (mb.frame.s.busCurrent) << end;
+						break;
 					}
+					default:
+						break;
 				}
-				if (id) led1.toggle();
-			}
-			
-			
-			read_ins();
-			set_lights();
-
-			can::frame::ws20::rx::drive_cmd drive(0);
-			drive.frame.s.motorCurrent = state.accel;
-			drive.frame.s.motorVelocity = 50;
-			if (state.reverse_en) {
-				drive.frame.s.motorVelocity *= -1;
-			}
-			
-//			ws_can.out().tx(drive.bytes(), 8, (uint16_t)can::addr::ws20::rx::drive_cmd_k);
-			set_motor();
-
-			if (timer::ms() - timer::s() < 5) {
 				lcd.goto_xy(0,2);
 				lcd << "RvRgArHd" << end;
 				lcd.goto_xy(0,3);
 				lcd << state.reverse_en << state.regen_en << state.airgap_en << state.lights_head << end;
 				lcd.goto_xy(0,4);
-				lcd << drive.frame.s.motorCurrent << " " << timer::s() << end;
-				lcd.goto_xy(0,5); lcd << "vel: " << drive.frame.s.motorVelocity << end;
+				lcd << timer::s() << end;
+				lcd.goto_xy(0,5); lcd << "mv:" << state.velocity << end;
+				if (id) led1.toggle();
 			}
 			timer::delay_ms<1>();
 		}

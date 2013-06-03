@@ -50,7 +50,7 @@ const uint8_t LTC6803<num_devices>::crctab[] =
  * DON'T reverse CRC result before Final XOR
  */
 template <uint32_t num_devices>
-ALWAYSINLINE long long LTC6803<num_devices>::crc_table_fast (const void *data, size_t len)
+long long LTC6803<num_devices>::crc_table_fast (const void *data, size_t len)
 {
     if (unlikely(data == NULL))
         return -ENULPTR;
