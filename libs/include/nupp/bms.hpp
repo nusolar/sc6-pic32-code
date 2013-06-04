@@ -12,6 +12,7 @@
 #include "nu/compiler.h"
 #include "nupp/nokia5110.hpp"
 #include "nupp/ad7685.hpp" // ERROR breaks Symbol loading
+#include "nupp/ltc6803.hpp"
 #include "nupp/timer.hpp"
 #include "nupp/nu32.hpp"
 #include "nupp/pinctl.hpp"
@@ -43,7 +44,8 @@ namespace nu {
 		DigitalOut main_relay, array_relay;
 		can::Module common_can, mppt_can;
 		Nokia5110 lcd1, lcd2;
-		AD7685<2> adc; // WARNING: GUESSED
+		AD7685<2> current_sensor; // 2 ADCs
+		LTC6803<3> voltage_sensor; // 3 LTCs
 
 
 		/**
@@ -69,9 +71,9 @@ namespace nu {
 			array_relay(Pin(Pin::D, 3)), common_can(CAN1), mppt_can(CAN2),
 			lcd1(Pin(Pin::G, 9), SPI_CHANNEL2, Pin(Pin::A, 9), Pin(Pin::E, 9)),
 			lcd2(Pin(Pin::E, 8), SPI_CHANNEL2, Pin(Pin::A, 10), Pin(Pin::E, 9)),
-			adc (Pin(Pin::A, 0), SPI_CHANNEL4, Pin(Pin::F, 12),
-				 (AD7685<2>::options) (2|AD7685<2>::CHAIN_MODE|AD7685<2>::NO_BUSY_INDICATOR)), // ERROR: SPI pin?
-			state()
+			current_sensor (Pin(Pin::A, 0), SPI_CHANNEL4, Pin(Pin::F, 12),
+				 (AD7685<2>::options) (AD7685<2>::CHAIN_MODE|AD7685<2>::NO_BUSY_INDICATOR)), // ERROR: SPI pin?
+			voltage_sensor(Pin(Pin::D, 9), SPI_CHANNEL1), state()
 		{
 			WDT::clear();
 			state.last_trip_module = 12345;
