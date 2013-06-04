@@ -57,18 +57,18 @@
 
 enum direct {
     CRC_NONDIRECT,
-    CRC_DIRECT,
+    CRC_DIRECT
 };
 
 enum reverseDataBytes {
     CRC_NO_REVERSE_DATA_BYTES,
-    CRC_REVERSE_DATA_BYTES,
+    CRC_REVERSE_DATA_BYTES
 };
 
 /* reverse crc result before final xor? */
 enum reverseBeforeFinalXor {
     CRC_NO_REVERSE_BEFORE_FINAL_XOR,
-    CRC_REVERSE_BEFORE_FINAL_XOR,
+    CRC_REVERSE_BEFORE_FINAL_XOR
 };
 
 int
@@ -76,7 +76,7 @@ generateCrcTable(unsigned long *crcTabDst, enum reverseDataBytes refIn,
         unsigned int order, unsigned long polynom);
 
 unsigned long
-crcTableFast (const unsigned long *crcTab, const void *data, size_t len,
+crcTableFast (const uint32_t *crcTab, const void *data, size_t len,
         unsigned int order, enum direct direct, unsigned long initVal,
         unsigned long polynom, enum reverseDataBytes reverseDataBytes,
         enum reverseBeforeFinalXor, unsigned long final_xor_value);

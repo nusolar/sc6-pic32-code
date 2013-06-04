@@ -1,4 +1,4 @@
-#include "../include/nu/crc.h"
+#include "nu/crc.h"
 
 static inline unsigned long
 crcMask (unsigned int order)
@@ -99,7 +99,7 @@ generateCrcTable(unsigned long *crcTabDst, enum reverseDataBytes refIn,
 }
 
 unsigned long
-crcTableFast (const unsigned long *crcTab, const void *data, size_t len,
+crcTableFast (const uint32_t *crcTab, const void *data, size_t len,
         unsigned int order, enum direct direct, unsigned long initVal,
         unsigned long polynom, enum reverseDataBytes refIn,
         enum reverseBeforeFinalXor refOut, unsigned long final_xor_value)
@@ -139,6 +139,7 @@ crcTableFast (const unsigned long *crcTab, const void *data, size_t len,
     return crc;
 }
 
+#if 0
 long long
 crcTable (const unsigned long *crcTab, const void *data, size_t len,
         unsigned int order, enum direct direct, unsigned long initVal,
@@ -212,3 +213,4 @@ crcBitByBit (const void *data, size_t len,
 
     return 0;
 }
+#endif
