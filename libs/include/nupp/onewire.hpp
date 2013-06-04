@@ -11,6 +11,7 @@
 #include "nupp/errorcodes.hpp"
 #include "nupp/pinctl.hpp"
 #include "nupp/timer.hpp"
+#include "nu/crc.h"
 
 namespace nu {
 	struct OneWire: protected Pin {
@@ -18,7 +19,7 @@ namespace nu {
 		ALWAYSINLINE void high()	{set();}
 		ALWAYSINLINE void low()		{clear();}
 
-		OneWire(Pin _p): Pin(_p) {
+		ALWAYSINLINE OneWire(Pin _p): Pin(_p) {
 			set_digital_out();
 			low();
 		}
@@ -48,7 +49,7 @@ namespace nu {
 		/** @warning check for ENULPTR */
 		ALWAYSINLINE void tx(const void *src, size_t n) {
 			for (unsigned i=0; i<n; i++) {
-				tx_byte((uint8_t)src + i);
+				tx_byte(*((uint8_t *)src + i));
 			}
 		}
 
@@ -82,7 +83,7 @@ namespace nu {
 			uint8_t *bytes = (uint8_t *)dest;
 			memset(bytes, 0, n);
 			for (unsigned i=0; i<n; i++) {
-				bytes[i] rx_byte();
+				bytes[i] = rx_byte();
 			}
 		}
 
@@ -105,11 +106,12 @@ namespace nu {
 
 
 
-		static const uint8_t crctab[];
+		static const uint32_t crc_table[];
 		ALWAYSINLINE uint32_t crc(const void *data, size_t n) {
 			if (!data)
 				return 0xFFFFFFFF;
-			return crctab[0]; // ERROR implement CRC
+			return crcTableFast(crc_table, data, n, 8, CRC_DIRECT, 0x00, CRC_8_DALLAS,
+				CRC_REVERSE_DATA_BYTES, CRC_REVERSE_BEFORE_FINAL_XOR, 0x00);
 		}
 	};
 }
