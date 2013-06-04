@@ -31,8 +31,7 @@ namespace nu {
 		/**
 		 * Construct with Pin's (letter, number) combination.
 		 */
-		ALWAYSINLINE Pin(Port _port = D, uint8_t _bit = 0):
-			port(_port), bit(_bit) {}
+		ALWAYSINLINE Pin(Port _port = D, uint8_t _bit = 0): port(_port), bit(_bit) {}
 		NOINLINE virtual ~Pin() {}
 
 	protected:

@@ -42,10 +42,12 @@ namespace nu {
 		};
 
 		DigitalOut main_relay, array_relay;
+		DigitalIn bits[6];
 		can::Module common_can, mppt_can;
 		Nokia5110 lcd1, lcd2;
 		AD7685<2> current_sensor; // 2 ADCs
 		LTC6803<3> voltage_sensor; // 3 LTCs
+		// DS18B20 on A0
 
 
 		/**
@@ -55,6 +57,7 @@ namespace nu {
 			static const size_t num_modules = 32;
 			double uptime;
 			uint32_t last_trip_module;
+			uint8_t disabled_module;
 			float voltages[num_modules], temperatures[num_modules], openwire_voltages[num_modules];
 			float current_battery, current_array;
 			double cc_battery, cc_array, wh_battery, wh_array;
@@ -67,8 +70,10 @@ namespace nu {
 		 * Temperature sensors, and more.
 		 * TODO: Lots
 		 */
-		ALWAYSINLINE BatteryMs(): Nu32(Nu32::V1), main_relay(Pin(Pin::D, 2)),
-			array_relay(Pin(Pin::D, 3)), common_can(CAN1), mppt_can(CAN2),
+		ALWAYSINLINE BatteryMs(): Nu32(Nu32::V1), 
+			main_relay(Pin(Pin::D, 2)), array_relay(Pin(Pin::D, 3)),
+			bits(),
+			common_can(CAN1), mppt_can(CAN2),
 			lcd1(Pin(Pin::G, 9), SPI_CHANNEL2, Pin(Pin::A, 9), Pin(Pin::E, 9)),
 			lcd2(Pin(Pin::E, 8), SPI_CHANNEL2, Pin(Pin::A, 10), Pin(Pin::E, 9)),
 			current_sensor (Pin(Pin::A, 0), SPI_CHANNEL4, Pin(Pin::F, 12),
@@ -77,15 +82,27 @@ namespace nu {
 		{
 			WDT::clear();
 			state.last_trip_module = 12345;
+			state.disabled_module = 63;
 
 			main_relay = true;
 			array_relay = true;
 
+			for (uint8_t i=0; i<6; i++) {
+				bits[i] = DigitalIn(Pin(Pin::B, i));
+			}
+
 			common_can.in().setup_rx();
 			common_can.out().setup_tx(CAN_HIGH_MEDIUM_PRIORITY);
 			common_can.err().setup_tx(CAN_LOWEST_PRIORITY);
-
 			mppt_can.out().setup_tx(CAN_HIGH_MEDIUM_PRIORITY);
+		}
+
+
+		ALWAYSINLINE void read_ins() {
+			state.disabled_module = 0;
+			for (unsigned i=0; i<6; i++) {
+				state.disabled_module |= (uint8_t)((bool)bits[i].read() >> i);
+			}
 		}
 
 
@@ -99,6 +116,8 @@ namespace nu {
 			lcd1 << "T: %0.9f" << state.temperatures[31] << end;
 			lcd1.goto_xy(0, 3);
 			lcd1 << "I: %0.9f" <<  state.current_battery << end;
+			lcd1.goto_xy(0, 4);
+			lcd1 << "Off: " << state.disabled_module << end;
 			led1.toggle();
 			timer::delay_s<1>();
 		}
