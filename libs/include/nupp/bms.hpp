@@ -103,6 +103,8 @@ namespace nu {
 			for (unsigned i=0; i<6; i++) {
 				state.disabled_module |= (uint8_t)((bool)bits[i].read() >> i);
 			}
+			current_sensor.convert_read_uv();
+			voltage_sensor.read_volts();
 		}
 
 
@@ -110,6 +112,11 @@ namespace nu {
 		 * A function to be called repeatedly
 		 */
 		ALWAYSINLINE void run() {
+			WDT::clear();
+
+			read_ins();
+
+			lcd1.lcd_clear();
 			lcd1.goto_xy(0, 1);
 			lcd1 << "V: %0.9f" << state.voltages[31] << end;
 			lcd1.goto_xy(0, 2);
@@ -119,11 +126,12 @@ namespace nu {
 			lcd1.goto_xy(0, 4);
 			lcd1 << "Off: " << state.disabled_module << end;
 			led1.toggle();
-			timer::delay_s<1>();
 		}
 
 		ALWAYSINLINE void test() {
 			WDT::clear();
+			read_ins();
+
 			lcd1.lcd_clear();
 			lcd1 << "C++WINS" << end;
 			led1.toggle();
