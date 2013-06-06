@@ -78,7 +78,7 @@ namespace nu {
 		/**
 		 * Setup NU32, CAN, LEDs, and uLCD Display.
 		 */
-		ALWAYSINLINE SteeringWheel(): 
+		ALWAYSINLINE SteeringWheel():
 			yes			(Button(Pin(Pin::E,  0), 10, 5)),
 			no			(Button(Pin(Pin::G, 12), 10, 5)),
 			maybe		(Button(Pin(Pin::E,  2), 10, 5)),
@@ -238,6 +238,10 @@ namespace nu {
 		ALWAYSINLINE void test() {
 			WDT::clear();
 			animate_leds();
+			read_ins();
+			can::frame::ws20::tx::motor_velocity x(0);
+			x.frame.s = {50, 50};
+			lcd << x;
 		}
 
 		static NORETURN void main();
