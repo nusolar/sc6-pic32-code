@@ -106,6 +106,13 @@ namespace nu {
 				uint8_t b0, b1;
 			} bytes;
 		};
+		union Configuration {
+			uint8_t bytes[8];
+		};
+
+#define voltage_pairs_per_dev 6
+#define cells_per_device (voltage_pairs_per_dev*2)
+
 		union RawVoltagePair {
 			unsigned val :24;
 			PACKED struct voltages {
@@ -117,24 +124,21 @@ namespace nu {
 			} bytes;
 		};
 		union RawVoltages {
-			uint8_t bytes[18];
-			RawVoltagePair voltage_pair[6];
+			RawVoltagePair voltage_pair[voltage_pairs_per_dev];
+			uint8_t bytes[voltage_pairs_per_dev*sizeof(RawVoltagePair)];
 		};
-		union Configuration {
-			uint8_t bytes[8];
-		};
-
-#define voltage_pairs_per_dev (sizeof(((RawVoltages *)NULL)->voltage_pair)/sizeof(((RawVoltages *)NULL)->voltage_pair[0]))
-#define cells_per_device (voltage_pairs_per_dev*2)
 
 		uint32_t mismatch_pecs;
 		float values[num_devices * cells_per_device];
-		
+
 		ALWAYSINLINE LTC6803(Pin _cs, SpiChannel _chn):
 			SPI(_cs, _chn, 100000, (SpiOpenFlags)(SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON),
 			    (SPI::tx_options)(TX_WAIT_START|TX_WAIT_END|TX_DISABLE_AUTO_CS)),
 			mismatch_pecs(0), values() {}
-
+		ALWAYSINLINE float operator[] (size_t index) const {
+			// ERROR: CHECK BOUNDS
+			return values[index];
+		}
 
 		ALWAYSINLINE void write_configs(stack<Configuration, num_devices> &config) {
 			write_cmd_tx(WRITECFGS, config, sizeof(Configuration));
@@ -147,7 +151,7 @@ namespace nu {
 			read_volts_raw(rx_rv);
 			convert_voltages(rx_rv);
 		}
-
+		
 	private:
 		ALWAYSINLINE void confirm_configs(stack<Configuration, num_devices> &config) {
 			stack<Configuration, num_devices> rx_config;
@@ -227,7 +231,7 @@ namespace nu {
 			for (unsigned i=0; i<num_devices; i++) {
 				for (unsigned j=0; j<voltage_pairs_per_dev; j++) {
 					RawVoltagePair &pair = rv[i].voltage_pair[j];
-					values[i*cells_per_device+j*2]	= convert_voltage(pair.voltages.v1);
+					values[i*cells_per_device+j*2]		= convert_voltage(pair.voltages.v1);
 					values[i*cells_per_device+j*2+1]	= convert_voltage(pair.voltages.v2);
 				}
 			}

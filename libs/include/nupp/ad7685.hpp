@@ -40,6 +40,11 @@ namespace nu {
 				return /*-EINVAL*/; // TODO: C++ exceptions
 		}
 
+		ALWAYSINLINE float operator[] (size_t index) const {
+			// ERROR: CHECK BOUNDS
+			return values[index];
+		}
+
 		/**
 		 * Gets the actual voltage reading(s) (not raw data).
 		 */

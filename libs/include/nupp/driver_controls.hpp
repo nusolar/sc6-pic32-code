@@ -32,9 +32,9 @@
 	X(DigitalIn, right_sig,			B,	11)\
 	X(DigitalIn, hazard_sig,		B,	12)\
 	X(DigitalOut, lights_brake,	D,	0)\
-	X(DigitalOut, lights_l,		D,	1)\
-	X(DigitalOut, lights_r,		D,	2)\
-	X(DigitalOut, headlights,	D,	3)
+	X(DigitalOut, headlights,	D,	1)\
+	X(DigitalOut, lights_l,		D,	2)\
+	X(DigitalOut, lights_r,		D,	3)
 
 #define DC_DECLARE(Type, name, ltr, num) Type name;
 #define DC_INITIALIZE(Type, name, ltr, num) name(Pin(Pin::ltr, num)),
@@ -264,9 +264,9 @@ namespace nu {
 				lcd.goto_xy(0,2);
 				lcd << "RvRgArHd" << end;
 				lcd.goto_xy(0,3);
-				lcd << state.reverse_en << state.regen_en << state.airgap_en << state.lights_head << end;
+				lcd << state.reverse_en << state.regen_en << state.airgap_en << state.lights_head << "=" << state.accel_en << "-" << state.brake_en << end;
 				lcd.goto_xy(0,4);
-				lcd << timer::s() << end;
+				lcd << timer::s() << "-" << state.accel << end;
 				lcd.goto_xy(0,5); lcd << "mv:" << state.velocity << end;
 				if (id) led1.toggle();
 			}

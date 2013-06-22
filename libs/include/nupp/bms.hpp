@@ -24,7 +24,7 @@ namespace nu {
 	/**
 	 * Battery Management System. Controls voltage, temperature, and current
 	 * monitoring sensors; informs telemetry; emergency-stops the car if needed.
-	 * TODO: Implement. (Will use C implementation for now)
+	 * TODO: Implement.
 	 */
 	struct BatteryMs: protected Nu32 {
 		enum tripcodes {
@@ -71,21 +71,19 @@ namespace nu {
 		 * TODO: Lots
 		 */
 		ALWAYSINLINE BatteryMs(): Nu32(Nu32::V1), 
-			main_relay(Pin(Pin::D, 2)), array_relay(Pin(Pin::D, 3)),
+			main_relay(Pin(Pin::D, 2), false),
+			array_relay(Pin(Pin::D, 3), false),
 			bits(),
 			common_can(CAN1), mppt_can(CAN2),
 			lcd1(Pin(Pin::G, 9), SPI_CHANNEL2, Pin(Pin::A, 9), Pin(Pin::E, 9)),
 			lcd2(Pin(Pin::E, 8), SPI_CHANNEL2, Pin(Pin::A, 10), Pin(Pin::E, 9)),
-			current_sensor (Pin(Pin::A, 0), SPI_CHANNEL4, Pin(Pin::F, 12),
-				 (AD7685<2>::options) (AD7685<2>::CHAIN_MODE|AD7685<2>::NO_BUSY_INDICATOR)), // ERROR: SPI pin?
+			current_sensor (Pin(Pin::F, 12), SPI_CHANNEL4, Pin(Pin::F, 12), // Convert & CS are same pin
+				 (AD7685<2>::options) (AD7685<2>::CHAIN_MODE|AD7685<2>::NO_BUSY_INDICATOR)),
 			voltage_sensor(Pin(Pin::D, 9), SPI_CHANNEL1), state()
 		{
 			WDT::clear();
 			state.last_trip_module = 12345;
 			state.disabled_module = 63;
-
-			main_relay = true;
-			array_relay = true;
 
 			for (uint8_t i=0; i<6; i++) {
 				bits[i] = DigitalIn(Pin(Pin::B, i));
@@ -107,31 +105,76 @@ namespace nu {
 			voltage_sensor.read_volts();
 		}
 
+		ALWAYSINLINE void check_batteries() {
+			for (uint8_t i=0; i<state.num_modules; i++) {
+				voltage_sensor[i] < 2.75; // TRIP
+				voltage_sensor[i] > 4.3; // TRIP
+				// temp_sensor[i] > 35;
+				// temp_sensor[i] < 0;
+			}
+			current_sensor[0] > 72.8; // BattADC
+			current_sensor[0] < -36.4;
+			current_sensor[1] > 10; // ArrayADC
+			current_sensor[1] < -1;
+		}
+
+
+		ALWAYSINLINE void send_can() {
+			{
+				can::frame::bms::tx::current pkt(0);
+				pkt.frame.s.array = current_sensor[0]; // Marked "BattADC"
+				pkt.frame.s.battery = current_sensor[1]; // Marked "ArrayADC"
+				common_can.out().tx(pkt.bytes(), 8, can::addr::bms::tx::current_k);
+			}
+			{
+				can::frame::bms::tx::voltage pkt(0);
+				pkt.frame.s.module = 0;
+				pkt.frame.s.voltage = voltage_sensor[0];
+				common_can.out().tx(pkt.bytes(), 8, can::addr::bms::tx::voltage_k);
+			}
+			{
+				can::frame::bms::tx::temp pkt(0);
+				pkt.frame.s.sensor = 0;
+				pkt.frame.s.temp = 25; // ERROR TODO
+				common_can.out().tx(pkt.bytes(), 8, can::addr::bms::tx::temp_k);
+			}
+		}
+
 
 		/**
 		 * A function to be called repeatedly
 		 */
 		ALWAYSINLINE void run() {
 			WDT::clear();
-
-			read_ins();
-
+//			read_ins();
+			send_can();
+			check_batteries();
+			
 			lcd1.lcd_clear();
+			lcd1 << "C++WINS" << end;
 			lcd1.goto_xy(0, 1);
-			lcd1 << "V: %0.9f" << state.voltages[31] << end;
+			lcd1 << "V: " << state.voltages[31] << end;
 			lcd1.goto_xy(0, 2);
-			lcd1 << "T: %0.9f" << state.temperatures[31] << end;
+			lcd1 << "T: " << state.temperatures[31] << end;
 			lcd1.goto_xy(0, 3);
-			lcd1 << "I: %0.9f" <<  state.current_battery << end;
+			lcd1 << "I: " <<  state.current_battery << end;
 			lcd1.goto_xy(0, 4);
-			lcd1 << "Off: " << state.disabled_module << end;
+			lcd1 << "Off: " << 63 << end;
+			lcd1.goto_xy(0, 5);
+			lcd1 << "MR: " << main_relay.status() << end;
+			
 			led1.toggle();
+			timer::delay_s<1>();
+		}
+
+		ALWAYSINLINE void boot() {
+//			read_ins();
+			check_batteries();
+			main_relay.high();
 		}
 
 		ALWAYSINLINE void test() {
 			WDT::clear();
-			read_ins();
-
 			lcd1.lcd_clear();
 			lcd1 << "C++WINS" << end;
 			led1.toggle();

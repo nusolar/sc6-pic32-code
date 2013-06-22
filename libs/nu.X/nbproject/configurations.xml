@@ -127,6 +127,12 @@
       <itemPath>../nu/spi.c</itemPath>
       <itemPath>../nu/wdt.c</itemPath>
       <itemPath>../nu/nokia5110.c</itemPath>
+      <itemPath>../nu/ad7685.c</itemPath>
+      <itemPath>../nu/ds18x20.c</itemPath>
+      <itemPath>../nu/ltc6803.c</itemPath>
+      <itemPath>../nu/mcp49x2.c</itemPath>
+      <itemPath>../nu/onewire.c</itemPath>
+      <itemPath>../nu/hais50p.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
