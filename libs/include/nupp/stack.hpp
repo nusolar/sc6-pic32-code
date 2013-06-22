@@ -11,6 +11,9 @@ namespace nu {
 		ALWAYSINLINE T& operator[] (const size_t index) {
 			return array[index];
 		}
+		ALWAYSINLINE T operator[] (const size_t index) const {
+			return array[index];
+		}
 		ALWAYSINLINE operator void *() {
 			return (void *)array;
 		}

@@ -25,7 +25,7 @@ struct w1 {
             };
         } romcode_crc;
     } search_state;
-    struct pin pin;
+    struct nu_pin pin;
 };
 
 #define SEARCH_STATE_INIT(last_discrep_bit, last_family_discrep_bit, prev_search_was_last_dev, romcode_bytes)   \
@@ -81,6 +81,6 @@ u32
 w1_crc(const void *data, size_t n);
 
 s32
-w1_new(struct w1 *w, struct pin pin);
+w1_new(struct w1 *w, struct nu_pin pin);
 
 #endif

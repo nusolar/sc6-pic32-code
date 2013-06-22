@@ -58,10 +58,14 @@ namespace nu {
 		bool _status;
 
 	public:
-		ALWAYSINLINE DigitalOut(Pin p = Pin()): Pin(p), _status(false) {set_digital_out();}
+		ALWAYSINLINE DigitalOut(Pin p = Pin(), bool init = false): Pin(p), _status(init) {
+			set_digital_out();
+			if (init) high();
+			else low();
+		}
 
-		ALWAYSINLINE void high()	{set();}
-		ALWAYSINLINE void low()		{clear();}
+		ALWAYSINLINE void high()	{set(); _status = true;}
+		ALWAYSINLINE void low()		{clear(); _status = false;}
 		ALWAYSINLINE bool status() {return _status;}
 
 		ALWAYSINLINE DigitalOut &operator= (const bool rhs) {

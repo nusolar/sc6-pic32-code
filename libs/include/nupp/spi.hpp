@@ -31,10 +31,17 @@ namespace nu {
 		SpiChannel chn;
 		tx_options opt;
 
+		/**
+		 * Construct SPI interface, starting with Chip Select on high.
+         * @param _cs
+         * @param _chn
+         * @param bitrate
+         * @param oflags
+         * @param _opt
+         */
 		ALWAYSINLINE SPI(Pin _cs, SpiChannel _chn, uint32_t bitrate, SpiOpenFlags oflags,
 						 tx_options _opt = (tx_options)(TX_WAIT_START|TX_WAIT_END)):
-			OStream(), cs(_cs), chn(_chn), opt(_opt) {
-			cs.high();
+			OStream(), cs(_cs, true), chn(_chn), opt(_opt) {
 			SpiChnOpen(chn, oflags, (uint32_t) param::pbus_hz()/bitrate);
 		}
 		NOINLINE virtual ~SPI() {};

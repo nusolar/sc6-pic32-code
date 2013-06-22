@@ -35,7 +35,7 @@ init_sequence(const struct ds18x20 *d)
     init_sequence(d)
 
 s32
-ds_new(struct ds18x20 *d, struct pin pin,
+ds_new(struct ds18x20 *d, struct nu_pin pin,
        enum ds_parasitic_power parasitic_power)
 {
     s32 err;

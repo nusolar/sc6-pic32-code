@@ -78,6 +78,7 @@
     <Elem>../nu</Elem>
     <Elem>../nupp</Elem>
     <Elem>../include/nupp</Elem>
+    <Elem>../include/platform</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
