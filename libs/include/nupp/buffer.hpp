@@ -77,7 +77,7 @@ namespace nu {
 		}
 
 		ALWAYSINLINE OStream& operator<< (const bool val) {
-			_str += val? '0': '1';
+			_str += val? '1': '0';
 			return *this;
 		}
 
