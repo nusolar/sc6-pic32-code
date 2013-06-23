@@ -5,7 +5,7 @@
 
 namespace nu {
 	template <typename T, size_t N>
-	class stack {
+	class Array {
 		T array[N];
 	public:
 		ALWAYSINLINE T& operator[] (const size_t index) {
