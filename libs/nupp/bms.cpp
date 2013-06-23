@@ -15,7 +15,6 @@ void BatteryMs::main() {
 	WDT::enable();
 	BatteryMs bms{};
 	bms.boot();
-	PORTSetBits(IOPORT_D, BIT_2);
 	while (true) {
 		bms.run();
 	}
