@@ -169,7 +169,57 @@ namespace nu {
 			if (current_sensor[1] < NU_MIN_ARRAY_CURRENT)
 				Trip::trip(Trip::OVER_CURRENT_DISCHARGE, 0xff, this);
 		}
-
+		ALWAYSINLINE void recv_can() {
+		    can::frame::Packet pkt();
+		    uint32_t id;
+		    common_can.in().rx(pkt,id);
+		    switch (id) {
+			case can::frame::bms::rx::trip.id(): {
+			    can::frame::bms::rx::trip trip_pkt(pkt);
+			    Trip::trip(trip_pkt.frame.contents.trip_code, trip_pkt.frame.contents.module, this);
+			}
+			case can::frame::bms::rx::reset_cc_batt.id(): {
+			    state.cc_battery=0;
+			}
+			case can::frame::bms::rx::reset_cc_array.id(): {
+			    state.cc_array=0;
+			}
+			case can::frame::bms::rx::reset_cc_mppt1.id(): {
+			    state.cc_mppt[0]=0;
+			}
+			case can::frame::bms::rx::reset_cc_mppt2.id(): {
+			    state.cc_mppt[1]=0;
+			}
+			case can::frame::bms::rx::reset_cc_mppt3.id(): {
+			    state.cc_mppt[2]=0;
+			}
+			case can::frame::bms::rx::reset_cc_Wh.id(): {
+			    state.wh_battery=0;
+			    state.wh_array=0;
+			    state.wh_mppt_in[0]=0;
+			    state.wh_mppt_in[1]=0;
+			    state.wh_mppt_in[2]=0;
+			    state.wh_mppt_out[0]=0;
+			    state.wh_mppt_out[1]=0;
+			    state.wh_mppt_out[2]=0;
+			}
+			case can::frame::bms::rx::reset_cc_all.id(): {
+			    state.cc_battery=0;
+			    state.cc_array=0;
+			    state.cc_mppt[0]=0;
+			    state.cc_mppt[1]=0;
+			    state.cc_mppt[2]=0;
+			    state.wh_battery=0;
+			    state.wh_array=0;
+			    state.wh_mppt_in[0]=0;
+			    state.wh_mppt_in[1]=0;
+			    state.wh_mppt_in[2]=0;
+			    state.wh_mppt_out[0]=0;
+			    state.wh_mppt_out[1]=0;
+			    state.wh_mppt_out[2]=0;
+			}
+		    }
+		}
 
 		ALWAYSINLINE void send_can() {
 			{
