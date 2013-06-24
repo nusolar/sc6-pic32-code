@@ -1,175 +1,34 @@
 
-/**
- * CAN frames are implemented as PACKED structs,
- * within namespaces for scoping.
- *
- * CAN addresses are uint16_t's,
- * within enum classes for scoping.
- */
+	/**
+	 * CAN frames are implemented as PACKED structs,
+	 * within namespaces for scoping.
+	 *
+	 * CAN addresses are uint16_t's,
+	 * within enum classes for scoping.
+	 */
 
  namespace nu {
  namespace can {
  namespace frame {
 
-	struct Packet {
+			struct Packet {
 				union frame_t {
 					uint64_t data;
 					uint8_t bytes[8];
 				} frame;
-				virtual ~Packet() {}
+				static const uint32_t _id = 0;
+				virtual uint32_t id() const {return _id;}
 				virtual uint64_t data() const {return frame.data;}
 				virtual uint64_t &data() {return frame.data;}
 				virtual uint8_t  *bytes() {return frame.bytes;}
+				virtual const uint8_t *bytes() const {return frame.bytes;}
+				virtual ~Packet() {}
 				ALWAYSINLINE Packet(): frame{0} {}
 				ALWAYSINLINE Packet(const uint64_t _i): frame{_i} {}
 				ALWAYSINLINE Packet(const Packet& p): frame{p.data()} {}
 				Packet& operator= (const uint64_t _i) {data() = _i; return *this;}
 				Packet& operator= (const Packet& p) {data() = p.data(); return *this;}
 			};
- namespace sw {
- namespace rx {
-
-		struct buttons: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					
-	unsigned    yes             :1;
-	unsigned    no              :1;
-	unsigned    maybe           :1;
-	unsigned    cruise_en       :1;
-	unsigned    cruise_mode     :1;
-	unsigned    cruise_up       :1;
-	unsigned    cruise_down     :1;
-	unsigned    reserved        :25;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t data() const {return frame.data;}
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			ALWAYSINLINE buttons(): frame{0} {}
-			ALWAYSINLINE buttons(const uint64_t _i): frame{_i} {}
-			ALWAYSINLINE buttons(const Packet& p): frame{p.data()} {}
-		};
-
-		struct lights: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					
-	unsigned    left            :1;
-	unsigned    right           :1;
-	unsigned    radio           :1;
-	unsigned    yes             :1;
-	unsigned    hazard          :1;
-	unsigned    cruise_en       :1;
-	unsigned    cruise_up       :1;
-	unsigned    maybe           :1;
-	unsigned    no              :1;
-	unsigned    horn            :1;
-	unsigned    cruise_mode     :1;
-	unsigned    cruise_down     :1;
-	unsigned    reserved        :20;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t data() const {return frame.data;}
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			ALWAYSINLINE lights(): frame{0} {}
-			ALWAYSINLINE lights(const uint64_t _i): frame{_i} {}
-			ALWAYSINLINE lights(const Packet& p): frame{p.data()} {}
-		};
-}
- namespace tx {
-
-		struct heartbeat: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					char dcStr[4]; uint32_t reserved;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t data() const {return frame.data;}
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			ALWAYSINLINE heartbeat(): frame{0} {}
-			ALWAYSINLINE heartbeat(const uint64_t _i): frame{_i} {}
-			ALWAYSINLINE heartbeat(const Packet& p): frame{p.data()} {}
-		};
-
-		struct error: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					char msg[8];
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t data() const {return frame.data;}
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			ALWAYSINLINE error(): frame{0} {}
-			ALWAYSINLINE error(const uint64_t _i): frame{_i} {}
-			ALWAYSINLINE error(const Packet& p): frame{p.data()} {}
-		};
-
-		struct buttons: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					
-	unsigned    yes             :1;
-	unsigned    no              :1;
-	unsigned    maybe           :1;
-	unsigned    cruise_en       :1;
-	unsigned    cruise_mode     :1;
-	unsigned    cruise_up       :1;
-	unsigned    cruise_down     :1;
-	unsigned    reserved        :25;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t data() const {return frame.data;}
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			ALWAYSINLINE buttons(): frame{0} {}
-			ALWAYSINLINE buttons(const uint64_t _i): frame{_i} {}
-			ALWAYSINLINE buttons(const Packet& p): frame{p.data()} {}
-		};
-
-		struct lights: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					
-	unsigned    left            :1;
-	unsigned    right           :1;
-	unsigned    radio           :1;
-	unsigned    yes             :1;
-	unsigned    hazard          :1;
-	unsigned    cruise_en       :1;
-	unsigned    cruise_up       :1;
-	unsigned    maybe           :1;
-	unsigned    no              :1;
-	unsigned    horn            :1;
-	unsigned    cruise_mode     :1;
-	unsigned    cruise_down     :1;
-	unsigned    reserved        :20;
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t data() const {return frame.data;}
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			ALWAYSINLINE lights(): frame{0} {}
-			ALWAYSINLINE lights(const uint64_t _i): frame{_i} {}
-			ALWAYSINLINE lights(const Packet& p): frame{p.data()} {}
-		};
-}
-}
  namespace bms {
  namespace rx {
 
@@ -177,13 +36,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					int32_t trip_code; uint32_t module;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x200;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE trip(): frame{0} {}
 			ALWAYSINLINE trip(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE trip(const Packet& p): frame{p.data()} {}
@@ -193,13 +55,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x201;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE reset_cc_batt(): frame{0} {}
 			ALWAYSINLINE reset_cc_batt(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE reset_cc_batt(const Packet& p): frame{p.data()} {}
@@ -209,13 +74,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x202;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE reset_cc_array(): frame{0} {}
 			ALWAYSINLINE reset_cc_array(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE reset_cc_array(const Packet& p): frame{p.data()} {}
@@ -225,13 +93,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x203;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE reset_cc_mppt1(): frame{0} {}
 			ALWAYSINLINE reset_cc_mppt1(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE reset_cc_mppt1(const Packet& p): frame{p.data()} {}
@@ -241,13 +112,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x204;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE reset_cc_mppt2(): frame{0} {}
 			ALWAYSINLINE reset_cc_mppt2(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE reset_cc_mppt2(const Packet& p): frame{p.data()} {}
@@ -257,13 +131,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x205;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE reset_cc_mppt3(): frame{0} {}
 			ALWAYSINLINE reset_cc_mppt3(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE reset_cc_mppt3(const Packet& p): frame{p.data()} {}
@@ -273,13 +150,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x206;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE reset_cc_Wh(): frame{0} {}
 			ALWAYSINLINE reset_cc_Wh(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE reset_cc_Wh(const Packet& p): frame{p.data()} {}
@@ -289,13 +169,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x207;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE reset_cc_all(): frame{0} {}
 			ALWAYSINLINE reset_cc_all(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE reset_cc_all(const Packet& p): frame{p.data()} {}
@@ -305,17 +188,30 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x20f;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE max(): frame{0} {}
 			ALWAYSINLINE max(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE max(const Packet& p): frame{p.data()} {}
 		};
+ enum addrs {
+trip_k = 0x200,
+reset_cc_batt_k = 0x201,
+reset_cc_array_k = 0x202,
+reset_cc_mppt1_k = 0x203,
+reset_cc_mppt2_k = 0x204,
+reset_cc_mppt3_k = 0x205,
+reset_cc_Wh_k = 0x206,
+reset_cc_all_k = 0x207,
+max_k = 0x20f};
 }
  namespace tx {
 
@@ -323,13 +219,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					char bms_str[4]; uint32_t reserved;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x210;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE heartbeat(): frame{0} {}
 			ALWAYSINLINE heartbeat(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE heartbeat(const Packet& p): frame{p.data()} {}
@@ -339,13 +238,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					char msg[8];
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x211;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE error(): frame{0} {}
 			ALWAYSINLINE error(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE error(const Packet& p): frame{p.data()} {}
@@ -355,13 +257,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					double seconds;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x212;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE uptime(): frame{0} {}
 			ALWAYSINLINE uptime(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE uptime(const Packet& p): frame{p.data()} {}
@@ -371,13 +276,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					int32_t last_reset_code; uint32_t reserved;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x213;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE last_reset(): frame{0} {}
 			ALWAYSINLINE last_reset(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE last_reset(const Packet& p): frame{p.data()} {}
@@ -387,13 +295,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					uint32_t module; float reserved;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x214;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE batt_bypass(): frame{0} {}
 			ALWAYSINLINE batt_bypass(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE batt_bypass(const Packet& p): frame{p.data()} {}
@@ -403,13 +314,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					float array, battery;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x215;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE current(): frame{0} {}
 			ALWAYSINLINE current(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE current(const Packet& p): frame{p.data()} {}
@@ -419,13 +333,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					double count;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x216;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE cc_array(): frame{0} {}
 			ALWAYSINLINE cc_array(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE cc_array(const Packet& p): frame{p.data()} {}
@@ -435,13 +352,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					double count;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x217;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE cc_batt(): frame{0} {}
 			ALWAYSINLINE cc_batt(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE cc_batt(const Packet& p): frame{p.data()} {}
@@ -451,13 +371,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					double count;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x218;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE cc_mppt1(): frame{0} {}
 			ALWAYSINLINE cc_mppt1(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE cc_mppt1(const Packet& p): frame{p.data()} {}
@@ -467,13 +390,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					double count;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x219;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE cc_mppt2(): frame{0} {}
 			ALWAYSINLINE cc_mppt2(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE cc_mppt2(const Packet& p): frame{p.data()} {}
@@ -483,13 +409,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					double count;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x21a;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE cc_mppt3(): frame{0} {}
 			ALWAYSINLINE cc_mppt3(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE cc_mppt3(const Packet& p): frame{p.data()} {}
@@ -499,13 +428,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					double count;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x21b;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE Wh_batt(): frame{0} {}
 			ALWAYSINLINE Wh_batt(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE Wh_batt(const Packet& p): frame{p.data()} {}
@@ -515,13 +447,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					double count;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x21c;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE Wh_mppt1(): frame{0} {}
 			ALWAYSINLINE Wh_mppt1(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE Wh_mppt1(const Packet& p): frame{p.data()} {}
@@ -531,13 +466,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					double count;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x21d;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE Wh_mppt2(): frame{0} {}
 			ALWAYSINLINE Wh_mppt2(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE Wh_mppt2(const Packet& p): frame{p.data()} {}
@@ -547,13 +485,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					double count;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x21e;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE Wh_mppt3(): frame{0} {}
 			ALWAYSINLINE Wh_mppt3(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE Wh_mppt3(const Packet& p): frame{p.data()} {}
@@ -563,13 +504,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					uint32_t module; float voltage;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x21f;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE voltage(): frame{0} {}
 			ALWAYSINLINE voltage(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE voltage(const Packet& p): frame{p.data()} {}
@@ -579,13 +523,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					uint32_t module; float ow_voltage;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x220;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE owVoltage(): frame{0} {}
 			ALWAYSINLINE owVoltage(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE owVoltage(const Packet& p): frame{p.data()} {}
@@ -595,13 +542,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					uint32_t sensor; float temp;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x221;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE temp(): frame{0} {}
 			ALWAYSINLINE temp(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE temp(const Packet& p): frame{p.data()} {}
@@ -611,13 +561,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					int32_t trip_code; uint32_t module;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x222;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE trip(): frame{0} {}
 			ALWAYSINLINE trip(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE trip(const Packet& p): frame{p.data()} {}
@@ -627,13 +580,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					int32_t trip_code; uint32_t module;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x223;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE last_trip(): frame{0} {}
 			ALWAYSINLINE last_trip(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE last_trip(const Packet& p): frame{p.data()} {}
@@ -643,13 +599,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					float low, high;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x224;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE trip_pt_current(): frame{0} {}
 			ALWAYSINLINE trip_pt_current(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE trip_pt_current(const Packet& p): frame{p.data()} {}
@@ -659,13 +618,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					float low, high;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x225;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE trip_pt_voltage(): frame{0} {}
 			ALWAYSINLINE trip_pt_voltage(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE trip_pt_voltage(const Packet& p): frame{p.data()} {}
@@ -675,119 +637,44 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					float low, high;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x226;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE trip_pt_temp(): frame{0} {}
 			ALWAYSINLINE trip_pt_temp(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE trip_pt_temp(const Packet& p): frame{p.data()} {}
 		};
-}
-}
- namespace mppt {
- namespace rx {
-
-		struct mppt1: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t data() const {return frame.data;}
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			ALWAYSINLINE mppt1(): frame{0} {}
-			ALWAYSINLINE mppt1(const uint64_t _i): frame{_i} {}
-			ALWAYSINLINE mppt1(const Packet& p): frame{p.data()} {}
-		};
-
-		struct mppt2: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t data() const {return frame.data;}
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			ALWAYSINLINE mppt2(): frame{0} {}
-			ALWAYSINLINE mppt2(const uint64_t _i): frame{_i} {}
-			ALWAYSINLINE mppt2(const Packet& p): frame{p.data()} {}
-		};
-
-		struct mppt3: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t data() const {return frame.data;}
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			ALWAYSINLINE mppt3(): frame{0} {}
-			ALWAYSINLINE mppt3(const uint64_t _i): frame{_i} {}
-			ALWAYSINLINE mppt3(const Packet& p): frame{p.data()} {}
-		};
-}
- namespace tx {
-
-		struct mppt1: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t data() const {return frame.data;}
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			ALWAYSINLINE mppt1(): frame{0} {}
-			ALWAYSINLINE mppt1(const uint64_t _i): frame{_i} {}
-			ALWAYSINLINE mppt1(const Packet& p): frame{p.data()} {}
-		};
-
-		struct mppt2: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t data() const {return frame.data;}
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			ALWAYSINLINE mppt2(): frame{0} {}
-			ALWAYSINLINE mppt2(const uint64_t _i): frame{_i} {}
-			ALWAYSINLINE mppt2(const Packet& p): frame{p.data()} {}
-		};
-
-		struct mppt3: public Packet {
-			union frame_t {
-				uint64_t data;
-				uint8_t bytes[8];
-				struct PACKED members_t {
-					
-				} s;
-			} frame;
-			ALWAYSINLINE uint64_t data() const {return frame.data;}
-			ALWAYSINLINE uint64_t &data() {return frame.data;}
-			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
-			ALWAYSINLINE mppt3(): frame{0} {}
-			ALWAYSINLINE mppt3(const uint64_t _i): frame{_i} {}
-			ALWAYSINLINE mppt3(const Packet& p): frame{p.data()} {}
-		};
+ enum addrs {
+heartbeat_k = 0x210,
+error_k = 0x211,
+uptime_k = 0x212,
+last_reset_k = 0x213,
+batt_bypass_k = 0x214,
+current_k = 0x215,
+cc_array_k = 0x216,
+cc_batt_k = 0x217,
+cc_mppt1_k = 0x218,
+cc_mppt2_k = 0x219,
+cc_mppt3_k = 0x21a,
+Wh_batt_k = 0x21b,
+Wh_mppt1_k = 0x21c,
+Wh_mppt2_k = 0x21d,
+Wh_mppt3_k = 0x21e,
+voltage_k = 0x21f,
+owVoltage_k = 0x220,
+temp_k = 0x221,
+trip_k = 0x222,
+last_trip_k = 0x223,
+trip_pt_current_k = 0x224,
+trip_pt_voltage_k = 0x225,
+trip_pt_temp_k = 0x226};
 }
 }
  namespace ws20 {
@@ -797,13 +684,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					char drvId[4]; uint32_t serialNo;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x500;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE driver_controls_id(): frame{0} {}
 			ALWAYSINLINE driver_controls_id(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE driver_controls_id(const Packet& p): frame{p.data()} {}
@@ -813,13 +703,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					float motorVelocity, motorCurrent;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x501;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE drive_cmd(): frame{0} {}
 			ALWAYSINLINE drive_cmd(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE drive_cmd(const Packet& p): frame{p.data()} {}
@@ -829,13 +722,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					float reserved, busCurrent;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x502;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE power_cmd(): frame{0} {}
 			ALWAYSINLINE power_cmd(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE power_cmd(const Packet& p): frame{p.data()} {}
@@ -845,17 +741,25 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					uint32_t unused1, unused2;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x503;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE reset_cmd(): frame{0} {}
 			ALWAYSINLINE reset_cmd(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE reset_cmd(const Packet& p): frame{p.data()} {}
 		};
+ enum addrs {
+driver_controls_id_k = 0x500,
+drive_cmd_k = 0x501,
+power_cmd_k = 0x502,
+reset_cmd_k = 0x503};
 }
  namespace tx {
 
@@ -863,13 +767,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					char tritiumId[4]; uint32_t serialNo;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x400;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE motor_id(): frame{0} {}
 			ALWAYSINLINE motor_id(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE motor_id(const Packet& p): frame{p.data()} {}
@@ -879,17 +786,20 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					
 	uint16_t limitFlags;
 	uint16_t errorFlags;
 	uint16_t activeMotor;
 	uint16_t reserved __attribute__ ((__packed__));
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x401;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE motor_status_info(): frame{0} {}
 			ALWAYSINLINE motor_status_info(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE motor_status_info(const Packet& p): frame{p.data()} {}
@@ -899,13 +809,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					float busVoltage, busCurrent;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x402;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE motor_bus(): frame{0} {}
 			ALWAYSINLINE motor_bus(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE motor_bus(const Packet& p): frame{p.data()} {}
@@ -915,13 +828,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					float motorVelocity, vehicleVelocity;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x403;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE motor_velocity(): frame{0} {}
 			ALWAYSINLINE motor_velocity(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE motor_velocity(const Packet& p): frame{p.data()} {}
@@ -931,13 +847,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					float phaseBCurrent, phaseACurrent;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x404;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE motor_phase(): frame{0} {}
 			ALWAYSINLINE motor_phase(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE motor_phase(const Packet& p): frame{p.data()} {}
@@ -947,13 +866,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					float voltageIm, voltageRe;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x405;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE voltage_vector(): frame{0} {}
 			ALWAYSINLINE voltage_vector(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE voltage_vector(const Packet& p): frame{p.data()} {}
@@ -963,13 +885,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					float currentIm, currentRe;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x406;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE current_vector(): frame{0} {}
 			ALWAYSINLINE current_vector(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE current_vector(const Packet& p): frame{p.data()} {}
@@ -979,13 +904,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					float backEmfIm, backEmfRe;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x407;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE backemf(): frame{0} {}
 			ALWAYSINLINE backemf(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE backemf(const Packet& p): frame{p.data()} {}
@@ -995,13 +923,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					float onePtSixtyFiveVRef, fifteenVPowerRail;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x408;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE rail_15v_1pt65v(): frame{0} {}
 			ALWAYSINLINE rail_15v_1pt65v(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE rail_15v_1pt65v(const Packet& p): frame{p.data()} {}
@@ -1011,13 +942,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					float onePtTwoVSupply, twoPtFiveVSupply;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x409;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE rail_2pt5v_1pt2v(): frame{0} {}
 			ALWAYSINLINE rail_2pt5v_1pt2v(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE rail_2pt5v_1pt2v(const Packet& p): frame{p.data()} {}
@@ -1027,13 +961,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					float fanDrive, fanRpm;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x40a;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE fanspeed(): frame{0} {}
 			ALWAYSINLINE fanspeed(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE fanspeed(const Packet& p): frame{p.data()} {}
@@ -1043,13 +980,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					float motorTemp, heatsinkTemp;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x40b;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE sinks_temp(): frame{0} {}
 			ALWAYSINLINE sinks_temp(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE sinks_temp(const Packet& p): frame{p.data()} {}
@@ -1059,13 +999,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					float processorTemp, airInletTemp;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x40c;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE cpu_airin_temp(): frame{0} {}
 			ALWAYSINLINE cpu_airin_temp(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE cpu_airin_temp(const Packet& p): frame{p.data()} {}
@@ -1075,13 +1018,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					float capacitorTemp, airOutTemp;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x40d;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE cap_airout_temp(): frame{0} {}
 			ALWAYSINLINE cap_airout_temp(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE cap_airout_temp(const Packet& p): frame{p.data()} {}
@@ -1091,17 +1037,334 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					float odom, dcBusAmpHours;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x40e;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE odom_bus_ah(): frame{0} {}
 			ALWAYSINLINE odom_bus_ah(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE odom_bus_ah(const Packet& p): frame{p.data()} {}
 		};
+ enum addrs {
+motor_id_k = 0x400,
+motor_status_info_k = 0x401,
+motor_bus_k = 0x402,
+motor_velocity_k = 0x403,
+motor_phase_k = 0x404,
+voltage_vector_k = 0x405,
+current_vector_k = 0x406,
+backemf_k = 0x407,
+rail_15v_1pt65v_k = 0x408,
+rail_2pt5v_1pt2v_k = 0x409,
+fanspeed_k = 0x40a,
+sinks_temp_k = 0x40b,
+cpu_airin_temp_k = 0x40c,
+cap_airout_temp_k = 0x40d,
+odom_bus_ah_k = 0x40e};
+}
+}
+ namespace mppt {
+ namespace rx {
+
+		struct mppt1: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED {
+					
+				} contents;
+			} frame;
+			static const uint32_t _id = 0x710;
+			ALWAYSINLINE uint32_t id() const {return _id;}
+			ALWAYSINLINE uint64_t data() const {return frame.data;}
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
+			ALWAYSINLINE mppt1(): frame{0} {}
+			ALWAYSINLINE mppt1(const uint64_t _i): frame{_i} {}
+			ALWAYSINLINE mppt1(const Packet& p): frame{p.data()} {}
+		};
+
+		struct mppt2: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED {
+					
+				} contents;
+			} frame;
+			static const uint32_t _id = 0x710;
+			ALWAYSINLINE uint32_t id() const {return _id;}
+			ALWAYSINLINE uint64_t data() const {return frame.data;}
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
+			ALWAYSINLINE mppt2(): frame{0} {}
+			ALWAYSINLINE mppt2(const uint64_t _i): frame{_i} {}
+			ALWAYSINLINE mppt2(const Packet& p): frame{p.data()} {}
+		};
+
+		struct mppt3: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED {
+					
+				} contents;
+			} frame;
+			static const uint32_t _id = 0x710;
+			ALWAYSINLINE uint32_t id() const {return _id;}
+			ALWAYSINLINE uint64_t data() const {return frame.data;}
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
+			ALWAYSINLINE mppt3(): frame{0} {}
+			ALWAYSINLINE mppt3(const uint64_t _i): frame{_i} {}
+			ALWAYSINLINE mppt3(const Packet& p): frame{p.data()} {}
+		};
+ enum addrs {
+mppt1_k = 0x710,
+mppt2_k = 0x710,
+mppt3_k = 0x710};
+}
+ namespace tx {
+
+		struct mppt1: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED {
+					
+				} contents;
+			} frame;
+			static const uint32_t _id = 0x710;
+			ALWAYSINLINE uint32_t id() const {return _id;}
+			ALWAYSINLINE uint64_t data() const {return frame.data;}
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
+			ALWAYSINLINE mppt1(): frame{0} {}
+			ALWAYSINLINE mppt1(const uint64_t _i): frame{_i} {}
+			ALWAYSINLINE mppt1(const Packet& p): frame{p.data()} {}
+		};
+
+		struct mppt2: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED {
+					
+				} contents;
+			} frame;
+			static const uint32_t _id = 0x710;
+			ALWAYSINLINE uint32_t id() const {return _id;}
+			ALWAYSINLINE uint64_t data() const {return frame.data;}
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
+			ALWAYSINLINE mppt2(): frame{0} {}
+			ALWAYSINLINE mppt2(const uint64_t _i): frame{_i} {}
+			ALWAYSINLINE mppt2(const Packet& p): frame{p.data()} {}
+		};
+
+		struct mppt3: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED {
+					
+				} contents;
+			} frame;
+			static const uint32_t _id = 0x710;
+			ALWAYSINLINE uint32_t id() const {return _id;}
+			ALWAYSINLINE uint64_t data() const {return frame.data;}
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
+			ALWAYSINLINE mppt3(): frame{0} {}
+			ALWAYSINLINE mppt3(const uint64_t _i): frame{_i} {}
+			ALWAYSINLINE mppt3(const Packet& p): frame{p.data()} {}
+		};
+ enum addrs {
+mppt1_k = 0x710,
+mppt2_k = 0x710,
+mppt3_k = 0x710};
+}
+}
+ namespace sw {
+ namespace rx {
+
+		struct buttons: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED {
+					
+	unsigned    yes             :1;
+	unsigned    no              :1;
+	unsigned    maybe           :1;
+	unsigned    cruise_en       :1;
+	unsigned    cruise_mode     :1;
+	unsigned    cruise_up       :1;
+	unsigned    cruise_down     :1;
+	unsigned    reserved        :25;
+				} contents;
+			} frame;
+			static const uint32_t _id = 0x300;
+			ALWAYSINLINE uint32_t id() const {return _id;}
+			ALWAYSINLINE uint64_t data() const {return frame.data;}
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
+			ALWAYSINLINE buttons(): frame{0} {}
+			ALWAYSINLINE buttons(const uint64_t _i): frame{_i} {}
+			ALWAYSINLINE buttons(const Packet& p): frame{p.data()} {}
+		};
+
+		struct lights: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED {
+					
+	unsigned    left            :1;
+	unsigned    right           :1;
+	unsigned    radio           :1;
+	unsigned    yes             :1;
+	unsigned    hazard          :1;
+	unsigned    cruise_en       :1;
+	unsigned    cruise_up       :1;
+	unsigned    maybe           :1;
+	unsigned    no              :1;
+	unsigned    horn            :1;
+	unsigned    cruise_mode     :1;
+	unsigned    cruise_down     :1;
+	unsigned    reserved        :20;
+				} contents;
+			} frame;
+			static const uint32_t _id = 0x301;
+			ALWAYSINLINE uint32_t id() const {return _id;}
+			ALWAYSINLINE uint64_t data() const {return frame.data;}
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
+			ALWAYSINLINE lights(): frame{0} {}
+			ALWAYSINLINE lights(const uint64_t _i): frame{_i} {}
+			ALWAYSINLINE lights(const Packet& p): frame{p.data()} {}
+		};
+ enum addrs {
+buttons_k = 0x300,
+lights_k = 0x301};
+}
+ namespace tx {
+
+		struct heartbeat: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED {
+					char dcStr[4]; uint32_t reserved;
+				} contents;
+			} frame;
+			static const uint32_t _id = 0x310;
+			ALWAYSINLINE uint32_t id() const {return _id;}
+			ALWAYSINLINE uint64_t data() const {return frame.data;}
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
+			ALWAYSINLINE heartbeat(): frame{0} {}
+			ALWAYSINLINE heartbeat(const uint64_t _i): frame{_i} {}
+			ALWAYSINLINE heartbeat(const Packet& p): frame{p.data()} {}
+		};
+
+		struct error: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED {
+					char msg[8];
+				} contents;
+			} frame;
+			static const uint32_t _id = 0x311;
+			ALWAYSINLINE uint32_t id() const {return _id;}
+			ALWAYSINLINE uint64_t data() const {return frame.data;}
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
+			ALWAYSINLINE error(): frame{0} {}
+			ALWAYSINLINE error(const uint64_t _i): frame{_i} {}
+			ALWAYSINLINE error(const Packet& p): frame{p.data()} {}
+		};
+
+		struct buttons: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED {
+					
+	unsigned    yes             :1;
+	unsigned    no              :1;
+	unsigned    maybe           :1;
+	unsigned    cruise_en       :1;
+	unsigned    cruise_mode     :1;
+	unsigned    cruise_up       :1;
+	unsigned    cruise_down     :1;
+	unsigned    reserved        :25;
+				} contents;
+			} frame;
+			static const uint32_t _id = 0x312;
+			ALWAYSINLINE uint32_t id() const {return _id;}
+			ALWAYSINLINE uint64_t data() const {return frame.data;}
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
+			ALWAYSINLINE buttons(): frame{0} {}
+			ALWAYSINLINE buttons(const uint64_t _i): frame{_i} {}
+			ALWAYSINLINE buttons(const Packet& p): frame{p.data()} {}
+		};
+
+		struct lights: public Packet {
+			union frame_t {
+				uint64_t data;
+				uint8_t bytes[8];
+				struct PACKED {
+					
+	unsigned    left            :1;
+	unsigned    right           :1;
+	unsigned    radio           :1;
+	unsigned    yes             :1;
+	unsigned    hazard          :1;
+	unsigned    cruise_en       :1;
+	unsigned    cruise_up       :1;
+	unsigned    maybe           :1;
+	unsigned    no              :1;
+	unsigned    horn            :1;
+	unsigned    cruise_mode     :1;
+	unsigned    cruise_down     :1;
+	unsigned    reserved        :20;
+				} contents;
+			} frame;
+			static const uint32_t _id = 0x313;
+			ALWAYSINLINE uint32_t id() const {return _id;}
+			ALWAYSINLINE uint64_t data() const {return frame.data;}
+			ALWAYSINLINE uint64_t &data() {return frame.data;}
+			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
+			ALWAYSINLINE lights(): frame{0} {}
+			ALWAYSINLINE lights(const uint64_t _i): frame{_i} {}
+			ALWAYSINLINE lights(const Packet& p): frame{p.data()} {}
+		};
+ enum addrs {
+heartbeat_k = 0x310,
+error_k = 0x311,
+buttons_k = 0x312,
+lights_k = 0x313};
 }
 }
  namespace dc {
@@ -1111,13 +1374,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					uint64_t enabled;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x110;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE horn(): frame{0} {}
 			ALWAYSINLINE horn(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE horn(const Packet& p): frame{p.data()} {}
@@ -1127,13 +1393,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					uint32_t l, r;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x111;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE signals(): frame{0} {}
 			ALWAYSINLINE signals(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE signals(const Packet& p): frame{p.data()} {}
@@ -1143,13 +1412,16 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					uint64_t enabled;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x112;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE cruise(): frame{0} {}
 			ALWAYSINLINE cruise(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE cruise(const Packet& p): frame{p.data()} {}
@@ -1159,125 +1431,25 @@
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
-				struct PACKED members_t {
+				struct PACKED {
 					float velocity, current;
-				} s;
+				} contents;
 			} frame;
+			static const uint32_t _id = 0x113;
+			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
 			ALWAYSINLINE uint8_t  *bytes() {return frame.bytes;}
+			ALWAYSINLINE const uint8_t *bytes() const {return frame.bytes;}
 			ALWAYSINLINE cruise_velocity_current(): frame{0} {}
 			ALWAYSINLINE cruise_velocity_current(const uint64_t _i): frame{_i} {}
 			ALWAYSINLINE cruise_velocity_current(const Packet& p): frame{p.data()} {}
 		};
-}
- namespace tx {
-}
-}
-}
- namespace addr {
- namespace sw {
- namespace rx {
  enum addrs {
-buttons_k = 768,
-lights_k};
-}
- namespace tx {
- enum addrs {
-heartbeat_k = 784,
-error_k,
-buttons_k,
-lights_k};
-}
-}
- namespace bms {
- namespace rx {
- enum addrs {
-trip_k = 512,
-reset_cc_batt_k,
-reset_cc_array_k,
-reset_cc_mppt1_k,
-reset_cc_mppt2_k,
-reset_cc_mppt3_k,
-reset_cc_Wh_k,
-reset_cc_all_k,
-max_k = 527};
-}
- namespace tx {
- enum addrs {
-heartbeat_k = 528,
-error_k,
-uptime_k,
-last_reset_k,
-batt_bypass_k,
-current_k,
-cc_array_k,
-cc_batt_k,
-cc_mppt1_k,
-cc_mppt2_k,
-cc_mppt3_k,
-Wh_batt_k,
-Wh_mppt1_k,
-Wh_mppt2_k,
-Wh_mppt3_k,
-voltage_k,
-owVoltage_k,
-temp_k,
-trip_k,
-last_trip_k,
-trip_pt_current_k,
-trip_pt_voltage_k,
-trip_pt_temp_k};
-}
-}
- namespace mppt {
- namespace rx {
- enum addrs {
-mppt1_k = 1808,
-mppt2_k = 1808,
-mppt3_k = 1808};
-}
- namespace tx {
- enum addrs {
-mppt1_k = 1808,
-mppt2_k = 1808,
-mppt3_k = 1808};
-}
-}
- namespace ws20 {
- namespace rx {
- enum addrs {
-driver_controls_id_k = 1280,
-drive_cmd_k,
-power_cmd_k,
-reset_cmd_k};
-}
- namespace tx {
- enum addrs {
-motor_id_k = 1024,
-motor_status_info_k,
-motor_bus_k,
-motor_velocity_k,
-motor_phase_k,
-voltage_vector_k,
-current_vector_k,
-backemf_k,
-rail_15v_1pt65v_k,
-rail_2pt5v_1pt2v_k,
-fanspeed_k,
-sinks_temp_k,
-cpu_airin_temp_k,
-cap_airout_temp_k,
-odom_bus_ah_k};
-}
-}
- namespace dc {
- namespace rx {
- enum addrs {
-horn_k = 272,
-signals_k,
-cruise_k,
-cruise_velocity_current_k};
+horn_k = 0x110,
+signals_k = 0x111,
+cruise_k = 0x112,
+cruise_velocity_current_k = 0x113};
 }
  namespace tx {
  enum addrs {

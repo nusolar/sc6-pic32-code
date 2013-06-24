@@ -119,15 +119,15 @@ namespace nu {
 			uint32_t id;
 			can::frame::Packet incoming;
 
-			ws_can.in().rx(incoming.bytes(), id);
+			ws_can.in().rx(incoming, id);
 			switch (id) {
-				case can::addr::ws20::tx::motor_velocity_k: {
+				case can::frame::ws20::tx::motor_velocity_k: {
 					can::frame::ws20::tx::motor_velocity velo(incoming);
-					state.velocity = velo.frame.s.vehicleVelocity;
+					state.velocity = velo.frame.contents.vehicleVelocity;
 					if (!state.cruise_en) state.cruise = state.velocity;
 					break;
 				}
-				case can::addr::ws20::tx::motor_bus_k: {
+				case can::frame::ws20::tx::motor_bus_k: {
 					can::frame::ws20::tx::motor_bus bus(incoming);
 					break;
 				}
@@ -135,23 +135,23 @@ namespace nu {
 					break;
 			}
 
-			common_can.in().rx(incoming.bytes(), id);
+			common_can.in().rx(incoming, id);
 			switch (id) {
-				case (uint32_t)can::addr::sw::tx::buttons_k: {
+				case (uint32_t)can::frame::sw::tx::buttons_k: {
 					can::frame::sw::tx::buttons btns(incoming);
 //					state.lights_l = btns.frame.s.left;
 //					state.lights_r = btns.frame.s.right;
 //					state.lights_hazard = btns.frame.s.hazard;
-					state.cruise_en ^= btns.frame.s.cruise_en;
-					state.cruise += (float) 2*btns.frame.s.cruise_up;
-					state.cruise -= (float) 2*btns.frame.s.cruise_down;
+					state.cruise_en ^= btns.frame.contents.cruise_en;
+					state.cruise += (float) 2*btns.frame.contents.cruise_up;
+					state.cruise -= (float) 2*btns.frame.contents.cruise_down;
 
 					can::frame::sw::rx::buttons ack(0);
-					ack.frame.s.cruise_en = btns.frame.s.cruise_en;
-					ack.frame.s.cruise_up = btns.frame.s.cruise_up;
-					ack.frame.s.cruise_down = btns.frame.s.cruise_down;
-					ack.frame.s.cruise_mode = btns.frame.s.cruise_mode;
-					common_can.out().tx(ack.bytes(), 4, can::addr::sw::rx::buttons_k);
+					ack.frame.contents.cruise_en = btns.frame.contents.cruise_en;
+					ack.frame.contents.cruise_up = btns.frame.contents.cruise_up;
+					ack.frame.contents.cruise_down = btns.frame.contents.cruise_down;
+					ack.frame.contents.cruise_mode = btns.frame.contents.cruise_mode;
+					common_can.out().tx(ack.bytes(), 4, can::frame::sw::rx::buttons_k);
 
 					state.sw_timer = timer::ms(); // Reset SW time-out
 					break;
@@ -193,23 +193,21 @@ namespace nu {
 			if (state.brake_en) {
 				state.cruise_en = 0;
 				if (state.regen_en){
-					drive.frame.s.motorCurrent = 0.2; // REGEN_AMOUNT
+					drive.frame.contents.motorCurrent = 0.2; // REGEN_AMOUNT
 				} else{
 					Nop(); // Normal braking.
 				}
 			} else if (state.cruise_en) {
-				drive.frame.s = {state.cruise, 1};
+				drive.frame.contents = {state.cruise, 1};
 			} else if (state.accel_en) {
-				drive.frame.s = {101, state.accel}; // [Max 101m/s, accel percent]
+				drive.frame.contents = {101, state.accel}; // [Max 101m/s, accel percent]
 			}
 
 			if (state.reverse_en) {
-				drive.frame.s.motorVelocity *= -1;
+				drive.frame.contents.motorVelocity *= -1;
 			}
 
-			ws_can.out().tx(drive.bytes(),
-							8,
-							(uint16_t)can::addr::ws20::rx::drive_cmd_k);
+			ws_can.out().tx(drive);
 		}
 
 
@@ -240,7 +238,7 @@ namespace nu {
 
 			static can::frame::Packet frame(0);
 			static uint32_t id = 0;
-			ws_can.in().rx(frame.bytes(), id);
+			ws_can.in().rx(frame, id);
 
 			if (timer::ms() - timer::s() < 2) {
 				lcd.lcd_clear();
@@ -248,14 +246,14 @@ namespace nu {
 				lcd << "CAN id:" << id << end;
 				lcd.goto_xy(0,1);
 				switch (id) {
-					case can::addr::ws20::tx::motor_velocity_k: {
+					case can::frame::ws20::tx::motor_velocity_k: {
 						can::frame::ws20::tx::motor_velocity mv(frame);
-						lcd << (mv.frame.s.motorVelocity) << end;
+						lcd << (mv.frame.contents.motorVelocity) << end;
 						break;
 					}
-					case can::addr::ws20::tx::motor_bus_k: {
+					case can::frame::ws20::tx::motor_bus_k: {
 						can::frame::ws20::tx::motor_bus mb(frame);
-						lcd << (mb.frame.s.busCurrent) << end;
+						lcd << (mb.frame.contents.busCurrent) << end;
 						break;
 					}
 					default:

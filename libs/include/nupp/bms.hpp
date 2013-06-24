@@ -124,21 +124,21 @@ namespace nu {
 		ALWAYSINLINE void send_can() {
 			{
 				can::frame::bms::tx::current pkt(0);
-				pkt.frame.s.array = current_sensor[0]; // Marked "BattADC"
-				pkt.frame.s.battery = current_sensor[1]; // Marked "ArrayADC"
-				common_can.out().tx(pkt.bytes(), 8, can::addr::bms::tx::current_k);
+				pkt.frame.contents.array = current_sensor[0]; // Marked "BattADC"
+				pkt.frame.contents.battery = current_sensor[1]; // Marked "ArrayADC"
+				common_can.out().tx(pkt);
 			}
 			{
 				can::frame::bms::tx::voltage pkt(0);
-				pkt.frame.s.module = 0;
-				pkt.frame.s.voltage = voltage_sensor[0];
-				common_can.out().tx(pkt.bytes(), 8, can::addr::bms::tx::voltage_k);
+				pkt.frame.contents.module = 0;
+				pkt.frame.contents.voltage = voltage_sensor[0];
+				common_can.out().tx(pkt);
 			}
 			{
 				can::frame::bms::tx::temp pkt(0);
-				pkt.frame.s.sensor = 0;
-				pkt.frame.s.temp = 25; // ERROR TODO
-				common_can.out().tx(pkt.bytes(), 8, can::addr::bms::tx::temp_k);
+				pkt.frame.contents.sensor = 0;
+				pkt.frame.contents.temp = 25; // ERROR TODO
+				common_can.out().tx(pkt);
 			}
 		}
 

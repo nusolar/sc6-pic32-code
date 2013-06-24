@@ -156,7 +156,7 @@ int32_t Channel::setup_tx(CAN_TXCHANNEL_PRIORITY _priority, CAN_TX_RTR _rtr_en) 
 /**
  * Read a message from the CAN Channel.
  * @param dest Memory for CAN message to be copied to.
- * @param id ID of CAN message.
+ * @param (out) the ID of CAN message.
  * @return Number of bytes read copied.
  */
 size_t Channel::rx(void *dest, uint32_t &id) {
@@ -173,6 +173,10 @@ size_t Channel::rx(void *dest, uint32_t &id) {
 	CANUpdateChannel(mod, chn);
 
 	return len;
+}
+
+size_t Channel::rx(frame::Packet &p, uint32_t &id) {
+	return rx((void *)p.bytes(), id);
 }
 
 
@@ -210,6 +214,9 @@ int32_t Channel::tx(const void *data, size_t num_bytes, uint16_t std_id, uint32_
 	return 0;
 }
 
+int32_t Channel::tx(const frame::Packet &p) {
+	return tx((const void *)p.bytes(), (size_t)8, (uint16_t)p.id());
+}
 
 int32_t Channel::add_filter(CAN_FILTER filter, CAN_ID_TYPE _id_type, uint32_t id,
 							CAN_FILTER_MASK mask, CAN_FILTER_MASK_TYPE mide, uint32_t mask_bits) {
