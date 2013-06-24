@@ -96,7 +96,7 @@ namespace nu {
 		};
 
 		union Diagnostic {
-			PACKED struct bits {
+			struct PACKED bits {
 				unsigned ref		:12;
 				unsigned unused		:1;
 				unsigned muxfail	:1;
@@ -106,16 +106,17 @@ namespace nu {
 				uint8_t b0, b1;
 			} bytes;
 		};
+		static_assert(sizeof(Diagnostic)==2, "nu::LTC6803::Diagnostic packing");
 		union Configuration {
 			uint8_t bytes[8];
 		};
 
-#define voltage_pairs_per_dev 6
-#define cells_per_device (voltage_pairs_per_dev*2)
+		#define voltage_pairs_per_dev 6
+		#define cells_per_device (voltage_pairs_per_dev*2)
 
-		union RawVoltagePair {
+		union PACKED RawVoltagePair {
 			unsigned val :24;
-			PACKED struct voltages {
+			struct PACKED voltages {
 				unsigned v1 :12;
 				unsigned v2 :12;
 			} voltages;
@@ -123,6 +124,7 @@ namespace nu {
 				uint8_t b0, b1, b2;
 			} bytes;
 		};
+		static_assert(sizeof(RawVoltagePair)==3, "nu::LTC6803::RawVoltagePair packing");
 		union RawVoltages {
 			RawVoltagePair voltage_pair[voltage_pairs_per_dev];
 			uint8_t bytes[voltage_pairs_per_dev*sizeof(RawVoltagePair)];
