@@ -39,6 +39,6 @@ extern "C" {
 
 /** Call BatteryMs::main(), NEVER RETURN */
 int main(int argc, const char * argv[]){
-	nu::BatteryMs::main();
+	nu::BMS::main();
     return 0;
 }

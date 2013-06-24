@@ -11,9 +11,9 @@
 
 using namespace nu;
 
-void BatteryMs::main() {
+void BMS::main() {
 	WDT::enable();
-	BatteryMs bms{};
+	BMS bms{};
 	bms.boot();
 	while (true) {
 		bms.run();

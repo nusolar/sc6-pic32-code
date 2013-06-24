@@ -32,50 +32,42 @@
 #define NU_MIN_TEMP 0
 
 namespace nu {
-	namespace Trip {
-
-#define NU_TRIPCODE(X)\
-	X(NONE)\
-	X(OTHER)\
-	X(OW_BUS_FAILURE)\
-	X(DS18X20_MISSING)\
-	X(LTC_POST_FAILED)\
-	X(ADC_FAILURE)\
-	X(OVER_VOLTAGE)\
-	X(UNDER_VOLTAGE)\
-	X(OVER_CURRENT_DISCHARGE)\
-	X(OVER_CURRENT_CHARGE)\
-	X(OVER_TEMP)\
-	X(UNDER_TEMP)
-
-		enum tripcode {
-			NU_TRIPCODE(NU_ERROR_ENUM)
-			NUM_TRIP
-		};
-
-		static void trip(tripcode code) {
-			
-		}
-	};
-
 	/**
 	 * Battery Management System. Controls voltage, temperature, and current
 	 * monitoring sensors; informs telemetry; emergency-stops the car if needed.
 	 * TODO: Implement.
 	 */
-	struct BatteryMs: protected Nu32 {
-		enum tripcodes {
-			NONE = 0,
-			OTHER,
-			OW_BUS_FAILURE,
-			DS18X20_MISSING,
-			LTC_POST_FAILED,
-			OVER_VOLTAGE,
-			UNDER_VOLTAGE,
-			OVER_CURRENT_DISCHARGE,
-			OVER_CURRENT_CHARGE,
-			OVER_TEMP,
-			UNDER_TEMP // sanity check
+	struct BMS: protected Nu32 {
+		struct Trip {
+
+			#define NU_TRIPCODE(X)\
+				X(NONE)\
+				X(OTHER)\
+				X(OW_BUS_FAILURE)\
+				X(DS18X20_MISSING)\
+				X(LTC_POST_FAILED)\
+				X(ADC_FAILURE)\
+				X(OVER_VOLTAGE)\
+				X(UNDER_VOLTAGE)\
+				X(OVER_CURRENT_DISCHARGE)\
+				X(OVER_CURRENT_CHARGE)\
+				X(OVER_TEMP)\
+				X(UNDER_TEMP) // sanity check
+
+			enum tripcode {
+				NU_TRIPCODE(NU_ERROR_ENUM)
+				NUM_TRIP
+			};
+
+			static ALWAYSINLINE void trip(tripcode code, uint32_t module, BMS * const self) {
+				can::frame::bms::tx::trip trip_pkt(0);
+				trip_pkt.frame.contents.trip_code = (int32_t)code;
+				trip_pkt.frame.contents.module = module;
+				self->common_can.err().tx(trip_pkt);
+				
+				self->array_relay = false;
+				self->main_relay = false;
+			}
 		};
 
 		DigitalOut main_relay, array_relay;
@@ -107,7 +99,7 @@ namespace nu {
 		 * 3 Voltage sensor modules, 32 Temperature sensors, and more.
 		 * TODO: Lots
 		 */
-		ALWAYSINLINE BatteryMs(): Nu32(Nu32::V1), 
+		ALWAYSINLINE BMS(): Nu32(Nu32::V1),
 			main_relay(Pin(Pin::D, 2), false),
 			array_relay(Pin(Pin::D, 3), false),
 			bits(),
@@ -144,16 +136,22 @@ namespace nu {
 		}
 
 		ALWAYSINLINE void check_batteries() {
-			for (uint8_t i=0; i<state.num_modules; i++) {
-				voltage_sensor[i] < NU_MAX_VOLTAGE; // TRIP
-				voltage_sensor[i] > NU_MIN_VOLTAGE; // TRIP
-				// temp_sensor[i] > NU_MAX_TEMP;
-				// temp_sensor[i] < NU_MIN_TEMP;
+			for (unsigned i=0; i<state.num_modules; i++) {
+				if (voltage_sensor[i] < NU_MAX_VOLTAGE)
+					Trip::trip(Trip::OVER_VOLTAGE, i, this);
+				if (voltage_sensor[i] > NU_MIN_VOLTAGE)
+					Trip::trip(Trip::UNDER_VOLTAGE, i, this);
+				//if (temp_sensor[i] > NU_MAX_TEMP) Trip::trip(Trip::OVER_TEMP);
+				//if (temp_sensor[i] < NU_MIN_TEMP) Trip::trip(Trip::UNDER_TEMP);
 			}
-			current_sensor[0] > NU_MAX_BATT_CURRENT_DISCHARGING; // BattADC
-			current_sensor[0] < NU_MAX_BATT_CURRENT_CHARGING;
-			current_sensor[1] > NU_MAX_ARRAY_CURRENT; // ArrayADC
-			current_sensor[1] < NU_MIN_ARRAY_CURRENT;
+			if (current_sensor[0] > NU_MAX_BATT_CURRENT_DISCHARGING)
+				Trip::trip(Trip::OVER_CURRENT_DISCHARGE, 0xff, this); // BattADC
+			if (current_sensor[0] < NU_MAX_BATT_CURRENT_CHARGING)
+				Trip::trip(Trip::OVER_CURRENT_CHARGE, 0xff, this);
+			if (current_sensor[1] > NU_MAX_ARRAY_CURRENT)
+				Trip::trip(Trip::OVER_CURRENT_CHARGE, 0xff, this); // ArrayADC
+			if (current_sensor[1] < NU_MIN_ARRAY_CURRENT)
+				Trip::trip(Trip::OVER_CURRENT_DISCHARGE, 0xff, this);
 		}
 
 
@@ -206,11 +204,13 @@ namespace nu {
 		}
 
 		ALWAYSINLINE void boot() {
+			main_relay.low(); // Unnecessary precaution
 //			read_ins();
 			check_batteries();
 			main_relay.high();
 		}
 
+		
 		ALWAYSINLINE void test() {
 			WDT::clear();
 			lcd1.lcd_clear();
