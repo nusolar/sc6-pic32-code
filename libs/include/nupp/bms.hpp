@@ -10,6 +10,7 @@
 #define __nusolar_lib__bms__
 
 #include "nu/compiler.h"
+#include "nupp/errorcodes.hpp"
 #include "nupp/nokia5110.hpp"
 #include "nupp/hais.hpp"
 #include "nupp/ad7685.hpp"
@@ -21,7 +22,42 @@
 #include "nupp/wdt.hpp"
 #include <cstdint>
 
+#define NU_MAX_VOLTAGE 4.3
+#define NU_MIN_VOLTAGE 2.75
+#define NU_MAX_BATT_CURRENT_DISCHARGING 72.8
+#define NU_MAX_BATT_CURRENT_CHARGING -36.4
+#define NU_MAX_ARRAY_CURRENT 10
+#define NU_MIN_ARRAY_CURRENT -1
+#define NU_MAX_TEMP 35
+#define NU_MIN_TEMP 0
+
 namespace nu {
+	namespace Trip {
+
+#define NU_TRIPCODE(X)\
+	X(NONE)\
+	X(OTHER)\
+	X(OW_BUS_FAILURE)\
+	X(DS18X20_MISSING)\
+	X(LTC_POST_FAILED)\
+	X(ADC_FAILURE)\
+	X(OVER_VOLTAGE)\
+	X(UNDER_VOLTAGE)\
+	X(OVER_CURRENT_DISCHARGE)\
+	X(OVER_CURRENT_CHARGE)\
+	X(OVER_TEMP)\
+	X(UNDER_TEMP)
+
+		enum tripcode {
+			NU_TRIPCODE(NU_ERROR_ENUM)
+			NUM_TRIP
+		};
+
+		static void trip(tripcode code) {
+			
+		}
+	};
+
 	/**
 	 * Battery Management System. Controls voltage, temperature, and current
 	 * monitoring sensors; informs telemetry; emergency-stops the car if needed.
@@ -109,15 +145,15 @@ namespace nu {
 
 		ALWAYSINLINE void check_batteries() {
 			for (uint8_t i=0; i<state.num_modules; i++) {
-				voltage_sensor[i] < 2.75; // TRIP
-				voltage_sensor[i] > 4.3; // TRIP
-				// temp_sensor[i] > 35;
-				// temp_sensor[i] < 0;
+				voltage_sensor[i] < NU_MAX_VOLTAGE; // TRIP
+				voltage_sensor[i] > NU_MIN_VOLTAGE; // TRIP
+				// temp_sensor[i] > NU_MAX_TEMP;
+				// temp_sensor[i] < NU_MIN_TEMP;
 			}
-			current_sensor[0] > 72.8; // BattADC
-			current_sensor[0] < -36.4;
-			current_sensor[1] > 10; // ArrayADC
-			current_sensor[1] < -1;
+			current_sensor[0] > NU_MAX_BATT_CURRENT_DISCHARGING; // BattADC
+			current_sensor[0] < NU_MAX_BATT_CURRENT_CHARGING;
+			current_sensor[1] > NU_MAX_ARRAY_CURRENT; // ArrayADC
+			current_sensor[1] < NU_MIN_ARRAY_CURRENT;
 		}
 
 
