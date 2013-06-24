@@ -11,7 +11,8 @@
 
 #include "nu/compiler.h"
 #include "nupp/nokia5110.hpp"
-#include "nupp/ad7685.hpp" // ERROR breaks Symbol loading
+#include "nupp/hais.hpp"
+#include "nupp/ad7685.hpp"
 #include "nupp/ltc6803.hpp"
 #include "nupp/timer.hpp"
 #include "nupp/nu32.hpp"
@@ -45,7 +46,7 @@ namespace nu {
 		DigitalIn bits[6];
 		can::Module common_can, mppt_can;
 		Nokia5110 lcd1, lcd2;
-		AD7685<2> current_sensor; // 2 ADCs
+		HAIS<2> current_sensor; // 2 ADCs
 		LTC6803<3> voltage_sensor; // 3 LTCs
 		// DS18B20 on A0
 
@@ -66,8 +67,8 @@ namespace nu {
 
 
 		/**
-		 * Setup Relays, CAN modules, Nokia LCDs, Current sensors, Voltage sensors,
-		 * Temperature sensors, and more.
+		 * Setup 2 Relays, 2 CAN modules, 2 Nokia LCDs, 2 Current sensors,
+		 * 3 Voltage sensor modules, 32 Temperature sensors, and more.
 		 * TODO: Lots
 		 */
 		ALWAYSINLINE BatteryMs(): Nu32(Nu32::V1), 
@@ -77,8 +78,9 @@ namespace nu {
 			common_can(CAN1), mppt_can(CAN2),
 			lcd1(Pin(Pin::G, 9), SPI_CHANNEL2, Pin(Pin::A, 9), Pin(Pin::E, 9)),
 			lcd2(Pin(Pin::E, 8), SPI_CHANNEL2, Pin(Pin::A, 10), Pin(Pin::E, 9)),
-			current_sensor (Pin(Pin::F, 12), SPI_CHANNEL4, Pin(Pin::F, 12), // Convert & CS are same pin
-				 (AD7685<2>::options) (AD7685<2>::CHAIN_MODE|AD7685<2>::NO_BUSY_INDICATOR)),
+			current_sensor(
+				AD7685<2>(Pin(Pin::F, 12), SPI_CHANNEL4, Pin(Pin::F, 12), // Convert & CS are same pin
+				AD7685<2>::CHAIN_MODE_NO_BUSY), HAIS<2>::P50),
 			voltage_sensor(Pin(Pin::D, 9), SPI_CHANNEL1), state()
 		{
 			WDT::clear();
@@ -101,8 +103,8 @@ namespace nu {
 			for (unsigned i=0; i<6; i++) {
 				state.disabled_module |= (uint8_t)((bool)bits[i].read() >> i);
 			}
-			current_sensor.convert_read_uv();
 			voltage_sensor.read_volts();
+			current_sensor.read_current();
 		}
 
 		ALWAYSINLINE void check_batteries() {
