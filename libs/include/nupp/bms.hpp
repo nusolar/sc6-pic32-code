@@ -102,8 +102,9 @@ namespace nu {
 			double uptime;
 			uint32_t last_trip_module;
 			uint8_t disabled_module;
-			float voltages[num_modules], temperatures[num_modules], openwire_voltages[num_modules];
-			float current_battery, current_array;
+			float highest_volt, lowest_volt;
+			float highest_temp, lowest_temp;
+			float highest_current, lowest_current;
 			double cc_battery, cc_array, wh_battery, wh_array;
 			double cc_mppt[3], wh_mppt_in[3], wh_mppt_out[3];
 		} state;
@@ -204,11 +205,11 @@ namespace nu {
 			lcd1.lcd_clear();
 			lcd1 << "C++WINS" << end;
 			lcd1.goto_xy(0, 1);
-			lcd1 << "V: " << state.voltages[31] << end;
+			lcd1 << "V: " << state.highest_volt << end;
 			lcd1.goto_xy(0, 2);
-			lcd1 << "T: " << state.temperatures[31] << end;
+			lcd1 << "T: " << state.highest_temp << end;
 			lcd1.goto_xy(0, 3);
-			lcd1 << "I: " <<  state.current_battery << end;
+			lcd1 << "I: " <<  state.highest_current << end;
 			lcd1.goto_xy(0, 4);
 			lcd1 << "Off: " << 63 << end;
 			lcd1.goto_xy(0, 5);
