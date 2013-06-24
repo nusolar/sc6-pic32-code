@@ -59,14 +59,29 @@ namespace nu {
 				NUM_TRIP
 			};
 
-			static ALWAYSINLINE void trip(tripcode code, uint32_t module, BMS * const self) {
+			static ALWAYSINLINE void trip(tripcode code, uint32_t module, BMS *self) {
 				can::frame::bms::tx::trip trip_pkt(0);
 				trip_pkt.frame.contents.trip_code = (int32_t)code;
 				trip_pkt.frame.contents.module = module;
 				self->common_can.err().tx(trip_pkt);
-				
+
+				can::frame::bms::tx::trip_pt_current current_pkt(0);
+				current_pkt.frame.contents.low = self->current_sensor[0]; // TODO sort
+				current_pkt.frame.contents.low = self->current_sensor[1];
+				self->common_can.err().tx(current_pkt);
+
+				can::frame::bms::tx::trip_pt_temp temp_pkt(0);
+				// TODO
+				self->common_can.err().tx(temp_pkt);
+
+				can::frame::bms::tx::trip_pt_voltage volt_pkt(0);
+				// TODO
+				self->common_can.err().tx(volt_pkt);
+
 				self->array_relay = false;
 				self->main_relay = false;
+
+				while (true) Nop();
 			}
 		};
 
@@ -205,6 +220,9 @@ namespace nu {
 
 		ALWAYSINLINE void boot() {
 			main_relay.low(); // Unnecessary precaution
+
+			can::frame::bms::tx::last_trip trip_pkt(0);
+
 //			read_ins();
 			check_batteries();
 			main_relay.high();

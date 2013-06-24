@@ -27,7 +27,7 @@ namespace nu {
 
 		Array<float, num_devices> values;
 		ALWAYSINLINE float operator[] (size_t index) const {return values[index];}
-		uint32_t count() {return num_devices;}
+		ALWAYSINLINE uint32_t count() {return num_devices;}
 
 		ALWAYSINLINE HAIS(AD7685<num_devices> _adc, PN _I_pn): AD7685<num_devices>(_adc), I_pn(_I_pn), values() {}
 		

@@ -37,7 +37,7 @@ namespace nu {
 		Array<uint32_t, num_devices> values;
 		/** @warning NO BOUNDS CHECKING */
 		ALWAYSINLINE uint32_t operator[] (size_t index) const {return values[index];}
-		uint32_t count() {return num_devices;}
+		ALWAYSINLINE uint32_t count() {return num_devices;}
 
 		/**
 		 * Construct an AD7685 interface over SPI, with a Convert pin.

@@ -131,11 +131,17 @@ namespace nu {
 		};
 
 		uint32_t mismatch_pecs;
+		
 		Array<float, num_devices*cells_per_device> values;
 		/** @warning NO BOUNDS CHECKING */
 		ALWAYSINLINE float operator[] (size_t index) const {return values[index];}
-		uint32_t count() {return num_devices;}
+		ALWAYSINLINE uint32_t count() {return num_devices;}
 
+		/**
+		 * Construct LTC6803 interface over basic SPI.
+         * @param _cs The Chip Select pin for the LTC6803.
+         * @param _chn The SPI Channel on which lies the LTC6803.
+         */
 		ALWAYSINLINE LTC6803(Pin _cs, SpiChannel _chn):
 			SPI(_cs, _chn, 100000, (SpiOpenFlags)(SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON),
 			    (SPI::tx_options)(TX_WAIT_START|TX_WAIT_END|TX_DISABLE_AUTO_CS)),
