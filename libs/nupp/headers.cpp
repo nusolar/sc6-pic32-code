@@ -1,10 +1,12 @@
 #include "nupp/ad7685.hpp"
 #include <nupp/allocator.hpp>
+#include "nupp/array.hpp"
 #include "nupp/bitset.hpp"
 #include "nupp/button.hpp"
 #include "nupp/can.hpp"
 #include "nupp/enum.hpp"
 #include "nupp/errorcodes.hpp"
+#include "nupp/hais.hpp"
 #include "nupp/led.hpp"
 #include "nupp/ltc6803.hpp"
 #include "nupp/nokia5110.hpp"

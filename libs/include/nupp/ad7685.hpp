@@ -2,6 +2,7 @@
 #define NUPP_AD7685_HPP 1
 
 #include "nu/compiler.h"
+#include "nupp/array.hpp"
 #include "nupp/spi.hpp"
 #include "nupp/timer.hpp"
 #include "nupp/pinctl.hpp"
@@ -25,26 +26,35 @@ namespace nu {
 			FOUR_WIRE = 1<<0,
 			CHAIN_MODE = 1<<1 | 1<<0,
 			NO_BUSY_INDICATOR = 0,
-			BUSY_INDICATOR = 1<<2
+			BUSY_INDICATOR = 1<<2,
+
+			CHAIN_MODE_NO_BUSY = CHAIN_MODE|NO_BUSY_INDICATOR
 		};
 
 		DigitalOut convert; // ERROR same as CS pin?
 		options opts;
-		uint32_t values[num_devices];
+		
+		Array<uint32_t, num_devices> values;
+		/** @warning NO BOUNDS CHECKING */
+		ALWAYSINLINE uint32_t operator[] (size_t index) const {return values[index];}
+		uint32_t count() {return num_devices;}
 
+		/**
+		 * Construct an AD7685 interface over SPI, with a Convert pin.
+         * @param _cs The SPI Chip Select pin.
+         * @param _chn
+         * @param _convert Used to control AD7685. Identical to CS in some configurations.
+         * @param _opts
+         */
 		ALWAYSINLINE AD7685(Pin _cs, SpiChannel _chn, Pin _convert, options _opts):
 			SPI(_cs, _chn, 100000, (SpiOpenFlags)(SPI_OPEN_CKE_REV|SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON)),
-			convert(_convert), opts(_opts), values() {
+			convert(_convert), opts(_opts), values()
+		{
 			if ((FOUR_WIRE & opt && NO_BUSY_INDICATOR & opt) ||
 				(CHAIN_MODE & opt && BUSY_INDICATOR & opt))
 				return /*-EINVAL*/; // TODO: C++ exceptions
 		}
-
-		ALWAYSINLINE float operator[] (size_t index) const {
-			// ERROR: CHECK BOUNDS
-			return values[index];
-		}
-
+		
 		/**
 		 * Gets the actual voltage reading(s) (not raw data).
 		 */
@@ -78,6 +88,9 @@ namespace nu {
 		}
 
 	private:
+		/**
+		 * Read SPI data from AD7685 into buffer.
+         */
 		ALWAYSINLINE void read_uv(){
 			uint16_t *buffer = (uint16_t *)alloca(sizeof(*buffer) * num_devices);
 

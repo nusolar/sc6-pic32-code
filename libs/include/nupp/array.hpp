@@ -8,9 +8,11 @@ namespace nu {
 	class Array {
 		T array[N];
 	public:
+		/** @warning NO BOUNDS CHECKING */
 		ALWAYSINLINE T& operator[] (const size_t index) {
 			return array[index];
 		}
+		/** @warning NO BOUNDS CHECKING */
 		ALWAYSINLINE T operator[] (const size_t index) const {
 			return array[index];
 		}

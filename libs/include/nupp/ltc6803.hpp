@@ -9,7 +9,7 @@
 #define	LTC6803_HPP
 
 #include "nu/compiler.h"
-#include "nupp/stack.hpp"
+#include "nupp/array.hpp"
 #include "nupp/errorcodes.hpp"
 #include "nupp/timer.hpp"
 #include "nupp/pinctl.hpp"
@@ -129,43 +129,42 @@ namespace nu {
 		};
 
 		uint32_t mismatch_pecs;
-		float values[num_devices * cells_per_device];
+		Array<float, num_devices*cells_per_device> values;
+		/** @warning NO BOUNDS CHECKING */
+		ALWAYSINLINE float operator[] (size_t index) const {return values[index];}
+		uint32_t count() {return num_devices;}
 
 		ALWAYSINLINE LTC6803(Pin _cs, SpiChannel _chn):
 			SPI(_cs, _chn, 100000, (SpiOpenFlags)(SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON),
 			    (SPI::tx_options)(TX_WAIT_START|TX_WAIT_END|TX_DISABLE_AUTO_CS)),
 			mismatch_pecs(0), values() {}
-		ALWAYSINLINE float operator[] (size_t index) const {
-			// ERROR: CHECK BOUNDS
-			return values[index];
-		}
 
-		ALWAYSINLINE void write_configs(stack<Configuration, num_devices> &config) {
+		ALWAYSINLINE void write_configs(Array<Configuration, num_devices> &config) {
 			write_cmd_tx(WRITECFGS, config, sizeof(Configuration));
 			confirm_configs(config);
 		}
 		ALWAYSINLINE void start_voltage_conversion() {write_cmd(STCVAD);}
 		ALWAYSINLINE void start_openwire_conversion() {write_cmd(STOWAD);}
 		ALWAYSINLINE void read_volts() {
-			stack<RawVoltages, num_devices> rx_rv;
+			Array<RawVoltages, num_devices> rx_rv;
 			read_volts_raw(rx_rv);
 			convert_voltages(rx_rv);
 		}
 		
 	private:
-		ALWAYSINLINE void confirm_configs(stack<Configuration, num_devices> &config) {
-			stack<Configuration, num_devices> rx_config;
+		ALWAYSINLINE void confirm_configs(Array<Configuration, num_devices> &config) {
+			Array<Configuration, num_devices> rx_config;
 			read_configs(rx_config);
 			// WARNING
 		}
-		ALWAYSINLINE void read_diags(stack<Diagnostic, num_devices> &diag) {
+		ALWAYSINLINE void read_diags(Array<Diagnostic, num_devices> &diag) {
 			write_cmd(DAGN);
 			timer::delay_ms<25>();
 			write_cmd_tx(READ_DAGN, &diag[0], sizeof(Diagnostic));
 		}
 		ALWAYSINLINE void check_open_wire(u16 *open_wire, const float *voltages){}
-		ALWAYSINLINE void read_configs(stack<Configuration, num_devices> &config) {write_cmd_rx(RDCFGS, config, sizeof(Configuration));}
-		ALWAYSINLINE void read_volts_raw(stack<RawVoltages, num_devices> &rx_rv) {write_cmd_tx(RDCV, rx_rv, sizeof(RawVoltages));}
+		ALWAYSINLINE void read_configs(Array<Configuration, num_devices> &config) {write_cmd_rx(RDCFGS, config, sizeof(Configuration));}
+		ALWAYSINLINE void read_volts_raw(Array<RawVoltages, num_devices> &rx_rv) {write_cmd_tx(RDCV, rx_rv, sizeof(RawVoltages));}
 
 		ALWAYSINLINE uint32_t write_cmd_rx(const command c, void *dest, const size_t one_element){
 			cs.low();
@@ -215,10 +214,10 @@ namespace nu {
 			write_cmd(STCVAD_SELFTEST1);
 			timer::delay_ms<25>();
 
-			stack<RawVoltages, num_devices> rv();
+			Array<RawVoltages, num_devices> rv();
 			read_volts_raw(rv);
 
-			stack<Diagnostic, num_devices> diag();
+			Array<Diagnostic, num_devices> diag();
 			read_diags(diag);
 		}
 
@@ -227,7 +226,7 @@ namespace nu {
 		PURE ALWAYSINLINE float convert_ref_to_v(float ref) {return (((float)ref - 512) * .0015);}
 
 		PURE ALWAYSINLINE float convert_voltage(uint32_t raw) {return ((float)raw-512)*0.0015;}
-		ALWAYSINLINE void convert_voltages(stack<RawVoltages, num_devices> &rv) {
+		ALWAYSINLINE void convert_voltages(Array<RawVoltages, num_devices> &rv) {
 			for (unsigned i=0; i<num_devices; i++) {
 				for (unsigned j=0; j<voltage_pairs_per_dev; j++) {
 					RawVoltagePair &pair = rv[i].voltage_pair[j];
