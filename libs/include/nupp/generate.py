@@ -99,19 +99,13 @@ class EnumNS:
 		contents += enum % ('addrs', ',\n'.join([x.enum_name() for x in self.frames]))
 		return namespace % (type(self).__name__, contents)
 
-class Group:
-	def structs(self):
+class Namespace:
+	def __str__(self):
 		contents = str(self.rx()) + str(self.tx())
 		return namespace % (type(self).__name__, contents)
-	def enums(self):
-		inner = ''.join([namespace %
-			(zx.__name__,
-				enum % ('addrs',',\n'.join([x.enum_name() for x in zx.frames]))
-			) for zx in (self.rx, self.tx)])
-		return namespace % (type(self).__name__, inner)
 
 
-class bms(Group):
+class bms(Namespace):
 	class rx(EnumNS):
 		base = 0x200
 		frames = (
@@ -150,7 +144,7 @@ class bms(Group):
 			X('trip_pt_current', Float2, 'low', 'high'),
 			X('trip_pt_voltage', Float2, 'low', 'high'),
 			X('trip_pt_temp', Float2, 'low', 'high'))
-class ws20(Group):
+class ws20(Namespace):
 	class rx(EnumNS):
 		base = 0x500
 		frames = (
@@ -176,7 +170,7 @@ class ws20(Group):
 			X('cpu_airin_temp', Float2, 'processorTemp', 'airInletTemp'),
 			X('cap_airout_temp', Float2, 'capacitorTemp', 'airOutTemp'),
 			X('odom_bus_ah', Float2, 'odom', 'dcBusAmpHours'))
-class mppt(Group):
+class mppt(Namespace):
 	class rx(EnumNS):
 		base = 0b11100010000
 		frames = (
@@ -189,7 +183,7 @@ class mppt(Group):
 			X('mppt1', Empty) + base,
 			X('mppt2', Empty) + base,
 			X('mppt3', Empty) + base)
-class sw(Group):
+class sw(Namespace):
 	class rx(EnumNS):
 		base = 0x300
 		frames = (
@@ -202,7 +196,7 @@ class sw(Group):
 			X('error', Error),
 			X('buttons', sw_Buttons),
 			X('lights', sw_Lights))
-class dc(Group):
+class dc(Namespace):
 	class rx(EnumNS):
 		base = 0x110
 		frames = (
@@ -235,14 +229,10 @@ class CAN:
 				Packet& operator= (const uint64_t _i) {data() = _i; return *this;}
 				Packet& operator= (const Packet& p) {data() = p.data(); return *this;}
 			};\n"""
-	def structs(self):
-		contents = ''.join(x.structs() for x in self.subspaces)
-		return namespace % ('frame', self.Packet + contents)
-	def enums(self):
-		contents = ''.join(x.enums() for x in self.subspaces)
-		return namespace % ('addr', contents)
 	def __str__(self):
-		return namespace % ('can', self.structs())
+		contents = ''.join(str(x) for x in self.subspaces)
+		contents = namespace % ('frame', self.Packet + contents)
+		return namespace % ('can', contents)
 
 class can_def:
 	docstring = """
