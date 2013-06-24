@@ -30,6 +30,9 @@
 #define NU_MIN_ARRAY_CURRENT -1
 #define NU_MAX_TEMP 35
 #define NU_MIN_TEMP 0
+#define NU_VOLTAGE_PKTS_INTERVAL_MS 15.625
+#define NU_SINGLE_PKTS_INTERVAL_MS 500
+#define NU_HEARTBEAT_INTERVAL_MS 1000
 
 namespace nu {
 	/**
@@ -99,8 +102,10 @@ namespace nu {
 		 */
 		struct state {
 			static const size_t num_modules = 32;
+			bool ow;
 			double uptime;
-			uint32_t last_trip_module;
+			float current_time, last_voltage_pkt_time, last_heartbeat_pkt_time, last_single_pkt_time;
+			uint32_t last_trip_module, last_voltage_pkt_module;
 			uint8_t disabled_module;
 			float highest_volt, lowest_volt;
 			float highest_temp, lowest_temp;
@@ -222,23 +227,84 @@ namespace nu {
 		}
 
 		ALWAYSINLINE void send_can() {
+			state.current_time = timer::ms();
 			{
-				can::frame::bms::tx::current pkt(0);
-				pkt.frame.contents.array = current_sensor[0]; // Marked "BattADC"
-				pkt.frame.contents.battery = current_sensor[1]; // Marked "ArrayADC"
-				common_can.out().tx(pkt);
+				can::frame::bms::tx::voltage v_pkt(0);
+				can::frame::bms::tx::temp t_pkt(0);
+				can::frame::bms::tx::owVoltage ow_pkt(0);
+				if ((state.current_time < state.last_voltage_pkt_time && state.current_time > NU_VOLTAGE_PKTS_INTERVAL_MS)
+				   ||(state.current_time-state.last_voltage_pkt_time > NU_VOLTAGE_PKTS_INTERVAL_MS)) {
+				    // update module to send
+				    t_pkt.frame.contents.sensor = state.last_voltage_pkt_module;
+				    t_pkt.frame.contents.temp = temp_sensor[state.last_voltage_pkt_module];
+				    if (state.ow) {
+					ow_pkt.frame.contents.module = state.last_voltage_pkt_module;
+					ow_pkt.frame.contents.ow_voltage = voltage_sensor[state.last_voltage_pkt_module];
+					common_can.out().tx(ow_pkt);
+				    }
+				    else {
+					v_pkt.frame.contents.module = state.last_voltage_pkt_module;
+					v_pkt.frame.contents.voltage = voltage_sensor[state.last_voltage_pkt_module];
+					common_can.out().tx(v_pkt);
+				    }
+				    common_can.out().tx(t_pkt);
+				    if (state.last_voltage_pkt_module >= state.num_modules-1) state.last_voltage_pkt_module = 0;
+				    else state.last_voltage_pkt_module++;
+				    state.last_voltage_pkt_time = timer::ms();
+				}
 			}
 			{
-				can::frame::bms::tx::voltage pkt(0);
-				pkt.frame.contents.module = 0;
-				pkt.frame.contents.voltage = voltage_sensor[0];
-				common_can.out().tx(pkt);
+				can::frame::bms::tx::heartbeat pkt(0);
+				if ((state.current_time < state.last_heartbeat_pkt_time && state.current_time > NU_HEARTBEAT_INTERVAL_MS)
+				   ||(state.current_time-state.last_heartbeat_pkt_time > NU_VOLTAGE_PKTS_INTERVAL_MS)) {
+				    // update module to send
+				    pkt.frame.contents.bms_str = "zlda";
+				    common_can.out().tx(pkt);
+				    state.last_heartbeat_pkt_time = timer::ms();
+				}
 			}
 			{
-				can::frame::bms::tx::temp pkt(0);
-				pkt.frame.contents.sensor = 0;
-				pkt.frame.contents.temp = 25; // ERROR TODO
-				common_can.out().tx(pkt);
+				can::frame::bms::tx::current current_pkt(0);
+				can::frame::bms::tx::uptime uptime_pkt(0);
+				can::frame::bms::tx::batt_bypass batt_bypass_pkt(0);
+				can::frame::bms::tx::cc_array array_pkt(0);
+				can::frame::bms::tx::cc_batt batt_pkt(0);
+				can::frame::bms::tx::cc_mppt1 cc_mppt1_pkt(0);
+				can::frame::bms::tx::cc_mppt2 cc_mppt2_pkt(0);
+				can::frame::bms::tx::cc_mppt3 cc_mppt3_pkt(0);
+				can::frame::bms::tx::Wh_batt Wh_batt_pkt(0);
+				can::frame::bms::tx::Wh_mppt1 Wh_mppt1_pkt(0);
+				can::frame::bms::tx::Wh_mppt1 Wh_mppt2_pkt(0);
+				can::frame::bms::tx::Wh_mppt1 Wh_mppt3_pkt(0);
+				if ((state.current_time < state.last_single_pkt_time && state.current_time > NU_SINGLE_PKTS_INTERVAL_MS)
+				   ||(state.current_time-state.last_single_pkt_time > NU_SINGLE_PKTS_INTERVAL_MS)) {
+				    current_pkt.frame.contents.array = current_sensor[0]; // Marked "BattADC"
+				    current_pkt.frame.contents.battery = current_sensor[1]; // Marked "ArrayADC"
+				    uptime_pkt.frame.contents.seconds = state.uptime;
+				    batt_bypass_pkt.frame.contents.module = state.disabled_module;
+				    array_pkt.frame.contents.count = state.cc_array;
+				    batt_pkt.frame.contents.count = state.cc_battery;
+				    cc_mppt1_pkt.frame.contents.count = state.cc_mppt[0];
+				    cc_mppt2_pkt.frame.contents.count = state.cc_mppt[1];
+				    cc_mppt3_pkt.frame.contents.count = state.cc_mppt[2];
+				    Wh_batt_pkt.frame.contents.count = state.wh_battery;
+				    Wh_mppt1_pkt.frame.contents.count = state.wh_mppt_out[0];
+				    Wh_mppt2_pkt.frame.contents.count = state.wh_mppt_out[1];
+				    Wh_mppt3_pkt.frame.contents.count = state.wh_mppt_out[2];
+				    common_can.out().tx(current_pkt);
+				    common_can.out().tx(uptime_pkt);
+				    common_can.out().tx(batt_bypass_pkt);
+				    common_can.out().tx(array_pkt);
+				    common_can.out().tx(batt_pkt);
+				    common_can.out().tx(cc_mppt1_pkt);
+				    common_can.out().tx(cc_mppt2_pkt);
+				    common_can.out().tx(cc_mppt3_pkt);
+				    common_can.out().tx(Wh_batt_pkt);
+				    common_can.out().tx(Wh_mppt1_pkt);
+				    common_can.out().tx(Wh_mppt2_pkt);
+				    common_can.out().tx(Wh_mppt3_pkt);
+				    state.last_single_pkt_time = timer::ms();
+				}
 			}
 		}
 
