@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   OneWire.hpp
  * Author: alex
  *
@@ -8,10 +8,10 @@
 #ifndef NUPP_ONEWIRE_HPP
 #define	NUPP_ONEWIRE_HPP
 
-#include "nupp/errorcodes.hpp"
+#include "nu/crc.h"
 #include "nupp/pinctl.hpp"
 #include "nupp/timer.hpp"
-#include "nu/crc.h"
+#include "nupp/errorcodes.hpp"
 
 namespace nu {
 	struct OneWire: protected Pin {
@@ -119,7 +119,7 @@ namespace nu {
 			bool devices_present = !read();
 			timer::delay_us<410>();
 			/*high();*/
-			return devices_present? 1: -error::ENODEV;
+			return (devices_present? 1: -error::ENODEV);
 		}
 
 		ALWAYSINLINE void reset_search_state() {
@@ -141,7 +141,7 @@ namespace nu {
 				reset_search_state();
 				return OW_NO_DEVS_LEFT_IN_SEARCH;
 			}
-			
+
 			bool search_direction = 0;
 			if ((0 == id_bit) && (0 == id_bit_complement)) {
 				if (id_bit_number == search_state.last_discrep_bit) {

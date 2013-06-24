@@ -22,6 +22,8 @@ namespace nu {
 		ALWAYSINLINE operator const void *() const {
 			return (const void *)array;
 		}
+
+		ALWAYSINLINE size_t count() {return N;}
 	};
 }
 

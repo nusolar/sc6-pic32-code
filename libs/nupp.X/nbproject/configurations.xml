@@ -39,6 +39,7 @@
         <itemPath>../include/nupp/onewire.hpp</itemPath>
         <itemPath>../include/nupp/array.hpp</itemPath>
         <itemPath>../include/nupp/hais.hpp</itemPath>
+        <itemPath>../include/nupp/ds18x20.hpp</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
@@ -67,6 +68,7 @@
         <itemPath>../nupp/allocator.cpp</itemPath>
         <itemPath>../nupp/buffer.cpp</itemPath>
         <itemPath>../nupp/ltc6803.cpp</itemPath>
+        <itemPath>../nupp/onewire.cpp</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
@@ -78,9 +80,9 @@
   <sourceRootList>
     <Elem>../include/nu</Elem>
     <Elem>../nu</Elem>
-    <Elem>../nupp</Elem>
     <Elem>../include/platform</Elem>
     <Elem>../include/nupp</Elem>
+    <Elem>../nupp</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>

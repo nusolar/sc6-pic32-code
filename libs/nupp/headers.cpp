@@ -4,6 +4,7 @@
 #include "nupp/bitset.hpp"
 #include "nupp/button.hpp"
 #include "nupp/can.hpp"
+#include "nupp/ds18x20.hpp"
 #include "nupp/enum.hpp"
 #include "nupp/errorcodes.hpp"
 #include "nupp/hais.hpp"
