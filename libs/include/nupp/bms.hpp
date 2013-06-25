@@ -104,7 +104,7 @@ namespace nu {
 			static const size_t num_modules = 32;
 			bool ow;
 			double uptime;
-			uint32_t time, last_voltage_pkt_time, last_heartbeat_pkt_time, last_single_pkt_time, last_single_pkt_time2, last_single_pkt_time3;
+			uint64_t time, last_voltage_pkt_time, last_heartbeat_pkt_time, last_single_pkt_time, last_single_pkt_time2, last_single_pkt_time3;
 			uint32_t last_trip_module, last_voltage_pkt_module;
 			uint32_t disabled_module;
 			float highest_volt, lowest_volt;
@@ -113,7 +113,7 @@ namespace nu {
 			double cc_battery, cc_array, wh_battery, wh_array;
 			double cc_mppt[3], wh_mppt_in[3], wh_mppt_out[3];
 
-
+			uint64_t openwire_clock, lcd_clock;
 		} state;
 
 
@@ -146,6 +146,8 @@ namespace nu {
 			common_can.out().setup_tx(CAN_HIGH_MEDIUM_PRIORITY);
 			common_can.err().setup_tx(CAN_LOWEST_PRIORITY);
 			mppt_can.out().setup_tx(CAN_HIGH_MEDIUM_PRIORITY);
+
+			state.lcd_clock = 0;
 		}
 
 
@@ -356,9 +358,8 @@ namespace nu {
 //			send_can();
 //			check_batteries();
 
-			static bool printed = false;
 			state.time = timer::ms();
-			if (state.time%1000 < 5 && !printed) {
+			if (state.time<state.lcd_clock || state.time - state.lcd_clock > 1000) {
 				static unsigned module_i = 0;
 				lcd1.lcd_clear();
 				lcd1 << "ZELDA " << module_i << end;
@@ -375,9 +376,7 @@ namespace nu {
 
 				module_i++; if (module_i==32) module_i = 0;
 				led1.toggle();
-				printed = true;
-			} else if (state.time%1000 > 5 && printed) {
-				printed = false;
+				state.lcd_clock = state.time;
 			}
 		}
 
