@@ -95,6 +95,17 @@ namespace nu {
 			STOW_DISCHRG12
 		};
 
+		enum cfg0 {
+			CDC_STANDBY = 0,
+			CDC_MSMTONLY,
+			CDC_13ms,
+			CDC_130ms,
+			CDC_500ms,
+			CDC_130ms_VrefOff,
+			CDC_500ms_VrefOff,
+			CDC_2000ms_VrefOff
+		};
+
 		union Diagnostic {
 			struct PACKED bits {
 				unsigned ref		:12;
@@ -108,7 +119,42 @@ namespace nu {
 		};
 		static_assert(sizeof(Diagnostic)==2, "nu::LTC6803::Diagnostic packing");
 		union Configuration {
-			uint8_t bytes[8];
+			uint8_t bytes[6];
+			struct PACKED {
+				unsigned cdc    :3;
+				unsigned cell10 :1;
+				unsigned lvlpl  :1;
+				unsigned gpio1  :1;
+				unsigned gpio2  :1;
+				unsigned wdt    :1;
+				unsigned dcc1   :1;
+				unsigned dcc2   :1;
+				unsigned dcc3   :1;
+				unsigned dcc4   :1;
+				unsigned dcc5   :1;
+				unsigned dcc6   :1;
+				unsigned dcc7   :1;
+				unsigned dcc8   :1;
+				unsigned dcc9   :1;
+				unsigned dcc10  :1;
+				unsigned dcc11  :1;
+				unsigned dcc12  :1;
+				unsigned mc1i   :1;
+				unsigned mc2i   :1;
+				unsigned mc3i   :1;
+				unsigned mc4i   :1;
+				unsigned mc5i   :1;
+				unsigned mc6i   :1;
+				unsigned mc7i   :1;
+				unsigned mc8i   :1;
+				unsigned mc9i   :1;
+				unsigned mc10i  :1;
+				unsigned mc11i  :1;
+				unsigned mc12i  :1;
+				u8 vuv;
+				u8 vov;
+			};
+
 		};
 
 		#define voltage_pairs_per_dev 6
@@ -131,6 +177,7 @@ namespace nu {
 		};
 
 		uint32_t mismatch_pecs;
+		bool is_openwire;
 		
 		Array<float, num_devices*cells_per_device> values;
 		/** @warning NO BOUNDS CHECKING */
@@ -145,24 +192,30 @@ namespace nu {
 		ALWAYSINLINE LTC6803(Pin _cs, SpiChannel _chn):
 			SPI(_cs, _chn, 100000, (SpiOpenFlags)(SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON),
 			    (SPI::tx_options)(TX_WAIT_START|TX_WAIT_END|TX_DISABLE_AUTO_CS)),
-			mismatch_pecs(0), values() {}
+			mismatch_pecs(0), is_openwire(false), values() {}
 
 		ALWAYSINLINE void write_configs(Array<Configuration, num_devices> &config) {
 			write_cmd_tx(WRITECFGS, config, sizeof(Configuration));
-			confirm_configs(config);
+//			confirm_configs(config);
 		}
-		ALWAYSINLINE void start_voltage_conversion() {write_cmd(STCVAD);}
-		ALWAYSINLINE void start_openwire_conversion() {write_cmd(STOWAD);}
+		ALWAYSINLINE void start_voltage_conversion() {write_cmd(STCVAD); is_openwire=false;}
+		ALWAYSINLINE void start_openwire_conversion() {write_cmd(STOWAD); is_openwire=true;}
 		ALWAYSINLINE void read_volts() {
 			Array<RawVoltages, num_devices> rx_rv;
 			read_volts_raw(rx_rv);
 			convert_voltages(rx_rv);
 		}
+
+		PURE ALWAYSINLINE BYTE convert_uv_limit(float vuv) {return (BYTE) ((vuv/(16*.0015)) + 31);}
+		PURE ALWAYSINLINE BYTE convert_ov_limit(float vov) {return (BYTE) ((vov/(16*.0015)) + 32);}
+		PURE ALWAYSINLINE float convert_ref_to_v(float ref) {return (((float)ref - 512) * .0015);}
+		PURE ALWAYSINLINE float convert_voltage(uint32_t raw) {return ((float)raw-512)*0.0015;}
 		
 	private:
-		ALWAYSINLINE void confirm_configs(Array<Configuration, num_devices> &config) {
+		ALWAYSINLINE bool confirm_configs(Array<Configuration, num_devices> &config) {
 			Array<Configuration, num_devices> rx_config;
 			read_configs(rx_config);
+			return rx_config == config;
 			// WARNING
 		}
 		ALWAYSINLINE void read_diags(Array<Diagnostic, num_devices> &diag) {
@@ -229,11 +282,6 @@ namespace nu {
 			read_diags(diag);
 		}
 
-		PURE ALWAYSINLINE BYTE convert_uv_limit(float vuv) {return (BYTE) ((vuv/(16*.0015)) + 31);}
-		PURE ALWAYSINLINE BYTE convert_ov_limit(float vov) {return (BYTE) ((vov/(16*.0015)) + 32);}
-		PURE ALWAYSINLINE float convert_ref_to_v(float ref) {return (((float)ref - 512) * .0015);}
-
-		PURE ALWAYSINLINE float convert_voltage(uint32_t raw) {return ((float)raw-512)*0.0015;}
 		ALWAYSINLINE void convert_voltages(Array<RawVoltages, num_devices> &rv) {
 			for (unsigned i=0; i<num_devices; i++) {
 				for (unsigned j=0; j<voltage_pairs_per_dev; j++) {

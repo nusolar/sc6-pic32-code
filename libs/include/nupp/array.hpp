@@ -24,6 +24,13 @@ namespace nu {
 		}
 
 		ALWAYSINLINE size_t count() {return N;}
+
+		ALWAYSINLINE Array<T, N>& operator= (T rvalue) {
+			for (unsigned i=0; i<N; i++) {
+				this->operator[](i) = rvalue;
+			}
+			return *this;
+		}
 	};
 }
 

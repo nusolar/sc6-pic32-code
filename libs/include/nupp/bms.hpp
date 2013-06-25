@@ -106,7 +106,7 @@ namespace nu {
 			double uptime;
 			uint32_t current_time, last_voltage_pkt_time, last_heartbeat_pkt_time, last_single_pkt_time, last_single_pkt_time2, last_single_pkt_time3;
 			uint32_t last_trip_module, last_voltage_pkt_module;
-			uint8_t disabled_module;
+			uint32_t disabled_module;
 			float highest_volt, lowest_volt;
 			float highest_temp, lowest_temp;
 			float highest_current, lowest_current;
@@ -150,10 +150,14 @@ namespace nu {
 		ALWAYSINLINE void read_ins() {
 			state.disabled_module = 0;
 			for (unsigned i=0; i<6; i++) {
-				state.disabled_module |= (uint8_t)((bool)bits[i].read() >> i);
+				state.disabled_module |= (uint32_t)(((bool)bits[i].read()) << i);
 			}
 			voltage_sensor.read_volts();
-			current_sensor.read_current();
+//			current_sensor.read_current();
+
+			state.highest_volt = voltage_sensor[10];
+//			state.highest_current = current_sensor[0];
+//			state.highest_temp = temp_sensor[0];
 		}
 
 		ALWAYSINLINE void check_batteries() {
@@ -325,23 +329,24 @@ namespace nu {
 		 */
 		ALWAYSINLINE void run() {
 			WDT::clear();
-//			read_ins();
-			send_can();
-			check_batteries();
-			
+			read_ins();
+//			send_can();
+//			check_batteries();
+			static unsigned i = 0;
 			lcd1.lcd_clear();
-			lcd1 << "C++WINS" << end;
+			lcd1 << "ZELDA " << i << end;
 			lcd1.goto_xy(0, 1);
-			lcd1 << "V: " << state.highest_volt << end;
+			lcd1 << "V: " << voltage_sensor[i] << end;
 			lcd1.goto_xy(0, 2);
 			lcd1 << "T: " << state.highest_temp << end;
 			lcd1.goto_xy(0, 3);
 			lcd1 << "I: " <<  state.highest_current << end;
 			lcd1.goto_xy(0, 4);
-			lcd1 << "Off: " << 63 << end;
+			lcd1 << "Off: " << state.disabled_module << end;
 			lcd1.goto_xy(0, 5);
-			lcd1 << "MR: " << main_relay.status() << end;
-			
+			lcd1 << "R: " << main_relay.status() << "-" << array_relay.status() << end;
+
+			i++; if (i==32) i = 0;
 			led1.toggle();
 			timer::delay_s<1>();
 		}
@@ -349,14 +354,25 @@ namespace nu {
 		ALWAYSINLINE void boot() {
 			main_relay.low(); // Unnecessary precaution
 
-			can::frame::bms::tx::last_trip trip_pkt(0);
+//			can::frame::bms::tx::last_trip trip_pkt(0);
 
 //			read_ins();
-			check_batteries();
+//			check_batteries();
 			main_relay.high();
+
+			LTC6803<3>::Configuration cfg0;
+			cfg0.cdc = LTC6803<3>::CDC_MSMTONLY;
+			cfg0.wdt = true;
+			cfg0.lvlpl = true;
+			cfg0.vov = voltage_sensor.convert_ov_limit(NU_MAX_VOLTAGE);
+			cfg0.vuv = voltage_sensor.convert_uv_limit(NU_MIN_VOLTAGE);
+			Array<LTC6803<3>::Configuration, 3> cfg;
+			cfg = cfg0;
+			voltage_sensor.write_configs(cfg);
+			voltage_sensor.start_voltage_conversion();
 		}
 
-		
+
 		ALWAYSINLINE void test() {
 			WDT::clear();
 			lcd1.lcd_clear();
@@ -364,7 +380,7 @@ namespace nu {
 			led1.toggle();
 			timer::delay_s<1>();
 		}
-		
+
 		static NORETURN void main();
 	};
 }
