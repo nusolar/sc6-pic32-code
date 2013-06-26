@@ -93,6 +93,7 @@ namespace nu {
          */
 		ALWAYSINLINE void read_uv(){
 			uint16_t *buffer = (uint16_t *)alloca(sizeof(*buffer) * num_devices);
+			memset(buffer, 0, sizeof(*buffer)*num_devices);
 
 			rx(buffer, sizeof(*buffer)*num_devices);
 			for (unsigned int ui=0; ui < num_devices; ui++) {

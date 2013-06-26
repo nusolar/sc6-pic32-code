@@ -67,9 +67,10 @@ void SPI::rx(void *dst, size_t n) {
 			elems[ui] = (uint16_t)SpiChnGetC(chn);
 	} else {    /* 8-bit mode */
 		uint8_t *elems = (uint8_t *)dst;
-		SpiChnPutC(chn, 0);
-		SpiChnGetRov(chn, 1);
-		for (ui = 0; ui < n; ++ui)
+		for (ui = 0; ui < n; ++ui) {
+			SpiChnPutC(chn, 0);
+			SpiChnGetRov(chn, 1);
 			elems[ui] = (uint8_t)SpiChnGetC(chn);
+		}
 	}
 }
