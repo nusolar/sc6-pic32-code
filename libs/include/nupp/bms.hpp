@@ -216,10 +216,10 @@ namespace nu {
 				state.disabled_module |= (uint32_t)(((bool)bits[i].read()) << i);
 			}
 			voltage_sensor.update_volts();
-//			current_sensor.read_current();
+			current_sensor.read_current();
 
 			state.highest_volt = voltage_sensor[0];
-//			state.highest_current = current_sensor[0];
+			state.highest_current = current_sensor[0];
 //			state.highest_temp = temp_sensor[0];
 		}
 
@@ -406,7 +406,7 @@ namespace nu {
 				lcd1.goto_xy(0, 2);
 				lcd1 << "T: " << state.highest_temp << end;
 				lcd1.goto_xy(0, 3);
-				lcd1 << "I: " <<  state.highest_current << end;
+				lcd1 << "I " << current_sensor[0] << end;
 				lcd1.goto_xy(0, 4);
 				lcd1 << "Off: " << state.disabled_module << end;
 				lcd1.goto_xy(0, 5);
