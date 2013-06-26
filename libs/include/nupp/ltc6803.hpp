@@ -200,7 +200,7 @@ namespace nu {
 		}
 		ALWAYSINLINE void start_voltage_conversion() {write_cmd(STCVAD); is_openwire=false;}
 		ALWAYSINLINE void start_openwire_conversion() {write_cmd(STOWAD); is_openwire=true;}
-		ALWAYSINLINE void read_volts() {
+		ALWAYSINLINE void update_volts() {
 			Array<RawVoltages, num_devices> rx_rv;
 			read_volts_raw(rx_rv);
 			convert_voltages(rx_rv);

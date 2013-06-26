@@ -31,11 +31,15 @@
 	X(DigitalIn, left_sig,			B,	10)\
 	X(DigitalIn, right_sig,			B,	11)\
 	X(DigitalIn, hazard_sig,		B,	12)\
-	X(DigitalOut, lights_brake,	D,	0)\
-	X(DigitalOut, headlights,	D,	1)\
-	X(DigitalOut, lights_l,		D,	2)\
-	X(DigitalOut, lights_r,		D,	3)
+	X(DigitalOut, lights_brake,	D,	3)\
+	X(DigitalOut, headlights,	D,	2)\
+	X(DigitalOut, lights_l,		D,	1)\
+	X(DigitalOut, lights_r,		D,	0)
 
+//D0 RT
+//D1 LT
+//D2 HL
+//D3 BL
 #define DC_DECLARE(Type, name, ltr, num) Type name;
 #define DC_INITIALIZE(Type, name, ltr, num) name(Pin(Pin::ltr, num)),
 

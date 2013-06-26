@@ -16,11 +16,11 @@
 namespace nu {
 	struct OneWire: protected Pin {
 		union romcode {
+			uint8_t bytes[7];
 			struct address {
 				uint8_t family;
 				uint8_t serial[6];
 			};
-			uint8_t bytes[7];
 		};
 
 		struct search_state {
@@ -164,6 +164,7 @@ namespace nu {
 			return search_direction;
 		}
 
+		/** The Search ROM algorithm, see www.maxim-ic.com/ibuttonbook */
 		ALWAYSINLINE bool search_rom(romcode &dest, uint8_t search_rom_cmd) {
 			uint32_t id_bit_number = 1; // 1-64
 			// bit # of last 0 where there was a discrepency. 1-64, or 0 if none
