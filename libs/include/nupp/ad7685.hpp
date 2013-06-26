@@ -81,7 +81,7 @@ namespace nu {
 				cs.low();
 
 			// read in the actual voltage reading(s) over SPI
-			//read_uv();
+			read_uv();
 
 			cs.low();
 			timer::delay_us<5>();
@@ -92,22 +92,15 @@ namespace nu {
 		 * Read SPI data from AD7685 into buffer.
          */
 		ALWAYSINLINE void read_uv(){
-			uint16_t *buffer = (uint16_t *)alloca(sizeof(*buffer) * num_devices);
-			if (buffer == NULL) {
-			    picvalue = 747;
-			    return;
-			}
-			memset(buffer, 0, sizeof(*buffer)*num_devices);
+			Array<uint16_t, num_devices> buffer;
 
-			//rx(buffer, sizeof(*buffer)*num_devices);
+			rx(buffer, buffer.size());
 			for (unsigned int ui=0; ui < num_devices; ui++) {
 				// swap byte order
 				// buf[ui] = bswap_u16(buf[ui]);
-				//buffer[ui] = betoh16(buffer[ui]);
-				//picvalue = buffer[0];
+				buffer[ui] = betoh16(buffer[ui]);
 				// then compute the actual voltage (microvolts)
-				//values[ui] = (uint32_t)((5000000 * (uint64_t)buffer[ui])>>16);
-			    values[ui] = buffer[ui];
+				values[ui] = (uint32_t)((5000000 * (uint64_t)buffer[ui])>>16);
 			}
 		}
 	};

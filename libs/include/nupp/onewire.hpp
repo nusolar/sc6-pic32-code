@@ -15,13 +15,15 @@
 
 namespace nu {
 	struct OneWire: protected Pin {
-		union romcode {
+		union PACKED romcode {
 			uint8_t bytes[7];
-			struct address {
+			struct {
 				uint8_t family;
 				uint8_t serial[6];
 			};
+			uint64_t data :56;
 		};
+		static_assert(sizeof(romcode) == 7, "nu::OneWire::romcode packing");
 
 		struct search_state {
 			uint32_t last_discrep_bit, last_family_discrep_bit;
@@ -200,6 +202,11 @@ namespace nu {
 			if (the_crc != this->crc(&search_state.romcode_crc.rc, sizeof(search_state.romcode_crc.rc)))
 				return -1;
 			return true;
+		}
+
+		ALWAYSINLINE void match_rom(romcode &code) {
+			uint8_t the_crc = crc(code.bytes, sizeof(code));
+			
 		}
 
 		static const uint32_t crc_table[];

@@ -157,11 +157,11 @@ namespace nu {
 					ack.frame.contents.cruise_mode = btns.frame.contents.cruise_mode;
 					common_can.out().tx(ack.bytes(), 4, can::frame::sw::rx::buttons_k);
 
-					state.sw_timer = timer::ms(); // Reset SW time-out
+					state.sw_timer = (uint32_t)timer::ms(); // Reset SW time-out
 					break;
 				}
 				default:
-					uint32_t dc_time = timer::ms(); // Kill SW things if SW times-out.
+					uint32_t dc_time = (uint32_t)timer::ms(); // Kill SW things if SW times-out.
 					if ((dc_time > state.sw_timer + 500) || ((dc_time < state.sw_timer) && (dc_time > 500))) {
 //						state.lights_l = 0;
 //						state.lights_r = 0;
@@ -247,7 +247,7 @@ namespace nu {
 			if (timer::ms() - timer::s() < 2) {
 				lcd.lcd_clear();
 				lcd.goto_xy(0,0);
-				lcd << "CAN id:" << id << end;
+				lcd << "ZELDA id:" << id << end;
 				lcd.goto_xy(0,1);
 				switch (id) {
 					case can::frame::ws20::tx::motor_velocity_k: {

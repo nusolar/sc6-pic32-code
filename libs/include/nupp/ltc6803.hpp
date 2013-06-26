@@ -18,7 +18,7 @@
 namespace nu {
 	/** Limited to 32 devices */
 	template <uint32_t num_devices>
-	struct LTC6803: protected SPI {
+	struct LTC6803: public SPI {
 		enum command {
 			WRITECFGS   = 0x01, // Write config registers
 			RDCFGS,				// Read config registers
@@ -117,6 +117,7 @@ namespace nu {
 				uint8_t b0, b1;
 			} bytes;
 		};
+
 		static_assert(sizeof(Diagnostic)==2, "nu::LTC6803::Diagnostic packing");
 		union Configuration {
 			uint8_t bytes[6];
@@ -156,6 +157,7 @@ namespace nu {
 			};
 
 		};
+		static_assert(sizeof(Configuration)==6, "nu::LTC6803::Configuration packing");
 
 		#define voltage_pairs_per_dev 6
 		#define cells_per_device (voltage_pairs_per_dev*2)
@@ -171,10 +173,12 @@ namespace nu {
 			} bytes;
 		};
 		static_assert(sizeof(RawVoltagePair)==3, "nu::LTC6803::RawVoltagePair packing");
+
 		union RawVoltages {
 			RawVoltagePair voltage_pair[voltage_pairs_per_dev];
 			uint8_t bytes[voltage_pairs_per_dev*sizeof(RawVoltagePair)];
 		};
+		static_assert(sizeof(RawVoltages)==3*voltage_pairs_per_dev, "nu::LTC6803::RawVoltages packing");
 
 		uint32_t mismatch_pecs;
 		bool is_openwire;
@@ -196,7 +200,7 @@ namespace nu {
 
 		ALWAYSINLINE void write_configs(Array<Configuration, num_devices> &config) {
 			write_cmd_tx(WRITECFGS, config, sizeof(Configuration));
-//			confirm_configs(config);
+			confirm_configs(config);
 		}
 		ALWAYSINLINE void start_voltage_conversion() {write_cmd(STCVAD); is_openwire=false;}
 		ALWAYSINLINE void start_openwire_conversion() {write_cmd(STOWAD); is_openwire=true;}
@@ -215,8 +219,9 @@ namespace nu {
 		ALWAYSINLINE bool confirm_configs(Array<Configuration, num_devices> &config) {
 			Array<Configuration, num_devices> rx_config;
 			read_configs(rx_config);
-			return rx_config == config;
-			// WARNING
+			uint32_t result = config.byte_compare(rx_config);
+			picvalue = result;
+			return result;
 		}
 		ALWAYSINLINE void read_diags(Array<Diagnostic, num_devices> &diag) {
 			write_cmd(DAGN);
@@ -225,7 +230,7 @@ namespace nu {
 		}
 		ALWAYSINLINE void check_open_wire(u16 *open_wire, const float *voltages){}
 		ALWAYSINLINE void read_configs(Array<Configuration, num_devices> &config) {write_cmd_rx(RDCFGS, config, sizeof(Configuration));}
-		ALWAYSINLINE void read_volts_raw(Array<RawVoltages, num_devices> &rx_rv) {write_cmd_tx(RDCV, rx_rv, sizeof(RawVoltages));}
+		ALWAYSINLINE void read_volts_raw(Array<RawVoltages, num_devices> &rx_rv) {write_cmd_rx(RDCV, rx_rv, sizeof(RawVoltages));}
 
 		ALWAYSINLINE uint32_t write_cmd_rx(const command c, void *dest, const size_t one_element){
 			cs.low();
@@ -233,9 +238,8 @@ namespace nu {
 
 			mismatch_pecs = 0;
 			BYTE recv_buffer[one_element + 1]; // +1 byte for pec
-			
 			for (unsigned i=0; i<num_devices; i++) {
-				rx(recv_buffer, one_element);
+				rx(recv_buffer, one_element + 1);
 				memcpy((BYTE *)dest + i*one_element, recv_buffer, one_element);
 				
 				BYTE pec = recv_buffer[sizeof(recv_buffer) - 1]; // last byte
@@ -259,9 +263,7 @@ namespace nu {
 		}
 
 		ALWAYSINLINE void write_cmd(const command c) {
-			cs.low();
 			tx_with_pec(&c, 1);
-			cs.high();
 		}
 
 		ALWAYSINLINE void tx_with_pec(const void *src, const size_t n) {
@@ -286,8 +288,8 @@ namespace nu {
 			for (unsigned i=0; i<num_devices; i++) {
 				for (unsigned j=0; j<voltage_pairs_per_dev; j++) {
 					RawVoltagePair &pair = rv[i].voltage_pair[j];
-					values[i*cells_per_device+j*2]		= convert_voltage(pair.voltages.v1);
-					values[i*cells_per_device+j*2+1]	= convert_voltage(pair.voltages.v2);
+					values[i*cells_per_device+j*2]		= (pair.voltages.v1);
+					values[i*cells_per_device+j*2+1]	= (pair.voltages.v2);
 				}
 			}
 		}

@@ -193,6 +193,7 @@ namespace nu {
 
 		ALWAYSINLINE void read_ins() {
 			LTC6803<3>::Configuration cfg0;
+			memset(cfg0.bytes, 0, sizeof(cfg0.bytes));
 			cfg0.cdc = LTC6803<3>::CDC_MSMTONLY;
 			cfg0.wdt = true;
 			cfg0.lvlpl = true;
@@ -219,6 +220,10 @@ namespace nu {
 			}
 			voltage_sensor.update_volts();
 			current_sensor.read_current();
+//			static const uint8_t TEST[2];
+//			TEST[0] = (uint8_t)LTC6803::RDCV;
+//			TEST[0] = (uint8_t)LTC6803::
+//			voltage_sensor.tx(&TEST, sizeof(TEST));
 
 			state.highest_volt = voltage_sensor[0];
 			state.highest_current = current_sensor[0];
@@ -394,12 +399,12 @@ namespace nu {
 		 */
 		ALWAYSINLINE void run() {
 			WDT::clear();
+			picvalue = 0;
 			read_ins();
 //			send_can();
 //			check_batteries();
-
 			state.time = timer::ms();
-			if (state.time<state.lcd_clock || state.time - state.lcd_clock > 500) {
+			if (state.time<state.lcd_clock || state.time - state.lcd_clock > 1000) {
 				lcd1.lcd_clear();
 				lcd1 << "ZELDA " << state.module_i << end;
 				lcd1.goto_xy(0, 1);
@@ -407,9 +412,9 @@ namespace nu {
 				lcd1.goto_xy(0, 2);
 				lcd1 << "T: " << state.highest_temp << end;
 				lcd1.goto_xy(0, 3);
-				lcd1 << "I " << (uint32_t) picvalue << end;
+				lcd1 << "I " << current_sensor[0] << end;
 				lcd1.goto_xy(0, 4);
-				lcd1 << "Off: " << "h" << state.disabled_module << "i"<<end;
+				lcd1 << "Off: " << state.disabled_module << " X " << (uint32_t)picvalue << end;
 				lcd1.goto_xy(0, 5);
 				lcd1 << "R: " << main_relay.status() << "-" << array_relay.status() << end;
 

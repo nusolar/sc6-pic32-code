@@ -12,7 +12,7 @@
 using namespace nu;
 
 void BMS::main() {
-	WDT::enable();
+	WDT::disable();
 	BMS bms{};
 	bms.boot();
 	while (true) {

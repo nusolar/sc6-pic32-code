@@ -15,16 +15,16 @@ namespace nu {
 
 		template <u64 s>
 		static ALWAYSINLINE u64  s_to_ticks()		{return nu_s_to_ticks(s);}
-		static ALWAYSINLINE u64  s_to_ticks(u64 s)	{return nu_s_to_ticks(s);}
+		static ALWAYSINLINE u64  s_to_ticks(u64 s)	{return nu_s_to_ticks((hz_t)s);}
 		template <u64 ms>
 		static ALWAYSINLINE u64 ms_to_ticks()		{return nu_ms_to_ticks(ms);}
-		static ALWAYSINLINE u64 ms_to_ticks(u64 ms)	{return nu_ms_to_ticks(ms);}
+		static ALWAYSINLINE u64 ms_to_ticks(u64 ms)	{return nu_ms_to_ticks((hz_t)ms);}
 		template <u64 us>
 		static ALWAYSINLINE u64 us_to_ticks()		{return nu_us_to_ticks(us);}
-		static ALWAYSINLINE u64 us_to_ticks(u64 us)	{return nu_us_to_ticks(us);}
+		static ALWAYSINLINE u64 us_to_ticks(u64 us)	{return nu_us_to_ticks((hz_t)us);}
 		template <u64 ns>
 		static ALWAYSINLINE u64 ns_to_ticks()		{return nu_ns_to_ticks(ns);}
-		static ALWAYSINLINE u64 ns_to_ticks(u64 ns)	{return nu_ns_to_ticks(ns);}
+		static ALWAYSINLINE u64 ns_to_ticks(u64 ns)	{return nu_ns_to_ticks((hz_t)ns);}
 
 		static ALWAYSINLINE u64 s ()	{return (int64_t)(nu_timer_ticks()<<1)/NU_HZ;}
 		static ALWAYSINLINE u64 ms()	{return (int64_t)nu_timer_ticks()*2000/NU_HZ;}
@@ -32,9 +32,9 @@ namespace nu {
 		static ALWAYSINLINE u64 ns()	{return (int64_t)(nu_timer_ticks()*2000)/NU_MHZ;}
 		static ALWAYSINLINE u64 ticks()	{return nu_timer_ticks();}
 
-		template <u64 ticks>
-		static ALWAYSINLINE void delay_ticks()			{nu_delay_ticks(ticks);}
-		static ALWAYSINLINE void delay_ticks(u64 ticks)	{nu_delay_ticks(ticks);}
+		template <tick_t ticks>
+		static ALWAYSINLINE void delay_ticks()				{nu_delay_ticks(ticks);}
+		static ALWAYSINLINE void delay_ticks(tick_t ticks)	{nu_delay_ticks(ticks);}
 		template <u64 s>
 		static ALWAYSINLINE void delay_s ()			{delay_ticks((tick_t)(s*param::Hz()/2));}
 		static ALWAYSINLINE void delay_s (u64 s)	{delay_ticks((tick_t)(s*param::Hz()/2));}

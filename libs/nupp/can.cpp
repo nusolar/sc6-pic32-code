@@ -82,7 +82,7 @@ Module::Module(CAN_MODULE _mod, uint32_t bus_speed,
 
 ALWAYSINLINE
 int32_t Module::switch_mode(CAN_OP_MODE op_mode, uint32_t timeout_ms) {
-	uint32_t start = timer::us();
+	uint32_t start = (uint32_t)timer::us();
 	CANSetOperatingMode(mod, op_mode);
 	while (timer::us() - start < timeout_ms*1000)
 		if (CANGetOperatingMode(mod) == op_mode)
