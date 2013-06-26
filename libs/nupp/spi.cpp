@@ -4,6 +4,7 @@
 
 using namespace nu;
 
+uint64_t picvalue;
 uint32_t ALWAYSINLINE SPI::get_bitrate(SpiChannel chn) {
 	uint32_t clk_div = (_SpiMapTbl[chn]->brg+1)*2;
 	return (uint32_t) param::pbus_hz()/clk_div; //bitrate
@@ -55,16 +56,18 @@ void SPI::rx(void *dst, size_t n) {
 
 	if (_SpiMapTbl[chn]->con.MODE32) {
 		uint32_t *elems = (uint32_t *)dst;
-		SpiChnPutC(chn, 0);
-		SpiChnGetRov(chn, 1);
-		for (ui = 0; ui < n; ++ui)
+		for (ui = 0; ui < n; ++ui) {
+			SpiChnPutC(chn, 0);
+			SpiChnGetRov(chn, 1);
 			elems[ui] = SpiChnGetC(chn);
+		}
 	} else if (_SpiMapTbl[chn]->con.MODE16) {
 		uint16_t *elems = (uint16_t *)dst;
-		SpiChnPutC(chn, 0);
-		SpiChnGetRov(chn, 1);
-		for (ui = 0; ui < n; ++ui)
+		for (ui = 0; ui < n; ++ui) {
+			SpiChnPutC(chn, 0);
+			SpiChnGetRov(chn, 1);
 			elems[ui] = (uint16_t)SpiChnGetC(chn);
+		}
 	} else {    /* 8-bit mode */
 		uint8_t *elems = (uint8_t *)dst;
 		for (ui = 0; ui < n; ++ui) {

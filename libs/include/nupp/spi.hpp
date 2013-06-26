@@ -8,7 +8,7 @@
 #include "nupp/pinctl.hpp"
 #include <cstring> // strlen
 #include <plib.h>
-
+extern uint64_t picvalue;
 namespace nu {
 	/**
 	 * Encapsulate SPI reading/writing.

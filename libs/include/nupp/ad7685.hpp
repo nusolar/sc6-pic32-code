@@ -81,7 +81,7 @@ namespace nu {
 				cs.low();
 
 			// read in the actual voltage reading(s) over SPI
-			read_uv();
+			//read_uv();
 
 			cs.low();
 			timer::delay_us<5>();
@@ -93,15 +93,21 @@ namespace nu {
          */
 		ALWAYSINLINE void read_uv(){
 			uint16_t *buffer = (uint16_t *)alloca(sizeof(*buffer) * num_devices);
+			if (buffer == NULL) {
+			    picvalue = 747;
+			    return;
+			}
 			memset(buffer, 0, sizeof(*buffer)*num_devices);
 
-			rx(buffer, sizeof(*buffer)*num_devices);
+			//rx(buffer, sizeof(*buffer)*num_devices);
 			for (unsigned int ui=0; ui < num_devices; ui++) {
 				// swap byte order
 				// buf[ui] = bswap_u16(buf[ui]);
-				buffer[ui] = betoh16(buffer[ui]);
+				//buffer[ui] = betoh16(buffer[ui]);
+				//picvalue = buffer[0];
 				// then compute the actual voltage (microvolts)
-				values[ui] = (uint32_t)((5000000 * (uint64_t)buffer[ui])>>16);
+				//values[ui] = (uint32_t)((5000000 * (uint64_t)buffer[ui])>>16);
+			    values[ui] = buffer[ui];
 			}
 		}
 	};

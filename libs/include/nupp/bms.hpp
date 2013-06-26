@@ -152,6 +152,7 @@ namespace nu {
 			double cc_mppt[3], wh_mppt_in[3], wh_mppt_out[3];
 
 			uint64_t openwire_clock, lcd_clock;
+			uint32_t module_i;
 		} state;
 
 
@@ -186,6 +187,7 @@ namespace nu {
 			mppt_can.out().setup_tx(CAN_HIGH_MEDIUM_PRIORITY);
 
 			state.lcd_clock = 0;
+			state.module_i = 0;
 		}
 
 
@@ -397,22 +399,21 @@ namespace nu {
 //			check_batteries();
 
 			state.time = timer::ms();
-			if (state.time<state.lcd_clock || state.time - state.lcd_clock > 1000) {
-				static unsigned module_i = 0;
+			if (state.time<state.lcd_clock || state.time - state.lcd_clock > 500) {
 				lcd1.lcd_clear();
-				lcd1 << "ZELDA " << module_i << end;
+				lcd1 << "ZELDA " << state.module_i << end;
 				lcd1.goto_xy(0, 1);
-				lcd1 << "V: " << voltage_sensor[module_i] << end;
+				lcd1 << "V: " << voltage_sensor[state.module_i] << end;
 				lcd1.goto_xy(0, 2);
 				lcd1 << "T: " << state.highest_temp << end;
 				lcd1.goto_xy(0, 3);
-				lcd1 << "I " << current_sensor[0] << end;
+				lcd1 << "I " << (uint32_t) picvalue << end;
 				lcd1.goto_xy(0, 4);
-				lcd1 << "Off: " << state.disabled_module << end;
+				lcd1 << "Off: " << "h" << state.disabled_module << "i"<<end;
 				lcd1.goto_xy(0, 5);
 				lcd1 << "R: " << main_relay.status() << "-" << array_relay.status() << end;
 
-				module_i++; if (module_i==32) module_i = 0;
+				state.module_i++; if (state.module_i==32) state.module_i = 0;
 				led1.toggle();
 				state.lcd_clock = state.time;
 			}
