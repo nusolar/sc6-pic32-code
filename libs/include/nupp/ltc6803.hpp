@@ -202,8 +202,8 @@ namespace nu {
 			write_cmd_tx(WRITECFGS, config, sizeof(Configuration));
 			confirm_configs(config);
 		}
-		ALWAYSINLINE void start_voltage_conversion() {write_cmd(STCVAD); is_openwire=false;}
-		ALWAYSINLINE void start_openwire_conversion() {write_cmd(STOWAD); is_openwire=true;}
+		ALWAYSINLINE void start_voltage_conversion() {write_cmd_solo(STCVAD); is_openwire=false;}
+		ALWAYSINLINE void start_openwire_conversion() {write_cmd_solo(STOWAD); is_openwire=true;}
 		ALWAYSINLINE void update_volts() {
 			Array<RawVoltages, num_devices> rx_rv;
 			read_volts_raw(rx_rv);
@@ -231,6 +231,12 @@ namespace nu {
 		ALWAYSINLINE void check_open_wire(u16 *open_wire, const float *voltages){}
 		ALWAYSINLINE void read_configs(Array<Configuration, num_devices> &config) {write_cmd_rx(RDCFGS, config, sizeof(Configuration));}
 		ALWAYSINLINE void read_volts_raw(Array<RawVoltages, num_devices> &rx_rv) {write_cmd_rx(RDCV, rx_rv, sizeof(RawVoltages));}
+
+		ALWAYSINLINE void write_cmd_solo(const command c) {
+			cs.low();
+			write_cmd(c);
+			cs.high();
+		}
 
 		ALWAYSINLINE uint32_t write_cmd_rx(const command c, void *dest, const size_t one_element){
 			cs.low();
@@ -288,8 +294,8 @@ namespace nu {
 			for (unsigned i=0; i<num_devices; i++) {
 				for (unsigned j=0; j<voltage_pairs_per_dev; j++) {
 					RawVoltagePair &pair = rv[i].voltage_pair[j];
-					values[i*cells_per_device+j*2]		= (pair.voltages.v1);
-					values[i*cells_per_device+j*2+1]	= (pair.voltages.v2);
+					(values[i*cells_per_device+j*2]	 += convert_voltage(pair.voltages.v1))/=2;
+					(values[i*cells_per_device+j*2+1] += convert_voltage(pair.voltages.v2))/=2;
 				}
 			}
 		}

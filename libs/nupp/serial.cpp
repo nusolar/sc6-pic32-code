@@ -4,7 +4,6 @@
 
 #include <cstdio> /* Serial::printf requires these */
 #include <cstdarg>
-#include <alloca.h>
 
 using namespace nu;
 

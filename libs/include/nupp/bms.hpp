@@ -15,6 +15,7 @@
 #include "nupp/hais.hpp"
 #include "nupp/ad7685.hpp"
 #include "nupp/ltc6803.hpp"
+#include "nupp/ds18x20.hpp"
 #include "nupp/timer.hpp"
 #include "nupp/nu32.hpp"
 #include "nupp/pinctl.hpp"
@@ -29,50 +30,13 @@
 #define NU_MAX_BATT_CURRENT_CHARGING -36.4
 #define NU_MAX_ARRAY_CURRENT 10
 #define NU_MIN_ARRAY_CURRENT -1
-#define NU_MAX_TEMP 35
+#define NU_MAX_TEMP 45
 #define NU_MIN_TEMP 0
 #define NU_VOLTAGE_PKTS_INTERVAL_MS 15.625
 #define NU_SINGLE_PKTS_INTERVAL_MS 500
 #define NU_HEARTBEAT_INTERVAL_MS 1000
 
 namespace nu {
-	static const OneWire::romcode roms[] = {
-		// bar 1
-		{0x28, 0x9E, 0x63, 0xEA, 0x02, 0x00, 0x00},
-		{0x28, 0x63, 0x58, 0xEA, 0x02, 0x00, 0x00},
-		{0x28, 0xB4, 0x6B, 0xEA, 0x02, 0x00, 0x00},
-		{0x28, 0x77, 0x55, 0xEA, 0x02, 0x00, 0x00},
-		{0x28, 0x73, 0x58, 0xEA, 0x02, 0x00, 0x00},
-		// bar 2
-		{0x28, 0xF3, 0x5F, 0xEA, 0x02, 0x00, 0x00},
-		{0x28, 0xCF, 0x6C, 0xEA, 0x02, 0x00, 0x00},
-		{0x28, 0xAF, 0x67, 0xEA, 0x02, 0x00, 0x00},
-		{0x28, 0x50, 0x74, 0xEA, 0x02, 0x00, 0x00},
-		{0x28, 0xB9, 0x56, 0xEA, 0x02, 0x00, 0x00},
-		// bar 3
-		{0x28, 0x27, 0x61, 0xEA, 0x02, 0x00, 0x00},
-		{0x28, 0x0E, 0x6E, 0xEA, 0x02, 0x00, 0x00},
-		{0x28, 0xE9, 0x2F, 0xEA, 0x02, 0x00, 0x00},
-		{0x28, 0x2E, 0x5B, 0xEA, 0x02, 0x00, 0x00},
-		{0x28, 0x82, 0x5B, 0xEA, 0x02, 0x00, 0x00},
-		// bar 4
-		{0x28, 0xED, 0x65, 0xEA, 0x02, 0x00, 0x00},
-		{0x28, 0x77, 0x6C, 0xEA, 0x02, 0x00, 0x00},
-		{0x28, 0xC3, 0x5A, 0xEA, 0x02, 0x00, 0x00},
-		{0x28, 0x9D, 0x6D, 0xEA, 0x02, 0x00, 0x00},
-		{0x28, 0x1C, 0x3E, 0xEA, 0x02, 0x00, 0x00},
-		// bar 5
-		{0x28, 0x4E, 0x66, 0xEA, 0x02, 0x00, 0x00},
-		{0x28, 0x76, 0x6D, 0xEA, 0x02, 0x00, 0x00},
-		{0x28, 0xF6, 0x73, 0xEA, 0x02, 0x00, 0x00},
-		{0x28, 0xDE, 0x6C, 0xEA, 0x02, 0x00, 0x00},
-		{0x28, 0x5C, 0x6B, 0xEA, 0x02, 0x00, 0x00},
-
-		// bar 5.1
-		{0x28, 0x31, 0x62, 0xEA, 0x02, 0x00, 0x00},
-		{0x28, 0xD0, 0x6B, 0xEA, 0x02, 0x00, 0x00}
-	};
-
 	/**
 	 * Battery Management System. Controls voltage, temperature, and current
 	 * monitoring sensors; informs telemetry; emergency-stops the car if needed.
@@ -132,7 +96,7 @@ namespace nu {
 		Nokia5110 lcd1, lcd2;
 		HAIS<2> current_sensor; // 2 ADCs
 		LTC6803<3> voltage_sensor; // 3 LTCs
-		// DS18B20 on A0
+		DS18X20<32> temp_sensor; //on A0
 
 
 		/**
@@ -153,6 +117,7 @@ namespace nu {
 
 			uint64_t openwire_clock, lcd_clock;
 			uint32_t module_i;
+			bool converted_openwire;
 		} state;
 
 
@@ -171,7 +136,8 @@ namespace nu {
 			current_sensor(
 				AD7685<2>(Pin(Pin::F, 12), SPI_CHANNEL4, Pin(Pin::F, 12), // Convert & CS are same pin
 				AD7685<2>::CHAIN_MODE_NO_BUSY), HAIS<2>::P50),
-			voltage_sensor(Pin(Pin::D, 9), SPI_CHANNEL1), state()
+			voltage_sensor(Pin(Pin::D, 9), SPI_CHANNEL1),
+			temp_sensor(Pin(Pin::A, 0)), state()
 		{
 			WDT::clear();
 			state.last_trip_module = 12345;
@@ -204,15 +170,16 @@ namespace nu {
 			voltage_sensor.write_configs(cfg);
 
 			state.time = timer::ms();
-			static bool converted_openwire = false;
-			if (state.time%2000 < 100 && !converted_openwire) {
+			if (state.time%2000 < 100 && !state.converted_openwire) {
 				voltage_sensor.start_openwire_conversion();
-				converted_openwire = true;
+				state.converted_openwire = true;
 			}
-			else if (state.time%2000 > 100 && converted_openwire) {
+			else if (state.time%2000 > 100 && state.converted_openwire) {
 				voltage_sensor.start_voltage_conversion();
-				converted_openwire = false;
+				state.converted_openwire = false;
 			}
+
+			temp_sensor.perform_temperature_conversion();
 
 			state.disabled_module = 0;
 			for (unsigned i=0; i<6; i++) {
@@ -220,14 +187,11 @@ namespace nu {
 			}
 			voltage_sensor.update_volts();
 			current_sensor.read_current();
-//			static const uint8_t TEST[2];
-//			TEST[0] = (uint8_t)LTC6803::RDCV;
-//			TEST[0] = (uint8_t)LTC6803::
-//			voltage_sensor.tx(&TEST, sizeof(TEST));
+			temp_sensor.update_temperatures();
 
 			state.highest_volt = voltage_sensor[0];
 			state.highest_current = current_sensor[0];
-//			state.highest_temp = temp_sensor[0];
+			state.highest_temp = temp_sensor[0];
 		}
 
 		ALWAYSINLINE void check_batteries() {
@@ -399,10 +363,10 @@ namespace nu {
 		 */
 		ALWAYSINLINE void run() {
 			WDT::clear();
-			picvalue = 0;
 			read_ins();
 //			send_can();
 //			check_batteries();
+
 			state.time = timer::ms();
 			if (state.time<state.lcd_clock || state.time - state.lcd_clock > 1000) {
 				lcd1.lcd_clear();
@@ -412,14 +376,14 @@ namespace nu {
 				lcd1.goto_xy(0, 2);
 				lcd1 << "T: " << state.highest_temp << end;
 				lcd1.goto_xy(0, 3);
-				lcd1 << "I " << current_sensor[0] << end;
+				lcd1 << "I: " <<  state.highest_current << end;
 				lcd1.goto_xy(0, 4);
-				lcd1 << "Off: " << state.disabled_module << " X " << (uint32_t)picvalue << end;
+				lcd1 << "Off: " << state.disabled_module << end;
 				lcd1.goto_xy(0, 5);
 				lcd1 << "R: " << main_relay.status() << "-" << array_relay.status() << end;
-
-				state.module_i++; if (state.module_i==32) state.module_i = 0;
 				led1.toggle();
+
+				++state.module_i %= 32;
 				state.lcd_clock = state.time;
 			}
 		}
@@ -429,8 +393,10 @@ namespace nu {
 
 //			can::frame::bms::tx::last_trip trip_pkt(0);
 
-//			read_ins();
-//			check_batteries();
+			for (unsigned i=0; i<5; i++) {
+				read_ins();
+			}
+			check_batteries();
 			main_relay.high();
 		}
 

@@ -9,6 +9,7 @@
 #include "nupp/errorcodes.hpp"
 #include "nupp/hais.hpp"
 #include "nupp/led.hpp"
+#include "nupp/lowpassfilter.hpp"
 #include "nupp/ltc6803.hpp"
 #include "nupp/nokia5110.hpp"
 #include "nupp/nu32.hpp"

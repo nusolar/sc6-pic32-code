@@ -3,7 +3,6 @@
 #include "nupp/wdt.hpp"
 #include <cstdio> /* Nokia5110::printf requires these */
 #include <cstdarg>
-#include <alloca.h>
 
 using namespace nu;
 
