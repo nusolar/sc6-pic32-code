@@ -229,7 +229,7 @@ namespace nu {
 			WDT::clear();
 			lcd << state.velo << state.curr;
 			uint32_t msg = 0x004e4550;
-			char *alert = NULL;
+			char alert[30] = {0};
 			sprintf(alert, "\x1Etext\x1F%s%s%u\x1E", "Alert: ", (char *)&msg, 0xF);
 			lcd << alert;
 		}
