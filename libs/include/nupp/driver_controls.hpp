@@ -60,6 +60,7 @@ namespace nu {
 			accel_en, brake_en, reverse_en, regen_en, airgap_en, cruise_en;
 			float accel, regen, airgap, cruise; // FUCK MPLAB
 			float velocity;
+			uint32_t time,last_time;
 			uint32_t sw_timer;
 
 			ALWAYSINLINE state(): lights_l(0), lights_r(0), lights_hazard(0),
@@ -244,7 +245,9 @@ namespace nu {
 			static uint32_t id = 0;
 			ws_can.in().rx(frame, id);
 
-			if (timer::ms() - timer::s() < 2) {
+			state.time = timer::ms();
+			if ((state.time < state.last_time && state.time > 1000)
+			   ||(state.time-state.last_time > 1000)) {
 				lcd.lcd_clear();
 				lcd.goto_xy(0,0);
 				lcd << "ZELDA id:" << id << end;
@@ -271,6 +274,7 @@ namespace nu {
 				lcd << timer::s() << "-" << state.accel << end;
 				lcd.goto_xy(0,5); lcd << "mv:" << state.velocity << end;
 				if (id) led1.toggle();
+				state.last_time = state.time;
 			}
 			timer::delay_ms<1>();
 		}

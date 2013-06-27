@@ -26,9 +26,9 @@ namespace nu {
 		static ALWAYSINLINE u64 ns_to_ticks()		{return nu_ns_to_ticks(ns);}
 		static ALWAYSINLINE u64 ns_to_ticks(u64 ns)	{return nu_ns_to_ticks((hz_t)ns);}
 
-		static ALWAYSINLINE u64 s ()	{return (int64_t)nu_timer_ticks()<<1/NU_HZ;}
+		static ALWAYSINLINE u64 s ()	{return (((int64_t)nu_timer_ticks())<<1)/NU_HZ;}
 		static ALWAYSINLINE u64 ms()	{return (int64_t)nu_timer_ticks()*2000/NU_HZ;}
-		static ALWAYSINLINE u64 us()	{return (int64_t)nu_timer_ticks()<<1/NU_MHZ;}
+		static ALWAYSINLINE u64 us()	{return (((int64_t)nu_timer_ticks())<<1)/NU_MHZ;}
 		static ALWAYSINLINE u64 ns()	{return (int64_t)nu_timer_ticks()*2000/NU_MHZ;}
 		static ALWAYSINLINE u64 ticks()	{return nu_timer_ticks();}
 
