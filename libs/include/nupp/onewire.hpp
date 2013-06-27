@@ -14,7 +14,22 @@
 #include "nupp/errorcodes.hpp"
 
 namespace nu {
+	template <size_t num_devices>
 	struct OneWire: protected Pin {
+		enum command {
+			SEARCH_ROM = 0xF0,
+			READ_ROM = 0x33,
+			MATCH_ROM = 0x55,
+			SKIP_ROM = 0xCC,
+			ALARM_SEARCH = 0xEC,
+
+			CONVERT_T = 0x44,
+			COPY_SCRATCH = 0x48,
+			WRITE_SCRATCH = 0x4E,
+			READ_SCRATCH = 0xBE,
+			RECALL_EE = 0xB8
+		};
+
 		union PACKED romcode {
 			uint8_t bytes[7];
 			struct {
@@ -36,6 +51,7 @@ namespace nu {
 				};
 			} romcode_crc;
 		} search_state;
+		static_assert(sizeof(search_state.romcode_crc) == 8, "nu::OneWire::rcrc packing");
 
 		ALWAYSINLINE void high()	{set();}
 		ALWAYSINLINE void low()		{clear();}
@@ -62,7 +78,7 @@ namespace nu {
 				timer::delay_us<10>();
 			}
 		}
-		ALWAYSINLINE void tx_byte(uint8_t byte) {
+		ALWAYSINLINE void tx_byte(const uint8_t byte) {
 			for (uint8_t i=0; i<8; i++) {
 				tx_bit(byte>>i & 1);
 			}
@@ -72,6 +88,17 @@ namespace nu {
 			for (unsigned i=0; i<n; i++) {
 				tx_byte(*((uint8_t *)src + i));
 			}
+		}
+
+		ALWAYSINLINE void tx_byte_with_crc(const uint8_t byte) {
+			tx_byte(byte);
+			tx_byte(crc(&byte, 1));
+		}
+
+		ALWAYSINLINE void tx_with_crc(const void *src, size_t n) {
+			uint8_t the_crc = crc(src, sizeof(src));
+			tx(src, n);
+			tx_byte(the_crc);
 		}
 
 		ALWAYSINLINE bool rx_bit() {
@@ -205,9 +232,19 @@ namespace nu {
 		}
 
 		ALWAYSINLINE void match_rom(romcode &code) {
-			uint8_t the_crc = crc(code.bytes, sizeof(code));
-			
+			tx_byte_with_crc(MATCH_ROM);
+			tx_with_crc(&code, sizeof(code));
 		}
+
+		ALWAYSINLINE void skip_rom() {
+			tx_byte_with_crc(SKIP_ROM);
+		}
+
+		ALWAYSINLINE void read_scratch(void *dest, size_t n) {
+			tx_byte_with_crc(READ_SCRATCH);
+			rx(dest, n);
+		}
+
 
 		static const uint32_t crc_table[];
 		ALWAYSINLINE uint32_t crc(const void *data, size_t n) {
@@ -216,6 +253,26 @@ namespace nu {
 			return crcTableFast(crc_table, data, n, 8, CRC_DIRECT, 0x00, CRC_8_DALLAS,
 				CRC_REVERSE_DATA_BYTES, CRC_REVERSE_BEFORE_FINAL_XOR, 0x00);
 		}
+	};
+
+	template <size_t num_devices>
+	const uint32_t OneWire<num_devices>::crc_table[] = {
+	   0,94,188,226,97,63,221,131,194,156,126,32,163,253,31,65,
+	   157,195,33,127,252,162,64,30,95,1,227,189,62,96,130,220,
+	   35,125,159,193,66,28,254,160,225,191,93,3,128,222,60,98,
+	   190,224,2,92,223,129,99,61,124,34,192,158,29,67,161,255,
+	   70,24,250,164,39,121,155,197,132,218,56,102,229,187,89,7,
+	   219,133,103,57,186,228,6,88,25,71,165,251,120,38,196,154,
+	   101,59,217,135,4,90,184,230,167,249,27,69,198,152,122,36,
+	   248,166,68,26,153,199,37,123,58,100,134,216,91,5,231,185,
+	   140,210,48,110,237,179,81,15,78,16,242,172,47,113,147,205,
+	   17,79,173,243,112,46,204,146,211,141,111,49,178,236,14,80,
+	   175,241,19,77,206,144,114,44,109,51,209,143,12,82,176,238,
+	   50,108,142,208,83,13,239,177,240,174,76,18,145,207,45,115,
+	   202,148,118,40,171,245,23,73,8,86,180,234,105,55,213,139,
+	   87,9,235,181,54,104,138,212,149,203,41,119,244,170,72,22,
+	   233,183,85,11,136,214,52,106,43,117,151,201,74,20,246,168,
+	   116,42,200,150,21,75,169,247,182,232,10,84,215,137,107,53
 	};
 }
 

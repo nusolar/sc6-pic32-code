@@ -34,6 +34,10 @@ namespace nu {
 			else off();
 			return *this;
 		}
+
+		ALWAYSINLINE void set(const bool rhs) {
+			(rhs? on(): off());
+		}
 	};
 }
 

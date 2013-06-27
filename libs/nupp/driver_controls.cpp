@@ -12,7 +12,7 @@
 using namespace nu;
 
 void DriverControls::main() {
-	WDT::enable();
+	WDT::disable();
 	DriverControls dc{};
 	dc.led1.on();
 	while (true) {

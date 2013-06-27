@@ -44,12 +44,7 @@ namespace nu {
          */
 		ALWAYSINLINE bool toggled() {
 			if (was_pressed != pressed()) {
-				if (!was_pressed) {
-					was_pressed = true;
-				} else {
-					was_pressed = false;
-					return true;
-				}
+				return !(was_pressed = !was_pressed);
 			}
 			return false;
 		}

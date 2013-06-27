@@ -16,6 +16,6 @@ void SteeringWheel::main() {
 	SteeringWheel sw{};
 	sw.animate_leds();
 	while (true) {
-		sw.test();
+		sw.run();
 	}
 }

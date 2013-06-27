@@ -48,14 +48,17 @@
 	_LED(cruise_mode,	D, 9)   \
 	_LED(cruise_down,	A, 14)*/
 
-#define SW_N_BTNS 7
+#define SW_N_BTNS 11
 #define SW_N_LEDS 12
 
 namespace nu {
 	struct SteeringWheel {
-		Button yes, no, maybe, cruise_en, cruise_mode, cruise_up, cruise_down;
-		Led led_left, led_right, led_radio, led_yes, led_hazard, led_cruise_en,
-			led_cruise_up, led_maybe, led_no, led_horn, led_cruise_mode, led_cruise_down;
+		Button yes, no, maybe,
+			cruise_en, cruise_mode, cruise_up, cruise_down,
+			left, right, hazard, horn;
+		Led led_yes, led_no, led_maybe,
+			led_cruise_en, led_cruise_mode, led_cruise_up, led_cruise_down,
+			led_left, led_right, led_hazard, led_horn, led_radio;
 
 		Button *buttons[SW_N_BTNS];
 		Led *leds[SW_N_LEDS];
@@ -79,6 +82,7 @@ namespace nu {
 		 * Setup NU32, CAN, LEDs, and uLCD Display.
 		 */
 		ALWAYSINLINE SteeringWheel():
+#if 0
 			yes			(Button(Pin(Pin::E,  0), 10, 5)),
 			no			(Button(Pin(Pin::G, 12), 10, 5)),
 			maybe		(Button(Pin(Pin::E,  2), 10, 5)),
@@ -99,15 +103,44 @@ namespace nu {
 			led_horn		(Led(Pin(Pin::D,  5))),
 			led_cruise_mode	(Led(Pin(Pin::D,  9))),
 			led_cruise_down	(Led(Pin(Pin::A, 14))),
+#else
+			yes			(Button(Pin(Pin::E,  0), 10, 5)),
+			no			(Button(Pin(Pin::G, 12), 10, 5)),
+			maybe		(Button(Pin(Pin::E,  2), 10, 5)),
+			cruise_en	(Button(Pin(Pin::D,  0), 10, 5)),
+			cruise_mode	(Button(Pin(Pin::D,  8), 10, 5)),
+			cruise_up	(Button(Pin(Pin::D, 10), 10, 5)),
+			cruise_down	(Button(Pin(Pin::A, 15), 10, 5)),
+			left		(Button(Pin(Pin::D,	 6), 10, 5)),
+			right		(Button(Pin(Pin::D,  3), 10, 5)),
+			hazard		(Button(Pin(Pin::D, 12), 10, 5)),
+			horn		(Button(Pin(Pin::D, 4), 10, 5)),
 
-			buttons {&yes, &no, &maybe, &cruise_en, &cruise_mode, &cruise_up, &cruise_down},
-			leds {&led_left, &led_right, &led_radio, &led_yes, &led_hazard,
-				&led_cruise_en, &led_cruise_up, &led_maybe, &led_no, &led_horn,
-				&led_cruise_mode, &led_cruise_down},
+			led_yes			(Led(Pin(Pin::E,  1))),
+			led_no			(Led(Pin(Pin::G, 13))),
+			led_maybe		(Led(Pin(Pin::E,  3))),
+			led_cruise_en	(Led(Pin(Pin::D,  1))),
+			led_cruise_mode	(Led(Pin(Pin::D,  9))),
+			led_cruise_up	(Led(Pin(Pin::D, 11))),
+			led_cruise_down	(Led(Pin(Pin::A, 14))),
+			led_left		(Led(Pin(Pin::D,  7))),
+			led_right		(Led(Pin(Pin::D,  2))),
+			led_hazard		(Led(Pin(Pin::D, 13))),
+			led_horn		(Led(Pin(Pin::D,  5))),
+			led_radio		(Led(Pin(Pin::E,  5))),
+
+#endif
+
+			buttons {&yes, &no, &maybe,
+					&cruise_en, &cruise_mode, &cruise_up, &cruise_down,
+					&left, &right, &hazard, &horn},
+			leds {&led_yes, &led_no, &led_maybe,
+				&led_cruise_en, &led_cruise_mode, &led_cruise_up, &led_cruise_down,
+				&led_left, &led_right, &led_hazard, &led_horn, &led_radio},
 
 			common_can(CAN2), lcd(UART3), state()
 		{
-			
+
 			WDT::clear();
 			common_can.in ().setup_rx();
 			common_can.in ().add_filter(CAN_FILTER0, CAN_SID, 0x300, CAN_FILTER_MASK0, CAN_FILTER_MASK_IDE_TYPE, 0x7F8);
@@ -125,12 +158,12 @@ namespace nu {
 			for (unsigned i=0; i<SW_N_LEDS; i++){
 				WDT::clear();
 				leds[i]->on();
-				timer::delay_ms<100>(); // ok. WDT timeout ~ 2s
+				timer::delay_ms<10>(); // ok. WDT timeout ~ 2s
 			}
 			for (unsigned i=0; i<SW_N_LEDS; i++){
 				WDT::clear();
 				leds[i]->off();
-				timer::delay_ms<100>(); // ok. WDT timeout ~ 2s
+				timer::delay_ms<10>(); // ok. WDT timeout ~ 2s
 			}
 		}
 
@@ -139,8 +172,8 @@ namespace nu {
 		 */
 		ALWAYSINLINE void read_ins() {
 			WDT::clear();
-			for (int repeat = 0; repeat < 10; repeat++) // debounce 10x
-				for (unsigned i = 0; i < SW_N_BTNS; i++)
+			for (unsigned i = 0; i < SW_N_BTNS; i++)
+				for (unsigned repeat = 0; repeat < 10; repeat++) // debounce 10x
 					buttons[i]->update();
 
 			for (unsigned i=0; i < SW_N_BTNS; i++)
@@ -183,8 +216,9 @@ namespace nu {
 		 * Set each LED according to Steering Wheel's state.
 		 */
 		ALWAYSINLINE void set_leds() {
+			WDT::clear();
 			for (unsigned i=0; i < SW_N_LEDS; i++) {
-				*leds[i] = state.leds[i];
+				leds[i]->set(state.btns[i]);
 			}
 		}
 
@@ -192,6 +226,7 @@ namespace nu {
 		 * Read the car's state from CAN, draw to dashboard LCD.
 		 */
 		ALWAYSINLINE void draw_lcd(){
+			WDT::clear();
 			lcd << state.velo << state.curr;
 			uint32_t msg = 0x004e4550;
 			char *alert = NULL;
@@ -225,12 +260,12 @@ namespace nu {
 			WDT::clear();
 
 			read_ins(); //updates 10x, reads once
-			recv_can(); //recv 1 packet
+//			recv_can(); //recv 1 packet
 
 			set_leds();
 			draw_lcd();
 
-			send_can();
+//			send_can();
 		}
 
 
