@@ -10,6 +10,7 @@
         <itemPath>../include/nu/errorcodes.h</itemPath>
         <itemPath>../include/nu/timer.h</itemPath>
         <itemPath>../include/nu/wdt.h</itemPath>
+        <itemPath>../include/nu/crc.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f1" displayName="nupp" projectFiles="true">
         <itemPath>../include/nupp/ad7685.hpp</itemPath>
@@ -54,7 +55,6 @@
         <itemPath>../nu/param.c</itemPath>
         <itemPath>../nu/wdt.c</itemPath>
         <itemPath>../nu/errorcodes.c</itemPath>
-        <itemPath>../nu/crc.c</itemPath>
       </logicalFolder>
       <logicalFolder name="nupp" displayName="nupp" projectFiles="true">
         <itemPath>../nupp/can.cpp</itemPath>
@@ -70,8 +70,6 @@
         <itemPath>../nupp/allocator.cpp</itemPath>
         <itemPath>../nupp/buffer.cpp</itemPath>
         <itemPath>../nupp/ltc6803.cpp</itemPath>
-        <itemPath>../nupp/onewire.cpp</itemPath>
-        <itemPath>../nupp/ds18x20.cpp</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
@@ -82,10 +80,6 @@
   </logicalFolder>
   <sourceRootList>
     <Elem>../include/nu</Elem>
-    <Elem>../include/platform</Elem>
-    <Elem>../nupp</Elem>
-    <Elem>../include/nupp</Elem>
-    <Elem>../nu</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -161,7 +155,7 @@
         <property key="extra-lib-directories" value=""/>
         <property key="generate-16-bit-code" value="false"/>
         <property key="generate-cross-reference-file" value="false"/>
-        <property key="heap-size" value="1024"/>
+        <property key="heap-size" value="2048"/>
         <property key="input-libraries" value=""/>
         <property key="linker-symbols" value=""/>
         <property key="map-file" value=""/>

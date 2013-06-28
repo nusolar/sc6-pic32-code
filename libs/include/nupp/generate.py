@@ -27,7 +27,8 @@ sw_Lights = """
 	unsigned    hazard          :1;
 	unsigned    horn            :1;
 	unsigned    radio           :1;
-	unsigned    reserved        :52;"""
+	unsigned    reserved        :20;
+	unsigned    reserved1		:32;"""
 sw_Buttons = """
 	unsigned    yes             :1;
 	unsigned    no              :1;
@@ -40,7 +41,8 @@ sw_Buttons = """
 	unsigned    right           :1;
 	unsigned    hazard          :1;
 	unsigned    horn            :1;
-	unsigned    reserved        :52;"""
+	unsigned    reserved        :21;
+	unsigned    reserved1       :32;"""
 sw_Buttons_new = """
 	unsigned    yes             :1;
 	unsigned    no              :1;

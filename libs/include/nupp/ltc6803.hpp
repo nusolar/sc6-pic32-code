@@ -121,7 +121,7 @@ namespace nu {
 		static_assert(sizeof(Diagnostic)==2, "nu::LTC6803::Diagnostic packing");
 		union Configuration {
 			uint8_t bytes[6];
-			struct PACKED {
+			struct PACKED bits_t {
 				unsigned cdc    :3;
 				unsigned cell10 :1;
 				unsigned lvlpl  :1;
@@ -154,8 +154,7 @@ namespace nu {
 				unsigned mc12i  :1;
 				u8 vuv;
 				u8 vov;
-			};
-
+			} bits;
 		};
 		static_assert(sizeof(Configuration)==6, "nu::LTC6803::Configuration packing");
 
@@ -164,11 +163,11 @@ namespace nu {
 
 		union PACKED RawVoltagePair {
 			unsigned val :24;
-			struct PACKED voltages {
+			struct PACKED voltages_t {
 				unsigned v1 :12;
 				unsigned v2 :12;
 			} voltages;
-			struct bytes {
+			struct bytes_t {
 				uint8_t b0, b1, b2;
 			} bytes;
 		};

@@ -21,7 +21,6 @@
 #include "nupp/pinctl.hpp"
 #include "nupp/can.hpp"
 #include "nupp/wdt.hpp"
-#include "nupp/onewire.hpp"
 #include "nupp/errorcodes.hpp"
 
 #define NU_MAX_VOLTAGE 4.3
@@ -96,7 +95,7 @@ namespace nu {
 		Nokia5110 lcd1, lcd2;
 		HAIS<2> current_sensor; // 2 ADCs
 		LTC6803<3> voltage_sensor; // 3 LTCs
-		DS18X20<32> temp_sensor; //on A0
+//		OneWire temp_sensor; //on A0
 
 
 		/**
@@ -137,7 +136,8 @@ namespace nu {
 				AD7685<2>(Pin(Pin::F, 12), SPI_CHANNEL4, Pin(Pin::F, 12), // Convert & CS are same pin
 				AD7685<2>::CHAIN_MODE_NO_BUSY), HAIS<2>::P50),
 			voltage_sensor(Pin(Pin::D, 9), SPI_CHANNEL1),
-			temp_sensor(Pin(Pin::A, 0)), state()
+//			temp_sensor(),//Pin(Pin::A, 0)),
+			state()
 		{
 			WDT::clear();
 			state.last_trip_module = 12345;
@@ -160,11 +160,11 @@ namespace nu {
 		ALWAYSINLINE void read_ins() {
 			LTC6803<3>::Configuration cfg0;
 			memset(cfg0.bytes, 0, sizeof(cfg0.bytes));
-			cfg0.cdc = LTC6803<3>::CDC_MSMTONLY;
-			cfg0.wdt = true;
-			cfg0.lvlpl = true;
-			cfg0.vov = voltage_sensor.convert_ov_limit(NU_MAX_VOLTAGE);
-			cfg0.vuv = voltage_sensor.convert_uv_limit(NU_MIN_VOLTAGE);
+			cfg0.bits.cdc = LTC6803<3>::CDC_MSMTONLY;
+			cfg0.bits.wdt = true;
+			cfg0.bits.lvlpl = true;
+			cfg0.bits.vov = voltage_sensor.convert_ov_limit(NU_MAX_VOLTAGE);
+			cfg0.bits.vuv = voltage_sensor.convert_uv_limit(NU_MIN_VOLTAGE);
 			Array<LTC6803<3>::Configuration, 3> cfg;
 			cfg = cfg0;
 			voltage_sensor.write_configs(cfg);
@@ -179,7 +179,7 @@ namespace nu {
 				state.converted_openwire = false;
 			}
 
-			temp_sensor.perform_temperature_conversion();
+//			temp_sensor.perform_temperature_conversion();
 
 			state.disabled_module = 0;
 			for (unsigned i=0; i<6; i++) {
@@ -187,11 +187,11 @@ namespace nu {
 			}
 			voltage_sensor.update_volts();
 			current_sensor.read_current();
-			temp_sensor.update_temperatures();
+//			temp_sensor.update_temperatures();
 
 			state.highest_volt = voltage_sensor[0];
 			state.highest_current = current_sensor[0];
-			state.highest_temp = temp_sensor[0];
+//			state.highest_temp = temp_sensor[0];
 		}
 
 		ALWAYSINLINE void check_batteries() {
