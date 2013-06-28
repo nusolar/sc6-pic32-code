@@ -31,6 +31,7 @@
 	X(DigitalIn, left_sig,			B,	10)\
 	X(DigitalIn, right_sig,			B,	11)\
 	X(DigitalIn, hazard_sig,		B,	12)\
+	X(DigitalIn, horn,				B,	13)\
 	X(DigitalOut, lights_brake,	D,	3)\
 	X(DigitalOut, headlights,	D,	2)\
 	X(DigitalOut, lights_l,		D,	1)\
@@ -164,10 +165,11 @@ namespace nu {
 				default:
 					uint32_t dc_time = (uint32_t)timer::ms(); // Kill SW things if SW times-out.
 					if ((dc_time > state.sw_timer + 500) || ((dc_time < state.sw_timer) && (dc_time > 500))) {
-//						state.lights_l = 0;
-//						state.lights_r = 0;
-//						state.lights_hazard = 0;
+						state.lights_l = 0;
+						state.lights_r = 0;
+						state.lights_hazard = 0;
 						state.cruise_en = 0;
+						state.horn = 0;
 					}
 			}
 		}
