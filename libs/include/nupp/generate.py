@@ -15,31 +15,31 @@ motor_Status = """
 	uint16_t activeMotor;
 	uint16_t reserved __attribute__ ((__packed__));"""
 sw_Lights = """
+	unsigned    yes             :1;
+	unsigned    no              :1;
+	unsigned    maybe           :1;
+	unsigned    cruise_en       :1;
+	unsigned    cruise_mode     :1;
+	unsigned    cruise_up       :1;
+	unsigned    cruise_down     :1;
 	unsigned    left            :1;
 	unsigned    right           :1;
-	unsigned    radio           :1;
-	unsigned    yes             :1;
 	unsigned    hazard          :1;
-	unsigned    cruise_en       :1;
-	unsigned    cruise_up       :1;
-	unsigned    maybe           :1;
-	unsigned    no              :1;
 	unsigned    horn            :1;
-	unsigned    cruise_mode     :1;
-	unsigned    cruise_down     :1;
+	unsigned    radio           :1;
 	unsigned    reserved        :20;"""
 sw_Buttons_old = """
-	unsigned    left            :1;
-	unsigned    right           :1;
 	unsigned    yes             :1;
 	unsigned    no              :1;
 	unsigned    maybe           :1;
-	unsigned    hazard          :1;
-	unsigned    horn            :1;
 	unsigned    cruise_en       :1;
 	unsigned    cruise_mode     :1;
 	unsigned    cruise_up       :1;
 	unsigned    cruise_down     :1;
+	unsigned    left            :1;
+	unsigned    right           :1;
+	unsigned    hazard          :1;
+	unsigned    horn            :1;
 	unsigned    reserved        :21;"""
 sw_Buttons = """
 	unsigned    yes             :1;
