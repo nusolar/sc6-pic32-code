@@ -81,7 +81,6 @@
   </logicalFolder>
   <sourceRootList>
     <Elem>../include/nu</Elem>
-    <Elem>../nu</Elem>
     <Elem>../include/platform</Elem>
     <Elem>../nupp</Elem>
     <Elem>../include/nupp</Elem>
