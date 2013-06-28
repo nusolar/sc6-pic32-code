@@ -238,12 +238,13 @@ namespace nu {
 			cs.high();
 		}
 
-		ALWAYSINLINE uint32_t write_cmd_rx(const command c, void *dest, const size_t one_element){
+		ALWAYSINLINE uint32_t write_cmd_rx(const command c, void *dest, size_t one_element){
 			cs.low();
 			write_cmd(c);
 
 			mismatch_pecs = 0;
-			BYTE recv_buffer[one_element + 1]; // +1 byte for pec
+//			BYTE recv_buffer[one_element + 1]; // +1 byte for pec
+			BYTE recv_buffer[100];
 			for (unsigned i=0; i<num_devices; i++) {
 				rx(recv_buffer, one_element + 1);
 				memcpy((BYTE *)dest + i*one_element, recv_buffer, one_element);
@@ -259,7 +260,7 @@ namespace nu {
 		}
 
 		/** Deals an array of data of size==one_element to all devices */
-		ALWAYSINLINE void write_cmd_tx(const command c, const void *data, const size_t one_element) {
+		ALWAYSINLINE void write_cmd_tx(const command c, const void *data, size_t one_element) {
 			cs.low();
 			write_cmd(c);
 			for (unsigned i=0; i<num_devices; i++) {
@@ -272,7 +273,7 @@ namespace nu {
 			tx_with_pec(&c, 1);
 		}
 
-		ALWAYSINLINE void tx_with_pec(const void *src, const size_t n) {
+		ALWAYSINLINE void tx_with_pec(const void *src, size_t n) {
 			long pec = (long)crc_table_fast(src, n); // WARNING type?
 			tx(src, n); // WARNING check pointers / tx errors
 			tx(&pec, 1);

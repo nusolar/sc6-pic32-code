@@ -61,13 +61,14 @@ namespace nu {
 			accel_en, brake_en, reverse_en, regen_en, airgap_en, cruise_en;
 			float accel, regen, airgap, cruise; // FUCK MPLAB
 			float velocity;
-			uint32_t time,last_time;
-			uint32_t sw_timer;
+			uint64_t time, last_time;
+			uint64_t sw_timer;
 
 			ALWAYSINLINE state(): lights_l(0), lights_r(0), lights_hazard(0),
 				lights_head(0), lights_brake(0), horn(0),
 				accel_en(0), brake_en(0), reverse_en(0), regen_en(0), airgap_en(0), cruise_en(0),
-				accel(0), regen(0), airgap(0), cruise(0), velocity(0), sw_timer(0) {}
+				accel(0), regen(0), airgap(0), cruise(0), velocity(0),
+				time(0), last_time(0), sw_timer(0) {}
 		} state;
 
 		/**

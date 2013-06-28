@@ -8,7 +8,9 @@
 #ifndef NUPP_ONEWIRE_HPP
 #define	NUPP_ONEWIRE_HPP
 
+extern "C" {
 #include "nu/crc.h"
+}
 #include "nupp/pinctl.hpp"
 #include "nupp/timer.hpp"
 #include "nupp/errorcodes.hpp"
@@ -78,7 +80,7 @@ namespace nu {
 				timer::delay_us<10>();
 			}
 		}
-		ALWAYSINLINE void tx_byte(const uint8_t byte) {
+		ALWAYSINLINE void tx_byte(uint8_t byte) {
 			for (uint8_t i=0; i<8; i++) {
 				tx_bit(byte>>i & 1);
 			}
@@ -90,7 +92,7 @@ namespace nu {
 			}
 		}
 
-		ALWAYSINLINE void tx_byte_with_crc(const uint8_t byte) {
+		ALWAYSINLINE void tx_byte_with_crc(uint8_t byte) {
 			tx_byte(byte);
 			tx_byte(crc(&byte, 1));
 		}
@@ -194,7 +196,7 @@ namespace nu {
 		}
 
 		/** The Search ROM algorithm, see www.maxim-ic.com/ibuttonbook */
-		ALWAYSINLINE bool search_rom(romcode &dest, uint8_t search_rom_cmd) {
+		ALWAYSINLINE bool search_rom(const romcode &dest, const uint8_t search_rom_cmd) {
 			uint32_t id_bit_number = 1; // 1-64
 			// bit # of last 0 where there was a discrepency. 1-64, or 0 if none
 			uint32_t last_zero_discrep_bit = 0;
@@ -231,7 +233,7 @@ namespace nu {
 			return true;
 		}
 
-		ALWAYSINLINE void match_rom(romcode &code) {
+		ALWAYSINLINE void match_rom(const romcode &code) {
 			tx_byte_with_crc(MATCH_ROM);
 			tx_with_crc(&code, sizeof(code));
 		}
@@ -250,8 +252,9 @@ namespace nu {
 		ALWAYSINLINE uint32_t crc(const void *data, size_t n) {
 			if (!data)
 				return 0xFFFFFFFF;
-			return crcTableFast(crc_table, data, n, 8, CRC_DIRECT, 0x00, CRC_8_DALLAS,
-				CRC_REVERSE_DATA_BYTES, CRC_REVERSE_BEFORE_FINAL_XOR, 0x00);
+			return n;
+//			return crcTableFast(crc_table, data, n, 8, CRC_DIRECT, 0x00, CRC_8_DALLAS,
+//				CRC_REVERSE_DATA_BYTES, CRC_REVERSE_BEFORE_FINAL_XOR, 0x00);
 		}
 	};
 

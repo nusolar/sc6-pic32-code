@@ -54,6 +54,7 @@
         <itemPath>../nu/param.c</itemPath>
         <itemPath>../nu/wdt.c</itemPath>
         <itemPath>../nu/errorcodes.c</itemPath>
+        <itemPath>../nu/crc.c</itemPath>
       </logicalFolder>
       <logicalFolder name="nupp" displayName="nupp" projectFiles="true">
         <itemPath>../nupp/can.cpp</itemPath>
@@ -84,6 +85,7 @@
     <Elem>../include/platform</Elem>
     <Elem>../nupp</Elem>
     <Elem>../include/nupp</Elem>
+    <Elem>../nu</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>

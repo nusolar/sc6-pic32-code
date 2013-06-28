@@ -46,7 +46,7 @@ namespace nu {
 			this->convert_t();
 		}
 
-		ALWAYSINLINE void read_temperature(typename OneWire<num_devices>::romcode &code, scratch &scr) {
+		ALWAYSINLINE void read_temperature(const typename OneWire<num_devices>::romcode &code, scratch &scr) {
 			this->reset();
 			this->match_rom(code);
 			this->read_scratch(&scr, sizeof(scr));
@@ -59,7 +59,7 @@ namespace nu {
 		ALWAYSINLINE void update_temperatures() {
 			Array<scratch, num_devices> scratches;
 			for (unsigned i=0; i<num_devices; i++) {
-//				read_temperature(roms[i], scratches[i]);
+				read_temperature(this->roms[i], scratches[i]);
 				values[i] = convert_temperature(scratches[i].temperature);
 			}
 		}
