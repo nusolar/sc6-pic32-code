@@ -37,10 +37,8 @@
         <itemPath>../include/nupp/bitset.hpp</itemPath>
         <itemPath>../include/nupp/can_def.hpp</itemPath>
         <itemPath>../include/nupp/ltc6803.hpp</itemPath>
-        <itemPath>../include/nupp/onewire.hpp</itemPath>
         <itemPath>../include/nupp/array.hpp</itemPath>
         <itemPath>../include/nupp/hais.hpp</itemPath>
-        <itemPath>../include/nupp/ds18x20.hpp</itemPath>
         <itemPath>../include/nupp/lowpassfilter.hpp</itemPath>
       </logicalFolder>
     </logicalFolder>
@@ -80,6 +78,8 @@
   </logicalFolder>
   <sourceRootList>
     <Elem>../include/nu</Elem>
+    <Elem>../nupp</Elem>
+    <Elem>../include/nupp</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>

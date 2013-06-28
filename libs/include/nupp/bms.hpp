@@ -15,7 +15,6 @@
 #include "nupp/hais.hpp"
 #include "nupp/ad7685.hpp"
 #include "nupp/ltc6803.hpp"
-#include "nupp/ds18x20.hpp"
 #include "nupp/timer.hpp"
 #include "nupp/nu32.hpp"
 #include "nupp/pinctl.hpp"
@@ -64,6 +63,7 @@ namespace nu {
 			};
 
 			static ALWAYSINLINE void trip(tripcode code, uint32_t module, BMS *self) {
+				if (module == 21 || module == 22) return;
 				can::frame::bms::tx::trip trip_pkt(0);
 				trip_pkt.frame.contents.trip_code = (int32_t)code;
 				trip_pkt.frame.contents.module = module;
@@ -95,7 +95,7 @@ namespace nu {
 		Nokia5110 lcd1, lcd2;
 		HAIS<2> current_sensor; // 2 ADCs
 		LTC6803<3> voltage_sensor; // 3 LTCs
-//		OneWire temp_sensor; //on A0
+//		int temp_sensor; //on A0
 
 
 		/**
@@ -140,6 +140,8 @@ namespace nu {
 			state()
 		{
 			WDT::clear();
+//			lcd1.lcd_clear();
+//			lcd1 << "POWER ON" << end;
 			state.last_trip_module = 12345;
 			state.disabled_module = 63;
 

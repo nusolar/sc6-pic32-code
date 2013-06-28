@@ -10,10 +10,10 @@
 
 #include "nu/compiler.h"
 #include "nupp/array.hpp"
-#include "nupp/errorcodes.hpp"
 #include "nupp/timer.hpp"
 #include "nupp/pinctl.hpp"
 #include "nupp/spi.hpp"
+#include "nupp/errorcodes.hpp"
 
 namespace nu {
 	/** Limited to 32 devices */
