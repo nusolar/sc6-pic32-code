@@ -11,6 +11,10 @@
 
 using namespace nu;
 
+const char *BMS::Trip::name[] = {
+	NU_TRIPCODE(NU_ERROR_NAMES)
+};
+
 void BMS::main() {
 	WDT::disable();
 	BMS bms{};

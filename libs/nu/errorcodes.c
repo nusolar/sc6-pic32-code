@@ -3,7 +3,6 @@
 #include "nu/utility/data.h"
 #include <stdlib.h>
 
-#define NU_ERROR_NAMES(x) #x,
 const char *nu_error_names[] = {
     NU_ERRORS(NU_ERROR_NAMES)
 };

@@ -34,6 +34,8 @@ enum errors {
     NUM_ERRORS
 };
 
+#define NU_ERROR_NAMES(x) #x,
+
 extern const char *nu_error_names[];
 
 const char *
