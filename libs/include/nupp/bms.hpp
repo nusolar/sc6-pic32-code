@@ -25,7 +25,7 @@
 #define NU_MAX_VOLTAGE 4.3
 #define NU_MIN_VOLTAGE 2.75
 #define NU_MAX_BATT_CURRENT_DISCHARGING 72.8
-#define NU_MAX_BATT_CURRENT_CHARGING -36.4
+#define NU_MAX_BATT_CURRENT_CHARGING -32 // 36.4
 #define NU_MAX_ARRAY_CURRENT 10
 #define NU_MIN_ARRAY_CURRENT -1
 #define NU_MAX_TEMP 45
@@ -215,13 +215,13 @@ namespace nu {
 				//if (temp_sensor[i] < NU_MIN_TEMP) Trip::trip(Trip::UNDER_TEMP);
 			}
 			if (current_sensor[0] > NU_MAX_BATT_CURRENT_DISCHARGING)
-				Trip::trip(Trip::OVER_CURRENT_DISCHARGE, 0xff, this); // BattADC
+				Trip::trip(Trip::OVER_CURRENT_DISCHARGE, 100, this); // BattADC
 			if (current_sensor[0] < NU_MAX_BATT_CURRENT_CHARGING)
-				Trip::trip(Trip::OVER_CURRENT_CHARGE, 0xff, this);
-			if (current_sensor[1] > NU_MAX_ARRAY_CURRENT)
-				Trip::trip(Trip::OVER_CURRENT_CHARGE, 0xff, this); // ArrayADC
-			if (current_sensor[1] < NU_MIN_ARRAY_CURRENT)
-				Trip::trip(Trip::OVER_CURRENT_DISCHARGE, 0xff, this);
+				Trip::trip(Trip::OVER_CURRENT_CHARGE, 100, this);
+//			if (current_sensor[1] > NU_MAX_ARRAY_CURRENT)
+//				Trip::trip(Trip::OVER_CURRENT_CHARGE, 101, this); // ArrayADC
+//			if (current_sensor[1] < NU_MIN_ARRAY_CURRENT)
+//				Trip::trip(Trip::OVER_CURRENT_DISCHARGE, 101, this);
 		}
 
 		ALWAYSINLINE void recv_can() {
@@ -376,7 +376,7 @@ namespace nu {
 			WDT::clear();
 			read_ins();
 //			send_can();
-//			check_batteries();
+			check_batteries();
 
 			state.time = timer::ms();
 			if (state.time<state.lcd_clock || state.time - state.lcd_clock > 1000) {
@@ -404,7 +404,7 @@ namespace nu {
 
 //			can::frame::bms::tx::last_trip trip_pkt(0);
 
-			for (unsigned i=0; i<5; i++) {
+			for (unsigned i=0; i<20; i++) {
 				read_ins();
 			}
 			check_batteries();
