@@ -191,7 +191,7 @@ namespace nu {
 				state.converted_openwire = false;
 			}
 
-//			temp_sensor.perform_temperature_conversion();
+			temp_sensor.perform_temperature_conversion();
 
 			state.disabled_module = 0;
 			for (unsigned i=0; i<6; i++) {
@@ -199,11 +199,11 @@ namespace nu {
 			}
 			voltage_sensor.update_volts();
 			current_sensor.read_current();
-//			temp_sensor.update_temperatures();
+			temp_sensor.update_temperatures();
 
 			state.highest_volt = voltage_sensor[0];
 			state.highest_current = current_sensor[0];
-//			state.highest_temp = temp_sensor[0];
+			state.highest_temp = temp_sensor[0];
 		}
 
 		ALWAYSINLINE void check_batteries() {
@@ -212,8 +212,8 @@ namespace nu {
 					Trip::trip(Trip::OVER_VOLTAGE, i, this);
 				if (voltage_sensor[i] + (i==0? .15: 0) < NU_MIN_VOLTAGE)
 					Trip::trip(Trip::UNDER_VOLTAGE, i, this);
-				//if (temp_sensor[i] > NU_MAX_TEMP) Trip::trip(Trip::OVER_TEMP);
-				//if (temp_sensor[i] < NU_MIN_TEMP) Trip::trip(Trip::UNDER_TEMP);
+				if (temp_sensor[i] > NU_MAX_TEMP) Trip::trip(Trip::OVER_TEMP, i, this);
+				if (temp_sensor[i] < NU_MIN_TEMP) Trip::trip(Trip::UNDER_TEMP, i, this);
 			}
 			if (current_sensor[0] > NU_MAX_BATT_CURRENT_DISCHARGING)
 				Trip::trip(Trip::OVER_CURRENT_DISCHARGE, 100, this); // BattADC
@@ -286,7 +286,7 @@ namespace nu {
 			    can::frame::bms::tx::owVoltage ow_pkt(0);
 			    // update module to send
 			    t_pkt.frame.contents.sensor = state.last_voltage_pkt_module;
-			    //t_pkt.frame.contents.temp = temp_sensor[state.last_voltage_pkt_module];
+			    t_pkt.frame.contents.temp = temp_sensor[state.last_voltage_pkt_module];
 			    if (state.ow) {
 				ow_pkt.frame.contents.module = state.last_voltage_pkt_module;
 				ow_pkt.frame.contents.ow_voltage = voltage_sensor[state.last_voltage_pkt_module];
