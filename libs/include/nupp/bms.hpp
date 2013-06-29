@@ -207,9 +207,9 @@ namespace nu {
 
 		ALWAYSINLINE void check_batteries() {
 			for (unsigned i=0; i<state.num_modules; i++) {
-				if (voltage_sensor[i] < NU_MAX_VOLTAGE)
+				if (voltage_sensor[i] + (i==0? .15: 0) > NU_MAX_VOLTAGE)
 					Trip::trip(Trip::OVER_VOLTAGE, i, this);
-				if (voltage_sensor[i] > NU_MIN_VOLTAGE)
+				if (voltage_sensor[i] + (i==0? .15: 0) < NU_MIN_VOLTAGE)
 					Trip::trip(Trip::UNDER_VOLTAGE, i, this);
 				//if (temp_sensor[i] > NU_MAX_TEMP) Trip::trip(Trip::OVER_TEMP);
 				//if (temp_sensor[i] < NU_MIN_TEMP) Trip::trip(Trip::UNDER_TEMP);
