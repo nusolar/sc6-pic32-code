@@ -15,7 +15,7 @@
 #include "nupp/hais.hpp"
 #include "nupp/ad7685.hpp"
 #include "nupp/ltc6803.hpp"
-#include "nupp/onewire.hpp"
+#include "nupp/ds18x20.hpp"
 #include "nupp/timer.hpp"
 #include "nupp/nu32.hpp"
 #include "nupp/pinctl.hpp"
@@ -105,7 +105,7 @@ namespace nu {
 		Nokia5110 lcd1, lcd2;
 		HAIS<2> current_sensor; // 2 ADCs
 		LTC6803<3> voltage_sensor; // 3 LTCs
-		OneWire<32> temp_sensor; //on A0
+		DS18X20<32> temp_sensor; //on A0
 
 
 		/**
