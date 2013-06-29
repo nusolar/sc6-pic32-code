@@ -15,6 +15,7 @@
 #include "nupp/hais.hpp"
 #include "nupp/ad7685.hpp"
 #include "nupp/ltc6803.hpp"
+#include "nupp/onewire.hpp"
 #include "nupp/timer.hpp"
 #include "nupp/nu32.hpp"
 #include "nupp/pinctl.hpp"
@@ -104,7 +105,7 @@ namespace nu {
 		Nokia5110 lcd1, lcd2;
 		HAIS<2> current_sensor; // 2 ADCs
 		LTC6803<3> voltage_sensor; // 3 LTCs
-//		int temp_sensor; //on A0
+		OneWire<32> temp_sensor; //on A0
 
 
 		/**
@@ -145,7 +146,7 @@ namespace nu {
 				AD7685<2>(Pin(Pin::F, 12), SPI_CHANNEL4, Pin(Pin::F, 12), // Convert & CS are same pin
 				AD7685<2>::CHAIN_MODE_NO_BUSY), HAIS<2>::P50),
 			voltage_sensor(Pin(Pin::D, 9), SPI_CHANNEL1),
-//			temp_sensor(),//Pin(Pin::A, 0)),
+			temp_sensor(Pin(Pin::A, 0)),
 			state()
 		{
 			WDT::clear();
