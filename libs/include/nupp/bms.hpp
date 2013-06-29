@@ -401,6 +401,7 @@ namespace nu {
 
 		ALWAYSINLINE void boot() {
 			main_relay.low(); // Unnecessary precaution
+			array_relay.low();
 
 //			can::frame::bms::tx::last_trip trip_pkt(0);
 
@@ -409,6 +410,7 @@ namespace nu {
 			}
 			check_batteries();
 			main_relay.high();
+			array_relay.high();
 		}
 
 
