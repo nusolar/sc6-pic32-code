@@ -43,7 +43,7 @@ namespace nu {
 		ALWAYSINLINE void read_current() {
 			this->convert_read_uv();
 			for (unsigned i=0; i<num_devices; i++) {
-				values[i] = voltage_to_current((float) this->AD7685<num_devices>::operator[](i) / 1000000);
+				values[i] = (1-.02)*values[i] + (.02)*(voltage_to_current((float) this->AD7685<num_devices>::operator[](i) / 1000000) + 4);
 			}
 		}
 	};
