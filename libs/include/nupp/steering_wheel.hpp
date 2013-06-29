@@ -265,7 +265,7 @@ namespace nu {
 			set_leds();
 			draw_lcd();
 
-//			send_can();
+			send_can();
 		}
 
 
