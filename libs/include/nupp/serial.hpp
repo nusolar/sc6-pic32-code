@@ -4,7 +4,7 @@
 #include "nu/compiler.h"
 #include <cstdint>
 
-#include "nupp/buffer.hpp"
+#include "nupp/stream.hpp"
 #include <cstring> // strlen
 #include <plib.h>
 

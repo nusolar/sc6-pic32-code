@@ -4,7 +4,7 @@
 #include "nupp/param.hpp"
 #include <cstddef> // size_t
 
-#include <nupp/buffer.hpp>
+#include <nupp/stream.hpp>
 #include "nupp/pinctl.hpp"
 #include <cstring> // strlen
 #include <plib.h>

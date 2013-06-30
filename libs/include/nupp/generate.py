@@ -57,7 +57,9 @@ sw_Buttons_new = """
 class X(object):
 	"""A prototype class of CAN frame"""
 	struct = """
-		struct %(name)s: public Packet {
+		class %(name)s: public Packet {
+			static const uint32_t _id = %(pre_id)s;
+		public:
 			union frame_t {
 				uint64_t data;
 				uint8_t bytes[8];
@@ -65,7 +67,6 @@ class X(object):
 					%(members)s
 				} contents;
 			} frame;
-			static const uint32_t _id = %(pre_id)s;
 			ALWAYSINLINE uint32_t id() const {return _id;}
 			ALWAYSINLINE uint64_t data() const {return frame.data;}
 			ALWAYSINLINE uint64_t &data() {return frame.data;}
@@ -213,12 +214,13 @@ class dc(Namespace):
 class CAN:
 	subspaces = (bms(), ws20(), mppt(), sw(), dc())
 	Packet = """
-			struct Packet {
+			class Packet {
+				static const uint32_t _id = 0;
+			public:
 				union frame_t {
 					uint64_t data;
 					uint8_t bytes[8];
 				} frame;
-				static const uint32_t _id = 0;
 				virtual uint32_t id() const {return _id;}
 				virtual uint64_t data() const {return frame.data;}
 				virtual uint64_t &data() {return frame.data;}

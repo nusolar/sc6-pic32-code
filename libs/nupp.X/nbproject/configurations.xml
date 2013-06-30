@@ -16,7 +16,6 @@
         <itemPath>../include/nupp/ad7685.hpp</itemPath>
         <itemPath>../include/nupp/allocator.hpp</itemPath>
         <itemPath>../include/nupp/bms.hpp</itemPath>
-        <itemPath>../include/nupp/buffer.hpp</itemPath>
         <itemPath>../include/nupp/button.hpp</itemPath>
         <itemPath>../include/nupp/can.hpp</itemPath>
         <itemPath>../include/nupp/driver_controls.hpp</itemPath>
@@ -40,6 +39,9 @@
         <itemPath>../include/nupp/array.hpp</itemPath>
         <itemPath>../include/nupp/hais.hpp</itemPath>
         <itemPath>../include/nupp/lowpassfilter.hpp</itemPath>
+        <itemPath>../include/nupp/ds18x20.hpp</itemPath>
+        <itemPath>../include/nupp/onewire.hpp</itemPath>
+        <itemPath>../include/nupp/stream.hpp</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
@@ -66,8 +68,8 @@
         <itemPath>../nupp/driver_controls.cpp</itemPath>
         <itemPath>../nupp/steering_wheel.cpp</itemPath>
         <itemPath>../nupp/allocator.cpp</itemPath>
-        <itemPath>../nupp/buffer.cpp</itemPath>
         <itemPath>../nupp/ltc6803.cpp</itemPath>
+        <itemPath>../nupp/stream.cpp</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
