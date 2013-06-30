@@ -146,19 +146,30 @@ namespace nu {
 			switch (id) {
 				case (uint32_t)can::frame::sw::tx::buttons_k: {
 					can::frame::sw::tx::buttons btns(incoming);
-//					state.lights_l = btns.frame.s.left;
-//					state.lights_r = btns.frame.s.right;
-//					state.lights_hazard = btns.frame.s.hazard;
-					state.cruise_en ^= btns.frame.contents.cruise_en;
-					state.cruise += (float) 2*btns.frame.contents.cruise_up;
-					state.cruise -= (float) 2*btns.frame.contents.cruise_down;
+					state.cruise_en ^=		btns.frame.contents.cruise_en;
+					state.cruise += (float)2*btns.frame.contents.cruise_up;
+					state.cruise -= (float)2*btns.frame.contents.cruise_down;
+					state.lights_l =		btns.frame.contents.left;
+					state.lights_r =		btns.frame.contents.right;
+					state.lights_hazard =	btns.frame.contents.hazard;
 
 					can::frame::sw::rx::buttons ack(0);
-					ack.frame.contents.cruise_en = btns.frame.contents.cruise_en;
-					ack.frame.contents.cruise_up = btns.frame.contents.cruise_up;
-					ack.frame.contents.cruise_down = btns.frame.contents.cruise_down;
-					ack.frame.contents.cruise_mode = btns.frame.contents.cruise_mode;
-					common_can.out().tx(ack.bytes(), 4, can::frame::sw::rx::buttons_k);
+					ack.frame.contents.cruise_en	= btns.frame.contents.cruise_en;
+					ack.frame.contents.cruise_up	= btns.frame.contents.cruise_up;
+					ack.frame.contents.cruise_down	= btns.frame.contents.cruise_down;
+					ack.frame.contents.cruise_mode	= btns.frame.contents.cruise_mode;
+					ack.frame.contents.left			= btns.frame.contents.left;
+					ack.frame.contents.right		= btns.frame.contents.right;
+					ack.frame.contents.hazard		= btns.frame.contents.hazard;
+					ack.frame.contents.horn			= btns.frame.contents.horn;
+
+					can::frame::sw::rx::lights lights_cmd(0);
+					lights_cmd.frame.contents.left = state.lights_l;
+					lights_cmd.frame.contents.right = state.lights_r;
+					lights_cmd.frame.contents.hazard = state.lights_hazard;
+					lights_cmd.frame.contents.horn = state.horn;
+					
+					common_can.out().tx(ack.bytes(), 8, can::frame::sw::rx::buttons_k);
 
 					state.sw_timer = (uint32_t)timer::ms(); // Reset SW time-out
 					break;
