@@ -23,12 +23,21 @@ namespace nu {
 		virtual ~Nu32Init() {}
 	};
 
+	/**
+	 * NU32 is the Northwestern University PIC32 development board.
+	 *
+	 * led1 is the "L1" LED
+	 * led2 is the "L2" LED
+	 * switch1 is the User button.
+	 * serial1 is for general communication.
+	 * serial2 is for programming the Nu32 with Nick Marchuck's utility.
+	 */
 	struct Nu32: public Nu32Init {
-		enum V1_t {V1};
-		enum V2_t {V2};
+		enum V2010_t {V2010};
+		enum V2011_t {V2011};
 		enum versions {
-			v1,
-			v2
+			v2010,
+			v2011
 		} version;
 
 		Led led1, led2;
@@ -38,22 +47,22 @@ namespace nu {
 		/**
 		 * NECESSARILY call this before anything else!
 		 * Do all setups from derived class's constructor!
-		 * Pass V1 for Nu32v1, V2 for Nu32v2.
+		 * Pass V2010 for Nu32v10, V2011 for Nu32v2011.
 		 */
-		Nu32(V1_t, uint32_t _hz = param::default_hz()): Nu32Init(_hz), version(v1),
-			led1(Pin(Pin::A, 4)), 
-			led2(Pin(Pin::A, 5)),
-			switch1(Pin(Pin::C, 13)),
-			serial1(UART1, 115200),
-			serial2(UART4, 115200) {}
-		
-		Nu32(V2_t, uint32_t _hz = param::default_hz()): Nu32Init(_hz), version(v2),
+		Nu32(V2010_t, uint32_t _hz = param::default_hz()): Nu32Init(_hz), version(v2010),
 			led1(Pin(Pin::G, 12)),
 			led2(Pin(Pin::G, 13)),
 			switch1(Pin(Pin::G, 6)),
 			serial1(UART1, 115200),
 			serial2(UART3, 115200) {}
 		
+		Nu32(V2011_t, uint32_t _hz = param::default_hz()): Nu32Init(_hz), version(v2011),
+			led1(Pin(Pin::A, 4)),
+			led2(Pin(Pin::A, 5)),
+			switch1(Pin(Pin::C, 13)),
+			serial1(UART1, 115200),
+			serial2(UART3, 115200) {}
+
 		virtual ~Nu32() {}
 	};
 }

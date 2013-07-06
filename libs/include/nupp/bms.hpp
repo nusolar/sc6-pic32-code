@@ -135,7 +135,7 @@ namespace nu {
 		 * 3 Voltage sensor modules, 32 Temperature sensors, and more.
 		 * TODO: Lots
 		 */
-		ALWAYSINLINE BMS(): Nu32(Nu32::V1),
+		ALWAYSINLINE BMS(): Nu32(Nu32::V2011),
 			main_relay(Pin(Pin::D, 2), false),
 			array_relay(Pin(Pin::D, 3), false),
 			bits(),

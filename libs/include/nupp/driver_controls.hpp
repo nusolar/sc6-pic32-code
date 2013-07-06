@@ -74,7 +74,7 @@ namespace nu {
 		/**
 		 * Setup CAN, input Pins, output Pins, and Nokia LCD.
 		 */
-		ALWAYSINLINE DriverControls(): Nu32(Nu32::V1), DC_PINS(DC_INITIALIZE)
+		ALWAYSINLINE DriverControls(): Nu32(Nu32::V2011), DC_PINS(DC_INITIALIZE)
 			ws_can(CAN1), common_can(CAN2),
 			lcd(Pin(Pin::G, 9), SPI_CHANNEL2, Pin(Pin::A, 9), Pin(Pin::E, 9)), state()
 		{
