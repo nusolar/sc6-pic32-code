@@ -96,9 +96,9 @@ namespace nu {
 			WDT::clear();
 			
 			state.accel = ((float)accel_pedel.read() + 0)/1024; // scale 0-1023 to 0-1
-			if (state.accel < 0) state.accel = 0; // TODO: print warning, clamp
-			if (state.accel > 1) state.accel = 1; // TODO: print warning
-			state.accel_en = state.accel > 0.02;
+			if (state.accel < 0) state.accel = 0;
+			if (state.accel > 1) state.accel = 1;
+			state.accel_en = state.accel > 0.05; // Car will trip if too low
 
 			state.reverse_en = (bool)reverse_switch.read();
 
