@@ -18,12 +18,9 @@ namespace nu {
 	 * The key, "text", must be 4 letters.
 	 */
 	class uLCD28PT: protected Serial {
-#define unit '\x1F' // TODO static variable
-#define record '\x1E'
-
 		template <class V>
 		ALWAYSINLINE void write_key_val(const char *key, V &value) {
-			OStream::operator<< (record) << (key) <<  (unit) << (value) << (record) << (end);
+			OStream::operator<< (TTY_RECORD) << (key) <<  (TTY_UNIT) << (value) << (TTY_RECORD) << (end);
 		}
 
 	public:

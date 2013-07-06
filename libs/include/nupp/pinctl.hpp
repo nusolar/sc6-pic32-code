@@ -66,6 +66,7 @@ namespace nu {
 
 		ALWAYSINLINE void high()	{set(); _status = true;}
 		ALWAYSINLINE void low()		{clear(); _status = false;}
+		ALWAYSINLINE void toggle()	{toggle(); _status = !_status;}
 		ALWAYSINLINE bool status() {return _status;}
 
 		ALWAYSINLINE DigitalOut &operator= (const bool rhs) {

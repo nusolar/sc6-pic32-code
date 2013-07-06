@@ -8,6 +8,9 @@
 #include <cstring> // strlen
 #include <plib.h>
 
+#define TTY_UNIT '\x1F' // TODO static variable
+#define TTY_RECORD '\x1E'
+
 namespace nu {
 	/**
 	 * Encapsulate Serial/UART reading/writing.

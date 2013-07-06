@@ -104,9 +104,11 @@ These classes encapsulate hardware communication, and the process of TX'ing and 
 
 `ulcd28pt.hpp` — the SteeringWheel LCD, `nu::uLCD28PT` subclasses `nu::Serial`
 
-`ad7685.hpp` — a low-voltage ADC, `nu::AD7685` subclasses `nu::SPI`.
+`ltc6803.hpp` — the voltage sensor, `nu::LTC6803` subclasses `nu::SPI`.
 
 `ds18x20.hpp` — a 1-Wire temperature sensor, `nu::DS18X20` subclasses `nu::OneWire`.
+
+`ad7685.hpp` — a low-voltage ADC, `nu::AD7685` subclasses `nu::SPI`.
 
 `hais.hpp` — the analog HAIS current sensors (e.g. HAIS-50P). As NU uses HAIS-50P in conjunction with the AD7685 ADC, `nu::HAIS` subclasses `nu::AD7685`.
 

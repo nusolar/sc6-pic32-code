@@ -187,13 +187,12 @@
         <property key="place-data-into-section" value="true"/>
         <property key="post-instruction-scheduling" value="schedule-insns2"/>
         <property key="pre-instruction-scheduling" value="schedule-insns"/>
-        <property key="preprocessor-macros"
-                  value="inline=__inline__;__STRICT_ANSI__;IS_NU_LIBRARY"/>
+        <property key="preprocessor-macros" value="inline=__inline__;IS_NU_LIBRARY"/>
         <property key="strict-ansi" value="false"/>
         <property key="support-ansi" value="false"/>
         <property key="use-cci" value="false"/>
         <property key="use-indirect-calls" value="false"/>
-        <appendMe value="-std=gnu89 -ggdb3 -pedantic-errors -Wno-unused-function -Wno-variadic-macros -Werror -Wall -Wextra -Waggregate-return -Wbad-function-cast -Wcast-align -Wcast-qual -Wc++-compat -Wconversion -Wdeclaration-after-statement -Wdouble-promotion -Wfloat-equal -Wformat=2 -Winit-self -Winline -Wlogical-op -Wmissing-include-dirs -Wmissing-prototypes -Wnested-externs -Wpadded -Wpacked -Wpointer-arith -Wredundant-decls -Wshadow -Wstrict-aliasing=2 -Wstrict-overflow=5 -Wstrict-prototypes -Wswitch-default -Wswitch-enum -Wundef -Wuninitialized -Wunreachable-code -Wwrite-strings"/>
+        <appendMe value="-std=gnu99 -ggdb3 -pedantic-errors -Wno-unused-function -Wno-variadic-macros -Werror -Wall -Wextra -Waggregate-return -Wbad-function-cast -Wcast-align -Wcast-qual -Wc++-compat -Wconversion -Wdeclaration-after-statement -Wdouble-promotion -Wfloat-equal -Wformat=2 -Winit-self -Winline -Wlogical-op -Wmissing-include-dirs -Wmissing-prototypes -Wnested-externs -Wpadded -Wpacked -Wpointer-arith -Wredundant-decls -Wshadow -Wstrict-aliasing=2 -Wstrict-overflow=5 -Wstrict-prototypes -Wswitch-default -Wswitch-enum -Wundef -Wuninitialized -Wunreachable-code -Wwrite-strings"/>
       </C32>
       <C32-AS>
         <property key="assembler-symbols" value=""/>

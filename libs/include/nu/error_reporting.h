@@ -1,7 +1,7 @@
 #ifndef NU_ERROR_REPORTING_H
 #define NU_ERROR_REPORTING_H 1
 
-#include "boost/preprocessor.hpp"
+//#include "boost/preprocessor.hpp"
 #include "nu/compiler.h"
 #include "nu/list.h"
 #include "nu/types.h"
