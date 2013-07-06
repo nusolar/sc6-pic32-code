@@ -12,28 +12,18 @@
 #include <cstdlib>
 
 namespace nu {
-	struct USBDigitalOut: public Nu32 {
-		DigitalOut relay;
+	struct USBInterface: public Nu32 {
 		Serial ctl;
 		static const char *uuid;
 
-		USBDigitalOut(DigitalOut _relay): Nu32(Nu32::V2011), relay(_relay), ctl(UART2, 115200) {}
+		USBInterface(): Nu32(Nu32::V2011), ctl(UART2, 115200) {}
 
 		/**
 		 * Called from process_record() with the record's key.
          * @param command The record's key, a null-terminated string.
          */
-		void handle_command(char *command) {
-			if (strcmp(command, "on")) {
-				relay.high();
-			} else if (strcmp(command, "off")) {
-				relay.low();
-			} else if (strcmp(command, "togg")) {
-				relay.toggle();
-			} else if (strcmp(command, "stat")) {
-				bool stat = relay.status();
-				ctl.tx(&stat, sizeof(stat));
-			} else if (strcmp(command, "name") || strcmp(command, "id")) {
+		virtual void handle_command(char *command) {
+			if (strcmp(command, "name") || strcmp(command, "id")) {
 				ctl.tx(uuid, strlen(uuid));
 			}
 		}
@@ -72,15 +62,34 @@ namespace nu {
 		void listen() {
 			char first;
 			ctl.rx(&first, sizeof(first));
-			
 			if (first != TTY_RECORD) return; // error if byte != 0x1E
-
 			while (process_record()) {}
+		}
+	};
+
+	struct USBDigitalOut: USBInterface {
+		DigitalOut relay;
+		
+		USBDigitalOut(DigitalOut _relay): USBInterface(), relay(_relay) {}
+
+		void handle_command(char *command) {
+			if (strcmp(command, "on")) {
+				relay.high();
+			} else if (strcmp(command, "off")) {
+				relay.low();
+			} else if (strcmp(command, "togg")) {
+				relay.toggle();
+			} else if (strcmp(command, "stat")) {
+				bool stat = relay.status();
+				ctl.tx(&stat, sizeof(stat));
+			} else {
+				USBInterface::handle_command(command);
+			}
 		}
 	};
 }
 
-const char *nu::USBDigitalOut::uuid = __DATE__ " " __TIME__;
+const char *nu::USBInterface::uuid = __DATE__ " " __TIME__;
 
 using namespace nu;
 
