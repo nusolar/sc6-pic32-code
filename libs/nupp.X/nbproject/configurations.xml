@@ -11,6 +11,7 @@
         <itemPath>../include/nu/timer.h</itemPath>
         <itemPath>../include/nu/wdt.h</itemPath>
         <itemPath>../include/nu/crc.h</itemPath>
+        <itemPath>../include/nu/common_pragmas.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f1" displayName="nupp" projectFiles="true">
         <itemPath>../include/nupp/ad7685.hpp</itemPath>
@@ -42,6 +43,7 @@
         <itemPath>../include/nupp/ds18x20.hpp</itemPath>
         <itemPath>../include/nupp/onewire.hpp</itemPath>
         <itemPath>../include/nupp/stream.hpp</itemPath>
+        <itemPath>../include/nupp/string.hpp</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
@@ -79,9 +81,10 @@
     </logicalFolder>
   </logicalFolder>
   <sourceRootList>
-    <Elem>../nupp</Elem>
-    <Elem>../include/nu</Elem>
     <Elem>../include/nupp</Elem>
+    <Elem>../include/nu</Elem>
+    <Elem>../nupp</Elem>
+    <Elem>../include/platform/pic32mx/nupp/platform</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -371,7 +374,7 @@
         <property key="generate-16-bit-code" value="false"/>
         <property key="isolate-each-function" value="true"/>
         <property key="make-warnings-into-errors" value="false"/>
-        <property key="optimization-level" value="-O1"/>
+        <property key="optimization-level" value=""/>
         <property key="place-data-into-section" value="true"/>
         <property key="post-instruction-scheduling" value="schedule-insns2"/>
         <property key="pre-instruction-scheduling" value="schedule-insns"/>
@@ -380,11 +383,12 @@
         <property key="strict-ansi" value="false"/>
         <property key="use-cci" value="false"/>
         <property key="use-indirect-calls" value="false"/>
-        <appendMe value="-std=gnu++0x -fthread-jumps -falign-functions -falign-jumps -falign-loops  -falign-labels -fcaller-saves -fcrossjumping -fcse-follow-jumps  -fcse-skip-blocks -fdelete-null-pointer-checks -fexpensive-optimizations -fgcse  -fgcse-lm  -finline-small-functions -findirect-inlining -fipa-sra -foptimize-sibling-calls -fpeephole2 -fregmove -freorder-blocks -freorder-functions -frerun-cse-after-loop -fsched-interblock -fsched-spec -fschedule-insns  -fschedule-insns2 -fstrict-aliasing -fstrict-overflow -ftree-switch-conversion -ftree-pre -ftree-vrp -fdata-sections -ffunction-sections -Wall -Wcast-align -Wcast-qual -Wconversion -Wdisabled-optimization -Weffc++ -Wendif-labels -Wextra -Wfloat-equal -Winline -Winvalid-pch -Wmissing-format-attribute -Wmissing-noreturn -Wno-packed -Wno-padded -Wpointer-arith -Wredundant-decls -Wshadow -Wundef -Wunreachable-code -Wwrite-strings -Wnonnull"/>
+        <appendMe value="-std=gnu++0x -fthread-jumps -falign-functions -falign-jumps -falign-loops  -falign-labels -fcaller-saves -fcrossjumping -fcse-follow-jumps  -fcse-skip-blocks -fdelete-null-pointer-checks -fexpensive-optimizations -fgcse  -fgcse-lm  -finline-small-functions -findirect-inlining -fipa-sra -foptimize-sibling-calls -fpeephole2 -fregmove -freorder-blocks -freorder-functions -frerun-cse-after-loop -fsched-interblock -fsched-spec -fschedule-insns  -fschedule-insns2 -fstrict-aliasing -fstrict-overflow -ftree-switch-conversion -ftree-pre -ftree-vrp -fdata-sections -ffunction-sections -Wall -Wcast-align -Wcast-qual -Wconversion -Wdisabled-optimization -Weffc++ -Wendif-labels -Wextra -Wfloat-equal -Winline -Winvalid-pch -Wmissing-format-attribute -Wmissing-noreturn -Wno-packed -Wno-padded -Wpointer-arith -Wredundant-decls -Wshadow -Wundef -Wunreachable-code -Wwrite-strings"/>
       </C32CPP>
       <C32Global>
         <property key="legacy-libc" value="false"/>
         <property key="save-temps" value="false"/>
+        <property key="wpo-lto" value="false"/>
       </C32Global>
       <PICkit3PlatformTool>
         <property key="ADC 1" value="true"/>
@@ -448,6 +452,7 @@
         <property key="programoptions.preserveprogramrange.end" value="0x1d07ffff"/>
         <property key="programoptions.preserveprogramrange.start" value="0x1d000000"/>
         <property key="programoptions.preserveuserid" value="false"/>
+        <property key="programoptions.testmodeentrymethod" value="VPPFirst"/>
         <property key="programoptions.usehighvoltageonmclr" value="false"/>
         <property key="programoptions.uselvpprogramming" value="false"/>
         <property key="voltagevalue" value="3.25"/>

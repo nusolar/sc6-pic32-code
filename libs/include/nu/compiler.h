@@ -29,7 +29,7 @@ typedef unsigned int reg_t;
 #define NOINLINE        __attribute__((noinline))
 #if !defined(__DEBUG) || defined(NDEBUG)
 # define INLINE          inline
-# define ALWAYSINLINE    //inline  __attribute__((always_inline))
+# define ALWAYSINLINE    inline  //__attribute__((always_inline))
 #else
 # define INLINE
 # define ALWAYSINLINE

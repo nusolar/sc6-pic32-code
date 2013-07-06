@@ -96,6 +96,7 @@ namespace nu {
 				_c_str[_size] = str[i];
 				_size++;
 			}
+			return *this;
 		}
 
 		ALWAYSINLINE const char *c_str() const {
