@@ -16,6 +16,7 @@
 #include "nupp/pinctl.hpp"
 #include "nupp/serial.hpp"
 #include "nupp/spi.hpp"
+#include "nupp/string.hpp"
 #include "nupp/timer.hpp"
 #include "nupp/ulcd28pt.hpp"
 #include "nupp/wdt.hpp"

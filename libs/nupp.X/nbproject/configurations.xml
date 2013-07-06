@@ -79,8 +79,8 @@
     </logicalFolder>
   </logicalFolder>
   <sourceRootList>
-    <Elem>../include/nu</Elem>
     <Elem>../nupp</Elem>
+    <Elem>../include/nu</Elem>
     <Elem>../include/nupp</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
