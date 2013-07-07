@@ -5,8 +5,8 @@
  * Created on July 6, 2013, 6:33 PM
  */
 
-#ifndef NU_PIN_HPP
-#define	NU_PIN_HPP
+#ifndef NU_PLATFORM_PIN_HPP
+#define	NU_PLATFORM_PIN_HPP
 
 #include "nu/compiler.h"
 #include <cstdint>
@@ -15,7 +15,8 @@ extern "C" {
 #include <peripheral/ports.h>
 }
 
-#define PIN(L, N) Pin(Pin::L, N)
+
+#define PIN(L, N) Pin(Pin::L, N) // To specify a pin, use PIN(LETTER, NUMBER)
 
 namespace nu {
 	/**
@@ -34,7 +35,8 @@ namespace nu {
 
 		/**
 		 * Construct with Pin's (letter, number) combination.
-		 * DO NOT CALL THIS CONSTRUCTOR FROM YOUR CODE!!!!!!
+		 * DO NOT CALL THIS CONSTRUCTOR DIRECTLY FROM YOUR CODE!!!
+		 * USE THE MACRO PIN(L,N)
 		 * @param _port For PIC32MX795F512L, A-G. AnalogIn MUST be B.
 		 * @param _bit For PIC32MX795F512L, 0-9.
 		 */
@@ -87,5 +89,5 @@ namespace nu {
 	};
 }
 
-#endif	/* NU_PIN_HPP */
+#endif	/* NU_PLATFORM_PIN_HPP */
 
