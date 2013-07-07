@@ -9,17 +9,17 @@
 #define	NU_BUFFER_HPP
 
 #include "nu/compiler.h"
+#include "nupp/string.hpp"
 #include <cstdlib>
 #include <cstddef>
 #include <cstdint>
-#include <string>
+#include <cstdio>
 //#include "nupp/allocator.hpp"
+//	typedef std::basic_string <char, std::char_traits<char>, Allocator<char>> nu_string;
 
 namespace nu {
-//	typedef std::basic_string <char, std::char_traits<char>, Allocator<char>> nu_str;
-
 	class OStream {
-		std::string _str;
+		String _str;
 		char _buffer[72];
 	public:
 		ALWAYSINLINE OStream(): _str("") {}

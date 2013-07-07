@@ -9,10 +9,12 @@
 #define	NUPP_STRING_HPP
 
 #include "nu/compiler.h"
+#include <cstring>
 
 namespace nu {
 	/**
 	 * Heavyweight, stack-allocated, C++ string. Use only if necessary.
+	 * This class mimics std::string as much as possible.
 	 */
 	struct String {
 		static const size_t _limit = 128;
@@ -21,10 +23,15 @@ namespace nu {
 		char _c_str[_limit];
 
 		ALWAYSINLINE String(): _size(0) {}
+		ALWAYSINLINE String (const char* s): _size(0) {
+			strncpy(_c_str, s, _limit-1);
+			_c_str[_limit-1] = '\0';
+		}
 
 		ALWAYSINLINE size_t size() const {
 			return _size;
 		}
+		ALWAYSINLINE size_t length() const {return size();}
 
 		ALWAYSINLINE size_t max_size() const {
 			return _limit;
@@ -41,18 +48,11 @@ namespace nu {
 		ALWAYSINLINE char& at (size_t pos) {
 			return _c_str[pos];
 		}
-
 		ALWAYSINLINE const char& at (size_t pos) const {
 			return _c_str[pos];
 		}
-
-		ALWAYSINLINE char& operator[] (size_t pos) {
-			return _c_str[pos];
-		}
-
-		ALWAYSINLINE const char& operator[] (size_t pos) const {
-			return _c_str[pos];
-		}
+		ALWAYSINLINE char& operator[] (size_t pos) {return at(pos);}
+		ALWAYSINLINE const char& operator[] (size_t pos) const {return at(pos);}
 
 
 		ALWAYSINLINE char& back() {
@@ -66,7 +66,6 @@ namespace nu {
 		ALWAYSINLINE char& front() {
 			return _c_str[0];
 		}
-
 		ALWAYSINLINE const char& front() const {
 			return _c_str[0];
 		}
