@@ -2,9 +2,7 @@
 #define NUPP_PLATFORM_PARAM_HPP 1
 
 #include "nu/compiler.h"
-extern "C" {
 #include "nu/platform/param.h"
-}
 
 namespace nu {
 	namespace param {

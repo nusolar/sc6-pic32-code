@@ -2,10 +2,8 @@
 #define NUPP_PARAM_HPP 1
 
 #include "nu/compiler.h"
-#include "nupp/platform/param.hpp"
-extern "C" {
 #include "nu/param.h"
-}
+#include "nupp/platform/param.hpp"
 
 #include <cstdint>
 

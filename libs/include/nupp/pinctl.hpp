@@ -30,7 +30,7 @@ namespace nu {
 		virtual INLINE void toggle()	{Pin::toggle();}
 
 		/** A subclass may call EITHER read() OR read_analog(). */
-		virtual INLINE reg_t read_digital()		{return Pin::read_digital();} // returns 0 or any non-0
+		virtual INLINE reg_t read_digital()	{return Pin::read_digital();} // returns 0 or non-0
 		virtual INLINE reg_t read_analog()	{return Pin::read_analog();}
 	};
 

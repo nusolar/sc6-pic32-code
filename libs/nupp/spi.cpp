@@ -4,7 +4,6 @@
 
 using namespace nu;
 
-uint64_t picvalue = 0;
 uint32_t ALWAYSINLINE SPI::get_bitrate(SpiChannel chn) {
 	uint32_t clk_div = (_SpiMapTbl[chn]->brg+1)*2;
 	return (uint32_t) param::pbus_hz()/clk_div; //bitrate

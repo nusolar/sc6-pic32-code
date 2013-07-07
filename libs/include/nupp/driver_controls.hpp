@@ -42,7 +42,7 @@
 //D2 HL
 //D3 BL
 #define DC_DECLARE(Type, name, ltr, num) Type name;
-#define DC_INITIALIZE(Type, name, ltr, num) name(Pin(Pin::ltr, num)),
+#define DC_INITIALIZE(Type, name, ltr, num) name(PIN(ltr, num)),
 
 
 namespace nu {
@@ -76,7 +76,7 @@ namespace nu {
 		 */
 		ALWAYSINLINE DriverControls(): Nu32(Nu32::V2011), DC_PINS(DC_INITIALIZE)
 			ws_can(CAN1), common_can(CAN2),
-			lcd(Pin(Pin::G, 9), SPI_CHANNEL2, Pin(Pin::A, 9), Pin(Pin::E, 9)), state()
+			lcd(PIN(G, 9), SPI_CHANNEL2, PIN(A, 9), PIN(E, 9)), state()
 		{
 			WDT::clear();
 			common_can.in().setup_rx();

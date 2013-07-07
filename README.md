@@ -1,8 +1,8 @@
 sc6-pic32-code
 ==============
-NUSolar SC6 PIC32 code for solar cars.
+NUSolar ZELDA - PIC32 code. for solar cars.
 
-This project aims to provide basic source code for nascent Solar Car teams that use the Microchip PIC32 for their Battery Protection System, Driver Controls, and/or Steering Wheel.
+This project aims to provide basic source code for nascent Solar Car teams that use the Microchip PIC32 for their Battery Protection System, and anything else.
 
 ###Prerequisites
 * PIC32

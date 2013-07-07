@@ -219,7 +219,6 @@ namespace nu {
 			Array<Configuration, num_devices> rx_config;
 			read_configs(rx_config);
 			uint32_t result = config.byte_compare(rx_config);
-			picvalue = result;
 			return result;
 		}
 		ALWAYSINLINE void read_diags(Array<Diagnostic, num_devices> &diag) {

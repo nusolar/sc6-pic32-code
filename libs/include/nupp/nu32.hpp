@@ -15,7 +15,9 @@
 #include "nupp/led.hpp"
 #include "nupp/pinctl.hpp"
 #include "nupp/serial.hpp"
+extern "C" {
 #include <plib.h>
+}
 
 namespace nu {
 	struct Nu32Init {
@@ -50,16 +52,16 @@ namespace nu {
 		 * Pass V2010 for Nu32v10, V2011 for Nu32v2011.
 		 */
 		Nu32(V2010_t, uint32_t _hz = param::default_hz()): Nu32Init(_hz), version(v2010),
-			led1(Pin(Pin::G, 12)),
-			led2(Pin(Pin::G, 13)),
-			switch1(Pin(Pin::G, 6)),
+			led1(PIN(G, 12)),
+			led2(PIN(G, 13)),
+			switch1(PIN(G, 6)),
 			serial1(UART1, 115200),
 			serial2(UART3, 115200) {}
 		
 		Nu32(V2011_t, uint32_t _hz = param::default_hz()): Nu32Init(_hz), version(v2011),
-			led1(Pin(Pin::A, 4)),
-			led2(Pin(Pin::A, 5)),
-			switch1(Pin(Pin::C, 13)),
+			led1(PIN(A, 4)),
+			led2(PIN(A, 5)),
+			switch1(PIN(C, 13)),
 			serial1(UART1, 115200),
 			serial2(UART3, 115200) {}
 

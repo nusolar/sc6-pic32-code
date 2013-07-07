@@ -5,7 +5,9 @@
 #include <cstdint>
 #include <new>
 
+extern "C" {
 #include <plib.h>
+}
 #include "nupp/can_def.hpp"
 
 namespace nu {

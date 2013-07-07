@@ -6,7 +6,9 @@
 
 #include "nupp/stream.hpp"
 #include <cstring> // strlen
+extern "C" {
 #include <plib.h>
+}
 
 #define TTY_UNIT '\x1F' // TODO static variable
 #define TTY_RECORD '\x1E'

@@ -47,7 +47,6 @@ namespace nu {
 
 			// if last RX'd byte != 0x1F, give up on packet:
 			if (command[i] != TTY_UNIT) return 0;
-
 			
 			command[i] = '\0'; // convert to null-terminated string
 			for (size_t ui=0; ui < i; ui++)
@@ -87,6 +86,10 @@ namespace nu {
 			}
 		}
 	};
+
+	struct USBDigitalIn: USBInterface {
+		DigitalIn sensor;
+	};
 }
 
 const char *nu::USBInterface::uuid = __DATE__ " " __TIME__;
@@ -94,7 +97,7 @@ const char *nu::USBInterface::uuid = __DATE__ " " __TIME__;
 using namespace nu;
 
 int main() {
-	USBDigitalOut out(DigitalOut(Pin::F, 0));
+	USBDigitalOut out(DigitalOut(PIN(F, 0), false));
 
 	while (true) {
 		out.listen();

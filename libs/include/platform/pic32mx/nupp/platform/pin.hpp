@@ -15,6 +15,8 @@ extern "C" {
 #include <peripheral/ports.h>
 }
 
+#define PIN(L, N) Pin(Pin::L, N)
+
 namespace nu {
 	/**
 	 * Encapsulate a PIC32 I/O pin. They are addressed by a (letter, number)
@@ -32,7 +34,7 @@ namespace nu {
 
 		/**
 		 * Construct with Pin's (letter, number) combination.
-		 * DO NOT CALL ME FROM YOUR CODE!!!!!!
+		 * DO NOT CALL THIS CONSTRUCTOR FROM YOUR CODE!!!!!!
 		 * @param _port For PIC32MX795F512L, A-G. AnalogIn MUST be B.
 		 * @param _bit For PIC32MX795F512L, 0-9.
 		 */
@@ -83,10 +85,6 @@ namespace nu {
 			return val;
 		}
 	};
-
-	namespace pin {
-		static Pin A0(Pin::A, 0);
-	}
 }
 
 #endif	/* NU_PIN_HPP */

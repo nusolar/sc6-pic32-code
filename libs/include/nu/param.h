@@ -4,6 +4,10 @@
 #include "nu/platform/param.h"
 #include "nu/types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef u32 nu_hz_t;
 
 #ifndef NU_DEFAULT_HZ
@@ -13,5 +17,9 @@ typedef u32 nu_hz_t;
 extern nu_hz_t nu_hz;
 #define NU_HZ   nu_hz
 #define NU_MHZ  (NU_HZ/1000000UL)
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif
 
 #endif

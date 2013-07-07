@@ -37,9 +37,10 @@
 
 namespace nu {
 	/**
-	 * Battery Management System. Controls voltage, temperature, and current
-	 * monitoring sensors; informs telemetry; emergency-stops the car if needed.
-	 * TODO: Implement.
+	 * Battery Management System.
+	 * Controls voltage, temperature, and current sensors;
+	 * informs telemetry; emergency-trips the car if needed.
+	 * TODO: Separate configuration declarations.
 	 */
 	struct BMS: protected Nu32 {
 		struct Trip {
@@ -136,17 +137,17 @@ namespace nu {
 		 * TODO: Lots
 		 */
 		ALWAYSINLINE BMS(): Nu32(Nu32::V2011),
-			main_relay(Pin(Pin::D, 2), false),
-			array_relay(Pin(Pin::D, 3), false),
+			main_relay(PIN(D, 2), false),
+			array_relay(PIN(D, 3), false),
 			bits(),
 			common_can(CAN1), mppt_can(CAN2),
-			lcd1(Pin(Pin::G, 9), SPI_CHANNEL2, Pin(Pin::A, 9), Pin(Pin::E, 9)),
-			lcd2(Pin(Pin::E, 8), SPI_CHANNEL2, Pin(Pin::A, 10), Pin(Pin::E, 9)),
+			lcd1(PIN(G, 9), SPI_CHANNEL2, PIN(A, 9),  PIN(E, 9)),
+			lcd2(PIN(E, 8), SPI_CHANNEL2, PIN(A, 10), PIN(E, 9)),
 			current_sensor(
-				AD7685<2>(Pin(Pin::F, 12), SPI_CHANNEL4, Pin(Pin::F, 12), // Convert & CS are same pin
+				AD7685<2>(PIN(F, 12), SPI_CHANNEL4, PIN(F, 12), // Convert & CS are same pin
 				AD7685<2>::CHAIN_MODE_NO_BUSY), HAIS<2>::P50),
-			voltage_sensor(Pin(Pin::D, 9), SPI_CHANNEL1),
-			temp_sensor(Pin(Pin::A, 0)),
+			voltage_sensor(PIN(D, 9), SPI_CHANNEL1),
+			temp_sensor(PIN(A, 0)),
 			state()
 		{
 			WDT::clear();

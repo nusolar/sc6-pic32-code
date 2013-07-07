@@ -3,9 +3,7 @@
 
 #include "nu/compiler.h"
 #include "nupp/param.hpp"
-extern "C" {
 #include "nu/timer.h"
-}
 
 namespace nu {
 	namespace timer {
