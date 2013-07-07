@@ -12,7 +12,7 @@ extern "C" {
 
 namespace nu {
 	template <size_t num_devices>
-	struct OneWire: protected Pin {
+	struct OneWire: protected AbstractPin {
 		enum command {
 			SEARCH_ROM = 0xF0,
 			READ_ROM = 0x33,
@@ -53,7 +53,7 @@ namespace nu {
 		ALWAYSINLINE void high()	{set();}
 		ALWAYSINLINE void low()		{clear();}
 
-		ALWAYSINLINE OneWire(Pin _p): Pin(_p), search_state() {
+		ALWAYSINLINE OneWire(Pin _p): AbstractPin(_p), search_state() {
 			set_digital_out();
 			low();
 		}
@@ -112,7 +112,7 @@ namespace nu {
 			 * asserting a bit.
 			 */
 			timer::delay_us<4>();
-			return read();
+			return read_digital();
 		}
 
 		ALWAYSINLINE uint8_t rx_byte() {
@@ -142,7 +142,7 @@ namespace nu {
 			timer::delay_us<480>();
 			high();
 			timer::delay_us<70>();
-			bool devices_present = !read();
+			bool devices_present = !read_digital();
 			timer::delay_us<410>();
 			/*high();*/
 			return (devices_present? 1: -error::ENODEV);

@@ -91,7 +91,6 @@
         <itemPath>../nupp/headers.cpp</itemPath>
         <itemPath>../nupp/nokia5110.cpp</itemPath>
         <itemPath>../nupp/nu32.cpp</itemPath>
-        <itemPath>../nupp/pinctl.cpp</itemPath>
         <itemPath>../nupp/serial.cpp</itemPath>
         <itemPath>../nupp/spi.cpp</itemPath>
         <itemPath>../nupp/bms.cpp</itemPath>
@@ -100,6 +99,7 @@
         <itemPath>../nupp/allocator.cpp</itemPath>
         <itemPath>../nupp/ltc6803.cpp</itemPath>
         <itemPath>../nupp/stream.cpp</itemPath>
+        <itemPath>../nupp/pin.cpp</itemPath>
       </logicalFolder>
       <logicalFolder name="f2" displayName="platform" projectFiles="true">
         <logicalFolder name="f1" displayName="pic32mx" projectFiles="true">

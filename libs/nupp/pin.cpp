@@ -10,4 +10,4 @@
 
 using namespace nu;
 
-uint16_t AnalogIn::enabled_ADCs = 0;
+uint16_t Pin::enabled_ADCs = 0;

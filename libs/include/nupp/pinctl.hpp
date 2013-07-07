@@ -7,58 +7,51 @@
  */
 
 #include "nu/compiler.h"
+#include "nupp/platform/pin.hpp"
 #include <cstdint>
-#include <string>
-extern "C" {
-#include <peripheral/adc10.h>
-#include <peripheral/ports.h>
-}
 
 namespace nu {
 	/**
-	 * Encapsulate a PIC32 I/O pin. They are addressed by a (letter, number)
-	 * combination, represented by an (IoPortId, BIT_X) type combination.
-	 */
-	struct Pin {
-		enum Port {A, B, C, D, E, F, G};
-
-		Port port;
-		uint8_t bit;
-
-		IoPortId ltr() {return (IoPortId)(port);}; // PIC32 SPECIFIC
-		reg_t num() {return (1 << bit);} // PIC32 SPECIFIC
-
-		/**
-		 * Construct with Pin's (letter, number) combination.
-		 */
-		ALWAYSINLINE Pin(Port _port = D, uint8_t _bit = 0): port(_port), bit(_bit) {}
-		NOINLINE virtual ~Pin() {}
+	 * The universal interface for a Microcontroller Pin. It inherits from a
+	 * platform-specific Pin class, which does the heavy labor.
+     */
+	struct AbstractPin: protected Pin {
+		ALWAYSINLINE AbstractPin(Pin p = Pin()): Pin(p) {}
+		NOINLINE virtual ~AbstractPin() {}
 
 	protected:
-		/**
-		 * Call one of these four setters from your subclass constructor.
-		 */
-		ALWAYSINLINE void set_digital_out()	{PORTSetPinsDigitalOut(ltr(), num());}
-		ALWAYSINLINE void set_digital_in()	{PORTSetPinsDigitalIn(ltr(), num());}
-		ALWAYSINLINE void set_analog_out()	{PORTSetPinsAnalogOut(ltr(), num());}
-		ALWAYSINLINE void set_analog_in()	{PORTSetPinsAnalogIn(ltr(), num());}
+		ALWAYSINLINE void set_digital_out()	{Pin::set_digital_out();}
+		ALWAYSINLINE void set_digital_in()	{Pin::set_digital_in();}
+		ALWAYSINLINE void set_analog_out()	{Pin::set_analog_out();}
+		ALWAYSINLINE void set_analog_in()	{Pin::set_analog_in();}
 
-		virtual INLINE reg_t read()		{return PORTReadBits(ltr(), num());} // returns 0 or any non-0
-		virtual INLINE void set()		{PORTSetBits(ltr(), num());}
-		virtual INLINE void clear()		{PORTClearBits(ltr(), num());}
-		virtual INLINE void toggle()	{PORTToggleBits(ltr(), num());}
+		virtual INLINE void set()		{Pin::set();}
+		virtual INLINE void clear()		{Pin::clear();}
+		virtual INLINE void toggle()	{Pin::toggle();}
+
+		/** A subclass may call EITHER read() OR read_analog(). */
+		virtual INLINE reg_t read_digital()		{return Pin::read_digital();} // returns 0 or any non-0
+		virtual INLINE reg_t read_analog()	{return Pin::read_analog();}
 	};
 
-	struct DigitalIn: protected Pin {
-		ALWAYSINLINE DigitalIn(Pin p = Pin()): Pin(p) {set_digital_in();}
-		ALWAYSINLINE uint32_t read() {return Pin::read();} // returns 0 or any non-0
+
+	struct DigitalIn: protected AbstractPin {
+		ALWAYSINLINE DigitalIn(Pin p = Pin()): AbstractPin(p) {set_digital_in();}
+		ALWAYSINLINE reg_t read() {return Pin::read_digital();} // returns 0 or any non-0
 	};
 
-	class DigitalOut: protected Pin {
+	/** An Analog input Pin, wrapped with an ADC. */
+	struct AnalogIn: protected AbstractPin {
+		ALWAYSINLINE AnalogIn(Pin p = Pin()): AbstractPin(p) {set_analog_in();}
+		ALWAYSINLINE reg_t read()	{return Pin::read_analog();}
+	};
+
+
+	class DigitalOut: protected AbstractPin {
 		bool _status;
 
 	public:
-		ALWAYSINLINE DigitalOut(Pin p = Pin(), bool init = false): Pin(p), _status(init) {
+		ALWAYSINLINE DigitalOut(Pin p = Pin(), bool init = false): AbstractPin(p), _status(init) {
 			set_digital_out();
 			if (init) high();
 			else low();
@@ -67,54 +60,12 @@ namespace nu {
 		ALWAYSINLINE void high()	{set(); _status = true;}
 		ALWAYSINLINE void low()		{clear(); _status = false;}
 		ALWAYSINLINE void toggle()	{toggle(); _status = !_status;}
-		ALWAYSINLINE bool status() {return _status;}
+		ALWAYSINLINE bool status()	{return _status;}
 
 		ALWAYSINLINE DigitalOut &operator= (const bool rhs) {
 			if (rhs) set();
 			else clear();
 			return *this;
-		}
-	};
-
-	/**
-	 * An Analog input Pin, wrapped with an ADC.
-	 */
-	struct AnalogIn: protected Pin {
-		static uint16_t enabled_ADCs; // Permits 16 ADC's
-		uint8_t adc;
-
-		/**
-		 * @param p For PIC32MX795F512L, p.ltr is always IOPORT_B
-		 * @param _adc For PIC32MX795F512L, this number == p.bit
-		 */
-		ALWAYSINLINE AnalogIn(Pin p = Pin()): Pin(p), adc(p.bit) {
-			CloseADC10(); // ERROR: Only open 2 channels?
-			SetChanADC10(ADC_CH0_NEG_SAMPLEA_NVREF|ADC_CH0_POS_SAMPLEA_AN0);
-			set_analog_in();
-
-			enabled_ADCs |= (typeof(enabled_ADCs)) (1 << adc); // PIC32 SPECIFIC
-			uint32_t count_enabled = __builtin_popcount(enabled_ADCs); // 32bit cuz we bitshift below
-
-			/* 1: Turn module on | ouput in integer | trigger mode auto | enable autosample
-			 * 2: ADC ref external    | disable offset test    | disable scan mode | perform 2 samples | use dual buffers | use alternate mode
-			 * 3: use ADC internal clock | set sample time
-			 * 4: enable all ANX not in use
-			 * 5: do not assign other channels to scan */
-			#define PARAM1	ADC_MODULE_ON | ADC_FORMAT_INTG | ADC_CLK_AUTO | ADC_AUTO_SAMPLING_ON
-			#define PARAM2	ADC_VREF_AVDD_AVSS | ADC_OFFSET_CAL_DISABLE | ADC_SCAN_ON | (count_enabled << _AD1CON2_SMPI_POSITION) | ADC_ALT_BUF_OFF | ADC_ALT_INPUT_OFF // use Channel A only
-			#define PARAM3	ADC_CONV_CLK_INTERNAL_RC | ADC_SAMPLE_TIME_15
-			#define PARAM4	ENABLE_AN0_ANA | ENABLE_AN1_ANA
-			#define PARAM5	SKIP_SCAN_ALL
-
-			OpenADC10( PARAM1, PARAM2, PARAM3, enabled_ADCs, ~enabled_ADCs ); // setup ADC
-			EnableADC10();
-		}
-
-		ALWAYSINLINE reg_t read(){
-			while (!mAD1GetIntFlag()) Nop();
-			reg_t val = ReadADC10(adc);
-			mAD1ClearIntFlag();
-			return val;
 		}
 	};
 }
