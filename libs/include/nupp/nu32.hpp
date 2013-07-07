@@ -55,15 +55,15 @@ namespace nu {
 			led1(PIN(G, 12)),
 			led2(PIN(G, 13)),
 			switch1(PIN(G, 6)),
-			serial1(UART1, 115200),
-			serial2(UART3, 115200) {}
+			serial1(UART(1)),
+			serial2(UART(3)) {}
 		
 		Nu32(V2011_t, uint32_t _hz = param::default_hz()): Nu32Init(_hz), version(v2011),
 			led1(PIN(A, 4)),
 			led2(PIN(A, 5)),
 			switch1(PIN(C, 13)),
-			serial1(UART1, 115200),
-			serial2(UART3, 115200) {}
+			serial1(UART(1)),
+			serial2(UART(3)) {}
 
 		virtual ~Nu32() {}
 	};

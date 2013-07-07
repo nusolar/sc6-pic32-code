@@ -48,6 +48,29 @@
 	_LED(cruise_mode,	D, 9)   \
 	_LED(cruise_down,	A, 14)*/
 
+#if 0
+			yes			(Button(Pin(Pin::E,  0), 10, 5)),
+			no			(Button(Pin(Pin::G, 12), 10, 5)),
+			maybe		(Button(Pin(Pin::E,  2), 10, 5)),
+			cruise_en	(Button(Pin(Pin::D,  0), 10, 5)),
+			cruise_mode	(Button(Pin(Pin::D,  8), 10, 5)),
+			cruise_up	(Button(Pin(Pin::D, 10), 10, 5)),
+			cruise_down	(Button(Pin(Pin::A, 15), 10, 5)),
+
+			led_left		(Led(Pin(Pin::D,  7))),
+			led_right		(Led(Pin(Pin::D,  2))),
+			led_radio		(Led(Pin(Pin::E,  5))),
+			led_yes			(Led(Pin(Pin::E,  1))),
+			led_hazard		(Led(Pin(Pin::D, 13))),
+			led_cruise_en	(Led(Pin(Pin::D,  1))),
+			led_cruise_up	(Led(Pin(Pin::D, 11))),
+			led_maybe		(Led(Pin(Pin::E,  3))),
+			led_no			(Led(Pin(Pin::G, 13))),
+			led_horn		(Led(Pin(Pin::D,  5))),
+			led_cruise_mode	(Led(Pin(Pin::D,  9))),
+			led_cruise_down	(Led(Pin(Pin::A, 14))),
+#endif
+
 #define SW_N_BTNS 11
 #define SW_N_LEDS 12
 
@@ -82,28 +105,6 @@ namespace nu {
 		 * Setup NU32, CAN, LEDs, and uLCD Display.
 		 */
 		ALWAYSINLINE SteeringWheel():
-#if 0
-			yes			(Button(Pin(Pin::E,  0), 10, 5)),
-			no			(Button(Pin(Pin::G, 12), 10, 5)),
-			maybe		(Button(Pin(Pin::E,  2), 10, 5)),
-			cruise_en	(Button(Pin(Pin::D,  0), 10, 5)),
-			cruise_mode	(Button(Pin(Pin::D,  8), 10, 5)),
-			cruise_up	(Button(Pin(Pin::D, 10), 10, 5)),
-			cruise_down	(Button(Pin(Pin::A, 15), 10, 5)),
-
-			led_left		(Led(Pin(Pin::D,  7))),
-			led_right		(Led(Pin(Pin::D,  2))),
-			led_radio		(Led(Pin(Pin::E,  5))),
-			led_yes			(Led(Pin(Pin::E,  1))),
-			led_hazard		(Led(Pin(Pin::D, 13))),
-			led_cruise_en	(Led(Pin(Pin::D,  1))),
-			led_cruise_up	(Led(Pin(Pin::D, 11))),
-			led_maybe		(Led(Pin(Pin::E,  3))),
-			led_no			(Led(Pin(Pin::G, 13))),
-			led_horn		(Led(Pin(Pin::D,  5))),
-			led_cruise_mode	(Led(Pin(Pin::D,  9))),
-			led_cruise_down	(Led(Pin(Pin::A, 14))),
-#else
 			yes			(Button(PIN(E,  0), 10, 5)),
 			no			(Button(PIN(G, 12), 10, 5)),
 			maybe		(Button(PIN(E,  2), 10, 5)),
@@ -129,8 +130,6 @@ namespace nu {
 			led_horn		(Led(PIN(D,  5))),
 			led_radio		(Led(PIN(E,  5))),
 
-#endif
-
 			buttons {&yes, &no, &maybe,
 					&cruise_en, &cruise_mode, &cruise_up, &cruise_down,
 					&left, &right, &hazard, &horn},
@@ -138,9 +137,8 @@ namespace nu {
 				&led_cruise_en, &led_cruise_mode, &led_cruise_up, &led_cruise_down,
 				&led_left, &led_right, &led_hazard, &led_horn, &led_radio},
 
-			common_can(CAN2), lcd(UART3), state()
+			common_can(CAN2), lcd(UART(3)), state()
 		{
-
 			WDT::clear();
 			common_can.in ().setup_rx();
 			common_can.in ().add_filter(CAN_FILTER0, CAN_SID, 0x300, CAN_FILTER_MASK0, CAN_FILTER_MASK_IDE_TYPE, 0x7F8);

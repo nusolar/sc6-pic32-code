@@ -16,7 +16,7 @@ namespace nu {
 		Serial ctl;
 		static const char *uuid;
 
-		USBInterface(): Nu32(Nu32::V2011), ctl(UART2, 115200) {}
+		USBInterface(): Nu32(Nu32::V2011), ctl(UART(2)) {}
 
 		/**
 		 * Called from process_record() with the record's key.

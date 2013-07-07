@@ -24,7 +24,7 @@ namespace nu {
 		}
 
 	public:
-		ALWAYSINLINE uLCD28PT(UART_MODULE mod): Serial(mod, 115200) {}
+		ALWAYSINLINE uLCD28PT(UARTModule mod): Serial(mod) {}
 
 		ALWAYSINLINE uLCD28PT& operator << (const can::frame::ws20::tx::motor_velocity& x) {
 			write_key_val("velo", x.frame.contents.vehicleVelocity);
