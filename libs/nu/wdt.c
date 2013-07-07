@@ -1,8 +1,8 @@
-#include "nu/wdt.h"
 #include <xc.h>
 #include <peripheral/wdt.h>
+#include "nu/wdt.h"
 
-static void enabled_clear_wdt (void) { ClearWDT(); }
+static void enabled_clear_wdt (void) { nu_platform_wdt_clearable(); }
 static void disabled_clear_wdt(void) {}
 
 void (*nu_wdt_clear) (void) = enabled_clear_wdt;
