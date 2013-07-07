@@ -1,7 +1,7 @@
 #include "nupp/stream.hpp"
 
 nu::OStream& nu::end(nu::OStream& os) {
-	os.puts(os._str.c_str()); // WARNING: Deep copy str
+	os.puts(os._str.c_str());
 	os._str.clear();
 	return os;
 }

@@ -3,7 +3,7 @@
 
 /**
  * @file
- * Simple pin wrapper
+ * Simple pin wrapper. To specify a pin, use PIN(LETTER, NUMBER)
  */
 
 #include "nu/compiler.h"

@@ -39,6 +39,7 @@ namespace nu {
 
 		ALWAYSINLINE void clear() {
 			_size = 0;
+			_c_str[0] = '\0';
 		}
 
 		ALWAYSINLINE bool empty() const {

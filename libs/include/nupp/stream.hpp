@@ -14,20 +14,16 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
-//#include "nupp/allocator.hpp"
-//	typedef std::basic_string <char, std::char_traits<char>, Allocator<char>> nu_string;
 
 namespace nu {
 	class OStream {
 		String _str;
 		char _buffer[72];
+
 	public:
 		ALWAYSINLINE OStream(): _str("") {}
 		virtual ~OStream() {}
 		virtual void puts(const char *){}
-
-//		template <typename T>
-//		ALWAYSINLINE OStream& operator<< (const T &val) {out << val; return *this;}
 
 		ALWAYSINLINE OStream& operator<< (const double val) {
 			if (likely(snprintf(NULL, 0, "%f", val) <= 72)) {
