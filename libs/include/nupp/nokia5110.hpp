@@ -45,7 +45,7 @@ namespace nu {
 		static const uint16_t lcd_x = 84;
 		static const uint16_t lcd_y = 48;
 
-		Nokia5110(Pin _cs, SpiChannel _chn, Pin _reset, Pin _dc);
+		Nokia5110(Pin _cs, uint8_t _channel, Pin _reset, Pin _dc);
 
 		void put_c(const uint8_t c);
 		void puts(const char *str);

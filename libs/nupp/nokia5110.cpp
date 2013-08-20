@@ -150,12 +150,13 @@ union PACKED ALIGNED(1) instructions {
     } extended;
     uint8_t cmd_byte;
 };
+
 #define PREPARE_CMD(a)\
 	do {memset(&a, 0, 1); a.fixed = 1;} while(0)
 
 
-Nokia5110::Nokia5110(Pin _cs, SpiChannel _chn, Pin _reset, Pin _dc):
-	SPI(_cs, _chn, 2000000, (SpiOpenFlags)(SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON)),
+Nokia5110::Nokia5110(Pin _cs, uint8_t _channel, Pin _reset, Pin _dc):
+	SPI(_cs, Spi(_channel, 2000000, SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON)),
 	reset(_reset), dc(_dc)
 {
 	reset.low();

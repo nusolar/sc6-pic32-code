@@ -13,23 +13,27 @@
 #include "nupp/ad7685.hpp"
 
 namespace nu {
-	/** Utilities for HAIS current sensor */
-	template <uint32_t num_devices>
-	struct HAIS: public AD7685<num_devices> {
-		/** The Primary Nominal current of the HAIS */
+	namespace hais {
 		enum PN {
 			P50 = 50,
 			P100 = 100,
 			P150 = 150,
 			P200 = 200,
 			P400 = 400
-		} I_pn;
+		};
+	}
 
+	/** Utilities for HAIS current sensor */
+	template <uint32_t num_devices>
+	struct HAIS: public AD7685<num_devices> {
+		/** The Primary Nominal current of the HAIS */
+		hais::PN I_pn;
+		
 		Array<float, num_devices> values;
 		ALWAYSINLINE float operator[] (size_t index) const {return values[index];}
 		ALWAYSINLINE uint32_t count() {return num_devices;}
 
-		ALWAYSINLINE HAIS(AD7685<num_devices> _adc, PN _I_pn): AD7685<num_devices>(_adc), I_pn(_I_pn), values() {}
+		ALWAYSINLINE HAIS(AD7685<num_devices> _adc, hais::PN _I_pn): AD7685<num_devices>(_adc), I_pn(_I_pn), values(0.0f) {}
 		
 		/** Convert ADC voltage output to measured current */
 		PURE ALWAYSINLINE float voltage_to_current(float voltage) {

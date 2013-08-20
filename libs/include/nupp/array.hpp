@@ -4,21 +4,24 @@
 #define	NUPP_STACK_HPP
 
 namespace nu {
+	/**
+	 * A stack-allocated array. This replaces std::array and std::vector
+	 */
 	template <typename T, size_t N>
 	class Array {
 		T array[N];
 	public:
-		ALWAYSINLINE Array<T,N>() {memset(array, 0, sizeof(array));}
-//		ALWAYSINLINE Array<T,N>(uint8_t init) {memset(array, init, sizeof(array));}
+		/** @warning NO BOUNDS CHECKING */
+		ALWAYSINLINE T& at(const size_t index) {
+			return array[index];
+		}
+		ALWAYSINLINE T  at(const size_t index) const {
+			return array[index];
+		}
+		
+		ALWAYSINLINE T& operator[] (const size_t index) {return at(index);}
+		ALWAYSINLINE T  operator[] (const size_t index) const {return at(index);}
 
-		/** @warning NO BOUNDS CHECKING */
-		ALWAYSINLINE T& operator[] (const size_t index) {
-			return array[index];
-		}
-		/** @warning NO BOUNDS CHECKING */
-		ALWAYSINLINE T operator[] (const size_t index) const {
-			return array[index];
-		}
 		ALWAYSINLINE operator void *() {
 			return (void *)array;
 		}
@@ -31,7 +34,19 @@ namespace nu {
 
 		ALWAYSINLINE Array<T, N>& operator= (T& rvalue) {
 			for (unsigned i=0; i<N; i++) {
-				this->operator[](i) = rvalue;
+				at(i) = rvalue;
+			}
+			return *this;
+		}
+
+		/**
+		 * Copy an identically sized array of any type.
+         * @param rvalue The array to be copied.
+         */
+		template <typename T2>
+		ALWAYSINLINE Array<T, N>& operator= (Array<T2, N>& rvalue) {
+			for (unsigned i=0; i<N; i++) {
+				at(i) = rvalue[i];
 			}
 			return *this;
 		}
@@ -39,7 +54,7 @@ namespace nu {
 		ALWAYSINLINE bool operator== (Array<T,N>& rvalue) {
 			bool result = true;
 			for (unsigned i=0; i<N; i++) {
-				result &= (this->operator[](i) == rvalue[i]);
+				result *= (at(i) == rvalue[i]);
 			}
 			return result;
 		}
@@ -51,6 +66,9 @@ namespace nu {
 			}
 			return result;
 		}
+
+		ALWAYSINLINE Array<T,N>() {}
+		ALWAYSINLINE Array<T,N>(T init) {*this = init;}
 	};
 }
 

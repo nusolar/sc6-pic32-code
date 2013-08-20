@@ -45,9 +45,9 @@ namespace nu {
          * @param _convert Used to control AD7685. Identical to CS in some configurations.
          * @param _opts
          */
-		ALWAYSINLINE AD7685(Pin _cs, SpiChannel _chn, Pin _convert, options _opts):
-			SPI(_cs, _chn, 100000, (SpiOpenFlags)(SPI_OPEN_CKE_REV|SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON)),
-			convert(_convert), opts(_opts), values()
+		ALWAYSINLINE AD7685(Pin _cs, uint8_t _channel, Pin _convert, options _opts):
+			SPI(_cs, Spi(_channel, 100000, SPI_OPEN_CKE_REV|SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON)),
+			convert(_convert), opts(_opts), values(0U)
 		{
 			if ((FOUR_WIRE & opt && NO_BUSY_INDICATOR & opt) ||
 				(CHAIN_MODE & opt && BUSY_INDICATOR & opt))

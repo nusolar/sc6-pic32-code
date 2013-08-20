@@ -34,7 +34,7 @@ namespace nu {
 		ALWAYSINLINE float operator[] (size_t index) const {return values[index];}
 		ALWAYSINLINE uint32_t count() {return num_devices;}
 
-		ALWAYSINLINE DS18X20(Pin _p): OneWire<num_devices>(_p), values() {}
+		ALWAYSINLINE DS18X20(Pin _p): OneWire<num_devices>(_p), values(0.0f) {}
 
 		ALWAYSINLINE void convert_t() {
 			this->tx_byte_with_crc( this->CONVERT_T );

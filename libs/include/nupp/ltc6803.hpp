@@ -192,10 +192,10 @@ namespace nu {
          * @param _cs The Chip Select pin for the LTC6803.
          * @param _chn The SPI Channel on which lies the LTC6803.
          */
-		ALWAYSINLINE LTC6803(Pin _cs, SpiChannel _chn):
-			SPI(_cs, _chn, 100000, (SpiOpenFlags)(SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON),
+		ALWAYSINLINE LTC6803(Pin _cs, uint8_t _channel):
+			SPI(_cs, Spi(_channel, 100000, SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON),
 			    (SPI::tx_options)(TX_WAIT_START|TX_WAIT_END|TX_DISABLE_AUTO_CS)),
-			mismatch_pecs(0), is_openwire(false), values() {}
+			mismatch_pecs(0), is_openwire(false), values(0.0f) {}
 
 		ALWAYSINLINE void write_configs(Array<Configuration, num_devices> &config) {
 			write_cmd_tx(WRITECFGS, config, sizeof(Configuration));

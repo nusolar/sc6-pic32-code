@@ -145,7 +145,7 @@ namespace nu {
 			lcd2(PIN(E, 8), SPI_CHANNEL2, PIN(A, 10), PIN(E, 9)),
 			current_sensor(
 				AD7685<2>(PIN(F, 12), SPI_CHANNEL4, PIN(F, 12), // Convert & CS are same pin
-				AD7685<2>::CHAIN_MODE_NO_BUSY), HAIS<2>::P50),
+				AD7685<2>::CHAIN_MODE_NO_BUSY), hais::P50),
 			voltage_sensor(PIN(D, 9), SPI_CHANNEL1),
 			temp_sensor(PIN(A, 0)),
 			state()
