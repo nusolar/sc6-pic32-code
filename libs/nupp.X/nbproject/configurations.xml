@@ -14,6 +14,8 @@
         <itemPath>../include/nu/common_pragmas.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f1" displayName="nupp" projectFiles="true">
+        <logicalFolder name="f1" displayName="platform" projectFiles="true">
+        </logicalFolder>
         <itemPath>../include/nupp/ad7685.hpp</itemPath>
         <itemPath>../include/nupp/allocator.hpp</itemPath>
         <itemPath>../include/nupp/bms.hpp</itemPath>
@@ -72,6 +74,18 @@
             </logicalFolder>
           </logicalFolder>
         </logicalFolder>
+        <logicalFolder name="f3" displayName="teensy" projectFiles="true">
+          <logicalFolder name="f1" displayName="nu" projectFiles="true">
+            <logicalFolder name="f1" displayName="platform" projectFiles="true">
+              <itemPath>../include/platform/teensy/nu/platform/usb_serial.h</itemPath>
+            </logicalFolder>
+          </logicalFolder>
+          <logicalFolder name="f2" displayName="nupp" projectFiles="true">
+            <logicalFolder name="f1" displayName="platform" projectFiles="true">
+              <itemPath>../include/platform/teensy/nupp/platform/usb_serial.hpp</itemPath>
+            </logicalFolder>
+          </logicalFolder>
+        </logicalFolder>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
@@ -104,6 +118,11 @@
       <logicalFolder name="f2" displayName="platform" projectFiles="true">
         <logicalFolder name="f1" displayName="pic32mx" projectFiles="true">
         </logicalFolder>
+        <logicalFolder name="f2" displayName="teensy" projectFiles="true">
+          <logicalFolder name="f1" displayName="nu" projectFiles="true">
+            <itemPath>../platform/teensy/nu/usb_serial.c</itemPath>
+          </logicalFolder>
+        </logicalFolder>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
@@ -113,6 +132,7 @@
     </logicalFolder>
   </logicalFolder>
   <sourceRootList>
+    <Elem>../include/nupp/platform</Elem>
     <Elem>../include/nupp</Elem>
     <Elem>../include/nu</Elem>
     <Elem>../nupp</Elem>
@@ -302,6 +322,7 @@
         <property key="programoptions.preserveprogramrange.end" value="0x1d07ffff"/>
         <property key="programoptions.preserveprogramrange.start" value="0x1d000000"/>
         <property key="programoptions.preserveuserid" value="false"/>
+        <property key="programoptions.testmodeentrymethod" value="VPPFirst"/>
         <property key="programoptions.usehighvoltageonmclr" value="false"/>
         <property key="programoptions.uselvpprogramming" value="false"/>
         <property key="voltagevalue" value="3.25"/>
@@ -331,6 +352,18 @@
         <makeCustomizationEnableLongLines>false</makeCustomizationEnableLongLines>
         <makeCustomizationNormalizeHexFile>false</makeCustomizationNormalizeHexFile>
       </makeCustomizationType>
+      <item path="../platform/teensy/nu/usb_serial.c" ex="true" overriding="false">
+        <C32>
+        </C32>
+        <C32-AS>
+        </C32-AS>
+        <C32-LD>
+        </C32-LD>
+        <C32CPP>
+        </C32CPP>
+        <C32Global>
+        </C32Global>
+      </item>
       <C32>
         <property key="additional-warnings" value="true"/>
         <property key="enable-app-io" value="false"/>
