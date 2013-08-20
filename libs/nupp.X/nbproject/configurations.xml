@@ -5,6 +5,9 @@
                    displayName="Header Files"
                    projectFiles="true">
       <logicalFolder name="f2" displayName="nu" projectFiles="true">
+        <logicalFolder name="f1" displayName="platform" projectFiles="true">
+          <itemPath>../include/nu/platform/usb_serial.h</itemPath>
+        </logicalFolder>
         <itemPath>../include/nu/param.h</itemPath>
         <itemPath>../include/nu/compiler.h</itemPath>
         <itemPath>../include/nu/errorcodes.h</itemPath>
@@ -15,6 +18,11 @@
       </logicalFolder>
       <logicalFolder name="f1" displayName="nupp" projectFiles="true">
         <logicalFolder name="f1" displayName="platform" projectFiles="true">
+          <itemPath>../include/nupp/platform/spi.hpp</itemPath>
+          <itemPath>../include/nupp/platform/param.hpp</itemPath>
+          <itemPath>../include/nupp/platform/pin.hpp</itemPath>
+          <itemPath>../include/nupp/platform/serial.hpp</itemPath>
+          <itemPath>../include/nupp/platform/usb_serial.hpp</itemPath>
         </logicalFolder>
         <itemPath>../include/nupp/ad7685.hpp</itemPath>
         <itemPath>../include/nupp/allocator.hpp</itemPath>
@@ -54,35 +62,12 @@
               <itemPath>../include/platform/generic/nu/platform/param.h</itemPath>
             </logicalFolder>
           </logicalFolder>
-          <logicalFolder name="f1" displayName="nupp" projectFiles="true">
-            <logicalFolder name="f1" displayName="platform" projectFiles="true">
-              <itemPath>../include/platform/generic/nupp/platform/param.hpp</itemPath>
-            </logicalFolder>
-          </logicalFolder>
         </logicalFolder>
         <logicalFolder name="f1" displayName="pic32mx" projectFiles="true">
           <logicalFolder name="f2" displayName="nu" projectFiles="true">
             <logicalFolder name="f1" displayName="platform" projectFiles="true">
               <itemPath>../include/platform/pic32mx/nu/platform/common_pragmas.h</itemPath>
               <itemPath>../include/platform/pic32mx/nu/platform/param.h</itemPath>
-            </logicalFolder>
-          </logicalFolder>
-          <logicalFolder name="f1" displayName="nupp" projectFiles="true">
-            <logicalFolder name="f1" displayName="platform" projectFiles="true">
-              <itemPath>../include/platform/pic32mx/nupp/platform/param.hpp</itemPath>
-              <itemPath>../include/platform/pic32mx/nupp/platform/pin.hpp</itemPath>
-            </logicalFolder>
-          </logicalFolder>
-        </logicalFolder>
-        <logicalFolder name="f3" displayName="teensy" projectFiles="true">
-          <logicalFolder name="f1" displayName="nu" projectFiles="true">
-            <logicalFolder name="f1" displayName="platform" projectFiles="true">
-              <itemPath>../include/platform/teensy/nu/platform/usb_serial.h</itemPath>
-            </logicalFolder>
-          </logicalFolder>
-          <logicalFolder name="f2" displayName="nupp" projectFiles="true">
-            <logicalFolder name="f1" displayName="platform" projectFiles="true">
-              <itemPath>../include/platform/teensy/nupp/platform/usb_serial.hpp</itemPath>
             </logicalFolder>
           </logicalFolder>
         </logicalFolder>
@@ -96,6 +81,9 @@
                    displayName="Source Files"
                    projectFiles="true">
       <logicalFolder name="f1" displayName="nu" projectFiles="true">
+        <logicalFolder name="f1" displayName="platform" projectFiles="true">
+          <itemPath>../nu/platform/usb_serial.c</itemPath>
+        </logicalFolder>
         <itemPath>../nu/param.c</itemPath>
         <itemPath>../nu/wdt.c</itemPath>
         <itemPath>../nu/errorcodes.c</itemPath>
@@ -115,15 +103,6 @@
         <itemPath>../nupp/stream.cpp</itemPath>
         <itemPath>../nupp/pin.cpp</itemPath>
       </logicalFolder>
-      <logicalFolder name="f2" displayName="platform" projectFiles="true">
-        <logicalFolder name="f1" displayName="pic32mx" projectFiles="true">
-        </logicalFolder>
-        <logicalFolder name="f2" displayName="teensy" projectFiles="true">
-          <logicalFolder name="f1" displayName="nu" projectFiles="true">
-            <itemPath>../platform/teensy/nu/usb_serial.c</itemPath>
-          </logicalFolder>
-        </logicalFolder>
-      </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -132,7 +111,6 @@
     </logicalFolder>
   </logicalFolder>
   <sourceRootList>
-    <Elem>../include/nupp/platform</Elem>
     <Elem>../include/nupp</Elem>
     <Elem>../include/nu</Elem>
     <Elem>../nupp</Elem>
@@ -140,6 +118,7 @@
     <Elem>../include/platform/pic32mx/nu/platform</Elem>
     <Elem>../include/platform/generic/nupp/platform</Elem>
     <Elem>../include/platform/generic/nu/platform</Elem>
+    <Elem>../nu/platform</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -352,18 +331,6 @@
         <makeCustomizationEnableLongLines>false</makeCustomizationEnableLongLines>
         <makeCustomizationNormalizeHexFile>false</makeCustomizationNormalizeHexFile>
       </makeCustomizationType>
-      <item path="../platform/teensy/nu/usb_serial.c" ex="true" overriding="false">
-        <C32>
-        </C32>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
-      </item>
       <C32>
         <property key="additional-warnings" value="true"/>
         <property key="enable-app-io" value="false"/>

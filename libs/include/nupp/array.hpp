@@ -1,17 +1,17 @@
 #include "nu/compiler.h"
 
-#ifndef NUPP_STACK_HPP
-#define	NUPP_STACK_HPP
+#ifndef NUPP_ARRAY_HPP
+#define	NUPP_ARRAY_HPP
 
 namespace nu {
 	/**
-	 * A stack-allocated array. This replaces std::array and std::vector
+	 * A stack-allocated array. This replaces std::array and std::vector.
+	 * @warning NO BOUNDS CHECKING
 	 */
 	template <typename T, size_t N>
 	class Array {
 		T array[N];
 	public:
-		/** @warning NO BOUNDS CHECKING */
 		ALWAYSINLINE T& at(const size_t index) {
 			return array[index];
 		}
@@ -72,4 +72,4 @@ namespace nu {
 	};
 }
 
-#endif	/* NUPP_STACK_HPP */
+#endif	/* NUPP_ARRAY_HPP */

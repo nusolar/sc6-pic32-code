@@ -37,6 +37,7 @@ namespace nu {
 	struct Nu32: public Nu32Init {
 		enum V2010_t {V2010};
 		enum V2011_t {V2011};
+		
 		enum versions {
 			v2010,
 			v2011

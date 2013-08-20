@@ -32,7 +32,9 @@
 
 #define USB_SERIAL_PRIVATE_INCLUDE
 #include "nu/platform/usb_serial.h"
+#include "nu/compiler.h"
 
+#if PLATFORM==TEENSY /* USB-Serial is Teensy-only */
 
 /**************************************************************************
  *
@@ -933,4 +935,4 @@ ISR(USB_COM_vect)
 	UECONX = (1<<STALLRQ) | (1<<EPEN);	// stall
 }
 
-
+#endif

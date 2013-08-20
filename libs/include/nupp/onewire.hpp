@@ -1,5 +1,5 @@
 #ifndef ONEWIRE_HPP
-#define	ONEWIRE_HPP
+#define	ONEWIRE_HPP 1
 
 extern "C" {
 #include "nu/crc.h"

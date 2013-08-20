@@ -1,9 +1,16 @@
 #ifndef NUPP_PLATFORM_PARAM_HPP
 #define NUPP_PLATFORM_PARAM_HPP 1
 
-#include "nu/compiler.h"
 #include "nu/platform/param.h"
+#include "nu/compiler.h"
 
+#if PLATFORM==GENERIC /* Generic param code - i.e, nothing*/
+namespace nu {
+	namespace platform {
+	}
+}
+
+#elif PLATFORM==PIC32MX /* PIC32MX-specific Parameter code */
 namespace nu {
 	namespace param {
 		/**
@@ -15,5 +22,7 @@ namespace nu {
 	}
 }
 
-#endif
+#endif /* PLATFORM code */
+
+#endif /* NUPP_PLATFORM_PARAM_HPP */
 

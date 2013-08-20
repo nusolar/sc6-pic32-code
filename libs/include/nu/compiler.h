@@ -11,6 +11,13 @@
 extern "C" {
 #endif
 
+#define GENERIC 0
+#define PIC32MX 1
+#define ARDUINO 2
+#define TEENSY 3
+
+#define PLATFORM PIC32MX
+
 /**
  * @file
  * Compiler-specific keywords

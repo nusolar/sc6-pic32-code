@@ -6,8 +6,8 @@
 //  Copyright (c) 2013 Alex Chandel. All rights reserved.
 //
 
-#ifndef __nusolar_lib__bms__
-#define __nusolar_lib__bms__
+#ifndef NUPP_BMS_HPP
+#define NUPP_BMS_HPP 1
 
 #include "nu/compiler.h"
 #include <cstdint>
@@ -428,4 +428,4 @@ namespace nu {
 	};
 }
 
-#endif /* defined(__nusolar_lib__bms__) */
+#endif /* defined(NUPP_BMS_HPP) */

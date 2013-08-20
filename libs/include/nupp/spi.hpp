@@ -1,9 +1,9 @@
 #ifndef NUPP_SPI_HPP
 #define NUPP_SPI_HPP 1
 
-#include "nupp/param.hpp"
-#include "nupp/pinctl.hpp"
 #include "nupp/stream.hpp"
+#include "nupp/pinctl.hpp"
+#include "nupp/param.hpp"
 #include "nupp/platform/spi.hpp"
 #include <cstddef> // size_t
 #include <cstring> // strlen

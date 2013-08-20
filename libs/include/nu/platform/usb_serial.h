@@ -2,10 +2,13 @@
 #define usb_serial_h__
 
 #include <stdint.h>
+#include "nu/compiler.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#if PLATFORM==TEENSY /* USB-Serial is Teensy-only */
 
 // setup
 void usb_init(void);			// initialize everything
@@ -124,6 +127,8 @@ int8_t usb_serial_set_control(uint8_t signals); // set DSR, DCD, RI, etc
 #define CDC_SET_LINE_CODING		0x20
 #define CDC_GET_LINE_CODING		0x21
 #define CDC_SET_CONTROL_LINE_STATE	0x22
+#endif
+
 #endif
 
 #ifdef __cplusplus

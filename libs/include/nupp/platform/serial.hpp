@@ -8,9 +8,11 @@
 #ifndef NU_PLATFORM_SERIAL_HPP
 #define	NU_PLATFORM_SERIAL_HPP
 
-#include "nu/compiler.h"
-#include "nupp/param.hpp"
 #include "nupp/wdt.hpp"
+#include "nupp/param.hpp"
+#include "nu/compiler.h"
+
+#if PLATFORM==PIC32MX /* PIC32MX-specific Serial code */
 
 extern "C" {
 #include <plib.h>
@@ -97,6 +99,8 @@ namespace nu {
 		}
 	};
 }
+
+#endif /* PIC32MX PIC32MX-specific Serial code */
 
 #endif	/* NU_PLATFORM_SERIAL_HPP */
 

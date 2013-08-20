@@ -6,14 +6,14 @@
  */
 
 #ifndef LTC6803_HPP
-#define	LTC6803_HPP
+#define	LTC6803_HPP 1
 
-#include "nu/compiler.h"
-#include "nupp/array.hpp"
-#include "nupp/timer.hpp"
-#include "nupp/pinctl.hpp"
 #include "nupp/spi.hpp"
+#include "nupp/pinctl.hpp"
 #include "nupp/errorcodes.hpp"
+#include "nupp/timer.hpp"
+#include "nupp/array.hpp"
+#include "nu/compiler.h"
 
 namespace nu {
 	/** Limited to 32 devices */

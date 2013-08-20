@@ -6,10 +6,14 @@
  */
 
 #ifndef NU_PLATFORM_SPI_HPP
-#define	NU_PLATFORM_SPI_HPP
+#define	NU_PLATFORM_SPI_HPP 1
 
-#include "nupp/timer.hpp"
 #include "nupp/pinctl.hpp"
+#include "nupp/timer.hpp"
+#include "nu/compiler.h"
+
+#if PLATFORM==PIC32MX /* PIC32MX-specific SPI code */
+
 extern "C" {
 #include <plib.h>
 #include <../../pic32-libs/peripheral/spi/source/_spi_map_tbl.h>
@@ -94,6 +98,8 @@ namespace nu {
 
 	};
 }
+
+#endif /* PIC32MX-specific SPI code */
 
 #endif	/* NU_PLATFORM_SPI_HPP */
 

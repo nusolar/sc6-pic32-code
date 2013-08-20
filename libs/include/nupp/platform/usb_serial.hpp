@@ -8,8 +8,10 @@
 #ifndef NU_USB_SERIAL_HPP
 #define	NU_USB_SERIAL_HPP
 
-#include "nu/compiler.h"
 #include "nu/platform/usb_serial.h"
+#include "nu/compiler.h"
+
+#if PLATFORM==TEENSY /* USBSerial code for teensy */
 
 namespace nu {
 	struct USBSerial {
@@ -33,6 +35,7 @@ namespace nu {
 		}
 	};
 }
+#endif /* Platform code */
 
 #endif	/* NU_USB_SERIAL_HPP */
 
