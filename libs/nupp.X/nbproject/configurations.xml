@@ -9,6 +9,7 @@
           <itemPath>../include/nu/platform/usb_serial.h</itemPath>
           <itemPath>../include/nu/platform/param.h</itemPath>
           <itemPath>../include/nu/platform/common_pragmas.h</itemPath>
+          <itemPath>../include/nu/platform/wdt.h</itemPath>
         </logicalFolder>
         <itemPath>../include/nu/param.h</itemPath>
         <itemPath>../include/nu/compiler.h</itemPath>

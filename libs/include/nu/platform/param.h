@@ -1,5 +1,5 @@
-#ifndef NU_PIC32MX_PARAM_H
-#define NU_PIC32MX_PARAM_H 1
+#ifndef NU_PLATFORM_PARAM_H
+#define NU_PLATFORM_PARAM_H 1
 
 #include "nu/types.h"
 #include "nu/param.h"
@@ -23,10 +23,10 @@ extern "C" {
 #define NU_DEFAULT_HZ (80000000UL)
 #define NU_PBUS_FREQ_HZ (nu_hz/((u32)(1 << OSCCONbits.PBDIV)))
 
-#endif
+#endif /* NU_PLATFORM switch */
 
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
 
-#endif
+#endif /* NU_PLATFORM_PARAM_H */

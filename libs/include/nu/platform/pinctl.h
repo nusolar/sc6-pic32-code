@@ -1,10 +1,50 @@
-#ifndef NU_PINCTL_PIC32MX_H
-#define NU_PINCTL_PIC32MX_H 1
+#ifndef NU_PLATFORM_PINCTL_H
+#define NU_PLATFORM_PINCTL_H 1
 
-#include "nu/compiler.h"
 #include "nu/pinctl.h"
 #include "nu/types.h"
+#include "nu/compiler.h"
+#include "nu/platform.h"
 #include <peripheral/ports.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#if NU_PLATFORM==NU_PLATFORM_UNKNOWN
+#error "Unknown NU_PLATFORM in nu/platform/pinctl.h"
+
+#elif NU_PLATFORM==NU_PLATFORM_GENERIC
+
+struct nu_pin {
+    u8 reserved;
+};
+
+#define NU_PIN_INIT() {0}
+
+static ALWAYSINLINE void NU_INIT_PIN(struct nu_pin *p) {}
+
+#define NU_PIN_DEFAULT
+
+#define NU_HAVE_PIN_FUNCTIONS 1
+
+static ALWAYSINLINE void nu_pin_set_digital_out(const struct nu_pin *p) {}
+
+static ALWAYSINLINE void nu_pin_set_digital_in(const struct nu_pin *p) {}
+
+static ALWAYSINLINE void nu_pin_set_analog_out(const struct nu_pin *p) {}
+
+static ALWAYSINLINE void nu_pin_set_analog_in(const struct nu_pin *p) {}
+
+static ALWAYSINLINE u32 nu_pin_read(const struct nu_pin *p) { return 0; }
+
+static ALWAYSINLINE void nu_pin_set(const struct nu_pin *p) {}
+
+static ALWAYSINLINE void nu_pin_clear(const struct nu_pin *p) {}
+
+static ALWAYSINLINE void nu_pin_toggle(const struct nu_pin *p) {}
+
+#elif NU_PLATFORM==NU_PLATFORM_PIC32MX
 
 typedef struct nu_pin_platform {
     IoPortId ltr;
@@ -168,4 +208,10 @@ static const struct nu_pin_platform_ops nu_pin_platform_ops = {
     nu_pin_platform_toggle
 };
 
+#endif /* NU_PLATFORM switch */
+
+#ifdef __cplusplus
+} /* extern "C" */
 #endif
+
+#endif /* NU_PLATFORM_PINCTL_H */
