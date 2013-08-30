@@ -5,7 +5,6 @@
 #include "nu/types.h"
 #include "nu/compiler.h"
 #include "nu/platform.h"
-#include <peripheral/ports.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -45,6 +44,7 @@ static ALWAYSINLINE void nu_pin_clear(const struct nu_pin *p) {}
 static ALWAYSINLINE void nu_pin_toggle(const struct nu_pin *p) {}
 
 #elif NU_PLATFORM==NU_PLATFORM_PIC32MX
+#include <peripheral/ports.h>
 
 typedef struct nu_pin_platform {
     IoPortId ltr;

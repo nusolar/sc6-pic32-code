@@ -1,12 +1,14 @@
-#include "nu/platform.h"
-#if NU_PLATFORM != NU_PLATFORM_PIC32MX
-# error "Can't use nu32 header when you're not using a PIC32MX, silly!"
-#endif
-
 #include "nu/platform/nu32.h"
-#include "nu/types.h"
 #include "nu/param.h"
 #include "nu/utility.h"
+#include "nu/types.h"
+#include "nu/platform.h"
+
+#if NU_PLATFORM==NU_PLATFORM_UNKNOWN
+#error "Unknown NU_PLATFORM in nu/platform/nu32.c"
+
+#elif NU_PLATFORM==NU_PLATFORM_PIC32MX
+
 #include <peripheral/adc10.h>
 #include <peripheral/cvref.h>
 #include <peripheral/eth.h>
@@ -60,3 +62,6 @@ nu_nu32_setup(UNUSED nu_nu32_version_t version, nu_hz_t hz)
     /* disable parallel port */
     mPMPDisable();
 }
+
+
+#endif /* NU_PLATFORM switch */

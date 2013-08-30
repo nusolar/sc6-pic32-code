@@ -1,8 +1,21 @@
-#ifndef NU_SPI_PIC32MX_H
-#define NU_SPI_PIC32MX_H 1
+#ifndef NU_PLATFORM_SPI_H
+#define NU_PLATFORM_SPI_H 1
 
 #include "nu/compiler.h"
 #include "nu/types.h"
+#include "nu/platform.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#if NU_PLATFORM==NU_PLATFORM_UNKNOWN
+#error "Unknown NU_PLATFORM in nu/platform/spi.h"
+
+#elif NU_PLATFORM==NU_PLATFORM_GENERIC
+#error "No generic SPI code!"
+
+#elif NU_PLATFORM==NU_PLATFORM_PIC32MX
 #include <peripheral/spi.h>
 
 extern const struct nu_spi_platform_ops nu_spi_platform_ops;
@@ -30,4 +43,10 @@ static const struct nu_spi_platform_setup_args {
     (SpiOpenFlags)SPI_OPEN_MSTEN|SPI_OPEN_MODE8,
 };
 
+#endif /* NU_PLATFORM switch */
+
+#ifdef __cplusplus
+} /* extern "C" */
 #endif
+
+#endif /* NU_PLATFORM_SPI_H */

@@ -1,6 +1,14 @@
 #include "nu/platform/spi.h"
 #include "nu/spi.h"
 #include "nu/timer.h"
+
+#if NU_PLATFORM==NU_PLATFORM_UNKNOWN
+#error "Unknown NU_PLATFORM in nu/platform/spi.c"
+
+#elif NU_PLATFORM==NU_PLATFORM_GENERIC
+#error "No generic SPI code!"
+
+#elif NU_PLATFORM==NU_PLATFORM_PIC32MX
 #include <peripheral/spi.h>
 
 static void
@@ -28,3 +36,5 @@ const struct nu_spi_platform_ops nu_spi_platform_ops = {
     nu_spi_platform_putchar,    /* putchar */
     nu_spi_platform_getchar     /* getchar */
 };
+
+#endif /* NU_PLATFORM switch */

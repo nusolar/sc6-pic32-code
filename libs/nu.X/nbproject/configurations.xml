@@ -30,20 +30,16 @@
       </logicalFolder>
       <logicalFolder name="f1" displayName="nu" projectFiles="true">
         <logicalFolder name="f2" displayName="platform" projectFiles="true">
-          <logicalFolder name="f1" displayName="pic32mx" projectFiles="true">
-            <logicalFolder name="f1" displayName="platform" projectFiles="true">
-              <itemPath>../include/platform/pic32mx/nu/platform/nu32.h</itemPath>
-              <itemPath>../include/platform/pic32mx/nu/platform/nu32_led.h</itemPath>
-              <itemPath>../include/platform/pic32mx/nu/platform/nu32_serial.h</itemPath>
-              <itemPath>../include/platform/pic32mx/nu/platform/serial.h</itemPath>
-              <itemPath>../include/platform/pic32mx/nu/platform/spi.h</itemPath>
-            </logicalFolder>
-          </logicalFolder>
           <itemPath>../include/nu/platform/usb_serial.h</itemPath>
           <itemPath>../include/nu/platform/param.h</itemPath>
           <itemPath>../include/nu/platform/common_pragmas.h</itemPath>
           <itemPath>../include/nu/platform/pinctl.h</itemPath>
           <itemPath>../include/nu/platform/wdt.h</itemPath>
+          <itemPath>../include/nu/platform/serial.h</itemPath>
+          <itemPath>../include/nu/platform/spi.h</itemPath>
+          <itemPath>../include/nu/platform/nu32.h</itemPath>
+          <itemPath>../include/nu/platform/nu32_led.h</itemPath>
+          <itemPath>../include/nu/platform/nu32_serial.h</itemPath>
         </logicalFolder>
         <logicalFolder name="f1" displayName="utility" projectFiles="true">
           <itemPath>../include/nu/utility/bits.h</itemPath>
@@ -108,13 +104,12 @@
                    displayName="Source Files"
                    projectFiles="true">
       <logicalFolder name="f1" displayName="platform" projectFiles="true">
-        <logicalFolder name="f1" displayName="pic32mx" projectFiles="true">
-          <itemPath>../platform/pic32mx/nu/nu32.c</itemPath>
-          <itemPath>../platform/pic32mx/nu/nu32_led.c</itemPath>
-          <itemPath>../platform/pic32mx/nu/nu32_serial.c</itemPath>
-          <itemPath>../platform/pic32mx/nu/serial.c</itemPath>
-          <itemPath>../platform/pic32mx/nu/spi.c</itemPath>
-        </logicalFolder>
+        <itemPath>../nu/platform/nu32.c</itemPath>
+        <itemPath>../nu/platform/nu32_led.c</itemPath>
+        <itemPath>../nu/platform/nu32_serial.c</itemPath>
+        <itemPath>../nu/platform/serial.c</itemPath>
+        <itemPath>../nu/platform/spi.c</itemPath>
+        <itemPath>../nu/platform/usb_serial.c</itemPath>
       </logicalFolder>
       <itemPath>../nu/error_reporting.c</itemPath>
       <itemPath>../nu/led.c</itemPath>
@@ -137,8 +132,6 @@
     </logicalFolder>
   </logicalFolder>
   <sourceRootList>
-    <Elem>../include/platform/generic/nu/platform</Elem>
-    <Elem>../include/platform/pic32mx/nu/platform</Elem>
     <Elem>../nu</Elem>
     <Elem>../include/nu</Elem>
   </sourceRootList>
@@ -175,8 +168,7 @@
         <property key="enable-symbols" value="true"/>
         <property key="enable-unroll-loops" value="true"/>
         <property key="exclude-floating-point" value="true"/>
-        <property key="extra-include-directories"
-                  value="../include;../include/platform/pic32mx"/>
+        <property key="extra-include-directories" value="../include"/>
         <property key="generate-16-bit-code" value="false"/>
         <property key="isolate-each-function" value="true"/>
         <property key="make-warnings-into-errors" value="true"/>

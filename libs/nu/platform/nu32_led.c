@@ -1,6 +1,11 @@
 #include "nu/compiler.h"
 #include "nu/platform/nu32_led.h"
 
+#if NU_PLATFORM==NU_PLATFORM_UNKNOWN
+#error "Unknown NU_PLATFORM in nu/platform/nu32.c"
+
+#elif NU_PLATFORM==NU_PLATFORM_PIC32MX
+
 static struct nu_led _nu32_led0;
 static struct nu_led _nu32_led1;
 static struct nu_led _nu32_led2;
@@ -9,7 +14,7 @@ struct nu_led *nu_nu32_led0 = &_nu32_led0;
 struct nu_led *nu_nu32_led1 = &_nu32_led1;
 struct nu_led *nu_nu32_led2 = &_nu32_led2;
 
- #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
 static ALWAYSINLINE void
 nu_nu32_setup_led_nu32_v1(void)
@@ -53,4 +58,6 @@ nu_nu32_setup_led(nu_nu32_version_t version)
     nu_led_setup(nu_nu32_led2);
 }
 
- #pragma GCC diagnostic error "-Wdeprecated-declarations"
+#pragma GCC diagnostic error "-Wdeprecated-declarations"
+
+#endif /* NU_PLATFORM switch */

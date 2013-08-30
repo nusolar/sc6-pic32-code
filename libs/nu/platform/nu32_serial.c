@@ -1,5 +1,10 @@
 #include "nu/platform/nu32_serial.h"
 
+#if NU_PLATFORM==NU_PLATFORM_UNKNOWN
+#error "Unknown NU_PLATFORM in nu/platform/nu32.c"
+
+#elif NU_PLATFORM==NU_PLATFORM_PIC32MX
+
 static struct nu_serial _nu32_serial;
 static struct nu_serial _nu32_serial1;
 static struct nu_serial _nu32_serial2;
@@ -48,3 +53,5 @@ nu_nu32_setup_serial(nu_nu32_version_t version)
     nu_serial_setup(nu_nu32_serial1, 115200, &nu_serial_platform_setup_defaults);
     nu_serial_setup(nu_nu32_serial2, 115200, &nu_serial_platform_setup_defaults);
 }
+
+#endif /* NU_PLATFORM switch */

@@ -1,7 +1,20 @@
-#ifndef NU_SERIAL_PIC32MX_H
-#define NU_SERIAL_PIC32MX_H 1
+#ifndef NU_PLATFORM_SERIAL_H
+#define NU_PLATFORM_SERIAL_H 1
 
 #include "nu/compiler.h"
+#include "nu/platform.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#if NU_PLATFORM==NU_PLATFORM_UNKNOWN
+#error "Unknown NU_PLATFORM in nu/platform/serial.h"
+
+#elif NU_PLATFORM==NU_PLATFORM_GENERIC
+#error "No generic serial code!"
+
+#elif NU_PLATFORM==NU_PLATFORM_PIC32MX
 #include <peripheral/uart.h>
 
 extern const struct nu_serial_platform_ops nu_serial_platform_ops;
@@ -45,5 +58,11 @@ static const struct nu_serial_platform_setup_args {
     (UART_ENABLE_MODE)(UART_ENABLE|UART_TX|UART_RX),
 };
 
+#endif /* NU_PLATFORM switch */
+
+#ifdef __cplusplus
+} /* extern "C" */
 #endif
+
+#endif /* NU_PLATFORM_SERIAL_H */
 

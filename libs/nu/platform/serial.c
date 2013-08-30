@@ -2,6 +2,14 @@
 #include "nu/platform/serial.h"
 #include "nu/serial.h"
 
+#if NU_PLATFORM==NU_PLATFORM_UNKNOWN
+#error "Unknown NU_PLATFORM in nu/platform/serial.c"
+
+#elif NU_PLATFORM==NU_PLATFORM_GENERIC
+#error "No generic Serial code!"
+
+#elif NU_PLATFORM==NU_PLATFORM_PIC32MX
+
 static void
 nu_serial_platform_setup(struct nu_serial_platform *platform, u32 baud,
 	const struct nu_serial_platform_setup_args *arg)
@@ -71,3 +79,5 @@ const struct nu_serial_platform_ops nu_serial_platform_ops = {
     nu_serial_platform_putchar,
     nu_serial_platform_getchar
 };
+
+#endif /* NU_PLATFORM switch */

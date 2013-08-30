@@ -101,10 +101,6 @@
     <Elem>../include/nupp</Elem>
     <Elem>../include/nu</Elem>
     <Elem>../nupp</Elem>
-    <Elem>../include/platform/pic32mx/nupp/platform</Elem>
-    <Elem>../include/platform/pic32mx/nu/platform</Elem>
-    <Elem>../include/platform/generic/nupp/platform</Elem>
-    <Elem>../include/platform/generic/nu/platform</Elem>
     <Elem>../nu/platform</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
@@ -140,8 +136,7 @@
         <property key="enable-symbols" value="true"/>
         <property key="enable-unroll-loops" value="false"/>
         <property key="exclude-floating-point" value="false"/>
-        <property key="extra-include-directories"
-                  value="../include;../include/platform/pic32mx"/>
+        <property key="extra-include-directories" value="../include"/>
         <property key="generate-16-bit-code" value="false"/>
         <property key="isolate-each-function" value="false"/>
         <property key="make-warnings-into-errors" value="false"/>
@@ -206,8 +201,7 @@
         <property key="enable-unroll-loops" value="false"/>
         <property key="exceptions" value="false"/>
         <property key="exclude-floating-point" value="false"/>
-        <property key="extra-include-directories"
-                  value="../include;../include/platform/pic32mx"/>
+        <property key="extra-include-directories" value="../include"/>
         <property key="generate-16-bit-code" value="false"/>
         <property key="isolate-each-function" value="false"/>
         <property key="make-warnings-into-errors" value="false"/>
@@ -325,8 +319,7 @@
         <property key="enable-symbols" value="true"/>
         <property key="enable-unroll-loops" value="true"/>
         <property key="exclude-floating-point" value="false"/>
-        <property key="extra-include-directories"
-                  value="../include;../include/platform/pic32mx"/>
+        <property key="extra-include-directories" value="../include"/>
         <property key="generate-16-bit-code" value="false"/>
         <property key="isolate-each-function" value="true"/>
         <property key="make-warnings-into-errors" value="false"/>
@@ -391,8 +384,7 @@
         <property key="enable-unroll-loops" value="true"/>
         <property key="exceptions" value="false"/>
         <property key="exclude-floating-point" value="false"/>
-        <property key="extra-include-directories"
-                  value="../include;../include/platform/pic32mx"/>
+        <property key="extra-include-directories" value="../include"/>
         <property key="generate-16-bit-code" value="false"/>
         <property key="isolate-each-function" value="true"/>
         <property key="make-warnings-into-errors" value="false"/>
