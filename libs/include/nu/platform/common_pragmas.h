@@ -1,5 +1,5 @@
 #ifndef NU_PIC32MX_COMMON_PRAGMAS_H
-#define NU_PIC32MX_COMMON_PRAGMAS_H 1
+#define NU_PLATFORM_COMMON_PRAGMAS_H 1
 
 /**
  * @file
@@ -7,6 +7,13 @@
  *
  * These should generally be used with the NU32 and pickit3
  */
+
+#include "nu/platform.h"
+
+#if NU_PLATFORM==NU_PLATFORM_UNKNOWN
+#error "Unknown NU_PLATFORM in nu/platform/common_pragmas.h!"
+
+#elif NU_PLATFORM==NU_PLATFORM_PIC32MX
 
 /* config pragmas needed mostly for PICKit3 */
 /* ICE/ICD Comm Channel Select: ICE EMUC2/EMUD2 pins shared with PGC2/PGD2 */
@@ -32,4 +39,6 @@
 /* 2.048s WDT timeout (1:2048 postscaler) */
 #pragma config WDTPS    = PS2048
 
-#endif /* NU_PIC32MX_COMMON_PRAGMAS_H */
+#endif /* NU_PLATFORM switch */
+
+#endif /* NU_PLATFORM_COMMON_PRAGMAS_H */

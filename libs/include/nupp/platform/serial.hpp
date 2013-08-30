@@ -12,7 +12,7 @@
 #include "nupp/param.hpp"
 #include "nu/compiler.h"
 
-#if PLATFORM==PIC32MX /* PIC32MX-specific Serial code */
+#if NU_PLATFORM==NU_PLATFORM_PIC32MX /* PIC32MX-specific Serial code */
 
 extern "C" {
 #include <plib.h>
@@ -100,7 +100,7 @@ namespace nu {
 	};
 }
 
-#endif /* PIC32MX PIC32MX-specific Serial code */
+#endif /* NU_PLATFORM switch code */
 
 #endif	/* NU_PLATFORM_SERIAL_HPP */
 

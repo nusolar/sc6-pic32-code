@@ -3,12 +3,13 @@
 
 #include <stdint.h>
 #include "nu/compiler.h"
+#include "nu/platform.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#if PLATFORM==TEENSY /* USB-Serial is Teensy-only */
+#if NU_PLATFORM==NU_PLATFORM_TEENSY /* USB-Serial is Teensy-only */
 
 // setup
 void usb_init(void);			// initialize everything

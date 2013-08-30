@@ -12,7 +12,7 @@
 #include "nupp/timer.hpp"
 #include "nu/compiler.h"
 
-#if PLATFORM==PIC32MX /* PIC32MX-specific SPI code */
+#if NU_PLATFORM==NU_PLATFORM_PIC32MX /* PIC32MX-specific SPI code */
 
 extern "C" {
 #include <plib.h>
@@ -99,7 +99,7 @@ namespace nu {
 	};
 }
 
-#endif /* PIC32MX-specific SPI code */
+#endif /* PLATFORM-specific SPI code */
 
 #endif	/* NU_PLATFORM_SPI_HPP */
 

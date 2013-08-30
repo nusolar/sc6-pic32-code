@@ -3,9 +3,11 @@
 
 #define NU_PLATFORM_GENERIC 0
 #define NU_PLATFORM_PIC32MX 1
-#define NU_PLATFORM_UNKNOWN 2
+#define NU_PLATFORM_ARDUINO 2
+#define NU_PLATFORM_TEENSY  3
+#define NU_PLATFORM_UNKNOWN 666
 
-#include "nu/platform/platform.h"
+#define NU_PLATFORM NU_PLATFORM_PIC32MX
 
 #endif
 

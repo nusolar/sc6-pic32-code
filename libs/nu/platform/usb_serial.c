@@ -34,7 +34,7 @@
 #include "nu/platform/usb_serial.h"
 #include "nu/compiler.h"
 
-#if PLATFORM==TEENSY /* USB-Serial is Teensy-only */
+#if NU_PLATFORM==NU_PLATFORM_TEENSY /* USB-Serial is Teensy-only */
 
 /**************************************************************************
  *

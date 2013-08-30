@@ -3,14 +3,15 @@
 
 #include "nu/platform/param.h"
 #include "nu/compiler.h"
+#include "nu/platform.h"
 
-#if PLATFORM==GENERIC /* Generic param code - i.e, nothing*/
+#if NU_PLATFORM==NU_PLATFORM_GENERIC /* Generic param code - i.e, nothing*/
 namespace nu {
 	namespace platform {
 	}
 }
 
-#elif PLATFORM==PIC32MX /* PIC32MX-specific Parameter code */
+#elif NU_PLATFORM==NU_PLATFORM_PIC32MX /* PIC32MX-specific Parameter code */
 namespace nu {
 	namespace param {
 		/**

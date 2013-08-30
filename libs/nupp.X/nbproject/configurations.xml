@@ -7,6 +7,8 @@
       <logicalFolder name="f2" displayName="nu" projectFiles="true">
         <logicalFolder name="f1" displayName="platform" projectFiles="true">
           <itemPath>../include/nu/platform/usb_serial.h</itemPath>
+          <itemPath>../include/nu/platform/param.h</itemPath>
+          <itemPath>../include/nu/platform/common_pragmas.h</itemPath>
         </logicalFolder>
         <itemPath>../include/nu/param.h</itemPath>
         <itemPath>../include/nu/compiler.h</itemPath>
@@ -55,23 +57,6 @@
         <itemPath>../include/nupp/onewire.hpp</itemPath>
         <itemPath>../include/nupp/stream.hpp</itemPath>
         <itemPath>../include/nupp/string.hpp</itemPath>
-      </logicalFolder>
-      <logicalFolder name="f3" displayName="platform" projectFiles="true">
-        <logicalFolder name="f2" displayName="generic" projectFiles="true">
-          <logicalFolder name="f2" displayName="nu" projectFiles="true">
-            <logicalFolder name="f1" displayName="platform" projectFiles="true">
-              <itemPath>../include/platform/generic/nu/platform/param.h</itemPath>
-            </logicalFolder>
-          </logicalFolder>
-        </logicalFolder>
-        <logicalFolder name="f1" displayName="pic32mx" projectFiles="true">
-          <logicalFolder name="f2" displayName="nu" projectFiles="true">
-            <logicalFolder name="f1" displayName="platform" projectFiles="true">
-              <itemPath>../include/platform/pic32mx/nu/platform/common_pragmas.h</itemPath>
-              <itemPath>../include/platform/pic32mx/nu/platform/param.h</itemPath>
-            </logicalFolder>
-          </logicalFolder>
-        </logicalFolder>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="LinkerScript"

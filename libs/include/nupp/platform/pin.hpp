@@ -9,16 +9,20 @@
 #define	NU_PLATFORM_PIN_HPP
 
 #include "nu/compiler.h"
+#include "nu/platform.h"
 #include <cstdint>
 
-#if PLATFORM==GENERIC /* Generic Pin code */
+#if NU_PLATFORM==NU_PLATFORM_UNKNOWN
+#error "Unknown NU_PLATFORM in nupp/platform/pin.hpp!"
+
+#elif NU_PLATFORM==NU_PLATFORM_GENERIC /* Generic Pin code */
 namespace nu {
 	struct Pin {
 
 	};
 }
 
-#elif PLATFORM==PIC32MX /* PIC32MX-specific Pin code */
+#elif NU_PLATFORM==NU_PLATFORM_PIC32MX /* PIC32MX-specific Pin code */
 extern "C" {
 #include <peripheral/adc10.h>
 #include <peripheral/ports.h>
