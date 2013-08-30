@@ -103,6 +103,7 @@
         <itemPath>../include/nu/wdt.h</itemPath>
         <itemPath>../include/nu/ws20.h</itemPath>
         <itemPath>../include/nu/async_io.h</itemPath>
+        <itemPath>../include/nu/platform.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f3" displayName="platform" projectFiles="true">
         <logicalFolder name="f2" displayName="generic" projectFiles="true">
@@ -159,7 +160,7 @@
     <Elem>../include/platform/generic/nu/platform</Elem>
     <Elem>../include/platform/pic32mx/nu/platform</Elem>
     <Elem>../nu</Elem>
-    <Elem>../include/nu/platform</Elem>
+    <Elem>../include/nu</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>

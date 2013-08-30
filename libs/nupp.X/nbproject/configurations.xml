@@ -15,6 +15,7 @@
         <itemPath>../include/nu/wdt.h</itemPath>
         <itemPath>../include/nu/crc.h</itemPath>
         <itemPath>../include/nu/common_pragmas.h</itemPath>
+        <itemPath>../include/nu/platform.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f1" displayName="nupp" projectFiles="true">
         <logicalFolder name="f1" displayName="platform" projectFiles="true">

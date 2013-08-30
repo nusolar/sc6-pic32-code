@@ -97,7 +97,7 @@ const char *nu::USBInterface::uuid = __DATE__ " " __TIME__;
 using namespace nu;
 
 int main() {
-	USBDigitalOut out(DigitalOut(PIN(F, 0), false));
+	USBDigitalOut out = DigitalOut(PIN(F, 0), false);
 
 	while (true) {
 		out.listen();
