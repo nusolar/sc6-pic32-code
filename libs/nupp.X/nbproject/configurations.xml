@@ -58,6 +58,7 @@
         <itemPath>../include/nupp/onewire.hpp</itemPath>
         <itemPath>../include/nupp/stream.hpp</itemPath>
         <itemPath>../include/nupp/string.hpp</itemPath>
+        <itemPath>../include/nupp/bps.hpp</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
