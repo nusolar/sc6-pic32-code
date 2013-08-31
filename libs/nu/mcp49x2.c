@@ -35,8 +35,8 @@ nu_mcp49x2_write(const struct nu_mcp49x2 *m, enum nu_mcp49_dac dac,
     memcpy(&tmp, &cmd, sizeof(tmp));
 
     nu_spi_drive_cs_low(&(m->spi));
-    SpiChnPutC(m->spi.chn, tmp);
-    while (!SpiChnTxBuffEmpty(m->spi.chn))
+    SpiChnPutC(m->spi.platform.chn, tmp);
+    while (!SpiChnTxBuffEmpty(m->spi.platform.chn))
         Nop();
     nu_spi_drive_cs_high(&(m->spi));
 }

@@ -7,7 +7,6 @@
 //
 
 #include "nupp/bms.hpp"
-#include "nupp/allocator.hpp"
 
 using namespace nu;
 
@@ -17,7 +16,7 @@ const char *BMS::Trip::name[] = {
 
 void BMS::main() {
 	WDT::disable();
-	BMS bms{};
+	BMS bms = BMS();
 	bms.boot();
 	while (true) {
 		bms.run();

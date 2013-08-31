@@ -7,7 +7,6 @@
 //
 
 #include "nupp/steering_wheel.hpp"
-#include "nupp/allocator.hpp"
 
 using namespace nu;
 

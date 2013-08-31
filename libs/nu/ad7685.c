@@ -1,4 +1,5 @@
 #include "nu/ad7685.h"
+#include "nu/spi.h"
 #include "nu/errorcodes.h"
 #include "nu/timer.h"
 #include <sys/endian.h>
@@ -17,7 +18,8 @@ nu_ad7685_setup(const struct nu_ad7685 *a)
             (NU_AD7685_CHAIN_MODE & a->opt && NU_AD7685_BUSY_INDICATOR & a->opt))
         return -EINVAL;
     nu_pin_set_digital_out(&(a->convert_pin));
-    nu_spi_setup(&(a->spi), spi_bitrate, (SpiOpenFlags) SPI_OFLAGS);
+	nu_spi_platform_setup_args args = {(SpiOpenFlags) SPI_OFLAGS};
+    nu_spi_setup(&(a->spi), spi_bitrate, args);
     return 0;
 }
 

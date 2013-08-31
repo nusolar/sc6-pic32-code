@@ -88,7 +88,7 @@ reset_search_state(struct w1 *w)
 }
 
 s32
-w1_new(struct w1 *w, struct pin pin)
+w1_new(struct w1 *w, struct nu_pin pin)
 {
     s32 err = 0;
 
@@ -269,7 +269,7 @@ w1_reset(const struct w1 *w)
     delay_us(480);
     drive_high(w);
     delay_us(70);
-    devices_present = !READ_BIT(w);
+    devices_present = (bit)!READ_BIT(w);
     delay_us(410);
     /* driveHigh(self); */
 
@@ -296,8 +296,8 @@ get_next_bit(struct w1 *w, u32 id_bit_number, u32 *last_zero_discrep_bit)
     if (NULL == w || NULL == last_zero_discrep_bit)
         return -ENULPTR;
 
-    id_bit = w1_rx_bit(w); /* all devices send the bit */
-    id_bit_complement = w1_rx_bit(w); /* ..then send the bit's complement */
+    id_bit = (bit) w1_rx_bit(w); /* all devices send the bit */
+    id_bit_complement = (bit) w1_rx_bit(w); /* ..then send the bit's complement */
     if ((1 == id_bit) && (1 == id_bit_complement)) { /* no devices left in search */
         reset_search_state(w);
         return OW_NO_DEVS_LEFT_IN_SEARCH;
@@ -305,17 +305,17 @@ get_next_bit(struct w1 *w, u32 id_bit_number, u32 *last_zero_discrep_bit)
 
     if ((0 == id_bit) && (0 == id_bit_complement)) {
         if (id_bit_number == w->search_state.last_discrep_bit) {
-            search_direction = 1;
+            search_direction = (bit)1;
         } else if (id_bit_number > w->search_state.last_discrep_bit) {
-            search_direction = 0;
+            search_direction = (bit)0;
         } else {
             /* search direction becomes idBitNumber bit in romCodeAndCrc */
-            search_direction =
+            search_direction = (bit)
                     w->search_state.romcode_crc.bytes[(id_bit_number-1)/8] &
                         (1<<((id_bit_number-1)%8));
         }
 
-        if (0 == search_direction) {
+        if ((bit)0 == search_direction) {
             *last_zero_discrep_bit = id_bit_number;
 
             if (*last_zero_discrep_bit <= 8)

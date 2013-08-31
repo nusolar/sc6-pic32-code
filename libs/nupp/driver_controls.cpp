@@ -7,7 +7,6 @@
 //
 
 #include "nupp/driver_controls.hpp"
-#include "nupp/allocator.hpp"
 
 using namespace nu;
 

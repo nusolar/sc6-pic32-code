@@ -8,15 +8,39 @@
 #ifndef NU_BPS_HPP
 #define	NU_BPS_HPP
 
+#include "nupp/nu32.hpp"
+#include "nupp/ds18x20.hpp"
+#include "nupp/nokia5110.hpp"
+#include "nupp/serial.hpp"
 #include "nupp/spi.hpp"
 #include "nupp/can.hpp"
 #include "nupp/pinctl.hpp"
 #include "nupp/timer.hpp"
+#include "nupp/array.hpp"
 #include "nu/compiler.h"
-#include "serial.hpp"
+#include "nupp/json.hpp"
+#include <string>
+
+#define NU_TIMEOUT_INT 100 //ms
+#define NU_PRECHARGE_TIME 2500 //ms
 
 namespace nu {
-	struct BPS: protected Nu32 {
+ 	struct BPS: protected Nu32 {
+		enum Modes {
+			OFF = 0,
+			DISCHARGING = 1,
+			DRIVE = 2,
+
+			CHARGING = 5,
+			CHARGING_DRIVE = 6
+		};
+
+		enum Precharge {
+			PC_OFF = 0,
+			PC_CHARGING = 1,
+			PC_CHARGED = 2
+		};
+
 		DigitalOut main_relay, array_relay, precharge_relay, motor_relay;
 		DigitalIn bits[6];
 		Serial usb;
@@ -34,22 +58,26 @@ namespace nu {
 			static const size_t num_modules = 32;
 			reg_t last_error;
 			uint8_t disabled_module;
+			const char *msg;
 			
 			uint64_t time;
-			uint64_t lcd_clock;
+			uint64_t lcd_clock; //ms
 			uint8_t module_i;
 			
 			double cc_battery, cc_array, wh_battery, wh_array;
 			reg_t current0, current1;
-			
-			bool main_relay, array_relay, precharge_relay, motor_relay;
 
-			state(): last_error(0), disabled_module(63),
+			Modes mode, target_mode;
+			uint64_t timeout_clock; //ms
+			Precharge precharging;
+			uint64_t precharge_clock; //ms
+			
+
+			state(): last_error(0), disabled_module(63), msg(""),
 				time(0), lcd_clock(0), module_i(0),
 				cc_battery(0), cc_array(0), wh_battery(0), wh_array(0),
 				current0(0), current1(0),
-				main_relay(false), array_relay(false),
-				precharge_relay(false), motor_relay(false) {}
+				mode(OFF), target_mode(OFF), timeout_clock(0), precharging(PC_OFF), precharge_clock(0) {}
 		} state;
 
 		ALWAYSINLINE BPS(): Nu32(Nu32::V2011),
@@ -74,12 +102,11 @@ namespace nu {
 			common_can.err().setup_tx(CAN_LOWEST_PRIORITY);
 
 			// populate data
+			// voltage_sensor.write_configs(cfg);
 			temp_sensor.perform_temperature_conversion();
 		}
 
 		ALWAYSINLINE void read_ins() {
-			// voltage_sensor.write_configs(cfg);
-
 			state.disabled_module = 0;
 			for (unsigned i=0; i<6; i++) {
 				state.disabled_module |= (uint8_t)(((bool)bits[i].read()) << i);
@@ -91,21 +118,151 @@ namespace nu {
 			temp_sensor.update_temperatures();
 
 			// repopulate data
+			// voltage_sensor.write_configs(cfg);
 			temp_sensor.perform_temperature_conversion();
 		}
 
+		/** USES HEAP */
 		ALWAYSINLINE void serial_io() {
-			// TODO Pack battery data, transmit
-			usb.tx("{}", 3);
-			// TODO receive relay commands
+			static Json::FastWriter fw = Json::FastWriter();
+			static Json::Reader reader = Json::Reader();
+
+			// assemble data
+			Json::Value report;
+			report["battery_current"] = state.current0;
+			report["array_current"] = state.current1;
+			report["disabled_module"] = state.disabled_module;
+			report["uptime"] = state.time;
+			report["mode"] = state.mode;
+
+			// transmit as Single line of JSON
+			std::string report_str = fw.write(report);
+			usb.tx(report_str.data(), report_str.length());
+
+			Array<char, 30> input;
+			int length = usb.read_line(input, input.size());
+			if (length > 0) {
+				state.timeout_clock = timer::ms();
+				try {
+					reader.parse(input.data(), report);
+					state.target_mode = (Modes)report["mode"].asInt();
+				} catch (...) {
+					length = 0;
+				}
+			}
+			
+			if (length == 0) {
+				uint64_t time = timer::ms();
+				if (time > NU_TIMEOUT_INT + (time>state.timeout_clock? state.timeout_clock: 0)) {
+					state.target_mode = OFF;
+				}
+			}
 		}
 
-		ALWAYSINLINE void set_relays() {
-			// TODO validate relay commands
-			main_relay = state.main_relay;
-			array_relay = state.array_relay;
-			precharge_relay = state.precharge_relay;
-			motor_relay = state.motor_relay;
+		/**
+		 * Set the Battery Protection Mode, based on state.target_mode.
+		 * Either OFF, a DISCHARGE mode, or CHARGING.
+		 *
+		 * Be careful, CHARGING mode is permitted in two circumstances:
+		 * (1) when batteries are normal, and could potentially go to DRIVE or CHARGING_DRIVE
+		 * (2) when batteries are critically low, and could not sustain DISCHARGING/DRIVE.
+         */
+		ALWAYSINLINE void set_mode() {
+			switch (state.target_mode) {
+				case OFF: {
+					// FIRST: halt major drains
+					motor_relay = false;
+					precharge_relay = false;
+					// THEN: deactivate batteries
+					main_relay = false;
+					// FINALLY: disconnect array
+					array_relay = false;
+					break;
+				}
+				case DISCHARGING: {
+					// FIRST: ensure NOT charging
+					array_relay = false;
+					// THEN: not draining
+					motor_relay = false;
+					precharge_relay = false;
+					// FINALLY: discharge
+					main_relay = true;
+					break;
+				}
+				case DRIVE: {
+					// FIRST: ensure NOT charging
+					array_relay = false;
+					// THEN: discharging
+					main_relay = true;
+					// THEN; precharge, & close motor relay when charged.
+					// SEE BELOW
+				}
+				/* CHARGING means batteries could be critically low, or just charging
+				 * during normal operation & discharge. */
+				case CHARGING: {
+					// FIRST: ensure NOT draining
+					motor_relay = false;
+					precharge_relay = false;
+					// THEN: allow charging
+					array_relay = true;
+					// FINALLY: charge
+					main_relay = true;
+					break;
+				}
+				case CHARGING_DRIVE: {
+					// FIRST: allow charging
+					array_relay = true;
+					// THEN: charge
+					main_relay = true;
+					// FINALLY: precharge & close motor relays
+					// SEE BELOW
+					break;
+				}
+				default:
+					state.msg = "BADMODE";
+					break;
+			}
+
+			// Now, reset or continue with the precharge sequence:
+			if (state.target_mode != DRIVE && state.target_mode != CHARGING_DRIVE) {
+				state.precharging = PC_OFF;
+			} else {
+				switch (state.precharging) {
+					case PC_OFF: {
+						motor_relay = false;
+						precharge_relay = true;
+						state.precharge_clock = timer::ms();
+						state.precharging = PC_CHARGING;
+						break;
+					}
+					case PC_CHARGING: {
+						motor_relay = false;
+						precharge_relay = true;
+						uint64_t time = timer::ms();
+						if (time > NU_PRECHARGE_TIME + (time>state.precharge_clock? state.precharge_clock: 0)) {
+							state.precharging = PC_CHARGED;
+						}
+						break;
+					}
+					case PC_CHARGED: {
+						motor_relay = true;
+						precharge_relay = false;
+						break;
+					}
+					default:
+						state.msg = "BADPC";
+						break;
+				}
+			}
+
+			state.mode = state.target_mode;
+		}
+
+		ALWAYSINLINE void emergency_shutoff() {
+			main_relay.low();
+			array_relay.low();
+			motor_relay.low();
+			precharge_relay.low();
 		}
 		
 		/**
@@ -117,7 +274,7 @@ namespace nu {
 				
 				this->read_ins();
 				this->serial_io();
-				this->set_relays();
+				this->set_mode();
 
 				state.time = timer::ms();
 				if (state.time<state.lcd_clock || state.time - state.lcd_clock > 1000) {
@@ -141,7 +298,11 @@ namespace nu {
 				}
 			}
 		}
+
+		static NORETURN void main();
 	};
+
+	extern BPS bps;
 }
 
 #endif	/* NU_BPS_HPP */

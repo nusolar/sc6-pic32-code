@@ -1,5 +1,9 @@
 #include "nu/common_pragmas.h"
-#include "nupp/bms.hpp"
+#include "nupp/bps.hpp"
+
+void kill() {
+	nu::bps.emergency_shutoff();
+}
 
 extern "C" {
 	static enum exceptions {
@@ -29,6 +33,8 @@ extern "C" {
 
 		_excep_code = (exceptions) ((_excep_code & 0x0000007C) >> 2);
 
+		kill();
+
 		while (1) {
 			Nop();
 			// Examine _excep_code to identify the type of exception
@@ -39,6 +45,6 @@ extern "C" {
 
 /** Call BatteryMs::main(), NEVER RETURN */
 int main(int argc, const char * argv[]){
-	nu::BMS::main();
+	nu::BPS::main();
     return 0;
 }

@@ -90,12 +90,16 @@ namespace nu {
 			//	while (!UARTTransmissionHasCompleted(module)) Nop(); // TODO: async
 		}
 
-		ALWAYSINLINE void rx(void *dst, size_t n) {
+		ALWAYSINLINE int rx(void *dst, size_t n) {
 			size_t ui;
-			for (ui = 0; ui < n && UARTReceivedDataIsAvailable(module); ++ui) {
+			for (ui = 0; ui < n; ++ui) {
+				if (!UARTReceivedDataIsAvailable(module)) {
+					return -1;
+				}
 				WDT::clear();
 				((uint8_t *)dst)[ui] = UARTGetDataByte(module);
 			}
+			return 0;
 		}
 	};
 }

@@ -120,10 +120,10 @@
       <itemPath>../nu/nokia5110.c</itemPath>
       <itemPath>../nu/ad7685.c</itemPath>
       <itemPath>../nu/ds18x20.c</itemPath>
-      <itemPath>../nu/ltc6803.c</itemPath>
       <itemPath>../nu/mcp49x2.c</itemPath>
       <itemPath>../nu/onewire.c</itemPath>
       <itemPath>../nu/hais50p.c</itemPath>
+      <itemPath>../nu/crc.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -171,7 +171,7 @@
         <property key="extra-include-directories" value="../include"/>
         <property key="generate-16-bit-code" value="false"/>
         <property key="isolate-each-function" value="true"/>
-        <property key="make-warnings-into-errors" value="true"/>
+        <property key="make-warnings-into-errors" value="false"/>
         <property key="optimization-level" value="-O1"/>
         <property key="place-data-into-section" value="true"/>
         <property key="post-instruction-scheduling" value="schedule-insns2"/>
@@ -181,7 +181,7 @@
         <property key="support-ansi" value="false"/>
         <property key="use-cci" value="false"/>
         <property key="use-indirect-calls" value="false"/>
-        <appendMe value="-std=gnu99 -ggdb3 -pedantic-errors -Wno-unused-function -Wno-variadic-macros -Werror -Wall -Wextra -Waggregate-return -Wbad-function-cast -Wcast-align -Wcast-qual -Wc++-compat -Wconversion -Wdeclaration-after-statement -Wdouble-promotion -Wfloat-equal -Wformat=2 -Winit-self -Winline -Wlogical-op -Wmissing-include-dirs -Wmissing-prototypes -Wnested-externs -Wpadded -Wpacked -Wpointer-arith -Wredundant-decls -Wshadow -Wstrict-aliasing=2 -Wstrict-overflow=5 -Wstrict-prototypes -Wswitch-default -Wswitch-enum -Wundef -Wuninitialized -Wunreachable-code -Wwrite-strings"/>
+        <appendMe value="-std=gnu99 -ggdb3 -Wno-unused-function -Wno-variadic-macros -Wall -Wextra -Waggregate-return -Wbad-function-cast -Wcast-align -Wcast-qual -Wc++-compat -Wconversion -Wdeclaration-after-statement -Wdouble-promotion -Wfloat-equal -Wformat=2 -Winit-self -Winline -Wlogical-op -Wmissing-include-dirs -Wmissing-prototypes -Wnested-externs -Wpadded -Wpacked -Wpointer-arith -Wredundant-decls -Wshadow -Wstrict-aliasing=2 -Wstrict-overflow=5 -Wstrict-prototypes -Wswitch-default -Wswitch-enum -Wundef -Wuninitialized -Wunreachable-code -Wwrite-strings"/>
       </C32>
       <C32-AS>
         <property key="assembler-symbols" value=""/>
@@ -227,12 +227,12 @@
       <C32CPP>
         <property key="additional-warnings" value="false"/>
         <property key="check-new" value="false"/>
-        <property key="eh-specs" value="true"/>
+        <property key="eh-specs" value="false"/>
         <property key="enable-app-io" value="false"/>
         <property key="enable-omit-frame-pointer" value="false"/>
         <property key="enable-symbols" value="true"/>
         <property key="enable-unroll-loops" value="false"/>
-        <property key="exceptions" value="true"/>
+        <property key="exceptions" value="false"/>
         <property key="exclude-floating-point" value="false"/>
         <property key="extra-include-directories" value=""/>
         <property key="generate-16-bit-code" value="false"/>
@@ -243,7 +243,7 @@
         <property key="post-instruction-scheduling" value="default"/>
         <property key="pre-instruction-scheduling" value="default"/>
         <property key="preprocessor-macros" value=""/>
-        <property key="rtti" value="true"/>
+        <property key="rtti" value="false"/>
         <property key="strict-ansi" value="false"/>
         <property key="use-cci" value="false"/>
         <property key="use-indirect-calls" value="false"/>
@@ -251,8 +251,74 @@
       <C32Global>
         <property key="legacy-libc" value="false"/>
         <property key="save-temps" value="false"/>
+        <property key="wpo-lto" value="false"/>
       </C32Global>
       <PICkit3PlatformTool>
+        <property key="ADC 1" value="true"/>
+        <property key="AutoSelectMemRanges" value="auto"/>
+        <property key="CAN1" value="true"/>
+        <property key="CAN2" value="true"/>
+        <property key="CHANGE NOTICE" value="true"/>
+        <property key="COMPARATOR" value="true"/>
+        <property key="DMA" value="true"/>
+        <property key="ETHERNET CONTROLLER" value="true"/>
+        <property key="Freeze All Other Peripherals" value="true"/>
+        <property key="I2C1" value="true"/>
+        <property key="I2C2" value="true"/>
+        <property key="I2C3" value="true"/>
+        <property key="I2C4" value="true"/>
+        <property key="I2C5" value="true"/>
+        <property key="INPUT CAPTURE 1" value="true"/>
+        <property key="INPUT CAPTURE 2" value="true"/>
+        <property key="INPUT CAPTURE 3" value="true"/>
+        <property key="INPUT CAPTURE 4" value="true"/>
+        <property key="INPUT CAPTURE 5" value="true"/>
+        <property key="INTERRUPT CONTROL" value="true"/>
+        <property key="OUTPUT COMPARE 1" value="true"/>
+        <property key="OUTPUT COMPARE 2" value="true"/>
+        <property key="OUTPUT COMPARE 3" value="true"/>
+        <property key="OUTPUT COMPARE 4" value="true"/>
+        <property key="OUTPUT COMPARE 5" value="true"/>
+        <property key="PARALLEL MASTER/SLAVE PORT" value="true"/>
+        <property key="REAL TIME CLOCK" value="true"/>
+        <property key="SecureSegment.SegmentProgramming" value="FullChipProgramming"/>
+        <property key="TIMER1" value="true"/>
+        <property key="TIMER2" value="true"/>
+        <property key="TIMER3" value="true"/>
+        <property key="TIMER4" value="true"/>
+        <property key="TIMER5" value="true"/>
+        <property key="ToolFirmwareFilePath"
+                  value="Press to browse for a specific firmware version"/>
+        <property key="ToolFirmwareOption.UseLatestFirmware" value="true"/>
+        <property key="UART1" value="true"/>
+        <property key="UART2" value="true"/>
+        <property key="UART3" value="true"/>
+        <property key="UART4" value="true"/>
+        <property key="UART5" value="true"/>
+        <property key="UART6" value="true"/>
+        <property key="hwtoolclock.frcindebug" value="false"/>
+        <property key="memories.aux" value="false"/>
+        <property key="memories.bootflash" value="false"/>
+        <property key="memories.configurationmemory" value="false"/>
+        <property key="memories.eeprom" value="false"/>
+        <property key="memories.flashdata" value="true"/>
+        <property key="memories.id" value="false"/>
+        <property key="memories.programmemory" value="true"/>
+        <property key="memories.programmemory.end" value="0x1d07ffff"/>
+        <property key="memories.programmemory.start" value="0x1d000000"/>
+        <property key="poweroptions.powerenable" value="false"/>
+        <property key="programmertogo.imagename" value=""/>
+        <property key="programoptions.eraseb4program" value="true"/>
+        <property key="programoptions.pgmspeed" value="2"/>
+        <property key="programoptions.preserveeeprom" value="false"/>
+        <property key="programoptions.preserveprogramrange" value="false"/>
+        <property key="programoptions.preserveprogramrange.end" value="0x1d07ffff"/>
+        <property key="programoptions.preserveprogramrange.start" value="0x1d000000"/>
+        <property key="programoptions.preserveuserid" value="false"/>
+        <property key="programoptions.testmodeentrymethod" value="VPPFirst"/>
+        <property key="programoptions.usehighvoltageonmclr" value="false"/>
+        <property key="programoptions.uselvpprogramming" value="false"/>
+        <property key="voltagevalue" value="3.25"/>
       </PICkit3PlatformTool>
     </conf>
   </confs>

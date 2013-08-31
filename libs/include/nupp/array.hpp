@@ -28,6 +28,9 @@ namespace nu {
 		ALWAYSINLINE operator const void *() const {
 			return (const void *)array;
 		}
+		ALWAYSINLINE const T *data() {
+			return (const T*)array;
+		}
 
 		ALWAYSINLINE size_t count() {return N;}
 		ALWAYSINLINE size_t size() {return sizeof(T)*N;}

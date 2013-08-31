@@ -116,7 +116,7 @@
         <property key="extra-lib-directories" value=""/>
         <property key="generate-16-bit-code" value="false"/>
         <property key="generate-cross-reference-file" value="false"/>
-        <property key="heap-size" value="2048"/>
+        <property key="heap-size" value="4096"/>
         <property key="input-libraries" value=""/>
         <property key="linker-symbols" value=""/>
         <property key="map-file" value=""/>
@@ -139,7 +139,7 @@
         <property key="enable-omit-frame-pointer" value="false"/>
         <property key="enable-symbols" value="true"/>
         <property key="enable-unroll-loops" value="false"/>
-        <property key="exceptions" value="false"/>
+        <property key="exceptions" value="true"/>
         <property key="exclude-floating-point" value="false"/>
         <property key="extra-include-directories"
                   value="../../libs/include;../../libs/include/platform/pic32mx"/>
@@ -151,7 +151,7 @@
         <property key="post-instruction-scheduling" value="no-schedule-insns2"/>
         <property key="pre-instruction-scheduling" value="no-schedule-insns"/>
         <property key="preprocessor-macros" value=""/>
-        <property key="rtti" value="false"/>
+        <property key="rtti" value="true"/>
         <property key="strict-ansi" value="false"/>
         <property key="use-cci" value="false"/>
         <property key="use-indirect-calls" value="false"/>
@@ -323,7 +323,7 @@
         <property key="extra-lib-directories" value=""/>
         <property key="generate-16-bit-code" value="false"/>
         <property key="generate-cross-reference-file" value="false"/>
-        <property key="heap-size" value="1024"/>
+        <property key="heap-size" value="4096"/>
         <property key="input-libraries" value=""/>
         <property key="linker-symbols" value=""/>
         <property key="map-file" value=""/>
@@ -346,7 +346,7 @@
         <property key="enable-omit-frame-pointer" value="true"/>
         <property key="enable-symbols" value="true"/>
         <property key="enable-unroll-loops" value="true"/>
-        <property key="exceptions" value="false"/>
+        <property key="exceptions" value="true"/>
         <property key="exclude-floating-point" value="false"/>
         <property key="extra-include-directories"
                   value="../../libs/include;../../libs/include/platform/pic32mx"/>
@@ -358,7 +358,7 @@
         <property key="post-instruction-scheduling" value="schedule-insns2"/>
         <property key="pre-instruction-scheduling" value="schedule-insns"/>
         <property key="preprocessor-macros" value=""/>
-        <property key="rtti" value="false"/>
+        <property key="rtti" value="true"/>
         <property key="strict-ansi" value="false"/>
         <property key="use-cci" value="false"/>
         <property key="use-indirect-calls" value="false"/>
