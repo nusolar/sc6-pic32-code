@@ -19,9 +19,7 @@
 #include "nupp/wdt.hpp"
 #include "nupp/array.hpp"
 #include "nu/compiler.h"
-#include "nupp/json.hpp"
 #include "ltc6804.hpp"
-#include <string>
 
 #define NU_BPS_MAX_VOLTAGE 4300 // mV
 #define NU_BPS_MIN_VOLTAGE 2750 // mV
@@ -156,33 +154,26 @@ namespace nu {
 
 		/** USES HEAP */
 		ALWAYSINLINE void serial_io() {
-			static Json::FastWriter fw = Json::FastWriter();
-			static Json::Reader reader = Json::Reader();
-
-			// assemble data
-			Json::Value report;
-			report["battery_current"] = state.current0;
-			report["array_current"] = state.current1;
-			report["disabled_module"] = state.disabled_module;
-			report["uptime"] = state.time;
-			report["mode"] = state.mode;
-
-			// transmit as Single line of JSON
-			std::string report_str = fw.write(report);
-			usb.tx(report_str.data(), report_str.length());
+			
+			usb << TTY_UNIT << "battery_current" << TTY_RECORD << state.current0 << nu::end;
+			usb << TTY_UNIT << "array_current" << TTY_RECORD << state.current1 << nu::end;
+			usb << TTY_UNIT << "disabled_module" << TTY_RECORD << state.disabled_module << nu::end;
+			usb << TTY_UNIT << "uptime" << TTY_RECORD << state.time << nu::end;
+			usb << TTY_UNIT << "mode" << TTY_RECORD << state.mode << TTY_UNIT << nu::end;
 
 			// get line
 			Array<char, 30> input;
 			int length = usb.read_line(input, input.size());
 
-			// try to handle line
-			if (length > 0) {
-				try {
-					reader.parse(input.data(), input.data() + length, report);
-					state.target_mode = (Modes)report["mode"].asInt();
-				} catch (...) {
-					length = 0;
-				}
+			if (length > 0 &&
+				input[0] == TTY_UNIT &&
+				strncmp(input.data()+1, "mode", 4) == 0 &&
+				input[5] == TTY_RECORD)
+			{
+				char mode[2] = {input[6], '\0'};
+				state.target_mode = (Modes)atoi(mode);
+			} else {
+				length = 0;
 			}
 
 			// If handling failed, and if timeout overflowed, turn OFF.

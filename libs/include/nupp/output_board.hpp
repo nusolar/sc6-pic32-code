@@ -13,9 +13,7 @@
 #include "nupp/timer.hpp"
 #include "nupp/array.hpp"
 #include "nu/compiler.h"
-#include "nupp/json.hpp"
 #include <cstdint>
-#include <string>
 
 #define NU_OUT_TIMEOUT_INT 50 // ms
 
@@ -24,36 +22,29 @@ namespace nu {
 		bool status;
 		uint64_t timeout_clock;
 		DigitalOut relay;
-		Serial input;
-		
-
-		Json::FastWriter fw;
-		Json::Reader reader;
+		Serial uart;
 
 		OutputBoard(): status(false), timeout_clock(-1),
-			relay(PIN(B,0), false), input(UART(2)),
-			fw(), reader() {
+			relay(PIN(B,0), false), uart(UART(2)) {
 		}
 
 		INLINE void recv_serial() {
 			// get line
 			Array<char, 51> msg;
-			size_t length = input.read_line(msg, msg.size()-1);
+			size_t length = uart.read_line(msg, msg.size()-1);
 			
 			// terminate string with NULL character
 			msg[length] = '\0';
 
-			// Try to handle the line
-			Json::Value j_command;
-			if (length > 0) {
-				try {
-					// parse JSON
-					reader.parse(msg.data(), msg.data() + length, j_command);
-					// update status
-					status = j_command["command"].asInt();
-				} catch (...) {
-					length = 0;
-				}
+			if (length > 0 &&
+				msg[0] == TTY_UNIT &&
+				strncmp(msg.data()+1, "command", 7) == 0 &&
+				msg[5] == TTY_RECORD)
+			{
+				char command[2] = {msg[6], '\0'};
+				status = atoi(command);
+			} else {
+				length = 0;
 			}
 
 			// If handling failed, and if timeout overflowed, reset status.
@@ -69,11 +60,7 @@ namespace nu {
 		}
 
 		INLINE void send_serial() {
-			Json::Value j_report;
-			j_report["status"] = status;
-			
-			std::string report = fw.write(j_report);
-			input.puts(report.data());
+			uart << TTY_UNIT << "status" << TTY_RECORD << status << TTY_UNIT << nu::end;;
 		}
 
 		INLINE NORETURN void run_loop() {

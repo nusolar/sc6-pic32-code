@@ -221,7 +221,7 @@ namespace nu {
 				memcpy((BYTE *)dest + i*one_element, recv_buffer, one_element);
 
 				// copy PEC bytes, byte-swapping
-				uint16_t pec = (recv_buffer[one_element]<<8) | recv_buffer[one_element+1];
+				uint16_t pec = (uint16_t)((recv_buffer[one_element]<<8) | recv_buffer[one_element+1]);
 
 				// check PEC
 				uint16_t crc = (uint16_t)crc::_15_can(recv_buffer, one_element);
@@ -251,7 +251,7 @@ namespace nu {
          */
 		ALWAYSINLINE void write_cmd(const command c) {
 			uint16_t cmd = (uint16_t)c;
-			uint16_t swapped_cmd = ((0xFF & cmd) << 8) | ((0xFF00 & cmd) >> 8);
+			uint16_t swapped_cmd = (uint16_t)(((0xFF & cmd) << 8) | ((0xFF00 & cmd) >> 8));
 			tx_with_pec(&swapped_cmd, 2);
 		}
 

@@ -59,7 +59,6 @@
         <itemPath>../include/nupp/stream.hpp</itemPath>
         <itemPath>../include/nupp/string.hpp</itemPath>
         <itemPath>../include/nupp/bps.hpp</itemPath>
-        <itemPath>../include/nupp/json.hpp</itemPath>
         <itemPath>../include/nupp/output_board.hpp</itemPath>
         <itemPath>../include/nupp/usbhid.hpp</itemPath>
         <itemPath>../include/nupp/crc.hpp</itemPath>
@@ -95,7 +94,6 @@
         <itemPath>../nupp/ltc6803.cpp</itemPath>
         <itemPath>../nupp/stream.cpp</itemPath>
         <itemPath>../nupp/pin.cpp</itemPath>
-        <itemPath>../nupp/jsoncpp.cpp</itemPath>
         <itemPath>../nupp/bps.cpp</itemPath>
         <itemPath>../nupp/output_board.cpp</itemPath>
       </logicalFolder>
@@ -208,7 +206,7 @@
         <property key="enable-omit-frame-pointer" value="false"/>
         <property key="enable-symbols" value="true"/>
         <property key="enable-unroll-loops" value="false"/>
-        <property key="exceptions" value="true"/>
+        <property key="exceptions" value="false"/>
         <property key="exclude-floating-point" value="false"/>
         <property key="extra-include-directories" value="../include"/>
         <property key="generate-16-bit-code" value="false"/>
@@ -219,7 +217,7 @@
         <property key="post-instruction-scheduling" value="no-schedule-insns2"/>
         <property key="pre-instruction-scheduling" value="no-schedule-insns"/>
         <property key="preprocessor-macros" value=""/>
-        <property key="rtti" value="true"/>
+        <property key="rtti" value="false"/>
         <property key="strict-ansi" value="true"/>
         <property key="use-cci" value="false"/>
         <property key="use-indirect-calls" value="false"/>
@@ -391,7 +389,7 @@
         <property key="enable-omit-frame-pointer" value="true"/>
         <property key="enable-symbols" value="true"/>
         <property key="enable-unroll-loops" value="true"/>
-        <property key="exceptions" value="true"/>
+        <property key="exceptions" value="false"/>
         <property key="exclude-floating-point" value="false"/>
         <property key="extra-include-directories" value="../include"/>
         <property key="generate-16-bit-code" value="false"/>
@@ -402,7 +400,7 @@
         <property key="post-instruction-scheduling" value="schedule-insns2"/>
         <property key="pre-instruction-scheduling" value="schedule-insns"/>
         <property key="preprocessor-macros" value=""/>
-        <property key="rtti" value="true"/>
+        <property key="rtti" value="false"/>
         <property key="strict-ansi" value="false"/>
         <property key="use-cci" value="false"/>
         <property key="use-indirect-calls" value="false"/>
