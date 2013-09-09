@@ -10,6 +10,7 @@
 #include "nupp/led.hpp"
 #include "nupp/lowpassfilter.hpp"
 #include "nupp/ltc6803.hpp"
+#include "nupp/ltc6804.hpp"
 #include "nupp/nokia5110.hpp"
 #include "nupp/nu32.hpp"
 #include "nupp/param.hpp"
@@ -25,3 +26,4 @@
 #include "nupp/bps.hpp"
 #include "nupp/driver_controls.hpp"
 #include "nupp/steering_wheel.hpp"
+#include "nupp/output_board.hpp"

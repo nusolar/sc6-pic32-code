@@ -3,106 +3,66 @@
  * Author: alex
  *
  * Created on July 5, 2013, 7:34 PM
+ *
+ * Mainfile for Output Board.
  */
 
 #include "nu/common_pragmas.h"
-#include "nupp/pinctl.hpp"
-#include "nupp/timer.hpp"
-#include "nupp/nu32.hpp"
-#include <cstdlib>
+#include "nupp/output_board.hpp"
+#include <cstdint>
 
-namespace nu {
-	struct USBInterface: public Nu32 {
-		Serial ctl;
-		static const char *uuid;
+#define div_roundup(DIVIDEND, DIVISOR) ((long long)((DIVIDEND)/(DIVISOR)) + (((DIVIDEND)%(DIVISOR)>0)? 1: 0))
 
-		USBInterface(): Nu32(Nu32::V2011), ctl(UART(2)) {}
+// Allocate twice the space of an nu::OutputBoard, rounding up.
+uint64_t arena[div_roundup(sizeof(nu::OutputBoard), 4)] ALIGNED(__BIGGEST_ALIGNMENT__);
 
-		/**
-		 * Called from process_record() with the record's key.
-         * @param command The record's key, a null-terminated string.
-         */
-		virtual void handle_command(char *command) {
-			if (strcmp(command, "name") || strcmp(command, "id")) {
-				ctl.tx(uuid, strlen(uuid));
-			}
-		}
-
-		/**
-		 * Called when a Record Separator (0x1E) is detected. This function listens
-		 * for the command key, or another (premature) record separator.
-         * @return 0 if record is handled, >0 if a premature 0x1E is received.
-         */
-		byte process_record() {
-			char command[5];
-			size_t i=0;
-			for (; i<5; i++) {
-				ctl.rx(command + i, 1);
-
-				// if any byte == 0x1E, then command is malformed:
-				if (command[i] == TTY_RECORD) return TTY_RECORD;
-				// if any byte == 0x1F, then command is complete:
-				if (command[i] == TTY_UNIT) break;
-			}
-
-			// if last RX'd byte != 0x1F, give up on packet:
-			if (command[i] != TTY_UNIT) return 0;
-			
-			command[i] = '\0'; // convert to null-terminated string
-			for (size_t ui=0; ui < i; ui++)
-				command[ui] = (char)tolower(command[ui]); // to lowercase
-			handle_command(command);
-			return 0; // done with packet
-		}
-
-		/**
-		 * Read a byte. If Record Separator is received, attempt to handle.
-         */
-		void listen() {
-			char first;
-			ctl.rx(&first, sizeof(first));
-			if (first != TTY_RECORD) return; // error if byte != 0x1E
-			while (process_record()) {}
-		}
-	};
-
-	struct USBDigitalOut: USBInterface {
-		DigitalOut relay;
-		
-		USBDigitalOut(DigitalOut _relay): USBInterface(), relay(_relay) {}
-
-		void handle_command(char *command) {
-			if (strcmp(command, "on")) {
-				relay.high();
-			} else if (strcmp(command, "off")) {
-				relay.low();
-			} else if (strcmp(command, "togg")) {
-				relay.toggle();
-			} else if (strcmp(command, "stat")) {
-				bool stat = relay.status();
-				ctl.tx(&stat, sizeof(stat));
-			} else {
-				USBInterface::handle_command(command);
-			}
-		}
-	};
-
-	struct USBDigitalIn: USBInterface {
-		DigitalIn sensor;
-	};
+void kill() {
+	((nu::OutputBoard *)arena)->emergency_shutoff();
 }
 
-const char *nu::USBInterface::uuid = __DATE__ " " __TIME__;
+extern "C" {
+	static enum exceptions {
+		EXCEP_IRQ = 0,          // interrupt
+		EXCEP_AdEL = 4,         // address error exception (load or ifetch)
+		EXCEP_AdES,             // address error exception (store)
+		EXCEP_IBE,              // bus error (ifetch)
+		EXCEP_DBE,              // bus error (load/store)
+		EXCEP_Sys,              // syscall
+		EXCEP_Bp,               // breakpoint
+		EXCEP_RI,               // reserved instruction
+		EXCEP_CpU,              // coprocessor unusable
+		EXCEP_Overflow,         // arithmetic overflow
+		EXCEP_Trap,             // trap (possible divide by zero)
+		EXCEP_IS1 = 16,         // implementation specfic 1
+		EXCEP_CEU,              // CorExtend Unuseable
+		EXCEP_C2E               // coprocessor 2
+	} _excep_code;
 
-using namespace nu;
+	static unsigned int _excep_addr;
 
-int main() {
-	USBDigitalOut out = DigitalOut(PIN(F, 0), false);
+	// this function overrides the normal _weak_ generic handler
+	void _general_exception_handler(void)
+	{
+		asm volatile("mfc0 %0,$13" : "=r" (_excep_code));
+		asm volatile("mfc0 %0,$14" : "=r" (_excep_addr));
 
-	while (true) {
-		out.listen();
+		_excep_code = (exceptions) ((_excep_code & 0x0000007C) >> 2);
+
+		kill();
+
+		while (1) {
+			Nop();
+			// Examine _excep_code to identify the type of exception
+			// Examine _excep_addr to find the address that caused the exception
+		}
 	}
+}
 
+const char *uuid = __DATE__ " " __TIME__;
+
+/** Call OutputBoard::main(), NEVER RETURN. */
+int main() {
+	nu::OutputBoard::main((nu::OutputBoard *)arena);
 	return 0;
 }
 

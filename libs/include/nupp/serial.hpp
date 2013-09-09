@@ -34,13 +34,16 @@ namespace nu {
 				uint8_t buffer = 0;
 				int error = UARTModule::rx(&buffer, 1);
 
-				if (error<0) {
+				if (error < 0) {
+					// Data unavailable, return # of bytes copied thusfar, EXCLUDING this final attempt.
 					return ui;
 				} else {
+					// write byte to destination;
 					((uint8_t *)dst)[ui] = buffer;
 				}
 
 				if (buffer == '\n') {
+					// ENDL, return # of bytes copied, INCLUDING this attempt
 					return ui+1;
 				}
 			}

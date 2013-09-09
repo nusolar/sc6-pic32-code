@@ -60,6 +60,10 @@
         <itemPath>../include/nupp/string.hpp</itemPath>
         <itemPath>../include/nupp/bps.hpp</itemPath>
         <itemPath>../include/nupp/json.hpp</itemPath>
+        <itemPath>../include/nupp/output_board.hpp</itemPath>
+        <itemPath>../include/nupp/usbhid.hpp</itemPath>
+        <itemPath>../include/nupp/crc.hpp</itemPath>
+        <itemPath>../include/nupp/ltc6804.hpp</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
@@ -93,6 +97,7 @@
         <itemPath>../nupp/pin.cpp</itemPath>
         <itemPath>../nupp/jsoncpp.cpp</itemPath>
         <itemPath>../nupp/bps.cpp</itemPath>
+        <itemPath>../nupp/output_board.cpp</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"

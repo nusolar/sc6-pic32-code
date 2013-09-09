@@ -21,6 +21,9 @@ extern "C" {
 #define UART(N) UARTModule(UART##N, 115200) // to specify a UART, use UART(NUMBER)
 
 namespace nu {
+	/**
+	 * Initialize with UART(N) macro.
+	 */
 	struct UARTModule {
 		UART_MODULE module;
 		uint32_t baud;

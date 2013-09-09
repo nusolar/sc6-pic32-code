@@ -1,12 +1,11 @@
 #include "nupp/bps.hpp"
 #include "nupp/wdt.hpp"
+#include <new>
 
-nu::BPS nu::bps;
-
-void nu::BPS::main() {
+void nu::BPS::main(nu::BPS *bps) {
 	nu::WDT::disable();
-	nu::bps = nu::BPS();
+	new (bps) nu::BPS();
 	// start run loop, never return:
-	nu::bps.run_loop();
+	bps->run_loop();
 }
 
