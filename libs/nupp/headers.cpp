@@ -20,6 +20,7 @@
 #include "nupp/string.hpp"
 #include "nupp/timer.hpp"
 #include "nupp/ulcd28pt.hpp"
+#include "nupp/usbhid.hpp"
 #include "nupp/wdt.hpp"
 
 #include "nupp/bms.hpp"

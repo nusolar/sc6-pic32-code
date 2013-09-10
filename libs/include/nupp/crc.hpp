@@ -33,7 +33,6 @@ namespace nu {
 
 			if (len) do {
 				// Shift in the next byte, get a new CRC value.
-
 				uint16_t eor;
 				unsigned int i = 8;
 
