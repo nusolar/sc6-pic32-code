@@ -1,8 +1,11 @@
-/*
+/**
  * File:   allocator.hpp
  * Author: alex
  *
  * Created on May 12, 2013, 5:33 PM
+ *
+ * @file An attempted stack-based Allocator for STL classes. Currently,
+ *       deallocations fail unless performed in the precise reverse order.
  */
 
 #ifndef NUPP_ALLOCATOR_HPP

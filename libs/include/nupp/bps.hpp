@@ -125,8 +125,8 @@ namespace nu {
 			LTC6804<3>::Configuration cfg0 = {0};
 			cfg0.bits.adcopt = 0; // normal ADC mode
 			cfg0.bits.refon = 1; // stay on
-			cfg0.bits.vuv = voltage_sensor.convert_uv_limit(NU_BPS_MIN_VOLTAGE)+1;
-			cfg0.bits.vov = voltage_sensor.convert_ov_limit(NU_BPS_MAX_VOLTAGE);
+			cfg0.bits.vuv = (voltage_sensor.convert_uv_limit(NU_BPS_MIN_VOLTAGE)+1) & 0xfff; // mask 12 bits
+			cfg0.bits.vov = voltage_sensor.convert_ov_limit(NU_BPS_MAX_VOLTAGE) & 0xfff;
 
 			// write LTC6804 config register, also resetting LTC's WatchDogTimer
 			Array<LTC6804<3>::Configuration, 3> cfgs;

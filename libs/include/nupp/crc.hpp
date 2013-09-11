@@ -1,8 +1,11 @@
-/* 
+/**
  * File:   crc.hpp
  * Author: alex
  *
  * Created on September 8, 2013, 9:20 PM
+ *
+ * @file This namespace provides CRC computation functions, which are used by
+ * the LTC6803 and LTC6804.
  */
 
 #ifndef NUPP_CRC_HPP
@@ -49,9 +52,9 @@ namespace nu {
 		}
 
 		/**
-		 * Fast-CRC table for CRC-8. See function description, below.
+		 * CRC table for Fast CRC-8. See function description, below.
 		 */
-		static const uint8_t _8_ccitt_fast_tab[] =
+		static const uint8_t _8_ccitt_tab[] =
 		   {0x00, 0x07, 0x0E, 0x09, 0x1C, 0x1B, 0x12, 0x15, 0x38, 0x3F, 0x36, 0x31,
 			0x24, 0x23, 0x2A, 0x2D, 0x70, 0x77, 0x7E, 0x79, 0x6C, 0x6B, 0x62, 0x65,
 			0x48, 0x4F, 0x46, 0x41, 0x54, 0x53, 0x5A, 0x5D, 0xE0, 0xE7, 0xEE, 0xE9,
@@ -90,7 +93,7 @@ namespace nu {
 		 * DON'T reverse data bytes
 		 * DON'T reverse CRC result before Final XOR
 		 */
-		static long long _8_ccitt_fast(const void *data, size_t len) {
+		static long long _8_ccitt(const void *data, size_t len) {
 			if (unlikely(data == NULL))
 				return -ENULPTR;
 
@@ -99,7 +102,7 @@ namespace nu {
 			unsigned long crc = 0x41;
 
 			while (len--)
-				crc = (crc << 8) ^ _8_ccitt_fast_tab[ (crc & 0xff) ^ *dataBytes++];
+				crc = (crc << 8) ^ _8_ccitt_tab[ (crc & 0xff) ^ *dataBytes++];
 																	   /* 8 here is referring to the polynomial order */
 			/* static const unsigned long crcmask = ((((unsigned long)1<<(8-1))-1)<<1)|1; */
 			unsigned long crcmask = 0xff;

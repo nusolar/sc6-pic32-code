@@ -252,7 +252,7 @@ namespace nu {
 				memcpy((BYTE *)dest + i*one_element, recv_buffer, one_element);
 				
 				BYTE pec = recv_buffer[sizeof(recv_buffer) - 1]; // last byte
-				BYTE CRC = (BYTE)crc::_8_ccitt_fast(recv_buffer, sizeof(recv_buffer) - 1);
+				BYTE CRC = (BYTE)crc::_8_ccitt(recv_buffer, sizeof(recv_buffer) - 1);
 				if (pec != CRC) {
 					mismatch_pecs |= (uint32_t)(1<<i);
 				}
@@ -276,7 +276,7 @@ namespace nu {
 		}
 
 		ALWAYSINLINE void tx_with_pec(const void *src, size_t n) {
-			long pec = (long)crc::_8_ccitt_fast(src, n); // WARNING type?
+			long pec = (long)crc::_8_ccitt(src, n); // WARNING type?
 			tx(src, n); // WARNING check pointers / tx errors
 			tx(&pec, 1);
 		}
