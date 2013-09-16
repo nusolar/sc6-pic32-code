@@ -29,12 +29,7 @@ namespace nu {
 		};
 		static_assert(sizeof(scratch) == 9, "nu::DS18X20::scratch packing");
 
-		Array<float, num_devices> values;
-		/** @warning NO BOUNDS CHECKING */
-		ALWAYSINLINE float operator[] (size_t index) const {return values[index];}
-		ALWAYSINLINE uint32_t count() {return num_devices;}
-
-		ALWAYSINLINE DS18X20(Pin _p): OneWire<num_devices>(_p), values(0.0f) {}
+		ALWAYSINLINE DS18X20(Pin _p): OneWire<num_devices>(_p) {}
 
 		ALWAYSINLINE void convert_t() {
 			this->tx_byte_with_crc( this->CONVERT_T );
@@ -56,10 +51,10 @@ namespace nu {
 			return (float)temp/16;
 		}
 
-		ALWAYSINLINE void update_temperatures() {
+		ALWAYSINLINE void update_temperatures(Array<float, num_devices> &values) {
 			Array<scratch, num_devices> scratches;
 			for (unsigned i=0; i<num_devices; i++) {
-				read_temperature(this->roms[i], scratches[i]);
+				this->read_temperature(this->roms[i], scratches[i]);
 				values[i] = convert_temperature(scratches[i].temperature);
 			}
 		}

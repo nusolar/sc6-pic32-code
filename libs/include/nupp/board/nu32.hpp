@@ -10,14 +10,12 @@
  * @sa http://hades.mech.northwestern.edu/index.php/NU32:_Introduction_to_the_PIC32
  */
 
-#include "nupp/param.hpp"
 
+#include "nupp/serial.hpp"
 #include "nupp/led.hpp"
 #include "nupp/pinctl.hpp"
-#include "nupp/serial.hpp"
-extern "C" {
-#include <plib.h>
-}
+#include "nupp/param.hpp"
+#include <cstdint>
 
 namespace nu {
 	struct Nu32Init {

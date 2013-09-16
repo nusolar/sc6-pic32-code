@@ -24,6 +24,7 @@ extern "C" {
 #include "USB/usb.h"
 #include "USB/usb_device.h"
 #include "USB/usb_function_hid.h"
+#include "usb_config.h"
 
 #ifdef __cplusplus
 } /* extern "C" */
@@ -46,16 +47,15 @@ nu::UsbHid::UsbHid(): USBOutHandle(NULL), USBInHandle(NULL) {
  * @param callback The callback, which takes a pointer and a size_t
  */
 void nu::UsbHid::try_rx(void (*callback)(unsigned char *, size_t len)) {
-	 if((USBDeviceState < CONFIGURED_STATE)||(USBSuspendControl==1)) return;
+	if((USBDeviceState < CONFIGURED_STATE)||(USBSuspendControl==1)) return;
 
-	 if(!HIDRxHandleBusy(USBOutHandle))
-	 {
+	if(!HIDRxHandleBusy(USBOutHandle))
+	{
 		callback(ReceivedDataBuffer, 64);
-
 		//Re-arm the OUT endpoint, so we can receive the next OUT data packet
 		//that the host may try to send us.
 		USBOutHandle = HIDRxPacket(HID_EP, (BYTE*)&ReceivedDataBuffer, 64);
-	 }
+	}
 }
 
 /**
@@ -65,15 +65,19 @@ void nu::UsbHid::try_rx(void (*callback)(unsigned char *, size_t len)) {
  * @param callback The callback, which takes a pointer and a size_t
  */
 void nu::UsbHid::try_tx(void (*callback)(unsigned char *, size_t len)) {
-	 if((USBDeviceState < CONFIGURED_STATE)||(USBSuspendControl==1)) return;
+	if((USBDeviceState < CONFIGURED_STATE)||(USBSuspendControl==1)) return;
 
-	 if(!HIDTxHandleBusy(USBInHandle))
+	if(!HIDTxHandleBusy(USBInHandle))
 	{
 		callback(ReceivedDataBuffer, 64);
 
 		//Prepare the USB module to send the data packet to the host
 		USBInHandle = HIDTxPacket(HID_EP,(BYTE*)&ToSendDataBuffer[0],64);
 	}
+}
+
+extern "C" {
+BOOL USER_USB_CALLBACK_EVENT_HANDLER(int event, void *pdata, WORD size);
 }
 
 /** @todo Implement USB Event Handler */
@@ -86,5 +90,6 @@ BOOL USER_USB_CALLBACK_EVENT_HANDLER(int event, void *pdata, WORD size)
     }
     return TRUE;
 }
+
 
 #endif /* PLATFORM code */

@@ -21,6 +21,23 @@
         <itemPath>../include/nu/platform.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f1" displayName="nupp" projectFiles="true">
+        <logicalFolder name="f2" displayName="board" projectFiles="true">
+          <itemPath>../include/nupp/board/bms.hpp</itemPath>
+          <itemPath>../include/nupp/board/bps.hpp</itemPath>
+          <itemPath>../include/nupp/board/driver_controls.hpp</itemPath>
+          <itemPath>../include/nupp/board/output_board.hpp</itemPath>
+          <itemPath>../include/nupp/board/steering_wheel.hpp</itemPath>
+          <itemPath>../include/nupp/board/nu32.hpp</itemPath>
+        </logicalFolder>
+        <logicalFolder name="f3" displayName="component" projectFiles="true">
+          <itemPath>../include/nupp/component/ad7685.hpp</itemPath>
+          <itemPath>../include/nupp/component/ds18x20.hpp</itemPath>
+          <itemPath>../include/nupp/component/hais.hpp</itemPath>
+          <itemPath>../include/nupp/component/ltc6803.hpp</itemPath>
+          <itemPath>../include/nupp/component/ltc6804.hpp</itemPath>
+          <itemPath>../include/nupp/component/nokia5110.hpp</itemPath>
+          <itemPath>../include/nupp/component/ulcd28pt.hpp</itemPath>
+        </logicalFolder>
         <logicalFolder name="f1" displayName="platform" projectFiles="true">
           <itemPath>../include/nupp/platform/spi.hpp</itemPath>
           <itemPath>../include/nupp/platform/param.hpp</itemPath>
@@ -28,41 +45,28 @@
           <itemPath>../include/nupp/platform/serial.hpp</itemPath>
           <itemPath>../include/nupp/platform/usb_serial.hpp</itemPath>
         </logicalFolder>
-        <itemPath>../include/nupp/ad7685.hpp</itemPath>
         <itemPath>../include/nupp/allocator.hpp</itemPath>
-        <itemPath>../include/nupp/bms.hpp</itemPath>
         <itemPath>../include/nupp/button.hpp</itemPath>
         <itemPath>../include/nupp/can.hpp</itemPath>
-        <itemPath>../include/nupp/driver_controls.hpp</itemPath>
         <itemPath>../include/nupp/enum.hpp</itemPath>
         <itemPath>../include/nupp/errorcodes.hpp</itemPath>
         <itemPath>../include/nupp/led.hpp</itemPath>
-        <itemPath>../include/nupp/nokia5110.hpp</itemPath>
-        <itemPath>../include/nupp/nu32.hpp</itemPath>
         <itemPath>../include/nupp/param.hpp</itemPath>
         <itemPath>../include/nupp/pinctl.hpp</itemPath>
         <itemPath>../include/nupp/serial.hpp</itemPath>
         <itemPath>../include/nupp/short_alloc.hpp</itemPath>
         <itemPath>../include/nupp/spi.hpp</itemPath>
-        <itemPath>../include/nupp/steering_wheel.hpp</itemPath>
         <itemPath>../include/nupp/timer.hpp</itemPath>
-        <itemPath>../include/nupp/ulcd28pt.hpp</itemPath>
         <itemPath>../include/nupp/wdt.hpp</itemPath>
         <itemPath>../include/nupp/bitset.hpp</itemPath>
         <itemPath>../include/nupp/can_def.hpp</itemPath>
-        <itemPath>../include/nupp/ltc6803.hpp</itemPath>
         <itemPath>../include/nupp/array.hpp</itemPath>
-        <itemPath>../include/nupp/hais.hpp</itemPath>
         <itemPath>../include/nupp/lowpassfilter.hpp</itemPath>
-        <itemPath>../include/nupp/ds18x20.hpp</itemPath>
         <itemPath>../include/nupp/onewire.hpp</itemPath>
         <itemPath>../include/nupp/stream.hpp</itemPath>
         <itemPath>../include/nupp/string.hpp</itemPath>
-        <itemPath>../include/nupp/bps.hpp</itemPath>
-        <itemPath>../include/nupp/output_board.hpp</itemPath>
         <itemPath>../include/nupp/usbhid.hpp</itemPath>
         <itemPath>../include/nupp/crc.hpp</itemPath>
-        <itemPath>../include/nupp/ltc6804.hpp</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
@@ -85,13 +89,10 @@
         <itemPath>../nupp/headers.cpp</itemPath>
         <itemPath>../nupp/nokia5110.cpp</itemPath>
         <itemPath>../nupp/nu32.cpp</itemPath>
-        <itemPath>../nupp/serial.cpp</itemPath>
-        <itemPath>../nupp/spi.cpp</itemPath>
         <itemPath>../nupp/bms.cpp</itemPath>
         <itemPath>../nupp/driver_controls.cpp</itemPath>
         <itemPath>../nupp/steering_wheel.cpp</itemPath>
         <itemPath>../nupp/allocator.cpp</itemPath>
-        <itemPath>../nupp/ltc6803.cpp</itemPath>
         <itemPath>../nupp/stream.cpp</itemPath>
         <itemPath>../nupp/pin.cpp</itemPath>
         <itemPath>../nupp/bps.cpp</itemPath>

@@ -1,4 +1,4 @@
-#include "nupp/output_board.hpp"
+#include "nupp/board/output_board.hpp"
 #include "nupp/wdt.hpp"
 #include <new>
 

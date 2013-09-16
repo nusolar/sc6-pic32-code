@@ -8,7 +8,7 @@
  */
 
 #include "nu/common_pragmas.h"
-#include "nupp/output_board.hpp"
+#include "nupp/board/output_board.hpp"
 #include <cstdint>
 
 #define div_roundup(DIVIDEND, DIVISOR) ((long long)((DIVIDEND)/(DIVISOR)) + (((DIVIDEND)%(DIVISOR)>0)? 1: 0))

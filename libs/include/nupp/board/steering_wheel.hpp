@@ -1,15 +1,15 @@
 #ifndef NUPP_STEERING_WHEEL_HPP
 #define NUPP_STEERING_WHEEL_HPP 1
 
-#include "nu/compiler.h"
-#include "nupp/bitset.hpp"
-#include "nupp/ulcd28pt.hpp" // MAXIMUM WARNING MAXIMUM ERROR MUST COME BEFORE PIC32
+#include "nupp/board/nu32.hpp"
+#include "nupp/component/ulcd28pt.hpp" // MAXIMUM WARNING MAXIMUM ERROR MUST COME BEFORE PIC32
 #include "nupp/button.hpp"
 #include "nupp/led.hpp"
 #include "nupp/can.hpp"
 #include "nupp/wdt.hpp"
 #include "nupp/timer.hpp"
-#include "nupp/nu32.hpp"
+#include "nupp/bitset.hpp"
+#include "nu/compiler.h"
 #include <cstdio>
 
 /* //Pin definitions. L/R/Haz/Horn are wired to MAYBE.

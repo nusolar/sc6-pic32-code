@@ -1,4 +1,4 @@
-#include "nupp/nokia5110.hpp"
+#include "nupp/component/nokia5110.hpp"
 #include "nu/utility/bits.h"
 #include "nupp/wdt.hpp"
 #include <cstdio> /* Nokia5110::printf requires these */

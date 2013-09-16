@@ -1,5 +1,8 @@
-#include "nupp/nu32.hpp"
+#include "nupp/board/nu32.hpp"
 #include "nupp/wdt.hpp"
+extern "C" {
+#include <plib.h>
+}
 
 using namespace nu;
 

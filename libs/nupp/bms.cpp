@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 Alex Chandel. All rights reserved.
 //
 
-#include "nupp/bms.hpp"
+#include "nupp/board/bms.hpp"
 
 using namespace nu;
 

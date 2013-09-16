@@ -8,9 +8,11 @@
 #ifndef NU_BPS_HPP
 #define	NU_BPS_HPP
 
-#include "nupp/nu32.hpp"
-#include "nupp/ds18x20.hpp"
-#include "nupp/nokia5110.hpp"
+#include "nupp/board/nu32.hpp"
+#include "nupp/component/ltc6804.hpp"
+#include "nupp/component/ds18x20.hpp"
+#include "nupp/component/nokia5110.hpp"
+#include "nupp/usbhid.hpp"
 #include "nupp/serial.hpp"
 #include "nupp/spi.hpp"
 #include "nupp/can.hpp"
@@ -18,8 +20,8 @@
 #include "nupp/timer.hpp"
 #include "nupp/wdt.hpp"
 #include "nupp/array.hpp"
+#include "nupp/closure.hpp"
 #include "nu/compiler.h"
-#include "ltc6804.hpp"
 
 #define NU_BPS_MAX_VOLTAGE 4300 // mV
 #define NU_BPS_MIN_VOLTAGE 2750 // mV
@@ -44,9 +46,16 @@ namespace nu {
 			PC_CHARGED = 2
 		};
 
+		enum Errors {
+			NOERR = 0,
+			BADMODE,
+			BADPC
+		};
+
 		DigitalOut main_relay, array_relay, precharge_relay, motor_relay;
 		DigitalIn bits[6];
-		Serial usb;
+		UsbHid hid;
+		Serial com;
 		can::Module common_can;
 		Nokia5110 lcd1, lcd2;
 
@@ -55,35 +64,71 @@ namespace nu {
 		DS18X20<32> temp_sensor; //on A0
 
 		/**
-		 * The state of the Batteries and the BMS.
+		 * Aggregated data of the Sensors and the BMS.
 		 */
-		struct state {
+		struct State {
 			static const size_t num_modules = 32;
 			
-			reg_t last_error;
-			uint8_t disabled_module;
-			const char *msg;
-
+			// scientific data
 			double cc_battery, cc_array, wh_battery, wh_array;
-			reg_t current0, current1;
-			Array<uint16_t, 36> voltages; // extra voltages, for empty LTC slots
+			int16_t current0, current1; // 10bit voltage, 0-5V
+			Array<uint16_t, 36> voltages; // in 100uv. 4 extra voltages, for empty LTC slots
+			Array<float, num_modules> temperatures; // in degC
 
-			Modes mode, target_mode;
-			uint64_t timeout_clock; //ms
+			// Protection modes & timers
+			Modes mode;
 			Precharge precharging;
+			uint64_t mode_timeout_clock; //ms
 			uint64_t precharge_clock; //ms
+
+			// error data
+			uint8_t disabled_module;
+			int8_t last_error;
+			int8_t error;
+			int8_t error_value;
 			
-			// for Run Loop
+			// timers & indices used in the Run Loop
 			uint64_t time;
 			uint64_t lcd_clock; //ms
 			uint8_t module_i;
 			
-			state(): last_error(0), disabled_module(63), msg(""),
-				cc_battery(0), cc_array(0), wh_battery(0), wh_array(0),
-				current0(0), current1(0), voltages(0),
-				mode(OFF), target_mode(OFF), timeout_clock(0), precharging(PC_OFF), precharge_clock(0),
+			State(): cc_battery(0), cc_array(0), wh_battery(0), wh_array(0),
+				current0(0), current1(0), voltages(0), temperatures(0),
+				mode(OFF), precharging(PC_OFF), mode_timeout_clock(0), precharge_clock(0),
+				disabled_module(63), last_error(0), error(NOERR), error_value(0),
 				time(0), lcd_clock(0), module_i(0) {}
 		} state;
+
+		/**
+		 * The BPS's HID report.
+		 */
+		struct Report {
+			// scientific data
+			double cc_battery, cc_array, wh_battery, wh_array;
+			int16_t current0, current1; // 10bit voltage, 0-5V
+			uint16_t voltages[32]; // in 100uv
+			float temperatures[32];
+			// protection data
+			uint8_t mode, precharge;
+			// error data
+			uint8_t disabled_module;
+			int8_t last_error;
+			int8_t error;
+			int8_t error_value;
+
+			Report (State s): cc_battery(s.cc_battery), cc_array(s.cc_array),
+				wh_battery(s.wh_battery), wh_array(s.wh_array),
+				current0 (s.current0), current1(s.current1),
+				voltages(), temperatures(),
+				mode(s.mode), precharge(s.precharging),
+				disabled_module(s.disabled_module), last_error(s.last_error),
+				error(s.error), error_value(s.error_value)
+			{
+				memcpy(voltages, s.voltages.data(), sizeof(voltages));
+				memcpy(temperatures, s.temperatures.data(), sizeof(temperatures));
+			}
+		};
+
 
 		ALWAYSINLINE BPS(): Nu32(Nu32::V2011),
 			main_relay(PIN(D, 2), false),
@@ -91,7 +136,8 @@ namespace nu {
 			precharge_relay(PIN(D, 4), false),
 			motor_relay(PIN(D, 5), false),
 			bits(),
-			usb(UART(1)),
+			hid(),
+			com(UART(1)),
 			common_can(CAN1),
 			lcd1(PIN(G, 9), SPI_CHANNEL2, PIN(A, 9),  PIN(E, 9)),
 			lcd2(PIN(E, 8), SPI_CHANNEL2, PIN(A, 10), PIN(E, 9)),
@@ -141,9 +187,9 @@ namespace nu {
 				state.disabled_module |= (uint8_t)(((bool)bits[i].read()) << i);
 			}
 
-			state.current0 = current_sensor0.read();
-			state.current1 = current_sensor1.read();
-			temp_sensor.update_temperatures();
+			state.current0 = current_sensor0.read() & 0x3ff; //mask 10 bits
+			state.current1 = current_sensor1.read() & 0x3ff;
+			temp_sensor.update_temperatures(state.temperatures);
 			voltage_sensor.read_volts(state.voltages);
 			
 
@@ -152,18 +198,16 @@ namespace nu {
 			voltage_sensor.start_voltage_conversion();
 		}
 
-		/** USES HEAP */
 		ALWAYSINLINE void serial_io() {
-			
-			usb << TTY_UNIT << "battery_current" << TTY_RECORD << state.current0 << nu::end;
-			usb << TTY_UNIT << "array_current" << TTY_RECORD << state.current1 << nu::end;
-			usb << TTY_UNIT << "disabled_module" << TTY_RECORD << state.disabled_module << nu::end;
-			usb << TTY_UNIT << "uptime" << TTY_RECORD << state.time << nu::end;
-			usb << TTY_UNIT << "mode" << TTY_RECORD << state.mode << TTY_UNIT << nu::end;
+			com << TTY_UNIT << "battery_current" << TTY_RECORD << state.current0 << nu::end;
+			com << TTY_UNIT << "array_current" << TTY_RECORD << state.current1 << nu::end;
+			com << TTY_UNIT << "disabled_module" << TTY_RECORD << state.disabled_module << nu::end;
+			com << TTY_UNIT << "uptime" << TTY_RECORD << state.time << nu::end;
+			com << TTY_UNIT << "mode" << TTY_RECORD << state.mode << TTY_UNIT << nu::end;
 
 			// get line
 			Array<char, 30> input;
-			int length = usb.read_line(input, input.size());
+			int length = com.read_line(input, input.size());
 
 			if (length > 0 &&
 				input[0] == TTY_UNIT &&
@@ -171,7 +215,7 @@ namespace nu {
 				input[5] == TTY_RECORD)
 			{
 				char mode[2] = {input[6], '\0'};
-				state.target_mode = (Modes)atoi(mode);
+				state.mode = (Modes)atoi(mode);
 			} else {
 				length = 0;
 			}
@@ -180,11 +224,35 @@ namespace nu {
 			// Else if handling succeeded, reset timeout_clock
 			if (length == 0) {
 				uint64_t time = timer::ms();
-				if (time > NU_BPS_TIMEOUT_INT + (time>state.timeout_clock? state.timeout_clock: 0)) {
-					state.target_mode = OFF;
+				if (time > NU_BPS_TIMEOUT_INT + (time>state.mode_timeout_clock? state.mode_timeout_clock: 0)) {
+					state.mode = OFF;
 				}
 			} else {
-				state.timeout_clock = timer::ms();
+				state.mode_timeout_clock = timer::ms();
+			}
+		}
+
+		void hid_tx_callback(unsigned char *data, size_t len) {
+			Report r = Report(state);
+			memcpy(data, &r, len);
+		}
+
+		void hid_rx_callback(unsigned char *data, size_t len) {
+			if (len > 0) {
+				state.mode = (Modes)data[0];
+				state.mode_timeout_clock = timer::ms();
+			}
+		}
+
+		ALWAYSINLINE void do_hid() {
+			typedef Closure<typeof(*this), typeof(&nu::BPS::hid_tx_callback), void, unsigned char *, size_t> delegate;
+			hid.try_tx(delegate::use(*this, &nu::BPS::hid_tx_callback));
+			hid.try_rx(delegate::use(*this, &nu::BPS::hid_rx_callback));
+
+			// If state.mode_timeout_clock isn't updated fast enough, turn OFF.
+			uint64_t time = timer::ms();
+			if (time > NU_BPS_TIMEOUT_INT + (time>state.mode_timeout_clock? state.mode_timeout_clock: 0)) {
+				state.mode = OFF;
 			}
 		}
 
@@ -197,7 +265,11 @@ namespace nu {
 		 * (2) when batteries are critically low, and could not sustain DISCHARGING/DRIVE.
          */
 		ALWAYSINLINE void set_mode() {
-			switch (state.target_mode) {
+			bool has_error = false;
+			
+			switch (state.mode) {
+				default:
+					has_error = true;
 				case OFF: {
 					// FIRST: halt major drains
 					motor_relay = false;
@@ -247,16 +319,21 @@ namespace nu {
 					// SEE BELOW
 					break;
 				}
-				default:
-					state.msg = "BADMODE";
-					break;
 			}
+			// Set or remove Mode error, if needed.
+			if (has_error) {
+				if (state.error == NOERR)
+					state.error = BADMODE;
+			} else if (state.error == BADMODE)
+					state.error = NOERR;
 
 			// Now, reset or continue with the precharge sequence:
-			if (state.target_mode != DRIVE && state.target_mode != CHARGING_DRIVE) {
+			if (state.mode != DRIVE && state.mode != CHARGING_DRIVE) {
 				state.precharging = PC_OFF;
 			} else {
 				switch (state.precharging) {
+					default:
+						has_error = BADPC;
 					case PC_OFF: {
 						motor_relay = false;
 						precharge_relay = true;
@@ -278,13 +355,15 @@ namespace nu {
 						precharge_relay = false;
 						break;
 					}
-					default:
-						state.msg = "BADPC";
-						break;
 				}
-			}
+				// Set or remove Precharge error, if needed.
+				if (has_error) {
+					if (state.error==NOERR)
+						state.error = BADPC;
+				} else if (state.error==BADPC)
+					state.error = NOERR;
 
-			state.mode = state.target_mode;
+			}
 		}
 
 		ALWAYSINLINE void emergency_shutoff() {
@@ -313,7 +392,7 @@ namespace nu {
 					lcd1.goto_xy(0, 1);
 					lcd1 << "V: " /*<< voltage_sensor[state.module_i]*/ << end;
 					lcd1.goto_xy(0, 2);
-					lcd1 << "T: " << temp_sensor[state.module_i] << end;
+					lcd1 << "T: " << state.temperatures[state.module_i] << end;
 					lcd1.goto_xy(0, 3);
 					lcd1 << "I0: " <<  state.current0 << end;
 					lcd1.goto_xy(0, 4);

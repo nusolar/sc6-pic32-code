@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 Alex Chandel. All rights reserved.
 //
 
-#include "nupp/steering_wheel.hpp"
+#include "nupp/board/steering_wheel.hpp"
 
 using namespace nu;
 

@@ -9,13 +9,13 @@
 #ifndef __nusolar_lib__driver_controls__
 #define __nusolar_lib__driver_controls__
 
-#include "nu/compiler.h"
-#include "nupp/nokia5110.hpp"// MAXIMUM WARNING MAXIMUM ERROR MUST COME BEFORE NU32
+#include "nupp/board/nu32.hpp"
+#include "nupp/component/nokia5110.hpp"// MAXIMUM WARNING MAXIMUM ERROR MUST COME BEFORE NU32
 #include "nupp/timer.hpp"
 #include "nupp/pinctl.hpp"
 #include "nupp/can.hpp"
 #include "nupp/wdt.hpp"
-#include "nupp/nu32.hpp"
+#include "nu/compiler.h"
 #include <cstdint>
 #include <cstddef>
 

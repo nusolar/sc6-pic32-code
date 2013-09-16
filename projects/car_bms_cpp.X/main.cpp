@@ -1,5 +1,5 @@
 #include "nu/common_pragmas.h"
-#include "nupp/bps.hpp"
+#include "nupp/board/bps.hpp"
 #include <cstdint>
 
 #define div_roundup(DIVIDEND, DIVISOR) ((long long)((DIVIDEND)/(DIVISOR)) + (((DIVIDEND)%(DIVISOR)>0)? 1: 0))

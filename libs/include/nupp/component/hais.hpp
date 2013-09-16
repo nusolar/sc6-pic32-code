@@ -8,9 +8,9 @@
 #ifndef HAIS50P_HPP
 #define	HAIS50P_HPP
 
-#include "nu/compiler.h"
+#include "nupp/component/ad7685.hpp"
 #include "nupp/array.hpp"
-#include "nupp/ad7685.hpp"
+#include "nu/compiler.h"
 
 namespace nu {
 	namespace hais {

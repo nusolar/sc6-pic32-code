@@ -1,5 +1,5 @@
 #include "nu/common_pragmas.h"
-#include "nupp/driver_controls.hpp"
+#include "nupp/board/driver_controls.hpp"
 
 extern "C" {
 	static enum exceptions {

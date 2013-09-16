@@ -9,19 +9,19 @@
 #ifndef NUPP_BMS_HPP
 #define NUPP_BMS_HPP 1
 
-#include "nu/compiler.h"
-#include <cstdint>
-#include "nupp/nokia5110.hpp"
-#include "nupp/hais.hpp"
-#include "nupp/ad7685.hpp"
-#include "nupp/ltc6803.hpp"
-#include "nupp/ds18x20.hpp"
+#include "nupp/board/nu32.hpp"
+#include "nupp/component/nokia5110.hpp"
+#include "nupp/component/hais.hpp"
+#include "nupp/component/ad7685.hpp"
+#include "nupp/component/ltc6803.hpp"
+#include "nupp/component/ds18x20.hpp"
 #include "nupp/timer.hpp"
-#include "nupp/nu32.hpp"
 #include "nupp/pinctl.hpp"
 #include "nupp/can.hpp"
 #include "nupp/wdt.hpp"
 #include "nupp/errorcodes.hpp"
+#include "nu/compiler.h"
+#include <cstdint>
 
 #define NU_MAX_VOLTAGE 4.3
 #define NU_MIN_VOLTAGE 2.75
@@ -112,8 +112,9 @@ namespace nu {
 		/**
 		 * The state of the Batteries and the BMS.
 		 */
-		struct state {
+		struct State {
 			static const size_t num_modules = 32;
+
 			bool ow;
 			double uptime;
 			uint64_t time, last_voltage_pkt_time, last_heartbeat_pkt_time, last_single_pkt_time, last_single_pkt_time2, last_single_pkt_time3;
@@ -124,11 +125,14 @@ namespace nu {
 			float highest_current, lowest_current;
 			double cc_battery, cc_array, wh_battery, wh_array;
 			double cc_mppt[3], wh_mppt_in[3], wh_mppt_out[3];
+			// temps are stored below
 
 			uint64_t openwire_clock, lcd_clock;
 			uint32_t module_i;
 			bool converted_openwire;
 		} state;
+
+		Array<float, State::num_modules> temperatures; // in degC
 
 
 		/**
@@ -148,7 +152,7 @@ namespace nu {
 				AD7685<2>::CHAIN_MODE_NO_BUSY), hais::P50),
 			voltage_sensor(PIN(D, 9), SPI_CHANNEL1),
 			temp_sensor(PIN(A, 0)),
-			state()
+			state(), temperatures()
 		{
 			WDT::clear();
 //			lcd1.lcd_clear();
@@ -200,11 +204,11 @@ namespace nu {
 			}
 			voltage_sensor.update_volts();
 			current_sensor.read_current();
-			temp_sensor.update_temperatures();
+			temp_sensor.update_temperatures(this->temperatures);
 
 			state.highest_volt = voltage_sensor[0];
 			state.highest_current = current_sensor[0];
-			state.highest_temp = temp_sensor[0];
+			state.highest_temp = this->temperatures[0];
 		}
 
 		ALWAYSINLINE void check_batteries() {
@@ -213,8 +217,9 @@ namespace nu {
 					Trip::trip(Trip::OVER_VOLTAGE, i, this);
 				if (voltage_sensor[i] + (i==0? .15: 0) < NU_MIN_VOLTAGE)
 					Trip::trip(Trip::UNDER_VOLTAGE, i, this);
-				if (temp_sensor[i] > NU_MAX_TEMP) Trip::trip(Trip::OVER_TEMP, i, this);
-				if (temp_sensor[i] < NU_MIN_TEMP) Trip::trip(Trip::UNDER_TEMP, i, this);
+				if (this->temperatures[i] > NU_MAX_TEMP) Trip::trip(Trip::OVER_TEMP, i, this);
+				if (this->temperatures
+						[i] < NU_MIN_TEMP) Trip::trip(Trip::UNDER_TEMP, i, this);
 			}
 			if (current_sensor[0] > NU_MAX_BATT_CURRENT_DISCHARGING)
 				Trip::trip(Trip::OVER_CURRENT_DISCHARGE, 100, this); // BattADC
@@ -287,7 +292,7 @@ namespace nu {
 			    can::frame::bms::tx::owVoltage ow_pkt(0);
 			    // update module to send
 			    t_pkt.frame.contents.sensor = state.last_voltage_pkt_module;
-			    t_pkt.frame.contents.temp = temp_sensor[state.last_voltage_pkt_module];
+			    t_pkt.frame.contents.temp = this->temperatures[state.last_voltage_pkt_module];
 			    if (state.ow) {
 				ow_pkt.frame.contents.module = state.last_voltage_pkt_module;
 				ow_pkt.frame.contents.ow_voltage = voltage_sensor[state.last_voltage_pkt_module];
