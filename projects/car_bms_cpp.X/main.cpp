@@ -4,14 +4,12 @@
 
 #define div_roundup(DIVIDEND, DIVISOR) ((long long)((DIVIDEND)/(DIVISOR)) + (((DIVIDEND)%(DIVISOR)>0)? 1: 0))
 
-// Allocate twice the space of an nu::OutputBoard, rounding up.
+// Allocate twice the space of an nu::BPS, rounding up.
 uint64_t arena[div_roundup(sizeof(nu::BPS), 4)] ALIGNED(__BIGGEST_ALIGNMENT__);
 
-void kill() {
-	((nu::BPS *)arena)->emergency_shutoff();
-}
-
 extern "C" {
+	void kill(void); // implemented below, in C++
+
 	static enum exceptions {
 		EXCEP_IRQ = 0,          // interrupt
 		EXCEP_AdEL = 4,         // address error exception (load or ifetch)
@@ -47,6 +45,10 @@ extern "C" {
 			// Examine _excep_addr to find the address that caused the exception
 		}
 	}
+}
+
+void kill() {
+	((nu::BPS *)arena)->emergency_shutoff();
 }
 
 /** Call BPS::main(), NEVER RETURN */

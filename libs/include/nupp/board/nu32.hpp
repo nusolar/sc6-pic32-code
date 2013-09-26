@@ -11,8 +11,8 @@
  */
 
 
+#include "nupp/component/led.hpp"
 #include "nupp/serial.hpp"
-#include "nupp/led.hpp"
 #include "nupp/pinctl.hpp"
 #include "nupp/param.hpp"
 #include <cstdint>

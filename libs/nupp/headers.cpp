@@ -13,6 +13,8 @@
 #include "nupp/component/ltc6804.hpp"
 #include "nupp/component/nokia5110.hpp"
 #include "nupp/component/ulcd28pt.hpp"
+#include "nupp/component/button.hpp"
+#include "nupp/component/led.hpp"
 
 // comm protocols
 #include "nupp/can.hpp"
@@ -22,9 +24,7 @@
 #include "nupp/usbhid.hpp"
 
 // basic microcontroller functions
-#include "nupp/button.hpp"
 #include "nupp/crc.hpp"
-#include "nupp/led.hpp"
 #include "nupp/param.hpp"
 #include "nupp/pinctl.hpp"
 #include "nupp/timer.hpp"

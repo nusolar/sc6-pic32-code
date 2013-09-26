@@ -3,8 +3,8 @@
 
 #include "nupp/board/nu32.hpp"
 #include "nupp/component/ulcd28pt.hpp" // MAXIMUM WARNING MAXIMUM ERROR MUST COME BEFORE PIC32
-#include "nupp/button.hpp"
-#include "nupp/led.hpp"
+#include "nupp/component/button.hpp"
+#include "nupp/component/led.hpp"
 #include "nupp/can.hpp"
 #include "nupp/wdt.hpp"
 #include "nupp/timer.hpp"
