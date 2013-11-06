@@ -18,7 +18,8 @@ extern "C" {
 #include <plib.h>
 }
 
-#define UART(N) UARTModule(UART##N, 115200) // to specify a UART, use UART(NUMBER)
+// To specify a UART, use UART(NUMBER)
+#define UART(N) UARTModule(UART##N, 115200)
 
 namespace nu {
 	/**

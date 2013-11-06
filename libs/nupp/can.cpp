@@ -1,10 +1,14 @@
 #include "nupp/errorcodes.hpp"
-#include <GenericTypeDefs.h>
 
 #include "nupp/can.hpp"
 #include "nupp/timer.hpp"
 #include "nu/utility/bits.h"
+
+#include <GenericTypeDefs.h>
+
+#ifdef Module
 #undef Module
+#endif
 
 using namespace nu;
 using namespace can;
@@ -15,8 +19,8 @@ CAN_BIT_CONFIG Module::default_cfg = {
 	/* .phaseSeg2Tq            = */ CAN_BIT_5TQ,
 	/* .phaseSeg1Tq            = */ CAN_BIT_3TQ,
 	/* .propagationSegTq       = */ CAN_BIT_1TQ,
-	/* .phaseSeg2TimeSelect    = */ (BOOL) AUTO_SET,
-	/* .sample3Time            = */ (BOOL) THREE_TIMES,
+	/* .phaseSeg2TimeSelect    = */ (BOOL) Module::AUTO_SET,
+	/* .sample3Time            = */ (BOOL) Module::THREE_TIMES,
 	/* .syncJumpWidth          = */ CAN_BIT_1TQ
 };
 #else

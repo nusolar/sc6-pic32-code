@@ -179,9 +179,9 @@ namespace nu {
 			}
 		}
 
-		/** Input in millivolts !! */
-		PURE ALWAYSINLINE uint16_t convert_uv_limit(uint32_t mV) {return (uint16_t) (mV*10/16 - 1);}
-		PURE ALWAYSINLINE uint16_t convert_ov_limit(uint32_t mV) {return (uint16_t) (mV*10/16);}
+		/** Input in multiple of 100 microVolts !! */
+		PURE ALWAYSINLINE uint16_t convert_uv_limit(uint32_t mV) {return (uint16_t) (mV/16 - 1);}
+		PURE ALWAYSINLINE uint16_t convert_ov_limit(uint32_t mV) {return (uint16_t) (mV/16);}
 
 	private:
 		/* LTC6804 low-level COMMANDS */

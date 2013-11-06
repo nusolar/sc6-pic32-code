@@ -12,6 +12,7 @@
 #include "nupp/component/ltc6804.hpp"
 #include "nupp/component/ds18x20.hpp"
 #include "nupp/component/nokia5110.hpp"
+#include "nupp/component/button.hpp"
 #include "nupp/usbhid.hpp"
 #include "nupp/serial.hpp"
 #include "nupp/spi.hpp"
@@ -23,14 +24,96 @@
 #include "nupp/closure.hpp"
 #include "nu/compiler.h"
 
-#define NU_BPS_MAX_VOLTAGE 4300 // mV
-#define NU_BPS_MIN_VOLTAGE 2750 // mV
 #define NU_BPS_TIMEOUT_INT 100 //ms
 #define NU_BPS_PRECHARGE_TIME 2000 //ms
 #define NU_BPS_CONVERSION_TIME 2.3 //ms - time for LTC6804s to complete conversion.
 
 namespace nu {
+	struct BpsMode {
+		struct Mode {
+			int id;
+			bool can_discharge, can_charge, drive;
+			int charge_conj, discharge_conj, drive_conj;
+		};
+
+		enum ModeName {
+			Off = 0,
+			Discharging = 1,
+			Drive = 2,
+			EmptyCharging = 4,
+			Charging = 5,
+			DriveCharging = 6,
+
+			NOTHING = -1
+		};
+
+		Mode modes[6];
+		int current_mode;
+
+		BpsMode(): current_mode(Off) {
+			modes[Off] = {Off,
+				false, false, false,
+				EmptyCharging, Discharging, NOTHING};
+			modes[Discharging] = {Discharging,
+				true, false, false,
+				Charging, Off, Drive};
+			modes[Drive] = {Drive,
+				true, true, false,
+				DriveCharging, Off, Discharging};
+			modes[EmptyCharging] = {EmptyCharging,
+				false, false, true,
+				Off, Charging, NOTHING};
+			modes[Charging] = {Charging,
+				true, false, true,
+				Discharging, EmptyCharging, DriveCharging};
+			modes[DriveCharging] = {DriveCharging,
+				true, true, true,
+				Drive, EmptyCharging, Charging};
+		}
+
+		void traverse_mode(bool health, bool can_discharge, bool can_charge, bool drive) {
+			if (!health) {
+				current_mode = Off;
+			} else {
+				if (can_discharge != modes[current_mode].can_charge) {
+					// FIRST kill discharge if needed.
+					current_mode = modes[current_mode].discharge_conj;
+				} else if (can_charge != modes[current_mode].can_charge) {
+					// THEN toggle charging, if needed.
+					current_mode = modes[current_mode].charge_conj;
+				} else if (drive != modes[current_mode].drive) {
+					// FINALLY after discharge & charge are correct, drive.
+					if (modes[current_mode].drive_conj != NOTHING) {
+						// only drive when drive_conj != NOTHING
+						current_mode = modes[current_mode].drive_conj;
+					}
+				}
+			}
+		}
+	};
+
  	struct BPS: protected Nu32 {
+		static const size_t N_MODULES = 32;
+		static const uint16_t MAX_VOLTAGE = 43000; // multiple of 100uV
+		static const uint16_t MIN_VOLTAGE = 27500; // 100uV
+		static const uint32_t MAX_TEMP = 45;
+		static const uint32_t MIN_TEMP = 0;
+		static const float MAX_BATT_CURRENT_DISCHARGING = 72; // 72.8
+		static const float MAX_BATT_CURRENT_CHARGING = -32; // 36.4
+
+		static const uint16_t MIN_DISCHARGE_VOLTAGE = MIN_VOLTAGE + 100;
+		static const uint16_t MAX_CHARGE_VOLTAGE = MAX_VOLTAGE + 10;
+
+		enum TripCode {
+			NONE = 0,
+			OVER_VOLT,
+			UNDER_VOLT,
+			OVER_TEMP,
+			UNDER_TEMP,
+			OVER_CURR_DISCHARGING,
+			OVER_CURR_CHARGING
+		};
+
 		enum Modes {
 			OFF = 0,
 			DISCHARGING = 1,
@@ -51,9 +134,9 @@ namespace nu {
 			BADMODE,
 			BADPC
 		};
-
+		
 		DigitalOut main_relay, array_relay, precharge_relay, motor_relay;
-		DigitalIn bits[6];
+		Button bypass_button;
 		UsbHid hid;
 		Serial com;
 		can::Module common_can;
@@ -67,13 +150,16 @@ namespace nu {
 		 * Aggregated data of the Sensors and the BMS.
 		 */
 		struct State {
-			static const size_t num_modules = 32;
 			
 			// scientific data
 			double cc_battery, cc_array, wh_battery, wh_array;
 			int16_t current0, current1; // 10bit voltage, 0-5V
 			Array<uint16_t, 36> voltages; // in 100uv. 4 extra voltages, for empty LTC slots
-			Array<float, num_modules> temperatures; // in degC
+			Array<float, N_MODULES> temperatures; // in degC
+
+			// Trip Code & data
+			TripCode trip_code;
+			int8_t trip_data;
 
 			// Protection modes & timers
 			Modes mode;
@@ -82,21 +168,22 @@ namespace nu {
 			uint64_t precharge_clock; //ms
 
 			// error data
-			uint8_t disabled_module;
+			int8_t disabled_module;
 			int8_t last_error;
 			int8_t error;
 			int8_t error_value;
 			
 			// timers & indices used in the Run Loop
-			uint64_t time;
+			uint64_t uptime; //s
 			uint64_t lcd_clock; //ms
 			uint8_t module_i;
 			
 			State(): cc_battery(0), cc_array(0), wh_battery(0), wh_array(0),
 				current0(0), current1(0), voltages(0), temperatures(0),
+				trip_code(NONE), trip_data(0),
 				mode(OFF), precharging(PC_OFF), mode_timeout_clock(0), precharge_clock(0),
-				disabled_module(63), last_error(0), error(NOERR), error_value(0),
-				time(0), lcd_clock(0), module_i(0) {}
+				disabled_module(-1), last_error(0), error(NOERR), error_value(0),
+				uptime(0), lcd_clock(0), module_i(0) {}
 		} state;
 
 		/**
@@ -111,14 +198,14 @@ namespace nu {
 			// protection data
 			uint8_t mode, precharge;
 			// error data
-			uint8_t disabled_module;
+			int8_t disabled_module;
 			int8_t last_error;
 			int8_t error;
 			int8_t error_value;
 
 			Report (State s): cc_battery(s.cc_battery), cc_array(s.cc_array),
 				wh_battery(s.wh_battery), wh_array(s.wh_array),
-				current0 (s.current0), current1(s.current1),
+				current0(s.current0), current1(s.current1),
 				voltages(), temperatures(),
 				mode(s.mode), precharge(s.precharging),
 				disabled_module(s.disabled_module), last_error(s.last_error),
@@ -135,7 +222,7 @@ namespace nu {
 			array_relay(PIN(D, 3), false),
 			precharge_relay(PIN(D, 4), false),
 			motor_relay(PIN(D, 5), false),
-			bits(),
+			bypass_button(PIN(B, 7)),
 			hid(),
 			com(UART(1)),
 			common_can(CAN1),
@@ -171,8 +258,8 @@ namespace nu {
 			LTC6804<3>::Configuration cfg0 = {0};
 			cfg0.bits.adcopt = 0; // normal ADC mode
 			cfg0.bits.refon = 1; // stay on
-			cfg0.bits.vuv = (voltage_sensor.convert_uv_limit(NU_BPS_MIN_VOLTAGE)+1) & 0xfff; // mask 12 bits
-			cfg0.bits.vov = voltage_sensor.convert_ov_limit(NU_BPS_MAX_VOLTAGE) & 0xfff;
+			cfg0.bits.vuv = (voltage_sensor.convert_uv_limit(MIN_VOLTAGE)+1) & 0xfff; // set voltage limit, & mask 12 bits
+			cfg0.bits.vov = voltage_sensor.convert_ov_limit(MAX_VOLTAGE) & 0xfff;
 
 			// write LTC6804 config register, also resetting LTC's WatchDogTimer
 			Array<LTC6804<3>::Configuration, 3> cfgs;
@@ -181,10 +268,16 @@ namespace nu {
 		}
 
 		ALWAYSINLINE void read_ins() {
-			// read on-board switches.
-			state.disabled_module = 0;
-			for (unsigned i=0; i<6; i++) {
-				state.disabled_module |= (uint8_t)(((bool)bits[i].read()) << i);
+			// debounce bypass button
+			for (unsigned i=0; i<10; i++) {
+				bypass_button.update();
+			}
+			// increment disabled module if it's pressed
+			if (bypass_button.toggled()) {
+				++state.disabled_module;
+				if (state.disabled_module == (int8_t)N_MODULES) {
+					state.disabled_module = -1;
+				}
 			}
 
 			state.current0 = current_sensor0.read() & 0x3ff; //mask 10 bits
@@ -192,44 +285,9 @@ namespace nu {
 			temp_sensor.update_temperatures(state.temperatures);
 			voltage_sensor.read_volts(state.voltages);
 			
-
 			// repopulate data
 			temp_sensor.perform_temperature_conversion();
 			voltage_sensor.start_voltage_conversion();
-		}
-
-		ALWAYSINLINE void serial_io() {
-			com << TTY_UNIT << "battery_current" << TTY_RECORD << state.current0 << nu::end;
-			com << TTY_UNIT << "array_current" << TTY_RECORD << state.current1 << nu::end;
-			com << TTY_UNIT << "disabled_module" << TTY_RECORD << state.disabled_module << nu::end;
-			com << TTY_UNIT << "uptime" << TTY_RECORD << state.time << nu::end;
-			com << TTY_UNIT << "mode" << TTY_RECORD << state.mode << TTY_UNIT << nu::end;
-
-			// get line
-			Array<char, 30> input;
-			int length = com.read_line(input, input.size());
-
-			if (length > 0 &&
-				input[0] == TTY_UNIT &&
-				strncmp(input.data()+1, "mode", 4) == 0 &&
-				input[5] == TTY_RECORD)
-			{
-				char mode[2] = {input[6], '\0'};
-				state.mode = (Modes)atoi(mode);
-			} else {
-				length = 0;
-			}
-
-			// If handling failed, and if timeout overflowed, turn OFF.
-			// Else if handling succeeded, reset timeout_clock
-			if (length == 0) {
-				uint64_t time = timer::ms();
-				if (time > NU_BPS_TIMEOUT_INT + (time>state.mode_timeout_clock? state.mode_timeout_clock: 0)) {
-					state.mode = OFF;
-				}
-			} else {
-				state.mode_timeout_clock = timer::ms();
-			}
 		}
 
 		void hid_tx_callback(unsigned char *data, size_t len) {
@@ -245,15 +303,51 @@ namespace nu {
 		}
 
 		ALWAYSINLINE void do_hid() {
-			typedef Closure<typeof(*this), typeof(&nu::BPS::hid_tx_callback), void, unsigned char *, size_t> delegate;
-			hid.try_tx(delegate::use(*this, &nu::BPS::hid_tx_callback));
-			hid.try_rx(delegate::use(*this, &nu::BPS::hid_rx_callback));
+			typedef Closure<typeof(*this), void, unsigned char *, size_t> delegate;
+			hid.try_tx(delegate::use<&nu::BPS::hid_tx_callback>(*this));
+			hid.try_rx(delegate::use<&nu::BPS::hid_rx_callback>(*this));
 
 			// If state.mode_timeout_clock isn't updated fast enough, turn OFF.
 			uint64_t time = timer::ms();
 			if (time > NU_BPS_TIMEOUT_INT + (time>state.mode_timeout_clock? state.mode_timeout_clock: 0)) {
 				state.mode = OFF;
 			}
+		}
+
+		void check_trip_conditions() {
+			TripCode trip_code = NONE;
+			int8_t trip_data = -1;
+
+			for (uint8_t i=0; i<N_MODULES; ++i) {
+				if (i == state.disabled_module) {
+					continue;
+				}
+				if (state.voltages[i] > MAX_VOLTAGE) {
+					trip_code = OVER_VOLT;
+				} else if (state.voltages[i] < MIN_VOLTAGE) {
+					trip_code = UNDER_VOLT;
+				} else if (state.temperatures[i] > MAX_TEMP) {
+					trip_code = OVER_TEMP;
+				} else if (state.temperatures[i] < MIN_TEMP) {
+					trip_code = UNDER_TEMP;
+				} else {
+					continue;
+				}
+
+				trip_data = i;
+				break;
+			}
+
+			if (state.current0 > MAX_BATT_CURRENT_DISCHARGING) {
+				trip_code = OVER_CURR_DISCHARGING;
+				trip_data = 0;
+			} else if (state.current0 < MAX_BATT_CURRENT_CHARGING) {
+				trip_code = OVER_CURR_CHARGING;
+				trip_data = 0;
+			}
+
+			state.trip_code = trip_code;
+			state.trip_data = trip_data;
 		}
 
 		/**
@@ -264,7 +358,7 @@ namespace nu {
 		 * (1) when batteries are normal, and could potentially go to DRIVE or CHARGING_DRIVE
 		 * (2) when batteries are critically low, and could not sustain DISCHARGING/DRIVE.
          */
-		ALWAYSINLINE void set_mode() {
+		ALWAYSINLINE void set_relays() {
 			bool has_error = false;
 			
 			switch (state.mode) {
@@ -382,15 +476,15 @@ namespace nu {
 
 				this->configure_sensors();
 				this->read_ins();
-				this->serial_io();
-				this->set_mode();
+				this->check_trip_conditions();
+				this->set_relays();
 
-				state.time = timer::ms();
-				if (state.time<state.lcd_clock || state.time - state.lcd_clock > 1000) {
+				uint64_t time = timer::ms();
+				if (time<state.lcd_clock || time - state.lcd_clock > 1000) {
 					lcd1.lcd_clear();
 					lcd1 << "ZELDA " << state.module_i << end;
 					lcd1.goto_xy(0, 1);
-					lcd1 << "V: " /*<< voltage_sensor[state.module_i]*/ << end;
+					lcd1 << "V: " << state.voltages[state.module_i] << end;
 					lcd1.goto_xy(0, 2);
 					lcd1 << "T: " << state.temperatures[state.module_i] << end;
 					lcd1.goto_xy(0, 3);
@@ -402,8 +496,9 @@ namespace nu {
 							"-" << precharge_relay.status() << "-" << motor_relay.status() << end;
 					led1.toggle();
 
-					++state.module_i %= 32;
-					state.lcd_clock = state.time;
+					++state.module_i %= N_MODULES; // next module index
+					state.lcd_clock = time; // reset LCD update clock
+					++state.uptime; // increase uptime by 1 second
 				}
 			}
 		}

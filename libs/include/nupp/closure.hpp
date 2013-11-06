@@ -8,34 +8,28 @@
 #ifndef CLOSURE_HPP
 #define	CLOSURE_HPP
 
-template <class T, typename Mptr, typename R, typename ...ArgP>
+template <class T, typename R, typename ...ArgP>
 class Closure {
 public:
 	typedef R (*FuncType)(ArgP...);
 
 private:
 	static T *global_context;
-	static Mptr method;
 
+	template <R (T::*Mptr) (ArgP...)>
 	static R callback(ArgP... args) {
-		if (global_context) {
-			if (method) {
-				(global_context->*method)(args...);
-			}
-		}
+		return (global_context->*Mptr)(args...);
 	}
 public:
-	static FuncType use(T &obj, Mptr meth) {
+	template <R (T::*Mptr) (ArgP...)>
+	static FuncType use(T &obj) {
 		global_context = &obj;
-		method = meth;
-		return &callback;
+		return & callback<Mptr>;
 	}
 };
 
-template<class T, typename Mptr, typename R, typename ...ArgP>
-T* Closure<T, Mptr, R, ArgP...>::global_context = NULL;
-template<class T, typename Mptr, typename R, typename ...ArgP>
-Mptr Closure<T, Mptr, R, ArgP...>::method = NULL;
+template<class T, typename R, typename ...ArgP>
+T* Closure<T, R, ArgP...>::global_context = NULL;
 
 #endif	/* CLOSURE_HPP */
 

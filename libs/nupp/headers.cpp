@@ -4,6 +4,7 @@
 #include "nupp/board/driver_controls.hpp"
 #include "nupp/board/nu32.hpp"
 #include "nupp/board/output_board.hpp"
+#include "nupp/board/pedals.hpp"
 #include "nupp/board/steering_wheel.hpp"
 
 // PCB components
@@ -15,6 +16,7 @@
 #include "nupp/component/ulcd28pt.hpp"
 #include "nupp/component/button.hpp"
 #include "nupp/component/led.hpp"
+#include "nupp/component/ds18x20.hpp"
 
 // comm protocols
 #include "nupp/can.hpp"

@@ -28,6 +28,7 @@
           <itemPath>../include/nupp/board/output_board.hpp</itemPath>
           <itemPath>../include/nupp/board/steering_wheel.hpp</itemPath>
           <itemPath>../include/nupp/board/nu32.hpp</itemPath>
+          <itemPath>../include/nupp/board/pedals.hpp</itemPath>
         </logicalFolder>
         <logicalFolder name="f3" displayName="component" projectFiles="true">
           <itemPath>../include/nupp/component/ad7685.hpp</itemPath>

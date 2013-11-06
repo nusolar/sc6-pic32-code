@@ -7,6 +7,7 @@
 // Allocate twice the space of an nu::BPS, rounding up.
 uint64_t arena[div_roundup(sizeof(nu::BPS), 4)] ALIGNED(__BIGGEST_ALIGNMENT__);
 
+// Exception handling, copy-pasted directly from MicroChip's example code.
 extern "C" {
 	void kill(void); // implemented below, in C++
 
