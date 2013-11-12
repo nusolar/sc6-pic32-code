@@ -7,6 +7,7 @@
 //
 
 #include "nupp/board/bms.hpp"
+#include <new>
 
 using namespace nu;
 
@@ -14,11 +15,11 @@ const char *BMS::Trip::name[] = {
 	NU_TRIPCODE(NU_ERROR_NAMES)
 };
 
-void BMS::main() {
-	WDT::disable();
-	BMS bms = BMS();
-	bms.boot();
+void nu::BMS::main(nu::BMS *bms) {
+	nu::WDT::disable();
+	new (bms) nu::BMS();
+	bms->boot();
 	while (true) {
-		bms.run();
+		bms->run();
 	}
 }

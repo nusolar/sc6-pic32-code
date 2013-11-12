@@ -375,6 +375,11 @@ namespace nu {
 
 		}
 
+		void emergency_shutoff() {
+			main_relay.low();
+			array_relay.low();
+		}
+
 
 		/**
 		 * A function to be called repeatedly
@@ -429,7 +434,7 @@ namespace nu {
 			timer::delay_s<1>();
 		}
 
-		static NORETURN void main();
+		static NORETURN void main(BMS *bms);
 	};
 }
 
