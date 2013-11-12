@@ -218,10 +218,10 @@ namespace nu {
 
 
 		ALWAYSINLINE BPS(): Nu32(Nu32::V2011),
-			main_relay(PIN(D, 2), false),
-			array_relay(PIN(D, 3), false),
-			precharge_relay(PIN(D, 4), false),
-			motor_relay(PIN(D, 5), false),
+			main_relay(PIN(D, 1), false),
+			array_relay(PIN(D, 2), false),
+			precharge_relay(PIN(D, 3), false),
+			motor_relay(PIN(D, 4), false),
 			bypass_button(PIN(B, 7)),
 			hid(),
 			com(UART(1)),
