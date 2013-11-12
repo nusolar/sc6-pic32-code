@@ -122,7 +122,7 @@
         <targetPluginBoard></targetPluginBoard>
         <platformTool>PICkit3PlatformTool</platformTool>
         <languageToolchain>XC32</languageToolchain>
-        <languageToolchainVersion>1.21</languageToolchainVersion>
+        <languageToolchainVersion>1.22</languageToolchainVersion>
         <platform>4</platform>
       </toolsSet>
       <compileType>
@@ -157,6 +157,7 @@
         <property key="strict-ansi" value="true"/>
         <property key="support-ansi" value="false"/>
         <property key="use-cci" value="false"/>
+        <property key="use-iar" value="false"/>
         <property key="use-indirect-calls" value="false"/>
       </C32>
       <C32-AS>
@@ -222,12 +223,14 @@
         <property key="rtti" value="false"/>
         <property key="strict-ansi" value="true"/>
         <property key="use-cci" value="false"/>
+        <property key="use-iar" value="false"/>
         <property key="use-indirect-calls" value="false"/>
         <appendMe value="-std=gnu++0x -fthread-jumps -falign-functions -falign-jumps -falign-loops  -falign-labels -fcaller-saves -fcrossjumping -fcse-follow-jumps  -fcse-skip-blocks -fdelete-null-pointer-checks -fexpensive-optimizations -fgcse  -fgcse-lm  -finline-small-functions -findirect-inlining -fipa-sra -foptimize-sibling-calls -fpeephole2 -fregmove -freorder-blocks -freorder-functions -frerun-cse-after-loop -fsched-interblock -fsched-spec -fschedule-insns  -fschedule-insns2 -fstrict-aliasing -fstrict-overflow -ftree-switch-conversion -ftree-pre -ftree-vrp -fdata-sections -ffunction-sections -Wall -Wcast-align -Wcast-qual -Wconversion -Wdisabled-optimization -Weffc++ -Wendif-labels -Wextra -Wfloat-equal -Winline -Winvalid-pch -Wmissing-format-attribute -Wmissing-noreturn -Wno-packed -Wno-padded -Wpointer-arith -Wredundant-decls -Wshadow -Wundef -Wunreachable-code -Wwrite-strings -Wno-unused-function"/>
       </C32CPP>
       <C32Global>
         <property key="legacy-libc" value="false"/>
         <property key="save-temps" value="false"/>
+        <property key="wpo-lto" value="false"/>
       </C32Global>
       <PICkit3PlatformTool>
         <property key="ADC 1" value="true"/>
@@ -305,7 +308,7 @@
         <targetPluginBoard></targetPluginBoard>
         <platformTool>PICkit3PlatformTool</platformTool>
         <languageToolchain>XC32</languageToolchain>
-        <languageToolchainVersion>1.21</languageToolchainVersion>
+        <languageToolchainVersion>1.22</languageToolchainVersion>
         <platform>4</platform>
       </toolsSet>
       <compileType>
@@ -340,6 +343,7 @@
         <property key="strict-ansi" value="false"/>
         <property key="support-ansi" value="false"/>
         <property key="use-cci" value="false"/>
+        <property key="use-iar" value="false"/>
         <property key="use-indirect-calls" value="false"/>
       </C32>
       <C32-AS>
@@ -405,6 +409,7 @@
         <property key="rtti" value="false"/>
         <property key="strict-ansi" value="false"/>
         <property key="use-cci" value="false"/>
+        <property key="use-iar" value="false"/>
         <property key="use-indirect-calls" value="false"/>
         <appendMe value="-std=gnu++0x -fthread-jumps -falign-functions -falign-jumps -falign-loops  -falign-labels -fcaller-saves -fcrossjumping -fcse-follow-jumps  -fcse-skip-blocks -fdelete-null-pointer-checks -fexpensive-optimizations -fgcse  -fgcse-lm  -finline-small-functions -findirect-inlining -fipa-sra -foptimize-sibling-calls -fpeephole2 -fregmove -freorder-blocks -freorder-functions -frerun-cse-after-loop -fsched-interblock -fsched-spec -fschedule-insns  -fschedule-insns2 -fstrict-aliasing -fstrict-overflow -ftree-switch-conversion -ftree-pre -ftree-vrp -fdata-sections -ffunction-sections -Wall -Wcast-align -Wcast-qual -Wconversion -Wdisabled-optimization -Weffc++ -Wendif-labels -Wextra -Wfloat-equal -Winline -Winvalid-pch -Wmissing-format-attribute -Wmissing-noreturn -Wno-packed -Wno-padded -Wpointer-arith -Wredundant-decls -Wshadow -Wundef -Wunreachable-code -Wwrite-strings -Wno-unused-function"/>
       </C32CPP>
