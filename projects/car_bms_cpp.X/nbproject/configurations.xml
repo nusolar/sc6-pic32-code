@@ -53,23 +53,6 @@
                             DD="dist/debug/debug/nupp.X.">
               </makeArtifact>
             </linkerLibProjectItem>
-            <linkerLibProjectItem>
-              <makeArtifact PL="../../libs/usb.X"
-                            CT="3"
-                            CN="debug"
-                            AC="true"
-                            BL="true"
-                            WD="../../libs/usb.X"
-                            BC="${MAKE}  -j 8 -f Makefile CONF=debug"
-                            DBC="${MAKE}  -j 8 -f Makefile CONF=debug TYPE_IMAGE=DEBUG_RUN"
-                            CC="rm -rf &quot;build/debug&quot; &quot;dist/debug&quot;"
-                            OP="dist/debug/production/usb.X.a"
-                            DOP="dist/debug/debug/usb.X.a"
-                            FL="dist/debug/production/usb.X.a"
-                            PD="dist/debug/production/usb.X."
-                            DD="dist/debug/debug/usb.X.">
-              </makeArtifact>
-            </linkerLibProjectItem>
           </linkerLibItems>
         </linkerTool>
         <loading>
@@ -275,23 +258,6 @@
                             FL="dist/optimized/production/nupp.X.a"
                             PD="dist/optimized/production/nupp.X."
                             DD="dist/optimized/debug/nupp.X.">
-              </makeArtifact>
-            </linkerLibProjectItem>
-            <linkerLibProjectItem>
-              <makeArtifact PL="../../libs/usb.X"
-                            CT="3"
-                            CN="optimized"
-                            AC="false"
-                            BL="true"
-                            WD="../../libs/usb.X"
-                            BC="${MAKE}  -j 8 -f Makefile CONF=optimized"
-                            DBC="${MAKE}  -j 8 -f Makefile CONF=optimized TYPE_IMAGE=DEBUG_RUN"
-                            CC="rm -rf &quot;build/optimized&quot; &quot;dist/optimized&quot;"
-                            OP="dist/optimized/production/usb.X.a"
-                            DOP="dist/optimized/debug/usb.X.a"
-                            FL="dist/optimized/production/usb.X.a"
-                            PD="dist/optimized/production/usb.X."
-                            DD="dist/optimized/debug/usb.X.">
               </makeArtifact>
             </linkerLibProjectItem>
           </linkerLibItems>
