@@ -137,7 +137,6 @@ namespace nu {
 		
 		DigitalOut main_relay, array_relay, precharge_relay, motor_relay;
 		Button bypass_button;
-		UsbHid hid;
 		Serial com;
 		can::Module common_can;
 		Nokia5110 lcd1, lcd2;
@@ -223,7 +222,6 @@ namespace nu {
 			precharge_relay(PIN(D, 3), false),
 			motor_relay(PIN(D, 4), false),
 			bypass_button(PIN(B, 7)),
-			hid(),
 			com(UART(1)),
 			common_can(CAN1),
 			lcd1(PIN(G, 9), SPI_CHANNEL2, PIN(A, 9),  PIN(E, 9)),
@@ -290,28 +288,32 @@ namespace nu {
 			voltage_sensor.start_voltage_conversion();
 		}
 
-		void hid_tx_callback(unsigned char *data, size_t len) {
-			Report r = Report(state);
-			memcpy(data, &r, len);
-		}
+		void recv_can() {
+			can::frame::Packet pkt(0);
+		    uint32_t id;
+		    common_can.in().rx(pkt,id);
 
-		void hid_rx_callback(unsigned char *data, size_t len) {
-			if (len > 0) {
-				state.mode = (Modes)data[0];
-				state.mode_timeout_clock = timer::ms();
+			switch (id) {
+				case can::frame::os::tx::driver_input_k: {
+					can::frame::os::tx::driver_input data(pkt);
+					state.mode = (Modes)data.frame().power;
+					state.mode_timeout_clock = timer::ms();
+				}
+				default: {
+				}
 			}
-		}
-
-		ALWAYSINLINE void do_hid() {
-			typedef Closure<typeof(*this), void, unsigned char *, size_t> delegate;
-			hid.try_tx(delegate::use<&nu::BPS::hid_tx_callback>(*this));
-			hid.try_rx(delegate::use<&nu::BPS::hid_rx_callback>(*this));
 
 			// If state.mode_timeout_clock isn't updated fast enough, turn OFF.
 			uint64_t time = timer::ms();
 			if (time > NU_BPS_TIMEOUT_INT + (time>state.mode_timeout_clock? state.mode_timeout_clock: 0)) {
+				state.mode_timeout_clock = (uint64_t)-1;
 				state.mode = OFF;
 			}
+		}
+
+		void hid_tx_callback(unsigned char *data, size_t len) {
+			Report r = Report(state);
+			memcpy(data, &r, len);
 		}
 
 		void check_trip_conditions() {
@@ -350,13 +352,21 @@ namespace nu {
 			state.trip_data = trip_data;
 		}
 
+		void check_mode_safety() {
+			if (state.trip_code != NONE) {
+				state.mode = OFF;
+			}
+		}
+
 		/**
-		 * Set the Battery Protection Mode, based on state.target_mode.
+		 * Sets the Battery Protection Mode, based on state.mode.
 		 * Either OFF, a DISCHARGE mode, or CHARGING.
 		 *
 		 * Be careful, CHARGING mode is permitted in two circumstances:
 		 * (1) when batteries are normal, and could potentially go to DRIVE or CHARGING_DRIVE
 		 * (2) when batteries are critically low, and could not sustain DISCHARGING/DRIVE.
+		 *
+		 * If state.mode is not valid, sets state.error.
          */
 		ALWAYSINLINE void set_relays() {
 			bool has_error = false;
@@ -460,6 +470,30 @@ namespace nu {
 			}
 		}
 
+		void draw_lcd() {
+			uint64_t time = timer::ms();
+			if (time<state.lcd_clock || time - state.lcd_clock > 1000) {
+				lcd1.lcd_clear();
+				lcd1 << "ZELDA " << state.module_i << end;
+				lcd1.goto_xy(0, 1);
+				lcd1 << "V: " << state.voltages[state.module_i] << end;
+				lcd1.goto_xy(0, 2);
+				lcd1 << "T: " << state.temperatures[state.module_i] << end;
+				lcd1.goto_xy(0, 3);
+				lcd1 << "I0: " <<  state.current0 << end;
+				lcd1.goto_xy(0, 4);
+				lcd1 << "Off: " << state.disabled_module << end;
+				lcd1.goto_xy(0, 5);
+				lcd1 << "R: " << main_relay.status() << "-" << array_relay.status() <<
+						"-" << precharge_relay.status() << "-" << motor_relay.status() << end;
+				led1.toggle();
+
+				++state.module_i %= N_MODULES; // next module index
+				state.lcd_clock = time; // reset LCD update clock
+				++state.uptime; // increase uptime by 1 second
+			}
+		}
+
 		ALWAYSINLINE void emergency_shutoff() {
 			main_relay.low();
 			array_relay.low();
@@ -473,33 +507,13 @@ namespace nu {
 		ALWAYSINLINE NORETURN void run_loop() {
 			while (true) {
 				WDT::clear();
-
+				this->recv_can();
 				this->configure_sensors();
 				this->read_ins();
 				this->check_trip_conditions();
+				this->check_mode_safety();
 				this->set_relays();
-
-				uint64_t time = timer::ms();
-				if (time<state.lcd_clock || time - state.lcd_clock > 1000) {
-					lcd1.lcd_clear();
-					lcd1 << "ZELDA " << state.module_i << end;
-					lcd1.goto_xy(0, 1);
-					lcd1 << "V: " << state.voltages[state.module_i] << end;
-					lcd1.goto_xy(0, 2);
-					lcd1 << "T: " << state.temperatures[state.module_i] << end;
-					lcd1.goto_xy(0, 3);
-					lcd1 << "I0: " <<  state.current0 << end;
-					lcd1.goto_xy(0, 4);
-					lcd1 << "Off: " << state.disabled_module << end;
-					lcd1.goto_xy(0, 5);
-					lcd1 << "R: " << main_relay.status() << "-" << array_relay.status() <<
-							"-" << precharge_relay.status() << "-" << motor_relay.status() << end;
-					led1.toggle();
-
-					++state.module_i %= N_MODULES; // next module index
-					state.lcd_clock = time; // reset LCD update clock
-					++state.uptime; // increase uptime by 1 second
-				}
+				this->draw_lcd();
 			}
 		}
 
