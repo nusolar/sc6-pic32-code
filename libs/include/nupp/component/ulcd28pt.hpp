@@ -19,7 +19,7 @@ namespace nu {
 	 */
 	class uLCD28PT: protected Serial {
 		template <class V>
-		ALWAYSINLINE void write_key_val(const char *key, V &value) {
+		ALWAYSINLINE void write_key_val(const char *key, V value) {
 			OStream::operator<< (TTY_RECORD) << (key) <<  (TTY_UNIT) << (value) << (TTY_RECORD) << (end);
 		}
 
@@ -27,15 +27,15 @@ namespace nu {
 		ALWAYSINLINE uLCD28PT(UARTModule mod): Serial(mod) {}
 
 		ALWAYSINLINE uLCD28PT& operator << (const can::frame::ws20::tx::motor_velocity& x) {
-			write_key_val("velo", x.frame.contents.vehicleVelocity);
+			write_key_val<float>("velo", x.frame().vehicleVelocity);
 			return *this;
 		}
 		ALWAYSINLINE uLCD28PT& operator << (const can::frame::ws20::tx::current_vector& x) {
-			write_key_val("curr", x.frame.contents.currentRe);
+			write_key_val<float>("curr", x.frame().currentRe);
 			return *this;
 		}
 		ALWAYSINLINE uLCD28PT& operator << (const char * x) {
-			write_key_val("text", x);
+			write_key_val<const char *>("text", x);
 			return *this;
 		}
 	};
