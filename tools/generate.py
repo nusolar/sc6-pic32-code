@@ -93,7 +93,7 @@ class CanPacket:
 		};
 		uint32_t id() const {return _id;}
 		layout_t &frame() {return *(layout_t *)&Packet::frame();}
-		layout_t frame() const {return *(layout_t*)&Packet::frame();}
+		layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 		%(name)s(): Packet(0) {}
 		%(name)s(const uint64_t _i): Packet(_i) {}
 		%(name)s(const Packet& p): Packet(p.data()) {}
@@ -138,15 +138,17 @@ class CanPacket:
 
 class CanBasePacket:
 	cpp_class_packet = """\
-	class Packet
+	struct Packet
 	{
-		static const uint32_t _id = 0;
-
 		union frame_t
 		{
 			uint64_t data;
 			uint8_t bytes[8];
-		} _frame;
+		};
+
+	private:
+		static const uint32_t _id = 0;
+		frame_t _frame;
 
 	public:
 		virtual uint32_t id() const {return _id;}

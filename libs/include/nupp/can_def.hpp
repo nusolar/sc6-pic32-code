@@ -12,15 +12,17 @@ namespace nu
 	{
 		namespace frame
 		{
-			class Packet
+			struct Packet
 			{
-				static const uint32_t _id = 0;
-
 				union frame_t
 				{
 					uint64_t data;
 					uint8_t bytes[8];
-				} _frame;
+				};
+
+			private:
+				static const uint32_t _id = 0;
+				frame_t _frame;
 
 			public:
 				virtual uint32_t id() const {return _id;}
@@ -74,7 +76,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						trip(): Packet(0) {}
 						trip(const uint64_t _i): Packet(_i) {}
 						trip(const Packet& p): Packet(p.data()) {}
@@ -95,7 +97,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						reset_cc_batt(): Packet(0) {}
 						reset_cc_batt(const uint64_t _i): Packet(_i) {}
 						reset_cc_batt(const Packet& p): Packet(p.data()) {}
@@ -116,7 +118,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						reset_cc_array(): Packet(0) {}
 						reset_cc_array(const uint64_t _i): Packet(_i) {}
 						reset_cc_array(const Packet& p): Packet(p.data()) {}
@@ -137,7 +139,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						reset_cc_mppt1(): Packet(0) {}
 						reset_cc_mppt1(const uint64_t _i): Packet(_i) {}
 						reset_cc_mppt1(const Packet& p): Packet(p.data()) {}
@@ -158,7 +160,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						reset_cc_mppt2(): Packet(0) {}
 						reset_cc_mppt2(const uint64_t _i): Packet(_i) {}
 						reset_cc_mppt2(const Packet& p): Packet(p.data()) {}
@@ -179,7 +181,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						reset_cc_mppt3(): Packet(0) {}
 						reset_cc_mppt3(const uint64_t _i): Packet(_i) {}
 						reset_cc_mppt3(const Packet& p): Packet(p.data()) {}
@@ -200,7 +202,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						reset_cc_Wh(): Packet(0) {}
 						reset_cc_Wh(const uint64_t _i): Packet(_i) {}
 						reset_cc_Wh(const Packet& p): Packet(p.data()) {}
@@ -221,7 +223,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						reset_cc_all(): Packet(0) {}
 						reset_cc_all(const uint64_t _i): Packet(_i) {}
 						reset_cc_all(const Packet& p): Packet(p.data()) {}
@@ -274,7 +276,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						heartbeat(): Packet(0) {}
 						heartbeat(const uint64_t _i): Packet(_i) {}
 						heartbeat(const Packet& p): Packet(p.data()) {}
@@ -295,7 +297,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						error(): Packet(0) {}
 						error(const uint64_t _i): Packet(_i) {}
 						error(const Packet& p): Packet(p.data()) {}
@@ -316,7 +318,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						uptime(): Packet(0) {}
 						uptime(const uint64_t _i): Packet(_i) {}
 						uptime(const Packet& p): Packet(p.data()) {}
@@ -338,7 +340,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						last_reset(): Packet(0) {}
 						last_reset(const uint64_t _i): Packet(_i) {}
 						last_reset(const Packet& p): Packet(p.data()) {}
@@ -360,7 +362,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						batt_bypass(): Packet(0) {}
 						batt_bypass(const uint64_t _i): Packet(_i) {}
 						batt_bypass(const Packet& p): Packet(p.data()) {}
@@ -382,7 +384,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						current(): Packet(0) {}
 						current(const uint64_t _i): Packet(_i) {}
 						current(const Packet& p): Packet(p.data()) {}
@@ -403,7 +405,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						cc_array(): Packet(0) {}
 						cc_array(const uint64_t _i): Packet(_i) {}
 						cc_array(const Packet& p): Packet(p.data()) {}
@@ -424,7 +426,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						cc_batt(): Packet(0) {}
 						cc_batt(const uint64_t _i): Packet(_i) {}
 						cc_batt(const Packet& p): Packet(p.data()) {}
@@ -445,7 +447,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						cc_mppt1(): Packet(0) {}
 						cc_mppt1(const uint64_t _i): Packet(_i) {}
 						cc_mppt1(const Packet& p): Packet(p.data()) {}
@@ -466,7 +468,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						cc_mppt2(): Packet(0) {}
 						cc_mppt2(const uint64_t _i): Packet(_i) {}
 						cc_mppt2(const Packet& p): Packet(p.data()) {}
@@ -487,7 +489,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						cc_mppt3(): Packet(0) {}
 						cc_mppt3(const uint64_t _i): Packet(_i) {}
 						cc_mppt3(const Packet& p): Packet(p.data()) {}
@@ -508,7 +510,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						Wh_batt(): Packet(0) {}
 						Wh_batt(const uint64_t _i): Packet(_i) {}
 						Wh_batt(const Packet& p): Packet(p.data()) {}
@@ -529,7 +531,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						Wh_mppt1(): Packet(0) {}
 						Wh_mppt1(const uint64_t _i): Packet(_i) {}
 						Wh_mppt1(const Packet& p): Packet(p.data()) {}
@@ -550,7 +552,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						Wh_mppt2(): Packet(0) {}
 						Wh_mppt2(const uint64_t _i): Packet(_i) {}
 						Wh_mppt2(const Packet& p): Packet(p.data()) {}
@@ -571,7 +573,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						Wh_mppt3(): Packet(0) {}
 						Wh_mppt3(const uint64_t _i): Packet(_i) {}
 						Wh_mppt3(const Packet& p): Packet(p.data()) {}
@@ -593,7 +595,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						voltage(): Packet(0) {}
 						voltage(const uint64_t _i): Packet(_i) {}
 						voltage(const Packet& p): Packet(p.data()) {}
@@ -615,7 +617,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						owVoltage(): Packet(0) {}
 						owVoltage(const uint64_t _i): Packet(_i) {}
 						owVoltage(const Packet& p): Packet(p.data()) {}
@@ -637,7 +639,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						temp(): Packet(0) {}
 						temp(const uint64_t _i): Packet(_i) {}
 						temp(const Packet& p): Packet(p.data()) {}
@@ -659,7 +661,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						trip(): Packet(0) {}
 						trip(const uint64_t _i): Packet(_i) {}
 						trip(const Packet& p): Packet(p.data()) {}
@@ -681,7 +683,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						last_trip(): Packet(0) {}
 						last_trip(const uint64_t _i): Packet(_i) {}
 						last_trip(const Packet& p): Packet(p.data()) {}
@@ -703,7 +705,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						trip_pt_current(): Packet(0) {}
 						trip_pt_current(const uint64_t _i): Packet(_i) {}
 						trip_pt_current(const Packet& p): Packet(p.data()) {}
@@ -725,7 +727,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						trip_pt_voltage(): Packet(0) {}
 						trip_pt_voltage(const uint64_t _i): Packet(_i) {}
 						trip_pt_voltage(const Packet& p): Packet(p.data()) {}
@@ -747,7 +749,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						trip_pt_temp(): Packet(0) {}
 						trip_pt_temp(const uint64_t _i): Packet(_i) {}
 						trip_pt_temp(const Packet& p): Packet(p.data()) {}
@@ -784,7 +786,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						driver_controls_id(): Packet(0) {}
 						driver_controls_id(const uint64_t _i): Packet(_i) {}
 						driver_controls_id(const Packet& p): Packet(p.data()) {}
@@ -806,7 +808,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						drive_cmd(): Packet(0) {}
 						drive_cmd(const uint64_t _i): Packet(_i) {}
 						drive_cmd(const Packet& p): Packet(p.data()) {}
@@ -828,7 +830,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						power_cmd(): Packet(0) {}
 						power_cmd(const uint64_t _i): Packet(_i) {}
 						power_cmd(const Packet& p): Packet(p.data()) {}
@@ -850,7 +852,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						reset_cmd(): Packet(0) {}
 						reset_cmd(const uint64_t _i): Packet(_i) {}
 						reset_cmd(const Packet& p): Packet(p.data()) {}
@@ -895,7 +897,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						motor_id(): Packet(0) {}
 						motor_id(const uint64_t _i): Packet(_i) {}
 						motor_id(const Packet& p): Packet(p.data()) {}
@@ -919,7 +921,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						motor_status_info(): Packet(0) {}
 						motor_status_info(const uint64_t _i): Packet(_i) {}
 						motor_status_info(const Packet& p): Packet(p.data()) {}
@@ -941,7 +943,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						motor_bus(): Packet(0) {}
 						motor_bus(const uint64_t _i): Packet(_i) {}
 						motor_bus(const Packet& p): Packet(p.data()) {}
@@ -963,7 +965,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						motor_velocity(): Packet(0) {}
 						motor_velocity(const uint64_t _i): Packet(_i) {}
 						motor_velocity(const Packet& p): Packet(p.data()) {}
@@ -985,7 +987,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						motor_phase(): Packet(0) {}
 						motor_phase(const uint64_t _i): Packet(_i) {}
 						motor_phase(const Packet& p): Packet(p.data()) {}
@@ -1007,7 +1009,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						voltage_vector(): Packet(0) {}
 						voltage_vector(const uint64_t _i): Packet(_i) {}
 						voltage_vector(const Packet& p): Packet(p.data()) {}
@@ -1029,7 +1031,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						current_vector(): Packet(0) {}
 						current_vector(const uint64_t _i): Packet(_i) {}
 						current_vector(const Packet& p): Packet(p.data()) {}
@@ -1051,7 +1053,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						backemf(): Packet(0) {}
 						backemf(const uint64_t _i): Packet(_i) {}
 						backemf(const Packet& p): Packet(p.data()) {}
@@ -1073,7 +1075,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						rail_15v_1pt65v(): Packet(0) {}
 						rail_15v_1pt65v(const uint64_t _i): Packet(_i) {}
 						rail_15v_1pt65v(const Packet& p): Packet(p.data()) {}
@@ -1095,7 +1097,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						rail_2pt5v_1pt2v(): Packet(0) {}
 						rail_2pt5v_1pt2v(const uint64_t _i): Packet(_i) {}
 						rail_2pt5v_1pt2v(const Packet& p): Packet(p.data()) {}
@@ -1117,7 +1119,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						fanspeed(): Packet(0) {}
 						fanspeed(const uint64_t _i): Packet(_i) {}
 						fanspeed(const Packet& p): Packet(p.data()) {}
@@ -1139,7 +1141,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						sinks_temp(): Packet(0) {}
 						sinks_temp(const uint64_t _i): Packet(_i) {}
 						sinks_temp(const Packet& p): Packet(p.data()) {}
@@ -1161,7 +1163,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						cpu_airin_temp(): Packet(0) {}
 						cpu_airin_temp(const uint64_t _i): Packet(_i) {}
 						cpu_airin_temp(const Packet& p): Packet(p.data()) {}
@@ -1183,7 +1185,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						cap_airout_temp(): Packet(0) {}
 						cap_airout_temp(const uint64_t _i): Packet(_i) {}
 						cap_airout_temp(const Packet& p): Packet(p.data()) {}
@@ -1205,7 +1207,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						odom_bus_ah(): Packet(0) {}
 						odom_bus_ah(const uint64_t _i): Packet(_i) {}
 						odom_bus_ah(const Packet& p): Packet(p.data()) {}
@@ -1239,7 +1241,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						cruise(): Packet(0) {}
 						cruise(const uint64_t _i): Packet(_i) {}
 						cruise(const Packet& p): Packet(p.data()) {}
@@ -1272,7 +1274,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						pedals(): Packet(0) {}
 						pedals(const uint64_t _i): Packet(_i) {}
 						pedals(const Packet& p): Packet(p.data()) {}
@@ -1308,7 +1310,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						driver_input(): Packet(0) {}
 						driver_input(const uint64_t _i): Packet(_i) {}
 						driver_input(const Packet& p): Packet(p.data()) {}
@@ -1341,7 +1343,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						mppt(): Packet(0) {}
 						mppt(const uint64_t _i): Packet(_i) {}
 						mppt(const Packet& p): Packet(p.data()) {}
@@ -1371,7 +1373,7 @@ namespace nu
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {return *(layout_t*)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
 						mppt(): Packet(0) {}
 						mppt(const uint64_t _i): Packet(_i) {}
 						mppt(const Packet& p): Packet(p.data()) {}

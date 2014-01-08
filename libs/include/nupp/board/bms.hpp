@@ -67,7 +67,6 @@ namespace nu {
 			static const char* name[];
 
 			static ALWAYSINLINE void trip(tripcode code, uint32_t module, BMS *self) {
-				/*
 				if (module == 21 || module == 22) return;
 
 				can::frame::bms::tx::trip trip_pkt(0);
@@ -98,7 +97,6 @@ namespace nu {
 				self->lcd1.goto_xy(0, 4);
 				self->lcd1 << "V: " << self->voltage_sensor[module < 32? module: 0] << end;
 				while (true) Nop();
-				*/
 			}
 		};
 

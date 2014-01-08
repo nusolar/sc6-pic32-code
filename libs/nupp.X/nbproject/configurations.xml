@@ -6,7 +6,6 @@
                    projectFiles="true">
       <logicalFolder name="f2" displayName="nu" projectFiles="true">
         <logicalFolder name="f1" displayName="platform" projectFiles="true">
-          <itemPath>../include/nu/platform/usb_serial.h</itemPath>
           <itemPath>../include/nu/platform/param.h</itemPath>
           <itemPath>../include/nu/platform/common_pragmas.h</itemPath>
           <itemPath>../include/nu/platform/wdt.h</itemPath>
@@ -44,7 +43,6 @@
           <itemPath>../include/nupp/platform/param.hpp</itemPath>
           <itemPath>../include/nupp/platform/pin.hpp</itemPath>
           <itemPath>../include/nupp/platform/serial.hpp</itemPath>
-          <itemPath>../include/nupp/platform/usb_serial.hpp</itemPath>
         </logicalFolder>
         <itemPath>../include/nupp/allocator.hpp</itemPath>
         <itemPath>../include/nupp/can.hpp</itemPath>
@@ -76,9 +74,6 @@
                    displayName="Source Files"
                    projectFiles="true">
       <logicalFolder name="f1" displayName="nu" projectFiles="true">
-        <logicalFolder name="f1" displayName="platform" projectFiles="true">
-          <itemPath>../nu/platform/usb_serial.c</itemPath>
-        </logicalFolder>
         <itemPath>../nu/param.c</itemPath>
         <itemPath>../nu/wdt.c</itemPath>
         <itemPath>../nu/errorcodes.c</itemPath>
