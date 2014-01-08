@@ -16,14 +16,14 @@
 #include "nupp/component/led.hpp"
 #include "nupp/component/ds18x20.hpp"
 
-// comm protocols
+// PLIB protocols
 #include "nupp/can.hpp"
 #include "nupp/onewire.hpp"
 #include "nupp/serial.hpp"
 #include "nupp/spi.hpp"
 #include "nupp/usbhid.hpp"
 
-// basic microcontroller functions
+// basic system services
 #include "nupp/crc.hpp"
 #include "nupp/param.hpp"
 #include "nupp/pinctl.hpp"
@@ -31,7 +31,6 @@
 #include "nupp/wdt.hpp"
 
 // stack-based Standard Library
-#include "nupp/allocator.hpp"
 #include "nupp/array.hpp"
 #include "nupp/bitset.hpp"
 #include "nupp/enum.hpp"

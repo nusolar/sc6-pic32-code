@@ -59,7 +59,6 @@ namespace nu
 						reset_cc_all_k = 0x207
 					};
 
-
 					class trip: public Packet
 					{
 						static const uint32_t _id = 0x200;
@@ -258,7 +257,6 @@ namespace nu
 						trip_pt_voltage_k = 0x225,
 						trip_pt_temp_k = 0x226
 					};
-
 
 					class heartbeat: public Packet
 					{
@@ -769,7 +767,6 @@ namespace nu
 						reset_cmd_k = 0x503
 					};
 
-
 					class driver_controls_id: public Packet
 					{
 						static const uint32_t _id = 0x500;
@@ -879,7 +876,6 @@ namespace nu
 						cap_airout_temp_k = 0x40d,
 						odom_bus_ah_k = 0x40e
 					};
-
 
 					class motor_id: public Packet
 					{
@@ -1224,7 +1220,6 @@ namespace nu
 						cruise_k = 0x100
 					};
 
-
 					class cruise: public Packet
 					{
 						static const uint32_t _id = 0x100;
@@ -1254,7 +1249,6 @@ namespace nu
 					{
 						pedals_k = 0x110
 					};
-
 
 					class pedals: public Packet
 					{
@@ -1291,7 +1285,6 @@ namespace nu
 						driver_input_k = 0x310
 					};
 
-
 					class driver_input: public Packet
 					{
 						static const uint32_t _id = 0x310;
@@ -1327,7 +1320,6 @@ namespace nu
 						mppt_k = 0x710
 					};
 
-
 					class mppt: public Packet
 					{
 						static const uint32_t _id = 0x710;
@@ -1356,7 +1348,6 @@ namespace nu
 					{
 						mppt_k = 0x710
 					};
-
 
 					class mppt: public Packet
 					{

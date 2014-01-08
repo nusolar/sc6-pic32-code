@@ -44,14 +44,12 @@
           <itemPath>../include/nupp/platform/pin.hpp</itemPath>
           <itemPath>../include/nupp/platform/serial.hpp</itemPath>
         </logicalFolder>
-        <itemPath>../include/nupp/allocator.hpp</itemPath>
         <itemPath>../include/nupp/can.hpp</itemPath>
         <itemPath>../include/nupp/enum.hpp</itemPath>
         <itemPath>../include/nupp/errorcodes.hpp</itemPath>
         <itemPath>../include/nupp/param.hpp</itemPath>
         <itemPath>../include/nupp/pinctl.hpp</itemPath>
         <itemPath>../include/nupp/serial.hpp</itemPath>
-        <itemPath>../include/nupp/short_alloc.hpp</itemPath>
         <itemPath>../include/nupp/spi.hpp</itemPath>
         <itemPath>../include/nupp/timer.hpp</itemPath>
         <itemPath>../include/nupp/wdt.hpp</itemPath>
@@ -84,7 +82,6 @@
         <itemPath>../nupp/nokia5110.cpp</itemPath>
         <itemPath>../nupp/nu32.cpp</itemPath>
         <itemPath>../nupp/bms.cpp</itemPath>
-        <itemPath>../nupp/allocator.cpp</itemPath>
         <itemPath>../nupp/stream.cpp</itemPath>
         <itemPath>../nupp/pin.cpp</itemPath>
         <itemPath>../nupp/bps.cpp</itemPath>

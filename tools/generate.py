@@ -182,8 +182,7 @@ class CanEnum:
 	enum %(name)s
 	{
 	%(indented_fields)s
-	};
-	"""
+	};"""
 	cpp_enum_template = dedent(cpp_enum_template)
 
 	def __init__(self, name):

@@ -163,7 +163,7 @@ int32_t Channel::setup_tx(CAN_TXCHANNEL_PRIORITY _priority, CAN_TX_RTR _rtr_en) 
  * @param (out) the ID of CAN message.
  * @return Number of bytes read copied.
  */
-size_t Channel::rx(void *dest, uint32_t &id) {
+int32_t Channel::rx(void *dest, uint32_t &id) {
 	if (config != RX) return -error::EINVAL;
 
 	CANRxMessageBuffer *buffer = CANGetRxMessage(mod, chn);
@@ -179,7 +179,7 @@ size_t Channel::rx(void *dest, uint32_t &id) {
 	return len;
 }
 
-size_t Channel::rx(frame::Packet &p, uint32_t &id) {
+int32_t Channel::rx(frame::Packet &p, uint32_t &id) {
 	return rx((void *)p.bytes(), id);
 }
 
