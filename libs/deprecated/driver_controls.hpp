@@ -195,7 +195,7 @@ namespace nu {
 			headlights		= state.lights_head;
 			lights_brake	= state.lights_brake;
 
-			bool tick = timer::s()%2;// Even or Odd, change every second
+			bool tick = timer::s()%2; // Even or Odd, change every second
 			lights_l = (state.lights_l||state.lights_hazard)? tick: 0;
 			lights_r = (state.lights_r||state.lights_hazard)? tick: 0;
 		}
@@ -287,7 +287,8 @@ namespace nu {
 				lcd.goto_xy(0,4);
 				lcd << timer::s() << "-" << state.accel << end;
 				lcd.goto_xy(0,5); lcd << "mv:" << state.velocity << end;
-				if (id) led1.toggle();
+				//if (id)
+					led1.toggle();
 				state.last_time = state.time;
 			}
 			timer::delay_ms<1>();
