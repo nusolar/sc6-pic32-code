@@ -19,7 +19,5 @@ void nu::BMS::main(nu::BMS *bms) {
 	nu::WDT::disable();
 	new (bms) nu::BMS();
 	bms->boot();
-	while (true) {
-		bms->run();
-	}
+	bms->run_loop();
 }

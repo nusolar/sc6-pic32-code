@@ -67,16 +67,17 @@ namespace nu {
 			static const char* name[];
 
 			static ALWAYSINLINE void trip(tripcode code, uint32_t module, BMS *self) {
+				/*
 				if (module == 21 || module == 22) return;
 
 				can::frame::bms::tx::trip trip_pkt(0);
-				trip_pkt.frame.contents.trip_code = (int32_t)code;
-				trip_pkt.frame.contents.module = module;
+				trip_pkt.frame().trip_code = (int32_t)code;
+				trip_pkt.frame().module = module;
 				self->common_can.err().tx(trip_pkt);
 
 				can::frame::bms::tx::trip_pt_current current_pkt(0);
-				current_pkt.frame.contents.low = self->current_sensor[0]; // TODO sort
-				current_pkt.frame.contents.low = self->current_sensor[1];
+				current_pkt.frame().low = self->current_sensor[0]; // TODO sort
+				current_pkt.frame().low = self->current_sensor[1];
 				self->common_can.err().tx(current_pkt);
 
 				can::frame::bms::tx::trip_pt_temp temp_pkt(0);
@@ -97,6 +98,7 @@ namespace nu {
 				self->lcd1.goto_xy(0, 4);
 				self->lcd1 << "V: " << self->voltage_sensor[module < 32? module: 0] << end;
 				while (true) Nop();
+				*/
 			}
 		};
 
@@ -146,7 +148,7 @@ namespace nu {
 			bits(),
 			common_can(CAN1), mppt_can(CAN2),
 			lcd1(PIN(G, 9), SPI_CHANNEL2, PIN(A, 9),  PIN(E, 9)),
-			lcd2(PIN(E, 8), SPI_CHANNEL2, PIN(A, 10), PIN(E, 9)),
+			lcd2(PIN(E, 8), SPI_CHANNEL2, PIN(A, 9), PIN(E, 9)),
 			current_sensor(
 				AD7685<2>(PIN(F, 12), SPI_CHANNEL4, PIN(F, 12), // Convert & CS are same pin
 				AD7685<2>::CHAIN_MODE_NO_BUSY), hais::P50),
@@ -238,7 +240,7 @@ namespace nu {
 		    switch (id) {
 			case can::frame::bms::rx::trip_k: {
 			    can::frame::bms::rx::trip trip_pkt(pkt);
-			    Trip::trip((Trip::tripcode) trip_pkt.frame.contents.trip_code, trip_pkt.frame.contents.module, this);
+			    Trip::trip((Trip::tripcode) trip_pkt.frame().trip_code, trip_pkt.frame().module, this);
 			}
 			case can::frame::bms::rx::reset_cc_batt_k: {
 			    state.cc_battery=0;
@@ -291,16 +293,16 @@ namespace nu {
 			    can::frame::bms::tx::temp t_pkt(0);
 			    can::frame::bms::tx::owVoltage ow_pkt(0);
 			    // update module to send
-			    t_pkt.frame.contents.sensor = state.last_voltage_pkt_module;
-			    t_pkt.frame.contents.temp = this->temperatures[state.last_voltage_pkt_module];
+			    t_pkt.frame().sensor = state.last_voltage_pkt_module;
+			    t_pkt.frame().temp = this->temperatures[state.last_voltage_pkt_module];
 			    if (state.ow) {
-				ow_pkt.frame.contents.module = state.last_voltage_pkt_module;
-				ow_pkt.frame.contents.ow_voltage = voltage_sensor[state.last_voltage_pkt_module];
+				ow_pkt.frame().module = state.last_voltage_pkt_module;
+				ow_pkt.frame().ow_voltage = voltage_sensor[state.last_voltage_pkt_module];
 				common_can.out().tx(ow_pkt);
 			    }
 			    else {
-				v_pkt.frame.contents.module = state.last_voltage_pkt_module;
-				v_pkt.frame.contents.voltage = voltage_sensor[state.last_voltage_pkt_module];
+				v_pkt.frame().module = state.last_voltage_pkt_module;
+				v_pkt.frame().voltage = voltage_sensor[state.last_voltage_pkt_module];
 				common_can.out().tx(v_pkt);
 			    }
 			    common_can.out().tx(t_pkt);
@@ -314,7 +316,7 @@ namespace nu {
 			   ||(state.time-state.last_heartbeat_pkt_time > NU_VOLTAGE_PKTS_INTERVAL_MS)) {
 			    can::frame::bms::tx::heartbeat pkt(0);
 			    // update module to send
-			    memcpy(pkt.frame.contents.bms_str,"zlda",4);
+			    memcpy(pkt.frame().bms_str,"zlda",4);
 			    common_can.out().tx(pkt);
 			    state.last_heartbeat_pkt_time = timer::ms();
 			}
@@ -328,13 +330,13 @@ namespace nu {
 			    can::frame::bms::tx::cc_mppt1 cc_mppt1_pkt(0);
 			    can::frame::bms::tx::cc_mppt2 cc_mppt2_pkt(0);
 			    can::frame::bms::tx::cc_mppt3 cc_mppt3_pkt(0);
-			    current_pkt.frame.contents.array = current_sensor[0]; // Marked "BattADC"
-			    current_pkt.frame.contents.battery = current_sensor[1]; // Marked "ArrayADC"
-			    cc_array_pkt.frame.contents.count = state.cc_array;
-			    cc_batt_pkt.frame.contents.count = state.cc_battery;
-			    cc_mppt1_pkt.frame.contents.count = state.cc_mppt[0];
-			    cc_mppt2_pkt.frame.contents.count = state.cc_mppt[1];
-			    cc_mppt3_pkt.frame.contents.count = state.cc_mppt[2];
+			    current_pkt.frame().array = current_sensor[0]; // Marked "BattADC"
+			    current_pkt.frame().battery = current_sensor[1]; // Marked "ArrayADC"
+			    cc_array_pkt.frame().count = state.cc_array;
+			    cc_batt_pkt.frame().count = state.cc_battery;
+			    cc_mppt1_pkt.frame().count = state.cc_mppt[0];
+			    cc_mppt2_pkt.frame().count = state.cc_mppt[1];
+			    cc_mppt3_pkt.frame().count = state.cc_mppt[2];
 			    common_can.out().tx(current_pkt);
 			    common_can.out().tx(cc_array_pkt);
 			    common_can.out().tx(cc_batt_pkt);
@@ -350,9 +352,9 @@ namespace nu {
 			    can::frame::bms::tx::uptime uptime_pkt(0);
 			    can::frame::bms::tx::batt_bypass batt_bypass_pkt(0);
 			    can::frame::bms::tx::Wh_batt Wh_batt_pkt(0);
-			    uptime_pkt.frame.contents.seconds = state.uptime;
-			    batt_bypass_pkt.frame.contents.module = state.disabled_module;
-			    Wh_batt_pkt.frame.contents.count = state.wh_battery;
+			    uptime_pkt.frame().seconds = state.uptime;
+			    batt_bypass_pkt.frame().module = state.disabled_module;
+			    Wh_batt_pkt.frame().count = state.wh_battery;
 			    common_can.out().tx(uptime_pkt);
 			    common_can.out().tx(batt_bypass_pkt);
 			    common_can.out().tx(Wh_batt_pkt);
@@ -364,9 +366,9 @@ namespace nu {
 			    can::frame::bms::tx::Wh_mppt1 Wh_mppt1_pkt(0);
 			    can::frame::bms::tx::Wh_mppt2 Wh_mppt2_pkt(0);
 			    can::frame::bms::tx::Wh_mppt3 Wh_mppt3_pkt(0);
-			    Wh_mppt1_pkt.frame.contents.count = state.wh_mppt_out[0];
-			    Wh_mppt2_pkt.frame.contents.count = state.wh_mppt_out[1];
-			    Wh_mppt3_pkt.frame.contents.count = state.wh_mppt_out[2];
+			    Wh_mppt1_pkt.frame().count = state.wh_mppt_out[0];
+			    Wh_mppt2_pkt.frame().count = state.wh_mppt_out[1];
+			    Wh_mppt3_pkt.frame().count = state.wh_mppt_out[2];
 			    common_can.out().tx(Wh_mppt1_pkt);
 			    common_can.out().tx(Wh_mppt2_pkt);
 			    common_can.out().tx(Wh_mppt3_pkt);
@@ -382,32 +384,34 @@ namespace nu {
 
 
 		/**
-		 * A function to be called repeatedly
+		 * The main run loop
 		 */
-		ALWAYSINLINE void run() {
-			WDT::clear();
-			read_ins();
-//			send_can();
-			check_batteries();
+		ALWAYSINLINE NORETURN void run_loop() {
+			while (true) {
+				WDT::clear();
+				read_ins();
+	//			send_can();
+				check_batteries();
 
-			state.time = timer::ms();
-			if (state.time<state.lcd_clock || state.time - state.lcd_clock > 1000) {
-				lcd1.lcd_clear();
-				lcd1 << "ZELDA " << state.module_i << end;
-				lcd1.goto_xy(0, 1);
-				lcd1 << "V: " << voltage_sensor[state.module_i] << end;
-				lcd1.goto_xy(0, 2);
-				lcd1 << "T: " << state.highest_temp << end;
-				lcd1.goto_xy(0, 3);
-				lcd1 << "I: " <<  state.highest_current << end;
-				lcd1.goto_xy(0, 4);
-				lcd1 << "Off: " << state.disabled_module << end;
-				lcd1.goto_xy(0, 5);
-				lcd1 << "R: " << main_relay.status() << "-" << array_relay.status() << end;
-				led1.toggle();
+				state.time = timer::ms();
+				if (state.time<state.lcd_clock || state.time - state.lcd_clock > 1000) {
+					lcd1.lcd_clear();
+					lcd1 << "ZELDA " << state.module_i << end;
+					lcd1.goto_xy(0, 1);
+					lcd1 << "V: " << voltage_sensor[state.module_i] << end;
+					lcd1.goto_xy(0, 2);
+					lcd1 << "T: " << state.highest_temp << end;
+					lcd1.goto_xy(0, 3);
+					lcd1 << "I: " <<  state.highest_current << end;
+					lcd1.goto_xy(0, 4);
+					lcd1 << "Off: " << state.disabled_module << end;
+					lcd1.goto_xy(0, 5);
+					lcd1 << "R: " << main_relay.status() << "-" << array_relay.status() << end;
+					led1.toggle();
 
-				++state.module_i %= 32;
-				state.lcd_clock = state.time;
+					++state.module_i %= 32;
+					state.lcd_clock = state.time;
+				}
 			}
 		}
 
