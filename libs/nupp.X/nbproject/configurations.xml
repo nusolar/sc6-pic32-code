@@ -24,9 +24,7 @@
         <logicalFolder name="f2" displayName="board" projectFiles="true">
           <itemPath>../include/nupp/board/bms.hpp</itemPath>
           <itemPath>../include/nupp/board/bps.hpp</itemPath>
-          <itemPath>../include/nupp/board/driver_controls.hpp</itemPath>
           <itemPath>../include/nupp/board/output_board.hpp</itemPath>
-          <itemPath>../include/nupp/board/steering_wheel.hpp</itemPath>
           <itemPath>../include/nupp/board/nu32.hpp</itemPath>
           <itemPath>../include/nupp/board/pedals.hpp</itemPath>
         </logicalFolder>
@@ -91,13 +89,12 @@
         <itemPath>../nupp/nokia5110.cpp</itemPath>
         <itemPath>../nupp/nu32.cpp</itemPath>
         <itemPath>../nupp/bms.cpp</itemPath>
-        <itemPath>../nupp/driver_controls.cpp</itemPath>
-        <itemPath>../nupp/steering_wheel.cpp</itemPath>
         <itemPath>../nupp/allocator.cpp</itemPath>
         <itemPath>../nupp/stream.cpp</itemPath>
         <itemPath>../nupp/pin.cpp</itemPath>
         <itemPath>../nupp/bps.cpp</itemPath>
         <itemPath>../nupp/output_board.cpp</itemPath>
+        <itemPath>../nupp/pedals.cpp</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"

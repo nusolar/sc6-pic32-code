@@ -1,11 +1,9 @@
 // printed circuit boards
 #include "nupp/board/bms.hpp"
 #include "nupp/board/bps.hpp"
-#include "nupp/board/driver_controls.hpp"
 #include "nupp/board/nu32.hpp"
 #include "nupp/board/output_board.hpp"
 #include "nupp/board/pedals.hpp"
-#include "nupp/board/steering_wheel.hpp"
 
 // PCB components
 #include "nupp/component/ad7685.hpp"

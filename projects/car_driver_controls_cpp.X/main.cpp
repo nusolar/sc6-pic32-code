@@ -1,7 +1,15 @@
 #include "nu/common_pragmas.h"
-#include "nupp/board/driver_controls.hpp"
+#include "nupp/board/pedals.hpp"
 
+#define div_roundup(DIVIDEND, DIVISOR) ((long long)((DIVIDEND)/(DIVISOR)) + (((DIVIDEND)%(DIVISOR)>0)? 1: 0))
+
+// Allocate twice the space of an nu::BPS, rounding up.
+uint64_t arena[div_roundup(sizeof(nu::Pedals), 4)] ALIGNED(__BIGGEST_ALIGNMENT__);
+
+// Exception handling, copy-pasted directly from MicroChip's example code.
 extern "C" {
+	void kill(void); // implemented below, in C++
+
 	static enum exceptions {
 		EXCEP_IRQ = 0,          // interrupt
 		EXCEP_AdEL = 4,         // address error exception (load or ifetch)
@@ -29,6 +37,8 @@ extern "C" {
 
 		_excep_code = (exceptions) ((_excep_code & 0x0000007C) >> 2);
 
+		kill();
+
 		while (1) {
 			Nop();
 			// Examine _excep_code to identify the type of exception
@@ -37,9 +47,12 @@ extern "C" {
 	}
 }
 
+void kill() {
+}
+
 /** Call DriverControls::main(), NEVER RETURN */
 int main(int argc, const char* argv[]) {
-	nu::DriverControls::main();
+	nu::Pedals::main((nu::Pedals *)arena);
 	return 0;
 }
 
