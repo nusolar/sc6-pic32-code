@@ -4,8 +4,8 @@
 
 #define div_roundup(DIVIDEND, DIVISOR) ((long long)((DIVIDEND)/(DIVISOR)) + (((DIVIDEND)%(DIVISOR)>0)? 1: 0))
 
-// Allocate twice the space of an nu::BPS, rounding up.
-uint64_t arena[div_roundup(sizeof(nu::BMS), 4)] ALIGNED(__BIGGEST_ALIGNMENT__);
+// Allocate the size of nu::BPS, rounding up.
+uint64_t arena[div_roundup(sizeof(nu::BMS), 8)] ALIGNED(__BIGGEST_ALIGNMENT__);
 
 // Exception handling, copy-pasted directly from MicroChip's example code.
 extern "C" {

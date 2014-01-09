@@ -66,7 +66,7 @@ namespace nu {
 		INLINE NORETURN void run_loop() {
 			while (true) {
 				this->recv_serial();
-				relay = status;
+				relay.set(status);
 				this->send_serial();
 			}
 		}

@@ -290,8 +290,8 @@ namespace nu {
 
 		void recv_can() {
 			can::frame::Packet pkt(0);
-		    uint32_t id;
-		    common_can.in().rx(pkt,id);
+			uint32_t id;
+			common_can.in().rx(pkt,id);
 
 			switch (id) {
 				case can::frame::os::tx::driver_input_k: {
@@ -367,7 +367,7 @@ namespace nu {
 		 * (2) when batteries are critically low, and could not sustain DISCHARGING/DRIVE.
 		 *
 		 * If state.mode is not valid, sets state.error.
-         */
+		 */
 		ALWAYSINLINE void set_relays() {
 			bool has_error = false;
 			
@@ -376,29 +376,29 @@ namespace nu {
 					has_error = true;
 				case OFF: {
 					// FIRST: halt major drains
-					motor_relay = false;
-					precharge_relay = false;
+					motor_relay.set(false);
+					precharge_relay.set(false);
 					// THEN: deactivate batteries
-					main_relay = false;
+					main_relay.set(false);
 					// FINALLY: disconnect array
-					array_relay = false;
+					array_relay.set(false);
 					break;
 				}
 				case DISCHARGING: {
 					// FIRST: ensure NOT charging
-					array_relay = false;
+					array_relay.set(false);
 					// THEN: not draining
-					motor_relay = false;
-					precharge_relay = false;
+					motor_relay.set(false);
+					precharge_relay.set(false);
 					// FINALLY: discharge
-					main_relay = true;
+					main_relay.set(true);
 					break;
 				}
 				case DRIVE: {
 					// FIRST: ensure NOT charging
-					array_relay = false;
+					array_relay.set(false);
 					// THEN: discharging
-					main_relay = true;
+					main_relay.set(true);
 					// THEN; precharge, & close motor relay when charged.
 					// SEE BELOW
 				}
@@ -406,19 +406,19 @@ namespace nu {
 				 * during normal operation & discharge. */
 				case CHARGING: {
 					// FIRST: ensure NOT draining
-					motor_relay = false;
-					precharge_relay = false;
+					motor_relay.set(false);
+					precharge_relay.set(false);
 					// THEN: allow charging
-					array_relay = true;
+					array_relay.set(true);
 					// FINALLY: charge
-					main_relay = true;
+					main_relay.set(true);
 					break;
 				}
 				case CHARGING_DRIVE: {
 					// FIRST: allow charging
-					array_relay = true;
+					array_relay.set(true);
 					// THEN: charge
-					main_relay = true;
+					main_relay.set(true);
 					// FINALLY: precharge & close motor relays
 					// SEE BELOW
 					break;
@@ -439,15 +439,15 @@ namespace nu {
 					default:
 						has_error = BADPC;
 					case PC_OFF: {
-						motor_relay = false;
-						precharge_relay = true;
+						motor_relay.set(false);
+						precharge_relay.set(true);
 						state.precharge_clock = timer::ms();
 						state.precharging = PC_CHARGING;
 						break;
 					}
 					case PC_CHARGING: {
-						motor_relay = false;
-						precharge_relay = true;
+						motor_relay.set(false);
+						precharge_relay.set(true);
 						uint64_t time = timer::ms();
 						if (time > NU_BPS_PRECHARGE_TIME + (time>state.precharge_clock? state.precharge_clock: 0)) {
 							state.precharging = PC_CHARGED;
@@ -455,8 +455,8 @@ namespace nu {
 						break;
 					}
 					case PC_CHARGED: {
-						motor_relay = true;
-						precharge_relay = false;
+						motor_relay.set(true);
+						precharge_relay.set(false);
 						break;
 					}
 				}

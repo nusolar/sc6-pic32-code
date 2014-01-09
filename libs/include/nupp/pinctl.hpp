@@ -12,9 +12,9 @@
 
 namespace nu {
 	/**
-	 * The universal interface for a Microcontroller Pin. It inherits from a
-	 * platform-specific Pin class, which does the heavy labor.
-     */
+	 * The common interface for a Microcontroller Pin. It inherits from a
+	 * platform-specific Pin class, which does the PLIB work.
+	 */
 	struct AbstractPin: protected Pin {
 		ALWAYSINLINE AbstractPin(Pin p = Pin()): Pin(p) {}
 		NOINLINE virtual ~AbstractPin() {}
@@ -25,19 +25,19 @@ namespace nu {
 		ALWAYSINLINE void set_analog_out()	{Pin::set_analog_out();}
 		ALWAYSINLINE void set_analog_in()	{Pin::set_analog_in();}
 
-		virtual INLINE void set()		{Pin::set();}
-		virtual INLINE void clear()		{Pin::clear();}
-		virtual INLINE void toggle()	{Pin::toggle();}
+		INLINE void set()		{Pin::set();}
+		INLINE void clear()		{Pin::clear();}
+		INLINE void toggle()	{Pin::toggle();}
 
-		/** A subclass may call EITHER read() OR read_analog(). */
-		virtual INLINE reg_t read_digital()	{return Pin::read_digital();} // returns 0 or non-0
-		virtual INLINE reg_t read_analog()	{return Pin::read_analog();}
+		/** A subclass may call EITHER read_digital() OR read_analog(). */
+		INLINE reg_t read_digital()	{return Pin::read_digital();} // returns 0 or non-0
+		INLINE reg_t read_analog()	{return Pin::read_analog();}
 	};
 
 
 	struct DigitalIn: protected AbstractPin {
 		ALWAYSINLINE DigitalIn(Pin p = Pin()): AbstractPin(p) {set_digital_in();}
-		ALWAYSINLINE reg_t read() {return Pin::read_digital();} // returns 0 or any non-0
+		ALWAYSINLINE reg_t read() {return Pin::read_digital();} // returns 0 or some non-0
 	};
 
 	/** An Analog input Pin, wrapped with an ADC. */
@@ -57,15 +57,13 @@ namespace nu {
 			else low();
 		}
 
-		ALWAYSINLINE void high()	{set(); _status = true;}
+		ALWAYSINLINE void high()	{AbstractPin::set(); _status = true;}
 		ALWAYSINLINE void low()		{clear(); _status = false;}
 		ALWAYSINLINE void toggle()	{toggle(); _status = !_status;}
 		ALWAYSINLINE bool status()	{return _status;}
-
-		ALWAYSINLINE DigitalOut &operator= (const bool rhs) {
-			if (rhs) set();
+		ALWAYSINLINE void set(bool rhs) {
+			if (rhs) AbstractPin::set();
 			else clear();
-			return *this;
 		}
 	};
 }

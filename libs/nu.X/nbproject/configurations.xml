@@ -30,7 +30,6 @@
       </logicalFolder>
       <logicalFolder name="f1" displayName="nu" projectFiles="true">
         <logicalFolder name="f2" displayName="platform" projectFiles="true">
-          <itemPath>../include/nu/platform/usb_serial.h</itemPath>
           <itemPath>../include/nu/platform/param.h</itemPath>
           <itemPath>../include/nu/platform/common_pragmas.h</itemPath>
           <itemPath>../include/nu/platform/pinctl.h</itemPath>
@@ -109,7 +108,6 @@
         <itemPath>../nu/platform/nu32_serial.c</itemPath>
         <itemPath>../nu/platform/serial.c</itemPath>
         <itemPath>../nu/platform/spi.c</itemPath>
-        <itemPath>../nu/platform/usb_serial.c</itemPath>
       </logicalFolder>
       <itemPath>../nu/error_reporting.c</itemPath>
       <itemPath>../nu/led.c</itemPath>

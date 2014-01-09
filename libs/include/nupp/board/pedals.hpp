@@ -55,7 +55,7 @@ namespace nu {
 		{
 			WDT::clear();
 			common_can.in().setup_rx();
-			common_can.in().add_filter(CAN_FILTER0, CAN_SID, 0x312, CAN_FILTER_MASK0, CAN_FILTER_MASK_IDE_TYPE, 0x7FF); // 0x312 == SW btns
+			common_can.in().add_filter(CAN_FILTER0, CAN_SID, 0x310, CAN_FILTER_MASK0, CAN_FILTER_MASK_IDE_TYPE, 0x7FF); // 0x310 == OS status
 			common_can.out().setup_tx(CAN_HIGH_MEDIUM_PRIORITY);
 		}
 
@@ -103,14 +103,14 @@ namespace nu {
 
 		ALWAYSINLINE void set_signals() {
 			WDT::clear();
-			this->lights_brake.operator =(state.brake_en);
-			this->horn.operator =(state.horn);
-			this->headlights.operator =(state.headlights);
+			this->lights_brake.set(state.brake_en);
+			this->horn.set(state.horn);
+			this->headlights.set(state.headlights);
 			
-			// Toggle turn signal every second
+			// Toggle turn-signal once per second
 			bool tick = timer::s()%2;
-			this->lights_l.operator =(this->state.left? tick: 0);
-			this->lights_r.operator =(this->state.right? tick: 0);
+			this->lights_l.set(this->state.left? tick: 0);
+			this->lights_r.set(this->state.right? tick: 0);
 		}
 
 		ALWAYSINLINE void send_can() {
@@ -154,6 +154,11 @@ namespace nu {
 				this->set_signals();
 				this->send_can();
 			}
+		}
+
+		INLINE void emergency_shutoff() {
+			can::frame::ws20::rx::drive_cmd drive(0);
+			common_can.out().tx(drive);
 		}
 
 		static NORETURN void main(Pedals *arena);
