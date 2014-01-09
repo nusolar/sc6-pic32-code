@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   bps.hpp
  * Author: alex
  *
@@ -39,10 +39,10 @@ namespace nu {
 		enum ModeName {
 			Off = 0,
 			Discharging = 1,
-			Drive = 2,
+			Drive = 3,
 			EmptyCharging = 4,
 			Charging = 5,
-			DriveCharging = 6,
+			DriveCharging = 7,
 
 			NOTHING = -1
 		};
@@ -134,7 +134,7 @@ namespace nu {
 			BADMODE,
 			BADPC
 		};
-		
+
 		DigitalOut main_relay, array_relay, precharge_relay, motor_relay;
 		Button bypass_button;
 		Serial com;
@@ -149,7 +149,7 @@ namespace nu {
 		 * Aggregated data of the Sensors and the BMS.
 		 */
 		struct State {
-			
+
 			// scientific data
 			double cc_battery, cc_array, wh_battery, wh_array;
 			int16_t current0, current1; // 10bit voltage, 0-5V
@@ -171,12 +171,12 @@ namespace nu {
 			int8_t last_error;
 			int8_t error;
 			int8_t error_value;
-			
+
 			// timers & indices used in the Run Loop
 			uint64_t uptime; //s
 			uint64_t lcd_clock; //ms
 			uint8_t module_i;
-			
+
 			State(): cc_battery(0), cc_array(0), wh_battery(0), wh_array(0),
 				current0(0), current1(0), voltages(0), temperatures(0),
 				trip_code(NONE), trip_data(0),
@@ -282,7 +282,7 @@ namespace nu {
 			state.current1 = current_sensor1.read() & 0x3ff;
 			temp_sensor.update_temperatures(state.temperatures);
 			voltage_sensor.read_volts(state.voltages);
-			
+
 			// repopulate data
 			temp_sensor.perform_temperature_conversion();
 			voltage_sensor.start_voltage_conversion();
@@ -370,7 +370,7 @@ namespace nu {
 		 */
 		ALWAYSINLINE void set_relays() {
 			bool has_error = false;
-			
+
 			switch (state.mode) {
 				default:
 					has_error = true;
@@ -500,7 +500,7 @@ namespace nu {
 			motor_relay.low();
 			precharge_relay.low();
 		}
-		
+
 		/**
 		 * The main run loop.
 		 */

@@ -28,7 +28,7 @@ class Layout:
 		'uint64_t %s'
 	]
 
-	UInt2 = [
+	UInt32x2 = [
 		'uint32_t %s',
 		'uint32_t %s'
 	]
@@ -100,6 +100,21 @@ class CanPacket:
 	};"""
 	cpp_class_template = dedent(cpp_class_template)
 
+	cs_class_template = """\
+	class %(name)s: public CanPacket
+	{
+		public const UInt16 _id = %(id)s;
+
+		[StructLayout(LayoutKind.Explicit)]
+		struct byte_array
+		{
+			 [FieldOffset(0)]
+			 public UInt64 data;
+		}
+	}
+	"""
+	cs_class_template = dedent(cs_class_template)
+
 	def __init__(self, name = 'error', layout = Layout.Empty, field_names = (), id = 0):
 		if type(name) is not str:
 			raise TypeError("type of [name] for CanPacket must be <str>.")
@@ -134,6 +149,12 @@ class CanPacket:
 
 		format_args = {'name': self.name, 'id': self.id, 'indented_fields': members}
 		return self.cpp_class_template % format_args
+
+	def get_cs(self):
+		''' Returns C# source code for this CanPacket.'''
+		if self.layout is Layout.CustomBitField:
+			raise NotImplementedError("TODO")
+
 
 
 class CanBasePacket:
@@ -174,7 +195,7 @@ class CanBasePacket:
 		return self.cpp_class_packet
 
 	def get_cs(self):
-		raise NotImplementedError("TODO")
+		raise ""
 
 
 class CanEnum:
@@ -210,6 +231,9 @@ class CanEnum:
 		format_args = {'name': self.name, 'indented_fields': indented_fields}
 		return self.cpp_enum_template % format_args
 
+	def get_cs(self):
+		return ""
+
 
 class Namespace:
 	cpp_namespace_template = """\
@@ -218,6 +242,13 @@ class Namespace:
 	%(indented_contents)s
 	}"""
 	cpp_namespace_template = dedent(cpp_namespace_template)
+
+	cs_namespace_template = """\
+	namespace {name}
+	{
+	{contents}
+	}"""
+	cs_namespace_template = dedent(cs_namespace_template)
 
 	def __init__(self, name = 'default'):
 		if type(name) is not str:
@@ -322,7 +353,7 @@ can_def = [
 					['driver_controls_id', Layout.Status, ['drvId', 'serialNo']],
 					['drive_cmd', Layout.Float2, ['motorVelocity', 'motorCurrent']],
 					['power_cmd', Layout.Float2, ['reserved', 'busCurrent']],
-					['reset_cmd', Layout.UInt2, ['unused1', 'unused2']]
+					['reset_cmd', Layout.UInt32x2, ['unused1', 'unused2']]
 					# MAX = 0x510 ?
 				]
 			},
