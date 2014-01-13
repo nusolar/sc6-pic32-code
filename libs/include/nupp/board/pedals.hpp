@@ -8,8 +8,8 @@
 #ifndef NUPP_PEDALS_HPP
 #define	NUPP_PEDALS_HPP
 
-#include "nupp/pinctl.hpp"
-#include "nupp/can.hpp"
+#include "nupp/peripheral/pinctl.hpp"
+#include "nupp/peripheral/can.hpp"
 #include "nupp/wdt.hpp"
 #include "nupp/timer.hpp"
 #include "nu/compiler.h"

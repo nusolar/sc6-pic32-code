@@ -1,12 +1,12 @@
 #ifndef NUPP_AD7685_HPP
 #define NUPP_AD7685_HPP 1
 
-#include "nu/compiler.h"
+#include "nupp/peripheral/spi.hpp"
+#include "nupp/peripheral/pinctl.hpp"
 #include "nupp/array.hpp"
-#include "nupp/spi.hpp"
 #include "nupp/timer.hpp"
-#include "nupp/pinctl.hpp"
 #include "nupp/errorcodes.hpp"
+#include "nu/compiler.h"
 #include <cstdint>
 #include <sys/endian.h>
 
@@ -32,7 +32,7 @@ namespace nu {
 
 		DigitalOut convert; // ERROR same as CS pin?
 		options opts;
-		
+
 		Array<uint32_t, num_devices> values;
 		/** @warning NO BOUNDS CHECKING */
 		ALWAYSINLINE uint32_t operator[] (size_t index) const {return values[index];}
@@ -53,7 +53,7 @@ namespace nu {
 				(CHAIN_MODE & opt && BUSY_INDICATOR & opt))
 				return /*-EINVAL*/; // TODO: C++ exceptions
 		}
-		
+
 		/**
 		 * Gets the actual voltage reading(s) (not raw data).
 		 */
@@ -63,7 +63,7 @@ namespace nu {
 
 			// start conversion
 			convert.high();
-			timer::delay_ns<100>();  // .1 us
+			timer::delay_ns(100);  // .1 us
 
 			if (BUSY_INDICATOR & opt) {
 				if (THREE_WIRE & opt)
@@ -73,8 +73,8 @@ namespace nu {
 			}
 
 			// 2.3 us
-			timer::delay_us<2>();
-			timer::delay_ns<300>();
+			timer::delay_us(2);
+			timer::delay_ns(300);
 
 			if (THREE_WIRE & opt && NO_BUSY_INDICATOR & opt)
 				cs.low();
@@ -83,7 +83,7 @@ namespace nu {
 			read_uv();
 
 			cs.low();
-			timer::delay_us<5>();
+			timer::delay_us(5);
 		}
 
 	private:

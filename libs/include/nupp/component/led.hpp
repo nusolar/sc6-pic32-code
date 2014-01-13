@@ -6,7 +6,7 @@
  * Little wrapper for LEDs
  */
 
-#include "nupp/pinctl.hpp"
+#include "nupp/peripheral/pinctl.hpp"
 
 namespace nu {
 	/**

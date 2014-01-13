@@ -38,29 +38,31 @@
           <itemPath>../include/nupp/component/button.hpp</itemPath>
           <itemPath>../include/nupp/component/led.hpp</itemPath>
         </logicalFolder>
+        <logicalFolder name="f4" displayName="peripheral" projectFiles="true">
+          <itemPath>../include/nupp/peripheral/can.hpp</itemPath>
+          <itemPath>../include/nupp/peripheral/can_def.hpp</itemPath>
+          <itemPath>../include/nupp/peripheral/onewire.hpp</itemPath>
+          <itemPath>../include/nupp/peripheral/pinctl.hpp</itemPath>
+          <itemPath>../include/nupp/peripheral/serial.hpp</itemPath>
+          <itemPath>../include/nupp/peripheral/spi.hpp</itemPath>
+          <itemPath>../include/nupp/peripheral/usbhid.hpp</itemPath>
+        </logicalFolder>
         <logicalFolder name="f1" displayName="platform" projectFiles="true">
           <itemPath>../include/nupp/platform/spi.hpp</itemPath>
           <itemPath>../include/nupp/platform/param.hpp</itemPath>
           <itemPath>../include/nupp/platform/pin.hpp</itemPath>
           <itemPath>../include/nupp/platform/serial.hpp</itemPath>
         </logicalFolder>
-        <itemPath>../include/nupp/can.hpp</itemPath>
         <itemPath>../include/nupp/enum.hpp</itemPath>
         <itemPath>../include/nupp/errorcodes.hpp</itemPath>
         <itemPath>../include/nupp/param.hpp</itemPath>
-        <itemPath>../include/nupp/pinctl.hpp</itemPath>
-        <itemPath>../include/nupp/serial.hpp</itemPath>
-        <itemPath>../include/nupp/spi.hpp</itemPath>
         <itemPath>../include/nupp/timer.hpp</itemPath>
         <itemPath>../include/nupp/wdt.hpp</itemPath>
         <itemPath>../include/nupp/bitset.hpp</itemPath>
-        <itemPath>../include/nupp/can_def.hpp</itemPath>
         <itemPath>../include/nupp/array.hpp</itemPath>
         <itemPath>../include/nupp/lowpassfilter.hpp</itemPath>
-        <itemPath>../include/nupp/onewire.hpp</itemPath>
         <itemPath>../include/nupp/stream.hpp</itemPath>
         <itemPath>../include/nupp/string.hpp</itemPath>
-        <itemPath>../include/nupp/usbhid.hpp</itemPath>
         <itemPath>../include/nupp/crc.hpp</itemPath>
       </logicalFolder>
     </logicalFolder>

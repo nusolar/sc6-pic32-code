@@ -13,20 +13,20 @@
 #include "nupp/component/ds18x20.hpp"
 #include "nupp/component/nokia5110.hpp"
 #include "nupp/component/button.hpp"
-#include "nupp/usbhid.hpp"
-#include "nupp/serial.hpp"
-#include "nupp/spi.hpp"
-#include "nupp/can.hpp"
-#include "nupp/pinctl.hpp"
+#include "nupp/peripheral/usbhid.hpp"
+#include "nupp/peripheral/serial.hpp"
+#include "nupp/peripheral/spi.hpp"
+#include "nupp/peripheral/can.hpp"
+#include "nupp/peripheral/pinctl.hpp"
 #include "nupp/timer.hpp"
 #include "nupp/wdt.hpp"
 #include "nupp/array.hpp"
 #include "nupp/closure.hpp"
 #include "nu/compiler.h"
 
-#define NU_BPS_TIMEOUT_INT 100 //ms
-#define NU_BPS_PRECHARGE_TIME 2000 //ms
-#define NU_BPS_CONVERSION_TIME 2.3 //ms - time for LTC6804s to complete conversion.
+#define NU_BPS_TIMEOUT_INT_MS 100 //ms
+#define NU_BPS_PRECHARGE_TIME_MS 2000 //ms
+#define NU_BPS_CONVERSION_TIME_MS 2.3 //ms - time for LTC6804s to complete conversion.
 
 namespace nu {
 	struct BpsMode {
@@ -145,6 +145,10 @@ namespace nu {
 		LTC6804<3> voltage_sensor; //on D9, SPI Chn 1
 		DS18X20<32> temp_sensor; //on A0
 
+		Timer mode_timeout_clock;
+		Timer precharge_timer;
+		Timer lcd_timer;
+
 		/**
 		 * Aggregated data of the Sensors and the BMS.
 		 */
@@ -163,8 +167,6 @@ namespace nu {
 			// Protection modes & timers
 			Modes mode;
 			Precharge precharging;
-			uint64_t mode_timeout_clock; //ms
-			uint64_t precharge_clock; //ms
 
 			// error data
 			int8_t disabled_module;
@@ -173,16 +175,15 @@ namespace nu {
 			int8_t error_value;
 
 			// timers & indices used in the Run Loop
-			uint64_t uptime; //s
-			uint64_t lcd_clock; //ms
+			uint32_t uptime; //s
 			uint8_t module_i;
 
 			State(): cc_battery(0), cc_array(0), wh_battery(0), wh_array(0),
 				current0(0), current1(0), voltages(0), temperatures(0),
 				trip_code(NONE), trip_data(0),
-				mode(OFF), precharging(PC_OFF), mode_timeout_clock(0), precharge_clock(0),
+				mode(OFF), precharging(PC_OFF),
 				disabled_module(-1), last_error(0), error(NOERR), error_value(0),
-				uptime(0), lcd_clock(0), module_i(0) {}
+				uptime(0), module_i(0) {}
 		} state;
 
 		/**
@@ -230,6 +231,9 @@ namespace nu {
 			current_sensor1(PIN(B, 1)),
 			voltage_sensor(PIN(D, 9), SPI_CHANNEL1),
 			temp_sensor(PIN(A, 0)),
+			mode_timeout_clock(NU_BPS_TIMEOUT_INT_MS, Timer::ms, true),
+			precharge_timer(NU_BPS_PRECHARGE_TIME_MS, Timer::ms, false),
+			lcd_timer(1, Timer::s, true),
 			state()
 		{
 			WDT::clear();
@@ -297,16 +301,15 @@ namespace nu {
 				case can::frame::os::tx::driver_input_k: {
 					can::frame::os::tx::driver_input data(pkt);
 					state.mode = (Modes)data.frame().power;
-					state.mode_timeout_clock = timer::ms();
+					this->mode_timeout_clock.reset();
 				}
 				default: {
 				}
 			}
 
 			// If state.mode_timeout_clock isn't updated fast enough, turn OFF.
-			uint64_t time = timer::ms();
-			if (time > NU_BPS_TIMEOUT_INT + (time>state.mode_timeout_clock? state.mode_timeout_clock: 0)) {
-				state.mode_timeout_clock = (uint64_t)-1;
+			if (this->mode_timeout_clock.has_expired()) {
+				this->mode_timeout_clock.kill();
 				state.mode = OFF;
 			}
 		}
@@ -441,15 +444,14 @@ namespace nu {
 					case PC_OFF: {
 						motor_relay.set(false);
 						precharge_relay.set(true);
-						state.precharge_clock = timer::ms();
+						this->precharge_timer.reset();
 						state.precharging = PC_CHARGING;
 						break;
 					}
 					case PC_CHARGING: {
 						motor_relay.set(false);
 						precharge_relay.set(true);
-						uint64_t time = timer::ms();
-						if (time > NU_BPS_PRECHARGE_TIME + (time>state.precharge_clock? state.precharge_clock: 0)) {
+						if (this->precharge_timer.has_expired()) {
 							state.precharging = PC_CHARGED;
 						}
 						break;
@@ -470,9 +472,12 @@ namespace nu {
 			}
 		}
 
+		void send_can() {
+			// state.time = timer::ms();
+		}
+
 		void draw_lcd() {
-			uint64_t time = timer::ms();
-			if (time<state.lcd_clock || time - state.lcd_clock > 1000) {
+			if (this->lcd_timer.has_expired()) {
 				lcd1.lcd_clear();
 				lcd1 << "ZELDA " << state.module_i << end;
 				lcd1.goto_xy(0, 1);
@@ -489,8 +494,8 @@ namespace nu {
 				led1.toggle();
 
 				++state.module_i %= N_MODULES; // next module index
-				state.lcd_clock = time; // reset LCD update clock
 				++state.uptime; // increase uptime by 1 second
+				this->lcd_timer.reset(); // reset LCD update clock
 			}
 		}
 

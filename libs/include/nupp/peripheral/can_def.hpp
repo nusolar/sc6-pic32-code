@@ -6,6 +6,8 @@
  * within enum classes for scoping.
  */
 
+#pragma GCC diagnostic ignored "-pedantic"
+
 namespace nu
 {
 	namespace can
@@ -1374,3 +1376,5 @@ namespace nu
 		}
 	}
 }
+
+#pragma GCC diagnostic warning "-pedantic"

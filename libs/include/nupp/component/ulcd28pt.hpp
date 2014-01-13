@@ -1,13 +1,12 @@
 #ifndef NUPP_ULCD28PT_HPP
 #define NUPP_ULCD28PT_HPP 1
 
+#include "nupp/peripheral/serial.hpp"
+#include "nupp/peripheral/pinctl.hpp"
+#include "nupp/peripheral/can.hpp"
 #include "nu/compiler.h"
 #include <cstdint>
 #include <cstddef>
-
-#include "nupp/serial.hpp"
-#include "nupp/pinctl.hpp"
-#include "nupp/can.hpp"
 
 namespace nu {
 	/**

@@ -10,7 +10,7 @@
  * @sa http://hades.mech.northwestern.edu/index.php/NU32:_Introduction_to_the_PIC32
  */
 
-#include "nu/led.h"
+#include "nu/component/led.h"
 #include "nu/param.h"
 #include "nu/pinctl.h"
 #include "nu/serial.h"

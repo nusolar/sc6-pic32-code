@@ -15,9 +15,9 @@
 #include "nupp/component/ad7685.hpp"
 #include "nupp/component/ltc6803.hpp"
 #include "nupp/component/ds18x20.hpp"
+#include "nupp/peripheral/can.hpp"
+#include "nupp/peripheral/pinctl.hpp"
 #include "nupp/timer.hpp"
-#include "nupp/pinctl.hpp"
-#include "nupp/can.hpp"
 #include "nupp/wdt.hpp"
 #include "nupp/errorcodes.hpp"
 #include "nu/compiler.h"
@@ -31,9 +31,9 @@
 #define NU_MIN_ARRAY_CURRENT -1
 #define NU_MAX_TEMP 45
 #define NU_MIN_TEMP 0
-#define NU_VOLTAGE_PKTS_INTERVAL_MS 15.625
-#define NU_SINGLE_PKTS_INTERVAL_MS 500
-#define NU_HEARTBEAT_INTERVAL_MS 1000
+#define NU_VOLTAGE_PKTS_INTERVAL_MS 9
+#define NU_SINGLE_PKTS_INTERVAL_MS 501
+#define NU_HEARTBEAT_INTERVAL_MS 1001
 
 namespace nu {
 	/**
@@ -108,6 +108,14 @@ namespace nu {
 		LTC6803<3> voltage_sensor; // 3 LTCs
 		DS18X20<32> temp_sensor; //on A0
 
+		Timer can_voltage_packet_timer;
+		Timer can_heartbeat_packet_timer;
+		Timer can_current_packet_timer;
+		Timer can_other_packet_timer;
+		Timer openwire_timer;
+		Timer voltage_measuring_timer;
+		Timer lcd_clock;
+		
 
 		/**
 		 * The state of the Batteries and the BMS.
@@ -115,21 +123,20 @@ namespace nu {
 		struct State {
 			static const size_t num_modules = 32;
 
-			bool ow;
-			double uptime;
-			uint64_t time, last_voltage_pkt_time, last_heartbeat_pkt_time, last_single_pkt_time, last_single_pkt_time2, last_single_pkt_time3;
-			uint32_t last_trip_module, last_voltage_pkt_module;
-			uint32_t disabled_module;
+			double cc_battery, cc_array, wh_battery, wh_array;
+			double cc_mppt[3], wh_mppt_in[3], wh_mppt_out[3];
 			float highest_volt, lowest_volt;
 			float highest_temp, lowest_temp;
 			float highest_current, lowest_current;
-			double cc_battery, cc_array, wh_battery, wh_array;
-			double cc_mppt[3], wh_mppt_in[3], wh_mppt_out[3];
 			// temps are stored below
 
-			uint64_t openwire_clock, lcd_clock;
+			bool ow;
+			uint32_t last_trip_module, last_voltage_pkt_module;
+
+			uint32_t disabled_module;
+			uint32_t uptime;
 			uint32_t module_i;
-			bool converted_openwire;
+			bool has_configured_ltcs;
 		} state;
 
 		Array<float, State::num_modules> temperatures; // in degC
@@ -152,13 +159,21 @@ namespace nu {
 				AD7685<2>::CHAIN_MODE_NO_BUSY), hais::P50),
 			voltage_sensor(PIN(D, 9), SPI_CHANNEL1),
 			temp_sensor(PIN(A, 0)),
+
+			can_voltage_packet_timer(NU_VOLTAGE_PKTS_INTERVAL_MS, Timer::ms, false),
+			can_heartbeat_packet_timer(NU_HEARTBEAT_INTERVAL_MS, Timer::ms, false),
+			can_current_packet_timer(NU_SINGLE_PKTS_INTERVAL_MS, Timer::ms, false),
+			can_other_packet_timer(NU_SINGLE_PKTS_INTERVAL_MS+1, Timer::ms, false),
+			openwire_timer(2, Timer::s, false),
+			voltage_measuring_timer(16, Timer::ms, false),
+			lcd_clock(1, Timer::s, false),
+			
 			state(), temperatures()
 		{
 			WDT::clear();
-//			lcd1.lcd_clear();
-//			lcd1 << "POWER ON" << end;
 			state.last_trip_module = 12345;
 			state.disabled_module = 63;
+			state.has_configured_ltcs = false;
 
 			for (uint8_t i=0; i<6; i++) {
 				bits[i] = DigitalIn(Pin(Pin::B, i));
@@ -169,45 +184,60 @@ namespace nu {
 			common_can.err().setup_tx(CAN_LOWEST_PRIORITY);
 			mppt_can.out().setup_tx(CAN_HIGH_MEDIUM_PRIORITY);
 
-			state.lcd_clock = 0;
 			state.module_i = 0;
 		}
 
 
 		ALWAYSINLINE void read_ins() {
-			LTC6803<3>::Configuration cfg0;
-			memset(cfg0.bytes, 0, sizeof(cfg0.bytes));
-			cfg0.bits.cdc = LTC6803<3>::CDC_MSMTONLY;
-			cfg0.bits.wdt = true;
-			cfg0.bits.lvlpl = true;
-			cfg0.bits.vov = voltage_sensor.convert_ov_limit(NU_MAX_VOLTAGE);
-			cfg0.bits.vuv = voltage_sensor.convert_uv_limit(NU_MIN_VOLTAGE);
-			Array<LTC6803<3>::Configuration, 3> cfg;
-			cfg = cfg0;
-			voltage_sensor.write_configs(cfg);
+			// read measured voltages, redoing conversion occasionally
+			if (this->voltage_measuring_timer.has_expired())
+			{
+				if (state.has_configured_ltcs)
+				{
+					this->voltage_sensor.update_volts();
+				}
+				else
+				{
+					state.has_configured_ltcs = true;
+				}
 
-			state.time = timer::ms();
-			if (state.time%2000 < 100 && !state.converted_openwire) {
-				voltage_sensor.start_openwire_conversion();
-				state.converted_openwire = true;
-			}
-			else if (state.time%2000 > 100 && state.converted_openwire) {
-				voltage_sensor.start_voltage_conversion();
-				state.converted_openwire = false;
+				LTC6803<3>::Configuration cfg0;
+				memset(cfg0.bytes, 0, sizeof(cfg0.bytes));
+				cfg0.bits.cdc = LTC6803<3>::CDC_MSMTONLY;
+				cfg0.bits.wdt = true;
+				cfg0.bits.lvlpl = true;
+				cfg0.bits.vov = voltage_sensor.convert_ov_limit(NU_MAX_VOLTAGE);
+				cfg0.bits.vuv = voltage_sensor.convert_uv_limit(NU_MIN_VOLTAGE);
+				Array<LTC6803<3>::Configuration, 3> cfg;
+				cfg = cfg0;
+				this->voltage_sensor.write_configs(cfg);
+
+				// when OpenWire timer expires, switch to measuring Voltage.
+				if (this->openwire_timer.has_expired())
+				{
+					this->voltage_sensor.start_openwire_conversion();
+					this->openwire_timer.reset();
+				}
+				else
+				{
+					this->voltage_sensor.start_voltage_conversion();
+				}
+				
+				this->voltage_measuring_timer.reset();
 			}
 
-			temp_sensor.perform_temperature_conversion();
+			this->temp_sensor.perform_temperature_conversion();
+			this->temp_sensor.update_temperatures(this->temperatures);
+
+			this->current_sensor.read_current();
 
 			state.disabled_module = 0;
 			for (unsigned i=0; i<6; i++) {
 				state.disabled_module |= (uint32_t)(((bool)bits[i].read()) << i);
 			}
-			voltage_sensor.update_volts();
-			current_sensor.read_current();
-			temp_sensor.update_temperatures(this->temperatures);
 
-			state.highest_volt = voltage_sensor[0];
-			state.highest_current = current_sensor[0];
+			state.highest_volt = this->voltage_sensor[0];
+			state.highest_current = this->current_sensor[0];
 			state.highest_temp = this->temperatures[0];
 		}
 
@@ -236,59 +266,55 @@ namespace nu {
 			uint32_t id;
 			common_can.in().rx(pkt,id);
 			switch (id) {
-			case can::frame::bms::rx::trip_k: {
-				can::frame::bms::rx::trip trip_pkt(pkt);
-				Trip::trip((Trip::tripcode) trip_pkt.frame().trip_code, trip_pkt.frame().module, this);
-			}
-			case can::frame::bms::rx::reset_cc_batt_k: {
-				state.cc_battery=0;
-			}
-			case can::frame::bms::rx::reset_cc_array_k: {
-				state.cc_array=0;
-			}
-			case can::frame::bms::rx::reset_cc_mppt1_k: {
-				state.cc_mppt[0]=0;
-			}
-			case can::frame::bms::rx::reset_cc_mppt2_k: {
-				state.cc_mppt[1]=0;
-			}
-			case can::frame::bms::rx::reset_cc_mppt3_k: {
-				state.cc_mppt[2]=0;
-			}
-			case can::frame::bms::rx::reset_cc_Wh_k: {
-				state.wh_battery=0;
-				state.wh_array=0;
-				state.wh_mppt_in[0]=0;
-				state.wh_mppt_in[1]=0;
-				state.wh_mppt_in[2]=0;
-				state.wh_mppt_out[0]=0;
-				state.wh_mppt_out[1]=0;
-				state.wh_mppt_out[2]=0;
-			}
-			case can::frame::bms::rx::reset_cc_all_k: {
-				state.cc_battery=0;
-				state.cc_array=0;
-				state.cc_mppt[0]=0;
-				state.cc_mppt[1]=0;
-				state.cc_mppt[2]=0;
-				state.wh_battery=0;
-				state.wh_array=0;
-				state.wh_mppt_in[0]=0;
-				state.wh_mppt_in[1]=0;
-				state.wh_mppt_in[2]=0;
-				state.wh_mppt_out[0]=0;
-				state.wh_mppt_out[1]=0;
-				state.wh_mppt_out[2]=0;
-			}
+				case can::frame::bms::rx::trip_k: {
+					can::frame::bms::rx::trip trip_pkt(pkt);
+					Trip::trip((Trip::tripcode) trip_pkt.frame().trip_code, trip_pkt.frame().module, this);
+				}
+				case can::frame::bms::rx::reset_cc_batt_k: {
+					state.cc_battery=0;
+				}
+				case can::frame::bms::rx::reset_cc_array_k: {
+					state.cc_array=0;
+				}
+				case can::frame::bms::rx::reset_cc_mppt1_k: {
+					state.cc_mppt[0]=0;
+				}
+				case can::frame::bms::rx::reset_cc_mppt2_k: {
+					state.cc_mppt[1]=0;
+				}
+				case can::frame::bms::rx::reset_cc_mppt3_k: {
+					state.cc_mppt[2]=0;
+				}
+				case can::frame::bms::rx::reset_cc_Wh_k: {
+					state.wh_battery=0;
+					state.wh_array=0;
+					state.wh_mppt_in[0]=0;
+					state.wh_mppt_in[1]=0;
+					state.wh_mppt_in[2]=0;
+					state.wh_mppt_out[0]=0;
+					state.wh_mppt_out[1]=0;
+					state.wh_mppt_out[2]=0;
+				}
+				case can::frame::bms::rx::reset_cc_all_k: {
+					state.cc_battery=0;
+					state.cc_array=0;
+					state.cc_mppt[0]=0;
+					state.cc_mppt[1]=0;
+					state.cc_mppt[2]=0;
+					state.wh_battery=0;
+					state.wh_array=0;
+					state.wh_mppt_in[0]=0;
+					state.wh_mppt_in[1]=0;
+					state.wh_mppt_in[2]=0;
+					state.wh_mppt_out[0]=0;
+					state.wh_mppt_out[1]=0;
+					state.wh_mppt_out[2]=0;
+				}
 			}
 		}
 
 		ALWAYSINLINE void send_can() {
-			state.time = timer::ms();
-
-
-			if ((state.time < state.last_voltage_pkt_time && state.time > NU_VOLTAGE_PKTS_INTERVAL_MS)
-			   ||(state.time-state.last_voltage_pkt_time > NU_VOLTAGE_PKTS_INTERVAL_MS)) {
+			if (this->can_voltage_packet_timer.has_expired()) {
 				can::frame::bms::tx::voltage v_pkt(0);
 				can::frame::bms::tx::temp t_pkt(0);
 				can::frame::bms::tx::owVoltage ow_pkt(0);
@@ -310,22 +336,22 @@ namespace nu {
 					state.last_voltage_pkt_module = 0;
 				else
 					state.last_voltage_pkt_module++;
-				state.last_voltage_pkt_time = timer::ms();
+
+				this->can_voltage_packet_timer.reset();
 			}
 
 
-			if ((state.time < state.last_heartbeat_pkt_time && state.time > NU_HEARTBEAT_INTERVAL_MS)
-			   ||(state.time-state.last_heartbeat_pkt_time > NU_VOLTAGE_PKTS_INTERVAL_MS)) {
+			if (this->can_heartbeat_packet_timer.has_expired()) {
 				can::frame::bms::tx::heartbeat pkt(0);
 				// update module to send
 				memcpy(pkt.frame().bms_str, "zlda", 4);
 				common_can.out().tx(pkt);
-				state.last_heartbeat_pkt_time = timer::ms();
+
+				this->can_heartbeat_packet_timer.reset();
 			}
 
 
-			if ((state.time < state.last_single_pkt_time && state.time > NU_SINGLE_PKTS_INTERVAL_MS)
-			   ||(state.time-state.last_single_pkt_time > NU_SINGLE_PKTS_INTERVAL_MS)) {
+			if (this->can_current_packet_timer.has_expired()) {
 				can::frame::bms::tx::current current_pkt(0);
 				can::frame::bms::tx::cc_array cc_array_pkt(0);
 				can::frame::bms::tx::cc_batt  cc_batt_pkt(0);
@@ -345,39 +371,33 @@ namespace nu {
 				common_can.out().tx(cc_mppt1_pkt);
 				common_can.out().tx(cc_mppt2_pkt);
 				common_can.out().tx(cc_mppt3_pkt);
-				state.last_single_pkt_time = timer::ms();
+
+				this->can_current_packet_timer.reset();
 			}
 
 
-			if ((state.time < state.last_single_pkt_time2 && state.time > NU_SINGLE_PKTS_INTERVAL_MS)
-			   ||(state.time-state.last_single_pkt_time2 > NU_SINGLE_PKTS_INTERVAL_MS)) {
+			if (this->can_other_packet_timer.has_expired()) {
 				can::frame::bms::tx::uptime uptime_pkt(0);
 				can::frame::bms::tx::batt_bypass batt_bypass_pkt(0);
 				can::frame::bms::tx::Wh_batt Wh_batt_pkt(0);
-				uptime_pkt.frame().seconds = state.uptime;
-				batt_bypass_pkt.frame().module = state.disabled_module;
-				Wh_batt_pkt.frame().count = state.wh_battery;
-				common_can.out().tx(uptime_pkt);
-				common_can.out().tx(batt_bypass_pkt);
-				common_can.out().tx(Wh_batt_pkt);
-				state.last_single_pkt_time2 = timer::ms();
-			}
-
-			// Transmit MPPT counts
-			if ((state.time < state.last_single_pkt_time3 && state.time > NU_SINGLE_PKTS_INTERVAL_MS)
-			   ||(state.time-state.last_single_pkt_time3 > NU_SINGLE_PKTS_INTERVAL_MS)) {
 				can::frame::bms::tx::Wh_mppt1 Wh_mppt1_pkt(0);
 				can::frame::bms::tx::Wh_mppt2 Wh_mppt2_pkt(0);
 				can::frame::bms::tx::Wh_mppt3 Wh_mppt3_pkt(0);
+				uptime_pkt.frame().seconds = state.uptime;
+				batt_bypass_pkt.frame().module = state.disabled_module;
+				Wh_batt_pkt.frame().count = state.wh_battery;
 				Wh_mppt1_pkt.frame().count = state.wh_mppt_out[0];
 				Wh_mppt2_pkt.frame().count = state.wh_mppt_out[1];
 				Wh_mppt3_pkt.frame().count = state.wh_mppt_out[2];
+				common_can.out().tx(uptime_pkt);
+				common_can.out().tx(batt_bypass_pkt);
+				common_can.out().tx(Wh_batt_pkt);
 				common_can.out().tx(Wh_mppt1_pkt);
 				common_can.out().tx(Wh_mppt2_pkt);
 				common_can.out().tx(Wh_mppt3_pkt);
-				state.last_single_pkt_time3 = timer::ms();
-			}
 
+				this->can_other_packet_timer.reset();
+			}
 		}
 
 		void emergency_shutoff() {
@@ -396,8 +416,7 @@ namespace nu {
 	//			send_can();
 				check_batteries();
 
-				state.time = timer::ms();
-				if (state.time<state.lcd_clock || state.time - state.lcd_clock > 1000) {
+				if (lcd_clock.has_expired()) {
 					lcd1.lcd_clear();
 					lcd1 << "ZELDA " << state.module_i << end;
 					lcd1.goto_xy(0, 1);
@@ -413,7 +432,8 @@ namespace nu {
 					led1.toggle();
 
 					++state.module_i %= 32;
-					state.lcd_clock = state.time;
+					++state.uptime;
+					this->lcd_clock.reset();
 				}
 			}
 		}
@@ -438,7 +458,7 @@ namespace nu {
 			lcd1.lcd_clear();
 			lcd1 << "C++WINS" << end;
 			led1.toggle();
-			timer::delay_s<1>();
+			timer::delay_s(1);
 		}
 
 		static NORETURN void main(BMS *bms);

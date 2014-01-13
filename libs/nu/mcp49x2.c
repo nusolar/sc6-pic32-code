@@ -1,4 +1,4 @@
-#include "nu/mcp49x2.h"
+#include "nu/component/mcp49x2.h"
 #include "nu/errorcodes.h"
 #include "nu/utility.h"
 

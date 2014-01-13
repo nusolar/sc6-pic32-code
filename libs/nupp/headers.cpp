@@ -17,16 +17,16 @@
 #include "nupp/component/ds18x20.hpp"
 
 // PLIB protocols
-#include "nupp/can.hpp"
-#include "nupp/onewire.hpp"
-#include "nupp/serial.hpp"
-#include "nupp/spi.hpp"
-#include "nupp/usbhid.hpp"
+#include "nupp/peripheral/can.hpp"
+#include "nupp/peripheral/onewire.hpp"
+#include "nupp/peripheral/serial.hpp"
+#include "nupp/peripheral/spi.hpp"
+#include "nupp/peripheral/usbhid.hpp"
+#include "nupp/peripheral/pinctl.hpp"
 
 // basic system services
 #include "nupp/crc.hpp"
 #include "nupp/param.hpp"
-#include "nupp/pinctl.hpp"
 #include "nupp/timer.hpp"
 #include "nupp/wdt.hpp"
 

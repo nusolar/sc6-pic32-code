@@ -1,7 +1,7 @@
 #ifndef NUPP_NOKIA5110_HPP
 #define NUPP_NOKIA5110_HPP 1
 
-#include "nupp/spi.hpp"
+#include "nupp/peripheral/spi.hpp"
 
 namespace nu {
 	/***********************************

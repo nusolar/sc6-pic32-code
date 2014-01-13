@@ -1,7 +1,6 @@
-#include "nupp/errorcodes.hpp"
-
-#include "nupp/can.hpp"
+#include "nupp/peripheral/can.hpp"
 #include "nupp/timer.hpp"
+#include "nupp/errorcodes.hpp"
 #include "nu/utility/bits.h"
 
 #include <GenericTypeDefs.h>

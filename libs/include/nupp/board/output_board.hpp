@@ -8,8 +8,8 @@
 #ifndef NUPP_OUTPUT_BOARD_HPP
 #define	NUPP_OUTPUT_BOARD_HPP
 
-#include "nupp/serial.hpp"
-#include "nupp/pinctl.hpp"
+#include "nupp/peripheral/serial.hpp"
+#include "nupp/peripheral/pinctl.hpp"
 #include "nupp/timer.hpp"
 #include "nupp/array.hpp"
 #include "nu/compiler.h"

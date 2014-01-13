@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 Alex Chandel. All rights reserved.
 //
 
-#include "nupp/pinctl.hpp"
+#include "nupp/peripheral/pinctl.hpp"
 
 using namespace nu;
 

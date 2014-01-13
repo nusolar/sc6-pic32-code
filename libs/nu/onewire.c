@@ -4,6 +4,8 @@
 #include "nu/timer.h"
 #include "nu/utility.h"
 
+#if 0
+
 static const u32 owCrcTab[] = {
    0,94,188,226,97,63,221,131,194,156,126,32,163,253,31,65,
    157,195,33,127,252,162,64,30,95,1,227,189,62,96,130,220,
@@ -566,3 +568,5 @@ w1_verify(struct w1 *w, union romcode rc, u8 search_rom_cmd)
 
     return 0;
 }
+
+#endif

@@ -8,14 +8,14 @@
 #ifndef DS18X20_HPP
 #define	DS18X20_HPP
 
-#include "nu/compiler.h"
-#include "nupp/onewire.hpp"
+#include "nupp/peripheral/onewire.hpp"
 #include "nupp/array.hpp"
+#include "nu/compiler.h"
 
 namespace nu {
 	template <size_t num_devices>
-	struct DS18X20: public OneWire<num_devices> {
-		static const typename OneWire<num_devices>::romcode roms[32];
+	struct DS18X20: public OneWire {
+		static const typename OneWire::romcode roms[32];
 		union scratch {
 			uint8_t bytes[9];
 			struct PACKED {
@@ -29,7 +29,7 @@ namespace nu {
 		};
 		static_assert(sizeof(scratch) == 9, "nu::DS18X20::scratch packing");
 
-		ALWAYSINLINE DS18X20(Pin _p): OneWire<num_devices>(_p) {}
+		ALWAYSINLINE DS18X20(Pin _p): OneWire(_p) {}
 
 		ALWAYSINLINE void convert_t() {
 			this->tx_byte_with_crc( this->CONVERT_T );
@@ -41,7 +41,7 @@ namespace nu {
 			this->convert_t();
 		}
 
-		ALWAYSINLINE void read_temperature(const typename OneWire<num_devices>::romcode &code, scratch &scr) {
+		ALWAYSINLINE void read_temperature(const typename OneWire::romcode &code, scratch &scr) {
 			this->reset();
 			this->match_rom(code);
 			this->read_scratch(&scr, sizeof(scr));
@@ -61,7 +61,7 @@ namespace nu {
 	};
 
 	template <size_t num_devices>
-	const typename OneWire<num_devices>::romcode DS18X20<num_devices>::roms[32] = {
+	const typename OneWire::romcode DS18X20<num_devices>::roms[32] = {
 		// bar 1
 		{{0x28, 0x9E, 0x63, 0xEA, 0x02, 0x00, 0x00}},
 		{{0x28, 0x63, 0x58, 0xEA, 0x02, 0x00, 0x00}},

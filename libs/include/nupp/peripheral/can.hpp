@@ -4,11 +4,11 @@
 #include "nu/compiler.h"
 #include <cstdint>
 #include <new>
-
 extern "C" {
 #include <plib.h>
 }
-#include "nupp/can_def.hpp"
+
+#include "nupp/peripheral/can_def.hpp"
 
 namespace nu {
 	namespace can {

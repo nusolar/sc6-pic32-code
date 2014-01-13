@@ -8,7 +8,7 @@
 #ifndef NUPP_LTC6804_HPP
 #define	NUPP_LTC6804_HPP 1
 
-#include "nupp/spi.hpp"
+#include "nupp/peripheral/spi.hpp"
 #include "nupp/array.hpp"
 #include "nupp/crc.hpp"
 #include "nu/compiler.h"

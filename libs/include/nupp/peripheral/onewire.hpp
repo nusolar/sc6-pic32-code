@@ -1,17 +1,14 @@
 #ifndef ONEWIRE_HPP
 #define	ONEWIRE_HPP 1
 
-extern "C" {
-#include "nu/crc.h"
-}
-#include "nu/compiler.h"
-#include "nupp/pinctl.hpp"
+#include "nupp/peripheral/pinctl.hpp"
 #include "nupp/timer.hpp"
 #include "nupp/errorcodes.hpp"
+#include "nu/compiler.h"
+#include "nu/crc.h"
 
 
 namespace nu {
-	template <size_t num_devices>
 	struct OneWire: protected AbstractPin {
 		enum command {
 			SEARCH_ROM = 0xF0,
@@ -66,13 +63,13 @@ namespace nu {
 		ALWAYSINLINE void tx_bit(bool b) {
 			low();
 			if (b) {
-				timer::delay_us<6>();
+				timer::delay_us(6);
 				high();
-				timer::delay_us<64>();
+				timer::delay_us(64);
 			} else {
-				timer::delay_us<60>();
+				timer::delay_us(60);
 				high();
-				timer::delay_us<10>();
+				timer::delay_us(10);
 			}
 		}
 		ALWAYSINLINE void tx_byte(uint8_t byte) {
@@ -100,7 +97,7 @@ namespace nu {
 
 		ALWAYSINLINE bool rx_bit() {
 			low();
-			timer::delay_us<6>();
+			timer::delay_us(6);
 			high();
 			/*
 			 * This should theoretically be a 9us delay according to
@@ -111,7 +108,7 @@ namespace nu {
 			 * somewhere near the middle of the duration for which the ds18x20 is
 			 * asserting a bit.
 			 */
-			timer::delay_us<4>();
+			timer::delay_us(4);
 			return read_digital();
 		}
 
@@ -139,11 +136,11 @@ namespace nu {
 
 		ALWAYSINLINE int32_t reset() {
 			low();
-			timer::delay_us<480>();
+			timer::delay_us(480);
 			high();
-			timer::delay_us<70>();
+			timer::delay_us(70);
 			bool devices_present = !read_digital();
-			timer::delay_us<410>();
+			timer::delay_us(410);
 			/*high();*/
 			return (devices_present? 1: -error::ENODEV);
 		}
@@ -191,7 +188,7 @@ namespace nu {
 		}
 
 		/** The Search ROM algorithm, see www.maxim-ic.com/ibuttonbook */
-		ALWAYSINLINE bool search_rom(const romcode &dest, const uint8_t search_rom_cmd) {
+		ALWAYSINLINE bool search_rom(romcode &dest, const uint8_t search_rom_cmd) {
 			uint32_t id_bit_number = 1; // 1-64
 			// bit # of last 0 where there was a discrepency. 1-64, or 0 if none
 			uint32_t last_zero_discrep_bit = 0;
@@ -254,8 +251,7 @@ namespace nu {
 		}
 	};
 
-	template <size_t num_devices>
-	const uint32_t OneWire<num_devices>::crc_table[] = {
+	const uint32_t OneWire::crc_table[] = {
 	   0,94,188,226,97,63,221,131,194,156,126,32,163,253,31,65,
 	   157,195,33,127,252,162,64,30,95,1,227,189,62,96,130,220,
 	   35,125,159,193,66,28,254,160,225,191,93,3,128,222,60,98,

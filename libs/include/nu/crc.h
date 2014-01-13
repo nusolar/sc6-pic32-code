@@ -11,6 +11,11 @@
 #include <GenericTypeDefs.h>
 #include "nu/errorcodes.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 /* from http://en.wikipedia.org/wiki/Cyclic_redundancy_check#Commonly_used_and_standardized_CRCs */
 #define CRC_1           0x01                /* x+1 */
 #define CRC_PARITY      CRC_1               /* parity bit calculation */
@@ -80,5 +85,9 @@ crcTableFast (const uint32_t *crcTab, const void *data, size_t len,
         unsigned int order, enum direct direct, unsigned long initVal,
         unsigned long polynom, enum reverseDataBytes reverseDataBytes,
         enum reverseBeforeFinalXor, unsigned long final_xor_value);
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif
 
 #endif

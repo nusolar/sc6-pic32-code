@@ -1,4 +1,4 @@
-#include "nu/led.h"
+#include "nu/component/led.h"
 
 static void
 nu_led_reset_err_state(struct nu_error_reporting_dev *erd)

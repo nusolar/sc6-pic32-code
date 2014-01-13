@@ -6,7 +6,7 @@
  * Wrapper for buttons, with debouncing.
  */
 
-#include "nupp/pinctl.hpp"
+#include "nupp/peripheral/pinctl.hpp"
 
 namespace nu {
 	/**

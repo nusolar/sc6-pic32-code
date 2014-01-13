@@ -94,7 +94,7 @@ namespace nu {
 		 */
 		ALWAYSINLINE void read_ins() {
 			WDT::clear();
-			
+
 			state.accel = ((float)accel_pedel.read() + 0)/1024; // scale 0-1023 to 0-1
 			if (state.accel < 0) state.accel = 0;
 			if (state.accel > 1) state.accel = 1;
@@ -107,7 +107,7 @@ namespace nu {
 
 			state.airgap = ((float)airgap_pot.read() + 0)/1024; // WARNING: disconnected
 			state.airgap_en = (bool)airgap_switch.read(); // TODO: clamp
-			
+
 			state.brake_en		= (bool)brake_pedal.read();
 			state.lights_brake = state.brake_en;
 
@@ -168,7 +168,7 @@ namespace nu {
 					lights_cmd.frame.contents.right = state.lights_r;
 					lights_cmd.frame.contents.hazard = state.lights_hazard;
 					lights_cmd.frame.contents.horn = state.horn;
-					
+
 					common_can.out().tx(ack.bytes(), 8, can::frame::sw::rx::buttons_k);
 
 					state.sw_timer = (uint32_t)timer::ms(); // Reset SW time-out
@@ -249,7 +249,7 @@ namespace nu {
 		/** testing */
 		ALWAYSINLINE void test() {
 			WDT::clear();
-			
+
 			read_ins();
 			recv_can();
 			set_lights();
@@ -291,7 +291,7 @@ namespace nu {
 					led1.toggle();
 				state.last_time = state.time;
 			}
-			timer::delay_ms<1>();
+			timer::delay_ms(1);
 		}
 
 		static NORETURN void main();

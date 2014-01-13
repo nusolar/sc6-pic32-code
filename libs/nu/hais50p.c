@@ -1,4 +1,4 @@
-#include "nu/hais50p.h"
+#include "nu/component/hais50p.h"
 
 static ALWAYSINLINE float
 voltageToCurrent(float voltage)

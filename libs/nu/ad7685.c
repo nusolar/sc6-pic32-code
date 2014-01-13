@@ -1,4 +1,4 @@
-#include "nu/ad7685.h"
+#include "nu/component/ad7685.h"
 #include "nu/spi.h"
 #include "nu/errorcodes.h"
 #include "nu/timer.h"
@@ -12,14 +12,14 @@ static const u32 spi_bitrate = 100000;
 #define drive_cnv_low(a)    nu_pin_clear(&((a)->convert_pin))
 
 s32 MUST_CHECK
-nu_ad7685_setup(const struct nu_ad7685 *a)
+nu_ad7685_setup(struct nu_ad7685 *this)
 {
-    if ((NU_AD7685_FOUR_WIRE & a->opt && NU_AD7685_NO_BUSY_INDICATOR & a->opt) ||
-            (NU_AD7685_CHAIN_MODE & a->opt && NU_AD7685_BUSY_INDICATOR & a->opt))
+    if ((NU_AD7685_FOUR_WIRE & this->opt && NU_AD7685_NO_BUSY_INDICATOR & this->opt) ||
+            (NU_AD7685_CHAIN_MODE & this->opt && NU_AD7685_BUSY_INDICATOR & this->opt))
         return -EINVAL;
-    nu_pin_set_digital_out(&(a->convert_pin));
+    nu_pin_set_digital_out(&(this->convert_pin));
 	nu_spi_platform_setup_args args = {(SpiOpenFlags) SPI_OFLAGS};
-    nu_spi_setup(&(a->spi), spi_bitrate, args);
+    nu_spi_setup(&(this->spi), spi_bitrate, args);
     return 0;
 }
 

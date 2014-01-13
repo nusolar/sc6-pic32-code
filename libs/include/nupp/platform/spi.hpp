@@ -8,7 +8,7 @@
 #ifndef NU_PLATFORM_SPI_HPP
 #define	NU_PLATFORM_SPI_HPP 1
 
-#include "nupp/pinctl.hpp"
+#include "nupp/peripheral/pinctl.hpp"
 #include "nupp/timer.hpp"
 #include "nu/compiler.h"
 

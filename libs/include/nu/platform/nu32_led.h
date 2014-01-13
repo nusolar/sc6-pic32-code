@@ -1,7 +1,7 @@
 #ifndef NU_PLATFORM_NU32_LED_H
 #define NU_PLATFORM_NU32_LED_H 1
 
-#include "nu/led.h"
+#include "nu/component/led.h"
 #include "nu/platform/nu32.h"
 #include "nu/platform.h"
 

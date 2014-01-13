@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   ltc6803.hpp
  * Author: alex
  *
@@ -8,8 +8,8 @@
 #ifndef LTC6803_HPP
 #define	LTC6803_HPP 1
 
-#include "nupp/spi.hpp"
-#include "nupp/pinctl.hpp"
+#include "nupp/peripheral/spi.hpp"
+#include "nupp/peripheral/pinctl.hpp"
 #include "nupp/errorcodes.hpp"
 #include "nupp/timer.hpp"
 #include "nupp/crc.hpp"
@@ -185,7 +185,7 @@ namespace nu {
 
 		uint32_t mismatch_pecs;
 		bool is_openwire;
-		
+
 		Array<float, num_devices*cells_per_device> values;
 		/** @warning NO BOUNDS CHECKING */
 		ALWAYSINLINE float operator[] (size_t index) const {return values[index];}
@@ -217,7 +217,7 @@ namespace nu {
 		PURE ALWAYSINLINE BYTE convert_ov_limit(float vov) {return (BYTE) ((vov/(16*.0015)) + 32);}
 		PURE ALWAYSINLINE float convert_ref_to_v(float ref) {return (((float)ref - 512) * .0015);}
 		PURE ALWAYSINLINE float convert_voltage(uint32_t raw) {return ((float)raw-512)*0.0015;}
-		
+
 	private:
 		ALWAYSINLINE bool confirm_configs(Array<Configuration, num_devices> &config) {
 			Array<Configuration, num_devices> rx_config;
@@ -227,7 +227,7 @@ namespace nu {
 		}
 		ALWAYSINLINE void read_diags(Array<Diagnostic, num_devices> &diag) {
 			write_cmd(DAGN);
-			timer::delay_ms<25>();
+			timer::delay_ms(25);
 			write_cmd_tx(READ_DAGN, &diag[0], sizeof(Diagnostic));
 		}
 		ALWAYSINLINE void check_open_wire(u16 *open_wire, const float *voltages){}
@@ -250,7 +250,7 @@ namespace nu {
 			for (unsigned i=0; i<num_devices; i++) {
 				rx(recv_buffer, one_element + 1);
 				memcpy((BYTE *)dest + i*one_element, recv_buffer, one_element);
-				
+
 				BYTE pec = recv_buffer[sizeof(recv_buffer) - 1]; // last byte
 				BYTE CRC = (BYTE)crc::_8_ccitt(recv_buffer, sizeof(recv_buffer) - 1);
 				if (pec != CRC) {
@@ -284,7 +284,7 @@ namespace nu {
 		/** @todo error reporting */
 		ALWAYSINLINE void post() {
 			write_cmd(STCVAD_SELFTEST1);
-			timer::delay_ms<25>();
+			timer::delay_ms(25);
 
 			Array<RawVoltages, num_devices> rv();
 			read_volts_raw(rv);

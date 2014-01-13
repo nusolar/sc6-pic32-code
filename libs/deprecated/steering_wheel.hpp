@@ -156,12 +156,12 @@ namespace nu {
 			for (unsigned i=0; i<SW_N_LEDS; i++){
 				WDT::clear();
 				leds[i]->on();
-				timer::delay_ms<10>(); // ok. WDT timeout ~ 2s
+				timer::delay_ms(10); // ok. WDT timeout ~ 2s
 			}
 			for (unsigned i=0; i<SW_N_LEDS; i++){
 				WDT::clear();
 				leds[i]->off();
-				timer::delay_ms<10>(); // ok. WDT timeout ~ 2s
+				timer::delay_ms(10); // ok. WDT timeout ~ 2s
 			}
 		}
 

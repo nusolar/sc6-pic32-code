@@ -1,4 +1,4 @@
-#include "nu/nokia5110.h"
+#include "nu/component/nokia5110.h"
 #include "nu/wdt.h"
 
 #define LCD_X     84

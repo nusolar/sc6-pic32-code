@@ -1,5 +1,7 @@
-#include "nu/ds18x20.h"
+#include "nu/component/ds18x20.h"
 #include "nu/errorcodes.h"
+
+#if 0
 
 const u8            DS18B20_FAMILY_CODE = 0x28;
 const u8            DS18S20_FAMILY_CODE = 0x10;
@@ -328,3 +330,5 @@ ds_read_power_supply(struct ds18x20 *d, union romcode rc)
     else
         return rx_bit;
 }
+
+#endif
