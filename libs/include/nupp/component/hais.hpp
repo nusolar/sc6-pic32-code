@@ -30,13 +30,13 @@ namespace nu {
 		hais::PN I_pn;
 		
 		Array<float, num_devices> values;
-		ALWAYSINLINE float operator[] (size_t index) const {return values[index];}
-		ALWAYSINLINE uint32_t count() {return num_devices;}
+		INLINE float operator[] (size_t index) const {return values[index];}
+		INLINE uint32_t count() {return num_devices;}
 
-		ALWAYSINLINE HAIS(AD7685<num_devices> _adc, hais::PN _I_pn): AD7685<num_devices>(_adc), I_pn(_I_pn), values(0.0f) {}
+		INLINE HAIS(AD7685<num_devices> _adc, hais::PN _I_pn): AD7685<num_devices>(_adc), I_pn(_I_pn), values(0.0f) {}
 		
 		/** Convert ADC voltage output to measured current */
-		PURE ALWAYSINLINE float voltage_to_current(float voltage) {
+		PURE INLINE float voltage_to_current(float voltage) {
 			/* V_out = V_ref + (0.625*I_p/(I_pn))
 			 * V_ref = 2.5 +/- 0.025V
 			 * I_pn  = primary nominal curent = 50A for HAIS-50P
@@ -44,7 +44,7 @@ namespace nu {
 			return (voltage - 2.5) * (float)I_pn / 0.625;
 		}
 
-		ALWAYSINLINE void read_current() {
+		INLINE void read_current() {
 			this->convert_read_uv();
 			for (unsigned i=0; i<num_devices; i++) {
 				values[i] = (1-.02)*values[i] + (.02)*(voltage_to_current((float) this->AD7685<num_devices>::operator[](i) / 1000000) + 4);

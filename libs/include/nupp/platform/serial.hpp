@@ -29,7 +29,7 @@ namespace nu {
 		UART_MODULE module;
 		uint32_t baud;
 
-		ALWAYSINLINE UARTModule(UART_MODULE _mod, uint32_t _baud,
+		INLINE UARTModule(UART_MODULE _mod, uint32_t _baud,
 				   bool use_interrupt = false,
 				   INT_PRIORITY int_priority = INT_PRIORITY_DISABLED,
 				   UART_CONFIGURATION uart_config = (UART_CONFIGURATION)UART_ENABLE_PINS_TX_RX_ONLY,
@@ -84,7 +84,7 @@ namespace nu {
 
 		virtual ~UARTModule() {}
 
-		ALWAYSINLINE void tx(const void *src, size_t n) {
+		INLINE void tx(const void *src, size_t n) {
 			size_t ui;
 			for (ui = 0; ui < n; ++ui) {
 				WDT::clear();
@@ -94,7 +94,7 @@ namespace nu {
 			//	while (!UARTTransmissionHasCompleted(module)) Nop(); // TODO: async
 		}
 
-		ALWAYSINLINE int rx(void *dst, size_t n) {
+		INLINE int rx(void *dst, size_t n) {
 			size_t ui;
 			for (ui = 0; ui < n; ++ui) {
 				if (!UARTReceivedDataIsAvailable(module)) {

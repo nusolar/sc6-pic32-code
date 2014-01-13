@@ -35,8 +35,8 @@ namespace nu {
 
 		Array<uint32_t, num_devices> values;
 		/** @warning NO BOUNDS CHECKING */
-		ALWAYSINLINE uint32_t operator[] (size_t index) const {return values[index];}
-		ALWAYSINLINE uint32_t count() {return num_devices;}
+		INLINE uint32_t operator[] (size_t index) const {return values[index];}
+		INLINE uint32_t count() {return num_devices;}
 
 		/**
 		 * Construct an AD7685 interface over SPI, with a Convert pin.
@@ -45,7 +45,7 @@ namespace nu {
          * @param _convert Used to control AD7685. Identical to CS in some configurations.
          * @param _opts
          */
-		ALWAYSINLINE AD7685(Pin _cs, uint8_t _channel, Pin _convert, options _opts):
+		INLINE AD7685(Pin _cs, uint8_t _channel, Pin _convert, options _opts):
 			SPI(_cs, Spi(_channel, 100000, SPI_OPEN_CKE_REV|SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON)),
 			convert(_convert), opts(_opts), values(0U)
 		{
@@ -57,7 +57,7 @@ namespace nu {
 		/**
 		 * Gets the actual voltage reading(s) (not raw data).
 		 */
-		ALWAYSINLINE void convert_read_uv(){
+		INLINE void convert_read_uv(){
 			if (FOUR_WIRE & opt && BUSY_INDICATOR & opt)
 				cs.high();
 
@@ -90,7 +90,7 @@ namespace nu {
 		/**
 		 * Read SPI data from AD7685 into buffer.
          */
-		ALWAYSINLINE void read_uv(){
+		INLINE void read_uv(){
 			Array<uint16_t, num_devices> buffer;
 
 			rx(buffer, buffer.size());

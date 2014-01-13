@@ -12,30 +12,30 @@ namespace nu {
 	class Array {
 		T array[N];
 	public:
-		ALWAYSINLINE T& at(const size_t index) {
+		INLINE T& at(const size_t index) {
 			return array[index];
 		}
-		ALWAYSINLINE T  at(const size_t index) const {
+		INLINE T  at(const size_t index) const {
 			return array[index];
 		}
 		
-		ALWAYSINLINE T& operator[] (const size_t index) {return at(index);}
-		ALWAYSINLINE T  operator[] (const size_t index) const {return at(index);}
+		INLINE T& operator[] (const size_t index) {return at(index);}
+		INLINE T  operator[] (const size_t index) const {return at(index);}
 
-		ALWAYSINLINE operator void *() {
+		INLINE operator void *() {
 			return (void *)array;
 		}
-		ALWAYSINLINE operator const void *() const {
+		INLINE operator const void *() const {
 			return (const void *)array;
 		}
-		ALWAYSINLINE const T *data() {
+		INLINE const T *data() {
 			return (const T*)array;
 		}
 
-		ALWAYSINLINE size_t count() {return N;}
-		ALWAYSINLINE size_t size() {return sizeof(T)*N;}
+		INLINE size_t count() {return N;}
+		INLINE size_t size() {return sizeof(T)*N;}
 
-		ALWAYSINLINE Array<T, N>& operator= (T& rvalue) {
+		INLINE Array<T, N>& operator= (T& rvalue) {
 			for (unsigned i=0; i<N; i++) {
 				at(i) = rvalue;
 			}
@@ -47,14 +47,14 @@ namespace nu {
          * @param rvalue The array to be copied.
          */
 		template <typename T2>
-		ALWAYSINLINE Array<T, N>& operator= (Array<T2, N>& rvalue) {
+		INLINE Array<T, N>& operator= (Array<T2, N>& rvalue) {
 			for (unsigned i=0; i<N; i++) {
 				at(i) = rvalue[i];
 			}
 			return *this;
 		}
 
-		ALWAYSINLINE bool operator== (Array<T,N>& rvalue) {
+		INLINE bool operator== (Array<T,N>& rvalue) {
 			bool result = true;
 			for (unsigned i=0; i<N; i++) {
 				result *= (at(i) == rvalue[i]);
@@ -62,7 +62,7 @@ namespace nu {
 			return result;
 		}
 
-		ALWAYSINLINE bool byte_compare (Array<T,N>& rvalue) {
+		INLINE bool byte_compare (Array<T,N>& rvalue) {
 			bool result = true;
 			for (unsigned i=0; i<N; i++) {
 				result &= (memcmp(&array[i], &rvalue.array[i], sizeof(array[i])) == 0);
@@ -70,8 +70,8 @@ namespace nu {
 			return result;
 		}
 
-		ALWAYSINLINE Array<T,N>() {}
-		ALWAYSINLINE Array<T,N>(T init) {*this = init;}
+		INLINE Array<T,N>() {}
+		INLINE Array<T,N>(T init) {*this = init;}
 	};
 }
 

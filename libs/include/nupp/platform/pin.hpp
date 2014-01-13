@@ -52,7 +52,7 @@ namespace nu {
 		 * @param _port For PIC32MX795F512L, A-G. AnalogIn MUST be B.
 		 * @param _bit For PIC32MX795F512L, 0-9.
 		 */
-		ALWAYSINLINE Pin(Port _port = D, uint8_t _bit = 0): port(_port), bit(_bit) {}
+		INLINE Pin(Port _port = D, uint8_t _bit = 0): port(_port), bit(_bit) {}
 		NOINLINE virtual ~Pin() {}
 
 	protected:

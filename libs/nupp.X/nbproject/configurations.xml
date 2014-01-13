@@ -89,6 +89,7 @@
         <itemPath>../nupp/bps.cpp</itemPath>
         <itemPath>../nupp/output_board.cpp</itemPath>
         <itemPath>../nupp/pedals.cpp</itemPath>
+        <itemPath>../nupp/onewire.cpp</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
@@ -392,7 +393,7 @@
         <property key="generate-16-bit-code" value="false"/>
         <property key="isolate-each-function" value="true"/>
         <property key="make-warnings-into-errors" value="false"/>
-        <property key="optimization-level" value=""/>
+        <property key="optimization-level" value="-O1"/>
         <property key="place-data-into-section" value="true"/>
         <property key="post-instruction-scheduling" value="schedule-insns2"/>
         <property key="pre-instruction-scheduling" value="schedule-insns"/>

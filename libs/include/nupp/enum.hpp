@@ -15,7 +15,7 @@ namespace nu {
 	 */
 	template <class _Tp, size_t _Size>
 	struct Enum {
-		size_t len; // FUCK MPLAB
+		size_t len;
 		_Tp _array[_Size];
 
 		ALWAYSINLINE size_t size() {return _Size;}

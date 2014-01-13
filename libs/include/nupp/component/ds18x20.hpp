@@ -29,29 +29,29 @@ namespace nu {
 		};
 		static_assert(sizeof(scratch) == 9, "nu::DS18X20::scratch packing");
 
-		ALWAYSINLINE DS18X20(Pin _p): OneWire(_p) {}
+		INLINE DS18X20(Pin _p): OneWire(_p) {}
 
-		ALWAYSINLINE void convert_t() {
+		INLINE void convert_t() {
 			this->tx_byte_with_crc( this->CONVERT_T );
 		}
 
-		ALWAYSINLINE void perform_temperature_conversion() {
+		INLINE void perform_temperature_conversion() {
 			this->reset();
 			this->skip_rom();
 			this->convert_t();
 		}
 
-		ALWAYSINLINE void read_temperature(const typename OneWire::romcode &code, scratch &scr) {
+		INLINE void read_temperature(const typename OneWire::romcode &code, scratch &scr) {
 			this->reset();
 			this->match_rom(code);
 			this->read_scratch(&scr, sizeof(scr));
 		}
 
-		static PURE ALWAYSINLINE float convert_temperature(uint16_t temp) {
+		static PURE INLINE float convert_temperature(uint16_t temp) {
 			return (float)temp/16;
 		}
 
-		ALWAYSINLINE void update_temperatures(Array<float, num_devices> &values) {
+		INLINE void update_temperatures(Array<float, num_devices> &values) {
 			Array<scratch, num_devices> scratches;
 			for (unsigned i=0; i<num_devices; i++) {
 				this->read_temperature(this->roms[i], scratches[i]);

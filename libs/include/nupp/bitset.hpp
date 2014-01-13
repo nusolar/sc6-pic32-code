@@ -28,36 +28,36 @@ namespace nu {
 			friend class Bitset;
 			Bitset &par;
 			size_t pos;
-			ALWAYSINLINE bit(Bitset &_par, size_t _pos): par(_par), pos(_pos) {};
+			INLINE bit(Bitset &_par, size_t _pos): par(_par), pos(_pos) {};
 		public:
 			~bit() {};
-			ALWAYSINLINE operator bool() const {
+			INLINE operator bool() const {
 				return par.bits.array[pos/8] & (1 << pos%8);
 			}
 			/** EVIL BIT ARITHMETIC LOOK AWAY */
-			ALWAYSINLINE bit& operator= (bool rvalue) {
+			INLINE bit& operator= (bool rvalue) {
 				par.bits.array[pos/8] ^= (uint8_t)(((par.bits.array[pos/8]>>pos%8 & 1) != rvalue) << pos%8);
 				return *this;
 			}
 
-			ALWAYSINLINE bit& operator|= (bool rvalue) {
+			INLINE bit& operator|= (bool rvalue) {
 				par.bits.array[pos/8] |= (uint8_t)((uint8_t)rvalue << pos%8);
 				return *this;
 			}
 		};
 
-		ALWAYSINLINE Bitset& operator&= (uint64_t rvalue) {
+		INLINE Bitset& operator&= (uint64_t rvalue) {
 			bits.ulong &= rvalue;
 			return *this;
 		}
 
-		ALWAYSINLINE operator uint64_t() const {return bits.ulong;}
-		ALWAYSINLINE bool operator[] (size_t pos) const {return (bool)bit(*this,pos);}
-		ALWAYSINLINE bit operator[] (size_t pos) {return bit(*this,pos);}
-		ALWAYSINLINE size_t size() const {return N;}
+		INLINE operator uint64_t() const {return bits.ulong;}
+		INLINE bool operator[] (size_t pos) const {return (bool)bit(*this,pos);}
+		INLINE bit operator[] (size_t pos) {return bit(*this,pos);}
+		INLINE size_t size() const {return N;}
 		
-		ALWAYSINLINE Bitset(): bits() {bits.array = {0};}
-		ALWAYSINLINE Bitset(uint64_t l): bits() {bits.array = {0}; bits.ulong = l;}
+		INLINE Bitset(): bits() {bits.array = {0};}
+		INLINE Bitset(uint64_t l): bits() {bits.array = {0}; bits.ulong = l;}
 	};
 }
 

@@ -25,19 +25,19 @@ namespace nu {
 	struct SpiModule {
 		SpiChannel chn;
 
-		ALWAYSINLINE SpiModule(SpiChannel _chn, uint32_t bitrate, SpiOpenFlags oflags):
+		INLINE SpiModule(SpiChannel _chn, uint32_t bitrate, SpiOpenFlags oflags):
 			chn(_chn)
 		{
 			SpiChnOpen(chn, oflags, (uint32_t) param::pbus_hz()/bitrate);
 		}
 		virtual ~SpiModule() {}
 
-		static ALWAYSINLINE uint32_t get_bitrate(SpiChannel chn) {
+		static INLINE uint32_t get_bitrate(SpiChannel chn) {
 			uint32_t clk_div = (_SpiMapTbl[chn]->brg+1)*2;
 			return (uint32_t) param::pbus_hz()/clk_div; //bitrate
 		}
 
-		ALWAYSINLINE void wait_busy() {
+		INLINE void wait_busy() {
 			uint32_t bit_time_ns = 1000000000/this->get_bitrate(chn);
 			while (SpiChnIsBusy(chn)) {
 				Nop();
@@ -45,7 +45,7 @@ namespace nu {
 			timer::delay_ns(bit_time_ns);
 		}
 
-		ALWAYSINLINE void tx(const void *src, size_t n) {
+		INLINE void tx(const void *src, size_t n) {
 			uint32_t ui;
 			if (_SpiMapTbl[chn]->con.MODE32) {
 				const uint32_t *elems = (const uint32_t *)src;
@@ -65,7 +65,7 @@ namespace nu {
 			}
 		}
 
-		ALWAYSINLINE void rx(void *dst, size_t n) {
+		INLINE void rx(void *dst, size_t n) {
 			uint32_t ui;
 
 			while (SpiChnRxBuffCount(chn)) {

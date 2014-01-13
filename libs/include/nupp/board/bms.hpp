@@ -66,7 +66,7 @@ namespace nu {
 
 			static const char* name[];
 
-			static ALWAYSINLINE void trip(tripcode code, uint32_t module, BMS *self) {
+			static void trip(tripcode code, uint32_t module, BMS *self) {
 				if (module == 21 || module == 22) return;
 
 				can::frame::bms::tx::trip trip_pkt(0);
@@ -147,7 +147,7 @@ namespace nu {
 		 * 3 Voltage sensor modules, 32 Temperature sensors, and more.
 		 * TODO: Lots
 		 */
-		ALWAYSINLINE BMS(): Nu32(Nu32::V2011),
+		BMS(): Nu32(Nu32::V2011),
 			main_relay(PIN(D, 2), false),
 			array_relay(PIN(D, 3), false),
 			bits(),
@@ -188,7 +188,7 @@ namespace nu {
 		}
 
 
-		ALWAYSINLINE void read_ins() {
+		INLINE void read_ins() {
 			// read measured voltages, redoing conversion occasionally
 			if (this->voltage_measuring_timer.has_expired())
 			{
@@ -241,7 +241,7 @@ namespace nu {
 			state.highest_temp = this->temperatures[0];
 		}
 
-		ALWAYSINLINE void check_batteries() {
+		INLINE void check_batteries() {
 			for (unsigned i=0; i<state.num_modules; i++) {
 				if (voltage_sensor[i] + (i==0? .15: 0) > NU_MAX_VOLTAGE)
 					Trip::trip(Trip::OVER_VOLTAGE, i, this);
@@ -261,7 +261,7 @@ namespace nu {
 //				Trip::trip(Trip::OVER_CURRENT_DISCHARGE, 101, this);
 		}
 
-		ALWAYSINLINE void recv_can() {
+		INLINE void recv_can() {
 			can::frame::Packet pkt(0);
 			uint32_t id;
 			common_can.in().rx(pkt,id);
@@ -313,7 +313,7 @@ namespace nu {
 			}
 		}
 
-		ALWAYSINLINE void send_can() {
+		INLINE void send_can() {
 			if (this->can_voltage_packet_timer.has_expired()) {
 				can::frame::bms::tx::voltage v_pkt(0);
 				can::frame::bms::tx::temp t_pkt(0);
@@ -409,7 +409,7 @@ namespace nu {
 		/**
 		 * The main run loop
 		 */
-		ALWAYSINLINE NORETURN void run_loop() {
+		INLINE NORETURN void run_loop() {
 			while (true) {
 				WDT::clear();
 				read_ins();
@@ -438,7 +438,7 @@ namespace nu {
 			}
 		}
 
-		ALWAYSINLINE void boot() {
+		INLINE void boot() {
 			main_relay.low(); // Unnecessary precaution
 			array_relay.low();
 
@@ -453,7 +453,7 @@ namespace nu {
 		}
 
 
-		ALWAYSINLINE void test() {
+		INLINE void test() {
 			WDT::clear();
 			lcd1.lcd_clear();
 			lcd1 << "C++WINS" << end;

@@ -188,59 +188,59 @@ namespace nu {
 
 		Array<float, num_devices*cells_per_device> values;
 		/** @warning NO BOUNDS CHECKING */
-		ALWAYSINLINE float operator[] (size_t index) const {return values[index];}
-		ALWAYSINLINE uint32_t count() {return num_devices;}
+		INLINE float operator[] (size_t index) const {return values[index];}
+		INLINE uint32_t count() {return num_devices;}
 
 		/**
 		 * Construct LTC6803 interface over basic SPI.
          * @param _cs The Chip Select pin for the LTC6803.
          * @param _chn The SPI Channel for the LTC6803.
          */
-		ALWAYSINLINE LTC6803(Pin _cs, uint8_t _channel):
+		INLINE LTC6803(Pin _cs, uint8_t _channel):
 			SPI(_cs, Spi(_channel, 100000, SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON),
 			    (SPI::tx_options)(TX_WAIT_START|TX_WAIT_END|TX_DISABLE_AUTO_CS)),
 			mismatch_pecs(0), is_openwire(false), values(0.0f) {}
 
-		ALWAYSINLINE void write_configs(Array<Configuration, num_devices> &config) {
+		INLINE void write_configs(Array<Configuration, num_devices> &config) {
 			write_cmd_tx(WRITECFGS, config, sizeof(Configuration));
 			confirm_configs(config);
 		}
-		ALWAYSINLINE void start_voltage_conversion() {write_cmd_solo(STCVAD); is_openwire=false;}
-		ALWAYSINLINE void start_openwire_conversion() {write_cmd_solo(STOWAD); is_openwire=true;}
-		ALWAYSINLINE void update_volts() {
+		INLINE void start_voltage_conversion() {write_cmd_solo(STCVAD); is_openwire=false;}
+		INLINE void start_openwire_conversion() {write_cmd_solo(STOWAD); is_openwire=true;}
+		INLINE void update_volts() {
 			Array<RawVoltages, num_devices> rx_rv;
 			read_volts_raw(rx_rv);
 			convert_voltages(rx_rv);
 		}
 
-		PURE ALWAYSINLINE BYTE convert_uv_limit(float vuv) {return (BYTE) ((vuv/(16*.0015)) + 31);}
-		PURE ALWAYSINLINE BYTE convert_ov_limit(float vov) {return (BYTE) ((vov/(16*.0015)) + 32);}
-		PURE ALWAYSINLINE float convert_ref_to_v(float ref) {return (((float)ref - 512) * .0015);}
-		PURE ALWAYSINLINE float convert_voltage(uint32_t raw) {return ((float)raw-512)*0.0015;}
+		PURE INLINE BYTE convert_uv_limit(float vuv) {return (BYTE) ((vuv/(16*.0015)) + 31);}
+		PURE INLINE BYTE convert_ov_limit(float vov) {return (BYTE) ((vov/(16*.0015)) + 32);}
+		PURE INLINE float convert_ref_to_v(float ref) {return (((float)ref - 512) * .0015);}
+		PURE INLINE float convert_voltage(uint32_t raw) {return ((float)raw-512)*0.0015;}
 
 	private:
-		ALWAYSINLINE bool confirm_configs(Array<Configuration, num_devices> &config) {
+		INLINE bool confirm_configs(Array<Configuration, num_devices> &config) {
 			Array<Configuration, num_devices> rx_config;
 			read_configs(rx_config);
 			uint32_t result = config.byte_compare(rx_config);
 			return result;
 		}
-		ALWAYSINLINE void read_diags(Array<Diagnostic, num_devices> &diag) {
+		INLINE void read_diags(Array<Diagnostic, num_devices> &diag) {
 			write_cmd(DAGN);
 			timer::delay_ms(25);
 			write_cmd_tx(READ_DAGN, &diag[0], sizeof(Diagnostic));
 		}
-		ALWAYSINLINE void check_open_wire(u16 *open_wire, const float *voltages){}
-		ALWAYSINLINE void read_configs(Array<Configuration, num_devices> &config) {write_cmd_rx(RDCFGS, config, sizeof(Configuration));}
-		ALWAYSINLINE void read_volts_raw(Array<RawVoltages, num_devices> &rx_rv) {write_cmd_rx(RDCV, rx_rv, sizeof(RawVoltages));}
+		INLINE void check_open_wire(u16 *open_wire, const float *voltages){}
+		INLINE void read_configs(Array<Configuration, num_devices> &config) {write_cmd_rx(RDCFGS, config, sizeof(Configuration));}
+		INLINE void read_volts_raw(Array<RawVoltages, num_devices> &rx_rv) {write_cmd_rx(RDCV, rx_rv, sizeof(RawVoltages));}
 
-		ALWAYSINLINE void write_cmd_solo(const command c) {
+		INLINE void write_cmd_solo(const command c) {
 			cs.low();
 			write_cmd(c);
 			cs.high();
 		}
 
-		ALWAYSINLINE uint32_t write_cmd_rx(const command c, void *dest, size_t one_element){
+		INLINE uint32_t write_cmd_rx(const command c, void *dest, size_t one_element){
 			cs.low();
 			write_cmd(c);
 
@@ -262,7 +262,7 @@ namespace nu {
 		}
 
 		/** Deals an array of data of size==one_element to all devices */
-		ALWAYSINLINE void write_cmd_tx(const command c, const void *data, size_t one_element) {
+		INLINE void write_cmd_tx(const command c, const void *data, size_t one_element) {
 			cs.low();
 			write_cmd(c);
 			for (unsigned i=0; i<num_devices; i++) {
@@ -271,18 +271,18 @@ namespace nu {
 			cs.high();
 		}
 
-		ALWAYSINLINE void write_cmd(const command c) {
+		INLINE void write_cmd(const command c) {
 			tx_with_pec(&c, 1);
 		}
 
-		ALWAYSINLINE void tx_with_pec(const void *src, size_t n) {
+		INLINE void tx_with_pec(const void *src, size_t n) {
 			long pec = (long)crc::_8_ccitt(src, n); // WARNING type?
 			tx(src, n); // WARNING check pointers / tx errors
 			tx(&pec, 1);
 		}
 
 		/** @todo error reporting */
-		ALWAYSINLINE void post() {
+		INLINE void post() {
 			write_cmd(STCVAD_SELFTEST1);
 			timer::delay_ms(25);
 
@@ -293,7 +293,7 @@ namespace nu {
 			read_diags(diag);
 		}
 
-		ALWAYSINLINE void convert_voltages(Array<RawVoltages, num_devices> &rv) {
+		INLINE void convert_voltages(Array<RawVoltages, num_devices> &rv) {
 			for (unsigned i=0; i<num_devices; i++) {
 				for (unsigned j=0; j<voltage_pairs_per_dev; j++) {
 					RawVoltagePair &pair = rv[i].voltage_pair[j];

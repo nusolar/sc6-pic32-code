@@ -50,7 +50,7 @@ namespace nu {
 		Mode modes[6];
 		int current_mode;
 
-		BpsMode(): current_mode(Off) {
+		INLINE BpsMode(): current_mode(Off) {
 			modes[Off] = {Off,
 				false, false, false,
 				EmptyCharging, Discharging, NOTHING};
@@ -71,7 +71,7 @@ namespace nu {
 				Drive, EmptyCharging, Charging};
 		}
 
-		void traverse_mode(bool health, bool can_discharge, bool can_charge, bool drive) {
+		INLINE void traverse_mode(bool health, bool can_discharge, bool can_charge, bool drive) {
 			if (!health) {
 				current_mode = Off;
 			} else {
@@ -178,7 +178,7 @@ namespace nu {
 			uint32_t uptime; //s
 			uint8_t module_i;
 
-			State(): cc_battery(0), cc_array(0), wh_battery(0), wh_array(0),
+			INLINE State(): cc_battery(0), cc_array(0), wh_battery(0), wh_array(0),
 				current0(0), current1(0), voltages(0), temperatures(0),
 				trip_code(NONE), trip_data(0),
 				mode(OFF), precharging(PC_OFF),
@@ -203,7 +203,7 @@ namespace nu {
 			int8_t error;
 			int8_t error_value;
 
-			Report (State s): cc_battery(s.cc_battery), cc_array(s.cc_array),
+			INLINE Report (State s): cc_battery(s.cc_battery), cc_array(s.cc_array),
 				wh_battery(s.wh_battery), wh_array(s.wh_array),
 				current0(s.current0), current1(s.current1),
 				voltages(), temperatures(),
@@ -217,7 +217,7 @@ namespace nu {
 		};
 
 
-		ALWAYSINLINE BPS(): Nu32(Nu32::V2011),
+		INLINE BPS(): Nu32(Nu32::V2011),
 			main_relay(PIN(D, 1), false),
 			array_relay(PIN(D, 2), false),
 			precharge_relay(PIN(D, 3), false),
@@ -249,7 +249,7 @@ namespace nu {
 			temp_sensor.perform_temperature_conversion();
 		}
 
-		ALWAYSINLINE void configure_sensors() {
+		INLINE void configure_sensors() {
 			// send random data, to wake LTCs
 			voltage_sensor.cs.low();
 			voltage_sensor.tx(&state.mode, 1);
@@ -269,7 +269,7 @@ namespace nu {
 			voltage_sensor.write_configs(cfgs);
 		}
 
-		ALWAYSINLINE void read_ins() {
+		INLINE void read_ins() {
 			// debounce bypass button
 			for (unsigned i=0; i<10; i++) {
 				bypass_button.update();
@@ -292,7 +292,7 @@ namespace nu {
 			voltage_sensor.start_voltage_conversion();
 		}
 
-		void recv_can() {
+		INLINE void recv_can() {
 			can::frame::Packet pkt(0);
 			uint32_t id;
 			common_can.in().rx(pkt,id);
@@ -314,12 +314,12 @@ namespace nu {
 			}
 		}
 
-		void hid_tx_callback(unsigned char *data, size_t len) {
+		INLINE void hid_tx_callback(unsigned char *data, size_t len) {
 			Report r = Report(state);
 			memcpy(data, &r, len);
 		}
 
-		void check_trip_conditions() {
+		INLINE void check_trip_conditions() {
 			TripCode trip_code = NONE;
 			int8_t trip_data = -1;
 
@@ -355,7 +355,7 @@ namespace nu {
 			state.trip_data = trip_data;
 		}
 
-		void check_mode_safety() {
+		INLINE void check_mode_safety() {
 			if (state.trip_code != NONE) {
 				state.mode = OFF;
 			}
@@ -371,7 +371,7 @@ namespace nu {
 		 *
 		 * If state.mode is not valid, sets state.error.
 		 */
-		ALWAYSINLINE void set_relays() {
+		INLINE void set_relays() {
 			bool has_error = false;
 
 			switch (state.mode) {
@@ -472,11 +472,11 @@ namespace nu {
 			}
 		}
 
-		void send_can() {
+		INLINE void send_can() {
 			// state.time = timer::ms();
 		}
 
-		void draw_lcd() {
+		INLINE void draw_lcd() {
 			if (this->lcd_timer.has_expired()) {
 				lcd1.lcd_clear();
 				lcd1 << "ZELDA " << state.module_i << end;
@@ -499,7 +499,7 @@ namespace nu {
 			}
 		}
 
-		ALWAYSINLINE void emergency_shutoff() {
+		INLINE void emergency_shutoff() {
 			main_relay.low();
 			array_relay.low();
 			motor_relay.low();
@@ -509,7 +509,7 @@ namespace nu {
 		/**
 		 * The main run loop.
 		 */
-		ALWAYSINLINE NORETURN void run_loop() {
+		INLINE NORETURN void run_loop() {
 			while (true) {
 				WDT::clear();
 				this->recv_can();

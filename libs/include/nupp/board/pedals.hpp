@@ -59,7 +59,7 @@ namespace nu {
 			common_can.out().setup_tx(CAN_HIGH_MEDIUM_PRIORITY);
 		}
 
-		ALWAYSINLINE void recv_can() {
+		INLINE void recv_can() {
 			uint32_t id;
 			can::frame::Packet incoming;
 
@@ -92,7 +92,7 @@ namespace nu {
 			}
 		}
 
-		ALWAYSINLINE void read_ins() {
+		INLINE void read_ins() {
 			WDT::clear();
 			// read raw inputs
 			state.accel_raw = (uint16_t) accel_pedal.read();
@@ -101,7 +101,7 @@ namespace nu {
 			state.accel_motor = ((float)state.accel_raw + 1)/1024;
 		}
 
-		ALWAYSINLINE void set_signals() {
+		INLINE void set_signals() {
 			WDT::clear();
 			this->lights_brake.set(state.brake_en);
 			this->horn.set(state.horn);
@@ -113,7 +113,7 @@ namespace nu {
 			this->lights_r.set(this->state.right? tick: 0);
 		}
 
-		ALWAYSINLINE void send_can() {
+		INLINE void send_can() {
 			WDT::clear();
 
 			can::frame::ws20::rx::drive_cmd drive(0); // Zero-init [current, velocity]
@@ -146,7 +146,7 @@ namespace nu {
 			common_can.out().tx(report);
 		}
 
-		ALWAYSINLINE NORETURN void run_loop() {
+		INLINE NORETURN void run_loop() {
 			while (true) {
 				WDT::clear();
 				this->recv_can();

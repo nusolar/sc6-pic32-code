@@ -1,11 +1,11 @@
 #include "nu/common_pragmas.h"
-#include "nupp/board/bms.hpp"
+#include "nupp/board/BPS.hpp"
 #include <cstdint>
 
 #define div_roundup(DIVIDEND, DIVISOR) ((long long)((DIVIDEND)/(DIVISOR)) + (((DIVIDEND)%(DIVISOR)>0)? 1: 0))
 
 // Allocate the size of nu::BPS, rounding up.
-uint64_t arena[div_roundup(sizeof(nu::BMS), 8)] ALIGNED(__BIGGEST_ALIGNMENT__);
+uint64_t arena[div_roundup(sizeof(nu::BPS), 8)] ALIGNED(__BIGGEST_ALIGNMENT__);
 
 // Exception handling, copy-pasted directly from MicroChip's example code.
 extern "C" {
@@ -49,11 +49,11 @@ extern "C" {
 }
 
 void kill() {
-	((nu::BMS *)arena)->emergency_shutoff();
+	((nu::BPS *)arena)->emergency_shutoff();
 }
 
 /** Call BPS::main(), NEVER RETURN */
 int main(){
-	nu::BMS::main((nu::BMS *)arena);
+	nu::BPS::main((nu::BPS *)arena);
     return 0;
 }
