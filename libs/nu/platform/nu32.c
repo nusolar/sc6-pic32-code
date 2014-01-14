@@ -15,31 +15,31 @@
 #include <peripheral/pmp.h>
 #include <peripheral/system.h>
 
-static struct nu_pin _nu32_switch;
-struct nu_pin *nu_nu32_switch = &_nu32_switch;
+static struct nu__Pin _nu32_switch;
+struct nu__Pin *nu__Nu32__switch = &_nu32_switch;
 
 #if 0
 
 static void
-nu_nu32_setup_pinctl(void)
+nu__Nu32__setup_pinctl(void)
 {
     switch (nu32_version) {
     case NU_NU32_V1:
-        NU_INIT_PIN(nu_nu32_switch, IOPORT_C, BIT_13);
+        NU_INIT_PIN(nu__Nu32__switch, IOPORT_C, BIT_13);
         break;
     case NU_NU32_V2:
-        NU_INIT_PIN(nu_nu32_switch, NU_PIN_G6);
+        NU_INIT_PIN(nu__Nu32__switch, NU_PIN_G6);
         break;
     default:
         return;
     }
     /* Configure input for switch */
-    nu_pin_set_digital_in(nu_nu32_user);
+    nu__Pin__set_digital_in(nu__Nu32__user);
 }
 #endif
 
 void
-nu_nu32_setup(UNUSED nu_nu32_version_t version, nu_hz_t hz)
+nu__Nu32__setup(UNUSED nu__Nu32__Version_t version, nu__Param__Hz_t hz)
 {
     NU_HZ = hz;
 

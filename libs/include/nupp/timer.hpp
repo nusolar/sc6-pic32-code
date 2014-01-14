@@ -7,21 +7,21 @@
 
 namespace nu {
 	namespace timer {
-		static INLINE void reset() {nu_timer_reset();}
+		static INLINE void reset() {nu__Timer__reset();}
 
-		static INLINE u64  s_to_ticks(u64 s)	{return nu_s_to_ticks((hz_t)s);}
-		static INLINE u64 ms_to_ticks(u64 ms)	{return nu_ms_to_ticks((hz_t)ms);}
-		static INLINE u64 us_to_ticks(u64 us)	{return nu_us_to_ticks((hz_t)us);}
-		static INLINE u64 ns_to_ticks(u64 ns)	{return nu_ns_to_ticks((hz_t)ns);}
+		static INLINE u64  s_to_ticks(u64 s)	{return nu__Timer__s_to_ticks((hz_t)s);}
+		static INLINE u64 ms_to_ticks(u64 ms)	{return nu__Timer__ms_to_ticks((hz_t)ms);}
+		static INLINE u64 us_to_ticks(u64 us)	{return nu__Timer__us_to_ticks((hz_t)us);}
+		static INLINE u64 ns_to_ticks(u64 ns)	{return nu__Timer__ns_to_ticks((hz_t)ns);}
 
 		/** Ticks happen every other clockcycle */
-		static INLINE u64 s ()	{return (((int64_t)nu_timer_ticks())<<1)/NU_HZ;}
-		static INLINE u64 ms()	{return (int64_t)nu_timer_ticks()*2000/NU_HZ;}
-		static INLINE u64 us()	{return (((int64_t)nu_timer_ticks())<<1)/NU_MHZ;}
-		static INLINE u64 ns()	{return (int64_t)nu_timer_ticks()*2000/NU_MHZ;}
-		static INLINE u64 ticks()	{return nu_timer_ticks();}
+		static INLINE u64 s ()	{return (((int64_t)nu__Timer__ticks())<<1)/NU_HZ;}
+		static INLINE u64 ms()	{return (int64_t)nu__Timer__ticks()*2000/NU_HZ;}
+		static INLINE u64 us()	{return (((int64_t)nu__Timer__ticks())<<1)/NU_MHZ;}
+		static INLINE u64 ns()	{return (int64_t)nu__Timer__ticks()*2000/NU_MHZ;}
+		static INLINE u64 ticks()	{return nu__Timer__ticks();}
 
-		static INLINE void delay_ticks(tick_t ticks)	{nu_delay_ticks(ticks);}
+		static INLINE void delay_ticks(tick_t ticks)	{nu__Timer__delay_ticks(ticks);}
 		static INLINE void delay_s (u64 s)	{delay_ticks((tick_t)(s*param::Hz()/2));}
 		static INLINE void delay_ms(u64 ms)	{delay_ticks((tick_t)(ms*param::Hz()/2000));}
 		static INLINE void delay_us(u64 us)	{delay_ticks((tick_t)(us*param::MHz()/2));}
@@ -35,7 +35,7 @@ namespace nu {
 		{
 			s, ms, us, ns
 		};
-		
+
 		uint64_t tick_interval;
 		Unit unit;
 

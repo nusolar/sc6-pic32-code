@@ -4,11 +4,11 @@
 #include "nu/peripheral/can.h"
 #include "nu/types.h"
 
-struct nu_can;
-struct nu_can_add_channel_tx_attr;
+struct nu__Can;
+struct nu__Can__AddChannelTxAttr;
 
 void
-nu_can_add_channel_tx(const struct nu_can *c,
-                      const struct nu_can_add_channel_tx_attr *a);
+nu__Can__add_channel_tx(const struct nu__Can *c,
+                      const struct nu__Can__AddChannelTxAttr *a);
 
 #endif

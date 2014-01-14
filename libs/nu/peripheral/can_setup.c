@@ -2,7 +2,7 @@
 #include "nu/peripheral/can.h"
 #include "nu/param.h"
 
-struct nu_can_attr {
+struct nu__Can__Attr {
     u32 bus_speed_hz;
     CAN_BIT_CONFIG timings;
     CAN_MODULE_EVENT interrupt_events;
@@ -13,7 +13,7 @@ struct nu_can_attr {
 };
 
 static void
-nu_can_int_setup(CAN_MODULE mod, CAN_MODULE_EVENT events,
+nu__Can__int_setup(CAN_MODULE mod, CAN_MODULE_EVENT events,
                  INT_PRIORITY priority) {
     INT_VECTOR int_vec;
     INT_SOURCE int_src;
@@ -43,12 +43,12 @@ nu_can_int_setup(CAN_MODULE mod, CAN_MODULE_EVENT events,
 }
 
 void
-nu_can_setup(const struct nu_can *c, const struct nu_can_attr *a)
+nu__Can__setup(const struct nu__Can *c, const struct nu__Can__Attr *a)
 {
     CANEnableModule(c->module, TRUE);
     CANSetSpeed(c->module, &(a->timings), NU_HZ, a->bus_speed_hz);
     CANAssignMemoryBuffer(c->module, a->buf, a->buf_size);
-    nu_can_int_setup(c->module, a->interrupt_events, a->int_priority);
+    nu__Can__int_setup(c->module, a->interrupt_events, a->int_priority);
 
     CANSetOperatingMode(c->module, CAN_CONFIGURATION);
     while (CAN_CONFIGURATION != CANGetOperatingMode(c->module))

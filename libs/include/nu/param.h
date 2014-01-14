@@ -8,14 +8,10 @@
 extern "C" {
 #endif
 
-typedef u32 nu_hz_t;
+typedef u32 nu__Param__Hz_t;
 
-#ifndef NU_DEFAULT_HZ
-# define NU_DEFAULT_HZ (80000000UL)
-#endif
-
-extern nu_hz_t nu_hz;
-#define NU_HZ   nu_hz
+extern nu__Param__Hz_t nu__Param__Hz;
+#define NU_HZ   nu__Param__Hz
 #define NU_MHZ  (NU_HZ/1000000UL)
 
 #ifdef __cplusplus

@@ -106,6 +106,7 @@
       <itemPath>../nu/wdt.c</itemPath>
       <itemPath>../nu/crc.c</itemPath>
       <itemPath>../nu/safestring.c</itemPath>
+      <itemPath>../nu/async_io.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -146,6 +147,8 @@
       <item path="../nu/component/ltc6803.c" ex="true" overriding="false">
       </item>
       <item path="../nu/component/ws20.c" ex="true" overriding="false">
+      </item>
+      <item path="../nu/peripheral/onewire.c" ex="true" overriding="false">
       </item>
       <C32>
         <property key="additional-warnings" value="true"/>

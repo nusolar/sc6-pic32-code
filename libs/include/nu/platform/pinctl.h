@@ -15,46 +15,46 @@ extern "C" {
 
 #elif NU_PLATFORM==NU_PLATFORM_GENERIC
 
-struct nu_pin {
+struct nu__Pin {
     u8 reserved;
 };
 
 #define NU_PIN_INIT() {0}
 
-static ALWAYSINLINE void NU_INIT_PIN(struct nu_pin *p) {}
+static ALWAYSINLINE void NU_INIT_PIN(struct nu__Pin *p) {}
 
 #define NU_PIN_DEFAULT
 
 #define NU_HAVE_PIN_FUNCTIONS 1
 
-static ALWAYSINLINE void nu_pin_set_digital_out(const struct nu_pin *p) {}
+static ALWAYSINLINE void nu__Pin__set_digital_out(const struct nu__Pin *p) {}
 
-static ALWAYSINLINE void nu_pin_set_digital_in(const struct nu_pin *p) {}
+static ALWAYSINLINE void nu__Pin__set_digital_in(const struct nu__Pin *p) {}
 
-static ALWAYSINLINE void nu_pin_set_analog_out(const struct nu_pin *p) {}
+static ALWAYSINLINE void nu__Pin__set_analog_out(const struct nu__Pin *p) {}
 
-static ALWAYSINLINE void nu_pin_set_analog_in(const struct nu_pin *p) {}
+static ALWAYSINLINE void nu__Pin__set_analog_in(const struct nu__Pin *p) {}
 
-static ALWAYSINLINE u32 nu_pin_read(const struct nu_pin *p) { return 0; }
+static ALWAYSINLINE u32 nu__Pin__read(const struct nu__Pin *p) { return 0; }
 
-static ALWAYSINLINE void nu_pin_set(const struct nu_pin *p) {}
+static ALWAYSINLINE void nu__Pin__set(const struct nu__Pin *p) {}
 
-static ALWAYSINLINE void nu_pin_clear(const struct nu_pin *p) {}
+static ALWAYSINLINE void nu__Pin__clear(const struct nu__Pin *p) {}
 
-static ALWAYSINLINE void nu_pin_toggle(const struct nu_pin *p) {}
+static ALWAYSINLINE void nu__Pin__toggle(const struct nu__Pin *p) {}
 
 #elif NU_PLATFORM==NU_PLATFORM_PIC32MX
 #include <peripheral/ports.h>
 
-typedef struct nu_pin_platform {
+typedef struct nu__Pin__Platform {
     IoPortId ltr;
     u32 num;
-} nu_init_pin_platform_args_t;
+} nu__Pin__PlatformInitArgs_t;
 #define NU_PIN_PLATFORM_INIT(ltr, num) {ltr, num}
 
 static ALWAYSINLINE void
-NU_INIT_PIN_PLATFORM(struct nu_pin_platform *p,
-        const nu_init_pin_platform_args_t *args)
+NU_INIT_PIN_PLATFORM(struct nu__Pin__Platform *p,
+        const nu__Pin__PlatformInitArgs_t *args)
 {
     p->ltr = args->ltr;
     p->num = args->num;
@@ -151,61 +151,61 @@ NU_INIT_PIN_PLATFORM(struct nu_pin_platform *p,
 #endif
 
 static ALWAYSINLINE void
-nu_pin_platform_set_digital_out(const struct nu_pin_platform *p)
+nu__Pin__platform_set_digital_out(const struct nu__Pin__Platform *p)
 {
     PORTSetPinsDigitalOut(p->ltr, p->num);
 }
 
 static ALWAYSINLINE void
-nu_pin_platform_set_digital_in(const struct nu_pin_platform *p)
+nu__Pin__platform_set_digital_in(const struct nu__Pin__Platform *p)
 {
     PORTSetPinsDigitalIn(p->ltr, p->num);
 }
 
 static ALWAYSINLINE void
-nu_pin_platform_set_analog_out(const struct nu_pin_platform *p)
+nu__Pin__platform_set_analog_out(const struct nu__Pin__Platform *p)
 {
     PORTSetPinsAnalogOut(p->ltr, p->num);
 }
 
 static ALWAYSINLINE void
-nu_pin_platform_set_analog_in(const struct nu_pin_platform *p)
+nu__Pin__platform_set_analog_in(const struct nu__Pin__Platform *p)
 {
     PORTSetPinsAnalogIn(p->ltr, p->num);
 }
 
 static ALWAYSINLINE u32
-nu_pin_platform_read(const struct nu_pin_platform *p)
+nu__Pin__platform_read(const struct nu__Pin__Platform *p)
 {
     return PORTReadBits(p->ltr, p->num);
 }
 
 static ALWAYSINLINE void
-nu_pin_platform_set(const struct nu_pin_platform *p)
+nu__Pin__platform_set(const struct nu__Pin__Platform *p)
 {
     PORTSetBits(p->ltr, p->num);
 }
 
 static ALWAYSINLINE void
-nu_pin_platform_clear(const struct nu_pin_platform *p)
+nu__Pin__platform_clear(const struct nu__Pin__Platform *p)
 {
     PORTClearBits(p->ltr, p->num);
 }
 
 static ALWAYSINLINE void
-nu_pin_platform_toggle(const struct nu_pin_platform *p)
+nu__Pin__platform_toggle(const struct nu__Pin__Platform *p)
 {
     PORTToggleBits(p->ltr, p->num);
 }
 
-static const struct nu_pin_platform_ops nu_pin_platform_ops = {
-    nu_pin_platform_set_digital_out,
-    nu_pin_platform_set_digital_in,
-    nu_pin_platform_set_analog_out,
-    nu_pin_platform_read,
-    nu_pin_platform_set,
-    nu_pin_platform_clear,
-    nu_pin_platform_toggle
+static const struct nu__Pin__PlatformOps nu__Pin__platform_ops = {
+    nu__Pin__platform_set_digital_out,
+    nu__Pin__platform_set_digital_in,
+    nu__Pin__platform_set_analog_out,
+    nu__Pin__platform_read,
+    nu__Pin__platform_set,
+    nu__Pin__platform_clear,
+    nu__Pin__platform_toggle
 };
 
 #endif /* NU_PLATFORM switch */

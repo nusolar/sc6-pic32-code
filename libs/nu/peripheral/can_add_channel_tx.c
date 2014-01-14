@@ -1,7 +1,7 @@
 #include "nu/peripheral/can/add_channel_tx.h"
 #include "nu/peripheral/can.h"
 
-struct nu_can_add_channel_tx_attr {
+struct nu__Can__AddChannelTxAttr {
     CAN_CHANNEL chn;
     u32 channel_msg_size;
     CAN_TX_RTR rtr_enabled;
@@ -10,8 +10,8 @@ struct nu_can_add_channel_tx_attr {
 };
 
 void
-nu_can_add_channel_tx(const struct nu_can *c,
-                      const struct nu_can_add_channel_tx_attr *a)
+nu__Can__add_channel_tx(const struct nu__Can *c,
+                      const struct nu__Can__AddChannelTxAttr *a)
 {
     CANSetOperatingMode(c->module, CAN_CONFIGURATION);
     while (CAN_CONFIGURATION != CANGetOperatingMode(c->module))

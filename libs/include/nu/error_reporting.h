@@ -87,26 +87,26 @@ extern const char * const nu_report_priority_str[];
 
 extern bool nu_library_warn_enabled;
 
-struct nu_error_reporting_dev {
-    struct list_head list;
-    const struct nu_vtbl_error_reporting_dev *op;
+struct nu__ErrorReportingDev {
+    struct nu__ListHead list;
+    const struct nu__ErrorReportingDev__Vtbl *op;
     enum nu_report_priority min_priority;
 };
 #define NU_ERD_INIT(priority, op)  \
     {{NULL, NULL}, (op), (priority)}
 
-struct nu_vtbl_error_reporting_dev {
-    void (*report)          (struct nu_error_reporting_dev *erd,
+struct nu__ErrorReportingDev__Vtbl {
+    void (*report)          (struct nu__ErrorReportingDev *erd,
                                 const char *file, const char *func, u32 line,
                                 const char *expr,
                                 enum nu_report_priority priority,
                                 const char *fmtd_msg);
-    void (*reset_err_state) (struct nu_error_reporting_dev *erd);
+    void (*reset_err_state) (struct nu__ErrorReportingDev *erd);
 };
 
 static ALWAYSINLINE void
-NU_INIT_ERD(struct nu_error_reporting_dev *e, enum nu_report_priority min_prior,
-        const struct nu_vtbl_error_reporting_dev *op)
+NU_INIT_ERD(struct nu__ErrorReportingDev *e, enum nu_report_priority min_prior,
+        const struct nu__ErrorReportingDev__Vtbl *op)
 {
     INIT_LIST_HEAD(&(e->list));
     e->min_priority = min_prior;
@@ -207,10 +207,10 @@ nu_warn_on(u32 cond, const char *file, const char *func, u32 line,
 }
 
 void
-nu_reporting_register(struct nu_error_reporting_dev *erd);
+nu_reporting_register(struct nu__ErrorReportingDev *erd);
 
 void
-nu_reporting_unregister(struct nu_error_reporting_dev *erd);
+nu_reporting_unregister(struct nu__ErrorReportingDev *erd);
 
 void
 nu_reporting_clear(enum nu_report_priority max_priority);

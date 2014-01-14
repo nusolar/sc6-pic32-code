@@ -52,7 +52,7 @@ static const CAN_BIT_CONFIG default_cfg = {
 };
 #endif
 
-struct nu_can_attr {
+struct nu__Can__Attr {
     u32 bus_speed_hz;
     CAN_BIT_CONFIG timings;
     CAN_MODULE_EVENT interrupt_events;
@@ -60,16 +60,16 @@ struct nu_can_attr {
     CAN_MODULE_FEATURES features;
     size_t buf_size;
 };
-static const struct nu_can_attr nu_can_attr_defaults = {
+static const struct nu__Can__Attr nu__Can__attr_defaults = {
     0
 };
 
 static ALWAYSINLINE MUST_CHECK s32
-nu_switch_module_mode(const struct nu_can *c, CAN_OP_MODE op_mode, u32 timeout_ms)
+nu_switch_module_mode(const struct nu__Can *c, CAN_OP_MODE op_mode, u32 timeout_ms)
 {
-    u32 start = nu_timer_us();
+    u32 start = nu__Timer__us();
     CANSetOperatingMode(c->module, op_mode);
-    while (nu_timer_us() - start < timeout_ms*1000)
+    while (nu__Timer__us() - start < timeout_ms*1000)
         if (CANGetOperatingMode(c->module) == op_mode)
             return 0;
     return -ETIMEOUT;
@@ -79,7 +79,7 @@ nu_switch_module_mode(const struct nu_can *c, CAN_OP_MODE op_mode, u32 timeout_m
 #define go_normal_mode(c)   nu_switch_module_mode((c), CAN_NORMAL_OPERATION, 1)
 
 static ALWAYSINLINE MUST_CHECK s32
-nu_change_features(const struct nu_can *c, CAN_MODULE_FEATURES features, BOOL enabled)
+nu_change_features(const struct nu__Can *c, CAN_MODULE_FEATURES features, BOOL enabled)
 {
     s32 err;
     if ((err = go_config_mode(c)) < 0) {
@@ -95,7 +95,7 @@ nu_change_features(const struct nu_can *c, CAN_MODULE_FEATURES features, BOOL en
 #define disable_features(nu_can, features) nu_change_features((nu_can), (features), FALSE)
 
 static ALWAYSINLINE MUST_CHECK s32
-nu_can_init(struct nu_can *c, u32 bus_speed_hz, CAN_BIT_CONFIG *timings,
+nu__Can__init(struct nu__Can *c, u32 bus_speed_hz, CAN_BIT_CONFIG *timings,
         CAN_MODULE_EVENT interrupt_events, INT_PRIORITY int_priority,
         CAN_MODULE_FEATURES features)
 {
@@ -146,7 +146,7 @@ nu_can_init(struct nu_can *c, u32 bus_speed_hz, CAN_BIT_CONFIG *timings,
 }
 
 MUST_CHECK s32
-nu_can_tx(const struct nu_can *c, CAN_CHANNEL chn, enum nu_can_id_type id_type,
+nu__Can__tx(const struct nu__Can *c, CAN_CHANNEL chn, enum nu__Can__id_type id_type,
         u16 sid, u32 eid, u32 rtr, const void *data, size_t n)
 {
     s32 err;
@@ -180,16 +180,16 @@ nu_can_tx(const struct nu_can *c, CAN_CHANNEL chn, enum nu_can_id_type id_type,
 }
 
 #define send_err_frame(nu_can, data, n)                                        \
-    nu_can_tx( (nu_can), (nu_can)->erd_chn, (nu_can)->erd_id_type, (nu_can)->erd_std_id,   \
+    nu__Can__tx( (nu_can), (nu_can)->erd_chn, (nu_can)->erd_id_type, (nu_can)->erd_std_id,   \
             (nu_can)->erd_ext_id, 0, (data), (n))
 
 COLD s32
-nu_can_report(struct nu_error_reporting_dev *erd,
+nu__Can__report(struct nu__ErrorReportingDev *erd,
     const char *file, u32 line, const char *expr,
     enum nu_report_priority priority, s32 err, const char *err_name,
     const char *fmtd_msg)
 {
-    struct nu_can *nu_can;
+    struct nu__Can *nu_can;
     union can_anyFrame frame = {
         .common.tx.errPriorityNum.errNum = err,
         .common.tx.errPriorityNum.priority = priority,
@@ -211,7 +211,7 @@ nu_can_report(struct nu_error_reporting_dev *erd,
                 err, err_name, fmtd_msg, file, line, expr);
 
     for (ui = 0; ui < sizeof(txBuf); ui += 8) {
-        nu_wdt_clear();
+        nu__WDT__clear();
         send_err_frame(nu_can, txBuf+ui, 8);
     }
 
@@ -219,11 +219,11 @@ nu_can_report(struct nu_error_reporting_dev *erd,
 }
 
 s32
-nu_can_new(struct nu_can *c, CAN_MODULE mod, u32 bus_speed_hz, CAN_BIT_CONFIG *timings,
+nu__Can__new(struct nu__Can *c, CAN_MODULE mod, u32 bus_speed_hz, CAN_BIT_CONFIG *timings,
         CAN_MODULE_EVENT interrupt_events, INT_PRIORITY int_priority,
         CAN_MODULE_FEATURES features)
 {
-    c->erd.op = &nu_can_erd_ops;
+    c->erd.op = &nu__Can__erd_ops;
     c->module = mod;
 
     if (unlikely(!timings))
@@ -231,12 +231,12 @@ nu_can_new(struct nu_can *c, CAN_MODULE mod, u32 bus_speed_hz, CAN_BIT_CONFIG *t
     if (unlikely(!bus_speed_hz))
         bus_speed_hz = DEFAULT_BUS_SPEED_HZ;
 
-    return nu_can_init(c, bus_speed_hz, timings, interrupt_events, int_priority,
+    return nu__Can__init(c, bus_speed_hz, timings, interrupt_events, int_priority,
                     features);
 }
 
 s32
-nu_can_add_channel_tx(const struct nu_can *c, CAN_CHANNEL channel,
+nu__Can__add_channel_tx(const struct nu__Can *c, CAN_CHANNEL channel,
             u32 channel_msg_size, CAN_TX_RTR rtr_enabled,
             CAN_TXCHANNEL_PRIORITY tx_priority, CAN_CHANNEL_EVENT interrupt_events)
 {
@@ -257,7 +257,7 @@ nu_can_add_channel_tx(const struct nu_can *c, CAN_CHANNEL channel,
 }
 
 s32
-nu_can_add_channel_rx(const struct nu_can *c, CAN_CHANNEL chn, u32 channel_msg_size,
+nu__Can__add_channel_rx(const struct nu__Can *c, CAN_CHANNEL chn, u32 channel_msg_size,
                     CAN_RX_DATA_MODE data_only, CAN_CHANNEL_EVENT interrupt_events)
 {
     s32 err;
@@ -281,7 +281,7 @@ nu_can_add_channel_rx(const struct nu_can *c, CAN_CHANNEL chn, u32 channel_msg_s
 }
 
 MUST_CHECK long
-nu_can_rx(const struct nu_can *c, CAN_CHANNEL chn, u32 *id, void *dst)
+nu__Can__rx(const struct nu__Can *c, CAN_CHANNEL chn, u32 *id, void *dst)
 {
     CANRxMessageBuffer *buf;
     unsigned long len;
@@ -306,7 +306,7 @@ nu_can_rx(const struct nu_can *c, CAN_CHANNEL chn, u32 *id, void *dst)
 }
 
 MUST_CHECK s32
-nu_can_add_filter(const struct nu_can *c, CAN_CHANNEL chn, CAN_FILTER filter,
+nu__Can__add_filter(const struct nu__Can *c, CAN_CHANNEL chn, CAN_FILTER filter,
                 CAN_ID_TYPE filter_type, u32 id, CAN_FILTER_MASK mask,
                 CAN_FILTER_MASK_TYPE mide, u32 mask_bits)
 {
@@ -328,7 +328,7 @@ nu_can_add_filter(const struct nu_can *c, CAN_CHANNEL chn, CAN_FILTER filter,
     return 0;
 }
 
-const struct nu_vtbl_error_reporting_dev nu_can_erd_ops = {
-    .report         = &nu_can_report,
+const struct nu__ErrorReportingDev__Vtbl nu__Can__erd_ops = {
+    .report         = &nu__Can__report,
     .reset_err_state= NULL,
 };

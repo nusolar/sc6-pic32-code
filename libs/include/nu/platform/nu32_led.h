@@ -14,13 +14,13 @@ extern "C" {
 
 #elif NU_PLATFORM==NU_PLATFORM_PIC32MX
 
-/* recommendation: DON'T use the combination nu_nu32_led0 and nu_nu32_led2 */
-DEPRECATED extern struct nu_led *nu_nu32_led0;
-extern struct nu_led *nu_nu32_led1;
-extern struct nu_led *nu_nu32_led2;
+/* recommendation: DON'T use the combination nu__Nu32__led0 and nu__Nu32__led2 */
+DEPRECATED extern struct nu__Led *nu__Nu32__led0;
+extern struct nu__Led *nu__Nu32__led1;
+extern struct nu__Led *nu__Nu32__led2;
 
 void
-nu_nu32_setup_led(nu_nu32_version_t version);
+nu__Nu32__setup_led(nu__Nu32__Version_t version);
 
 #endif /* NU_PLATFORM switch */
 

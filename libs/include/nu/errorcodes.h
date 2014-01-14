@@ -29,16 +29,16 @@
     X(EREPORTNOFREEDEVS)
 
 #define NU_ERROR_ENUM(x) x,
-enum errors {
+enum nu__Error {
     NU_ERRORS(NU_ERROR_ENUM)
     NUM_ERRORS
 };
 
 #define NU_ERROR_NAMES(x) #x,
 
-extern const char *nu_error_names[];
+extern const char *nu__Error__names[];
 
 const char *
-nu_error_get_name(s32 err);
+nu__Error__get_name(s32 err);
 
 #endif

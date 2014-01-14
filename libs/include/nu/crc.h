@@ -77,11 +77,11 @@ enum reverseBeforeFinalXor {
 };
 
 int
-generateCrcTable(unsigned long *crcTabDst, enum reverseDataBytes refIn,
+nu__CRC__generate_table(unsigned long *crcTabDst, enum reverseDataBytes refIn,
         unsigned int order, unsigned long polynom);
 
 unsigned long
-crcTableFast (const uint32_t *crcTab, const void *data, size_t len,
+nu__CRC__table_fast (const uint32_t *crcTab, const void *data, size_t len,
         unsigned int order, enum direct direct, unsigned long initVal,
         unsigned long polynom, enum reverseDataBytes reverseDataBytes,
         enum reverseBeforeFinalXor, unsigned long final_xor_value);

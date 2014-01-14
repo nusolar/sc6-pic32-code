@@ -5,14 +5,14 @@
 #include "nu/error_reporting.h"
 #include "nu/utility/data.h"
 
-struct nu_serial_platform;
-struct nu_serial_platform_setup_args;
+struct nu__Serial__Platform;
+struct nu__Serial__PlatformSetupArgs;
 
-struct nu_serial_platform_ops {
-    void (*setup)   (struct nu_serial_platform *p, u32 baud,
-                        const struct nu_serial_platform_setup_args *args);
-    s32 (*putchar)  (const struct nu_serial_platform *p, s32 c);
-    s32 (*getchar)  (const struct nu_serial_platform *p);
+struct nu__Serial__PlatformOps {
+    void (*setup)   (struct nu__Serial__Platform *p, u32 baud,
+                        const struct nu__Serial__PlatformSetupArgs *args);
+    s32 (*putchar)  (const struct nu__Serial__Platform *p, s32 c);
+    s32 (*getchar)  (const struct nu__Serial__Platform *p);
 };
 
 /* NU_SERIAL_PLATFORM_INIT
@@ -20,41 +20,41 @@ struct nu_serial_platform_ops {
  * nu_init_serial_platform_args_t */
 #include "nu/platform/serial.h"
 
-struct nu_serial {
-    struct nu_error_reporting_dev erd;
-    struct nu_serial_platform platform;
+struct nu__Serial {
+    struct nu__ErrorReportingDev erd;
+    struct nu__Serial__Platform platform;
 };
 #define nu_erd_to_serial(erdp) \
-    container_of((erdp), struct nu_serial, erd)
+    container_of((erdp), struct nu__Serial, erd)
 
-extern const struct nu_vtbl_error_reporting_dev nu_serial_erd_ops;
+extern const struct nu__ErrorReportingDev__Vtbl nu__Serial__erd_ops;
 
 #define NU_ERD_SERIAL_INIT(min_priority) \
-    NU_ERD_INIT(min_priority, nu_serial_erd_ops)
+    NU_ERD_INIT(min_priority, nu__Serial__erd_ops)
 #define NU_SERIAL_INIT(erd, platform) {erd, platform}
 #define NU_SERIAL(name, erd, platform) \
-    struct nu_serial name = NU_SERIAL_INIT(erd, platform)
+    struct nu__Serial name = NU_SERIAL_INIT(erd, platform)
 
 static ALWAYSINLINE void
-NU_INIT_SERIAL(struct nu_serial *s, const nu_init_serial_platform_args_t *args)
+NU_INIT_SERIAL(struct nu__Serial *s, const nu_init_serial_platform_args_t *args)
 {
     NU_INIT_SERIAL_PLATFORM(&(s->platform), args);
 }
 
 void
-nu_serial_setup(struct nu_serial *s, u32 baud,
-	const struct nu_serial_platform_setup_args *arg);
+nu__Serial__setup(struct nu__Serial *s, u32 baud,
+	const struct nu__Serial__PlatformSetupArgs *arg);
 
 void
-nu_serial_puts(const struct nu_serial *s, const char *str);
+nu__Serial__puts(const struct nu__Serial *s, const char *str);
 
 void PRINTF(2, 3)
-nu_serial_printf(const struct nu_serial *s, const char *fmt, ...);
+nu__Serial__printf(const struct nu__Serial *s, const char *fmt, ...);
 
 size_t
-nu_serial_rx(const struct nu_serial *s, void *dst, size_t n);
+nu__Serial__rx(const struct nu__Serial *s, void *dst, size_t n);
 
 size_t
-nu_serial_tx(const struct nu_serial *s, const void *src, size_t n);
+nu__Serial__tx(const struct nu__Serial *s, const void *src, size_t n);
 
 #endif

@@ -12,29 +12,29 @@
 #include <peripheral/spi.h>
 
 static void
-nu_spi_platform_setup(struct nu_spi_platform *p, u32 bitrate,
-    const struct nu_spi_platform_setup_args *args)
+nu__Spi__platform_setup(struct nu__Spi__Platform *p, u32 bitrate,
+    const struct nu__Spi__PlatformSetupArgs *args)
 {
     SpiChnOpen(p->chn, args->oflags, NU_PBUS_FREQ_HZ/bitrate);
 }
 
 static s32
-nu_spi_platform_putchar(const struct nu_spi_platform *p, s32 c)
+nu__Spi__platform_putchar(const struct nu__Spi__Platform *p, s32 c)
 {
     SpiChnPutC(p->chn, (u32)c);
     return c;
 }
 
 static s32
-nu_spi_platform_getchar(const struct nu_spi_platform *p)
+nu__Spi__platform_getchar(const struct nu__Spi__Platform *p)
 {
     return (s32)SpiChnReadC(p->chn);
 }
 
-const struct nu_spi_platform_ops nu_spi_platform_ops = {
-    nu_spi_platform_setup,      /* setup */
-    nu_spi_platform_putchar,    /* putchar */
-    nu_spi_platform_getchar     /* getchar */
+const struct nu__Spi__PlatformOps nu__Spi__platform_ops = {
+    nu__Spi__platform_setup,      /* setup */
+    nu__Spi__platform_putchar,    /* putchar */
+    nu__Spi__platform_getchar     /* getchar */
 };
 
 #endif /* NU_PLATFORM switch */

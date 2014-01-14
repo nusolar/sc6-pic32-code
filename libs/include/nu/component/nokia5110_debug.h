@@ -24,7 +24,7 @@ Line 1337
  * to the lcd screen.
  */
 #define PRINTDEBUG() do {                                   \
-                            printDebug(__FILE__, __LINE__); \
+                            nu__Nokia__print_debug(__FILE__, __LINE__); \
                         } while(0)
 
 /**
@@ -52,19 +52,19 @@ ASSERT FAILED:
 1==0
 @endverbatim
  * to the lcd screen.
- * 
+ *
  */
 #define ASSERTLCD(x)    do {                    \
                             printAssert(#x, __FILE__, __LINE__, x); \
                         }while(0)
 
-inline void
-setDebugScreen (const struct nu_nokia5110 *n) __attribute__((always_inline));
+INLINE void
+nu__Nokia__set_debug_screen (const struct nu__Nokia5110 *n);
 
 void
-printDebug (const char *file, int line);
+nu__Nokia__print_debug (const char *file, int line);
 
 void
-printAssert (const char *test, const char *file, int line, int passed);
+nu__Nokia__print_assert (const char *test, const char *file, int line, int passed);
 
 #endif

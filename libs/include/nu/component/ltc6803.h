@@ -9,7 +9,7 @@
 /**
  *  The Battery Voltage chip
  */
-enum ltc6803_cfgr0 {
+enum nu__LTC6803__Cfgr0 {
     /** watchdog timer */
     LTC6803_WDT         = 1<<7,
 
@@ -67,7 +67,7 @@ enum ltc6803_cfgr0 {
  * DCCx = Discharge Cell x; x = 1-12; 0 = turn off shorting switch for cell 'x'
  * (default), 1 = turn on shorting switch
  */
-enum ltc6803_cfgr1 {
+enum nu__LTC6803__Cfgr1 {
     LTC6803_DCC8 = 1<<7,
     LTC6803_DCC7 = 1<<6,
     LTC6803_DCC6 = 1<<5,
@@ -78,7 +78,7 @@ enum ltc6803_cfgr1 {
     LTC6803_DCC1 = 1
 };
 
-enum ltc6803_cfgr2 {
+enum nu__LTC6803__Cfgr2 {
     /** MCxI = Mask Cell x Interrupts; x = 1-12; 0 = enable interrupts for cell
      * 'x' (default), 1 = turn off interrupts and clear flags for cell 'x' */
     LTC6803_MC4I    = 1<<7,
@@ -92,7 +92,7 @@ enum ltc6803_cfgr2 {
     LTC6803_DCC9    = 1
 };
 
-enum ltc6803_cfgr3 {
+enum nu__LTC6803__Cfgr3 {
     LTC6803_MC12I   = 1<<7,
     LTC6803_MC11I   = 1<<6,
     LTC6803_MC10I   = 1<<5,
@@ -103,7 +103,7 @@ enum ltc6803_cfgr3 {
     LTC6803_MC5I    = 1
 };
 
-enum ltc6803_cfgr4 {
+enum nu__LTC6803__Cfgr4 {
     /** V_UV = Undervoltage Comparison Voltage;
      * Comparison voltage = (V_UV-31)*16*1.5mV
      * It's better just to cast a uint or numeric literal to a BYTE for this
@@ -119,7 +119,7 @@ enum ltc6803_cfgr4 {
     LTC6803_VUV0    = 1
 };
 
-enum ltc6803_cfgr5 {
+enum nu__LTC6803__Cfgr5 {
     /** V_OV = Overvoltage Comparison Voltage;
      * Comparison voltage = (V_OV-31)*16*1.5mV
      * See note about cfgr4
@@ -134,17 +134,17 @@ enum ltc6803_cfgr5 {
     LTC6803_VOV0    = 1
 };
 
-struct PACKED ltc6803 {
+struct PACKED nu__LTC6803 {
     struct PACKED nu_spi spi;
     u32 num_devices;
-    struct PACKED ltc6803_flags {
+    struct PACKED nu__LTC6803__flags {
         u32 mismatch_cfgs;
         u32 mismatch_pecs;
     } flags;
 };
 
-union PACKED ltc6803_cfg {
-    struct PACKED ltc6803_cfg_registers {
+union PACKED nu__LTC6803__Cfg {
+    struct PACKED nu__LTC6803__Cfg__Registers {
         u8 cfgr0;
         u8 cfgr1;
         u8 cfgr2;
@@ -152,7 +152,7 @@ union PACKED ltc6803_cfg {
         u8 cfgr4;
         u8 cfgr5;
     } registers;
-    struct PACKED ltc6803_cfg_bits {
+    struct PACKED nu__LTC6803__Cfg__Bits {
         unsigned cdc    :3;
         unsigned cell10 :1;
         unsigned lvlpl  :1;
@@ -189,41 +189,41 @@ union PACKED ltc6803_cfg {
     u8 bytes[6];
 };
 
-STATIC_ASSERT(6 == sizeof(union ltc6803_cfg), SIZE_MISMATCH);
+STATIC_ASSERT(6 == sizeof(union nu__LTC6803__Cfg), SIZE_MISMATCH);
 
 s32
-ltc6803_write_cfgs(struct ltc6803 *l, const union ltc6803_cfg *cfgs);
+nu__LTC6803__write_cfgs(struct nu__LTC6803 *l, const union nu__LTC6803__Cfg *cfgs);
 
 s32
-ltc6803_read_cfgs(struct ltc6803 *l, union ltc6803_cfg *dst);
+nu__LTC6803__read_cfgs(struct nu__LTC6803 *l, union nu__LTC6803__Cfg *dst);
 
 s32
-ltc6803_cfgs_match(struct ltc6803 *l, const union ltc6803_cfg *cfgs);
+nu__LTC6803__cfgs_match(struct nu__LTC6803 *l, const union nu__LTC6803__Cfg *cfgs);
 
 s32
-ltc6803_start_voltage_conversion(struct ltc6803 *l);
+nu__LTC6803__start_voltage_conversion(struct nu__LTC6803 *l);
 
 s32
-ltc6803_start_open_wire_conversion(struct ltc6803 *l);
+nu__LTC6803__start_open_wire_conversion(struct nu__LTC6803 *l);
 
 s32
-ltc6803_read_voltages(struct ltc6803 *l, float *dst);
+nu__LTC6803__read_voltages(struct nu__LTC6803 *l, float *dst);
 
 s32
-ltc6803_post(struct ltc6803 *l);
+nu__LTC6803__post(struct nu__LTC6803 *l);
 
 s32
-ltc6803_check_open_wire(struct ltc6803 *l, u16 *open_wire_flags, const float *voltages);
+nu__LTC6803__check_open_wire(struct nu__LTC6803 *l, u16 *open_wire_flags, const float *voltages);
 
 int32_t
-ltc6803_new (struct ltc6803 *self, SpiChannel _chn,
+nu__LTC6803__new (struct nu__LTC6803 *self, SpiChannel _chn,
         IoPortId _csPinLtr,         uint32_t _csPinNum,
-        uint32_t _numDevices,   const union ltc6803_cfg *cfgs);
+        uint32_t _numDevices,   const union nu__LTC6803__Cfg *cfgs);
 
 PURE INLINE u8
-ltc6803_convert_uv_limit(double vuv);
+nu__LTC6803__convert_uv_limit(double vuv);
 
 PURE INLINE u8
-ltc6803_convert_ov_limit(double vov);
+nu__LTC6803__convert_ov_limit(double vov);
 
 #endif

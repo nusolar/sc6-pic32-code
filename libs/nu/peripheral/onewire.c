@@ -4,8 +4,6 @@
 #include "nu/timer.h"
 #include "nu/utility.h"
 
-#if 0
-
 static const u32 owCrcTab[] = {
    0,94,188,226,97,63,221,131,194,156,126,32,163,253,31,65,
    157,195,33,127,252,162,64,30,95,1,227,189,62,96,130,220,
@@ -41,7 +39,7 @@ w1_crc(const void *data, size_t n)
     if (!data)
         return 0xFFFFFFFF;
 
-    return crcTableFast(owCrcTab, data, n, 8, CRC_DIRECT, 0x00, CRC_8_DALLAS,
+    return nu__CRC__table_fast(owCrcTab, data, n, 8, CRC_DIRECT, 0x00, CRC_8_DALLAS,
             CRC_REVERSE_DATA_BYTES, CRC_REVERSE_BEFORE_FINAL_XOR, 0x00);
 }
 
@@ -90,7 +88,7 @@ reset_search_state(struct w1 *w)
 }
 
 s32
-w1_new(struct w1 *w, struct nu_pin pin)
+w1_new(struct w1 *w, struct nu__Pin pin)
 {
     s32 err = 0;
 
@@ -568,5 +566,3 @@ w1_verify(struct w1 *w, union romcode rc, u8 search_rom_cmd)
 
     return 0;
 }
-
-#endif

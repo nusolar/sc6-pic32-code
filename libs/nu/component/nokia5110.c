@@ -156,21 +156,21 @@ PACKED ALIGNED(1) union nokia5110_instructions {
 #define NOKIA_PREPARE_CMD(a)    do {memset(&a, 0, 1); \
                                         a.fixed = 1;} while(0)
 
-#define nokia_drive_reset_low(n)    nu_pin_clear(&((n)->pin_reset))
-#define nokia_drive_reset_high(n)   nu_pin_set(&((n)->pin_reset))
-#define nokia_drive_dc_low(n)       nu_pin_clear(&((n)->pin_dc))
-#define nokia_drive_dc_high(n)      nu_pin_set(&((n)->pin_dc))
+#define nokia_drive_reset_low(n)    nu__Pin__clear(&((n)->pin_reset))
+#define nokia_drive_reset_high(n)   nu__Pin__set(&((n)->pin_reset))
+#define nokia_drive_dc_low(n)       nu__Pin__clear(&((n)->pin_dc))
+#define nokia_drive_dc_high(n)      nu__Pin__set(&((n)->pin_dc))
 
 static ALWAYSINLINE void
-nokia_write_cmd(const struct nu_nokia5110 *n, u8 cmd)
+nokia_write_cmd(const struct nu__Nokia5110 *n, u8 cmd)
 {
     nokia_drive_dc_low(n);
-    nu_spi_tx(&(n->spi), &cmd, 1); /*not sure if 2nd argument is correct*/
+    nu__Spi__tx(&(n->spi), &cmd, 1); /*not sure if 2nd argument is correct*/
 }
 
 void
-nu_nokia_cmd_func_set(const struct nu_nokia5110 *n,
-                enum nu_nokia_cmd_func_set_options opt)
+nu__Nokia__cmd_func_set(const struct nu__Nokia5110 *n,
+                enum nu__Nokia__CmdFuncSetOptions opt)
 {
     union nokia5110_instructions inst;
     NOKIA_PREPARE_CMD(inst.func_set);
@@ -185,7 +185,7 @@ nu_nokia_cmd_func_set(const struct nu_nokia5110 *n,
 
 /* NOTE: vop setting is 7-bits wide, going from 0-127 */
 void
-nu_nokia_cmd_set_vop(const struct nu_nokia5110 *n, u8 vop)
+nu__Nokia__cmd_set_vop(const struct nu__Nokia5110 *n, u8 vop)
 {
     union nokia5110_instructions inst;
     NOKIA_PREPARE_CMD(inst.extended.set_vop);
@@ -195,7 +195,7 @@ nu_nokia_cmd_set_vop(const struct nu_nokia5110 *n, u8 vop)
 
 /* temp coefficient */
 void
-nu_nokia_cmd_set_temp_coeff(const struct nu_nokia5110 *n, enum nu_nokia_cmd_func_set_options coeff)
+nu__Nokia__cmd_set_temp_coeff(const struct nu__Nokia5110 *n, enum nu__Nokia__CmdFuncSetOptions coeff)
 {
     union nokia5110_instructions inst;
     NOKIA_PREPARE_CMD(inst.extended.temp_control);
@@ -205,7 +205,7 @@ nu_nokia_cmd_set_temp_coeff(const struct nu_nokia5110 *n, enum nu_nokia_cmd_func
 
 /* bias, which is 3-bits wide ranging from 0-7 */
 void
-nu_nokia_cmd_set_bias(const struct nu_nokia5110 *n, u8 bias)
+nu__Nokia__cmd_set_bias(const struct nu__Nokia5110 *n, u8 bias)
 {
     union nokia5110_instructions inst;
     NOKIA_PREPARE_CMD(inst.extended.bias);
@@ -214,7 +214,7 @@ nu_nokia_cmd_set_bias(const struct nu_nokia5110 *n, u8 bias)
 }
 
 void
-nu_nokia_cmd_set_disp_mode(const struct nu_nokia5110 *n, enum nu_nokia_cmd_func_set_options mode)
+nu__Nokia__cmd_set_disp_mode(const struct nu__Nokia5110 *n, enum nu__Nokia__CmdFuncSetOptions mode)
 {
     union nokia5110_instructions inst;
     NOKIA_PREPARE_CMD(inst.basic.disp_control);
@@ -223,25 +223,25 @@ nu_nokia_cmd_set_disp_mode(const struct nu_nokia5110 *n, enum nu_nokia_cmd_func_
 }
 
 static ALWAYSINLINE void
-write_data(const struct nu_nokia5110 *n, u8 data)
+write_data(const struct nu__Nokia5110 *n, u8 data)
 {
     nokia_drive_dc_high(n);
-    nu_spi_tx(&(n->spi), &data, 1); /*not sure if 2nd argument is correct*/
+    nu__Spi__tx(&(n->spi), &data, 1); /*not sure if 2nd argument is correct*/
 }
 
 void
-nu_nokia_clear(const struct nu_nokia5110 *n)
+nu__Nokia__clear(const struct nu__Nokia5110 *n)
 {
     u32 ui;
     for (ui = 0; ui < (LCD_X * LCD_Y) / 8; ++ui) {
-        nu_wdt_clear();
+        nu__WDT__clear();
         write_data(n, 0x00);
     }
 }
 
 /* x should be in the range 0-83 */
 static ALWAYSINLINE void
-nu_nokia_cmd_set_ram_x_addr(const struct nu_nokia5110 *n, u8 x)
+nu__Nokia__cmd_set_ram_x_addr(const struct nu__Nokia5110 *n, u8 x)
 {
     union nokia5110_instructions inst;
     NOKIA_PREPARE_CMD(inst.basic.set_ram_x_addr);
@@ -251,7 +251,7 @@ nu_nokia_cmd_set_ram_x_addr(const struct nu_nokia5110 *n, u8 x)
 
 /* y should be in the range 0-5 */
 static ALWAYSINLINE void
-nu_nokia_cmd_set_ram_y_addr(const struct nu_nokia5110 *n, u8 y)
+nu__Nokia__cmd_set_ram_y_addr(const struct nu__Nokia5110 *n, u8 y)
 {
     union nokia5110_instructions inst;
     NOKIA_PREPARE_CMD(inst.basic.set_ram_y_addr);
@@ -260,13 +260,13 @@ nu_nokia_cmd_set_ram_y_addr(const struct nu_nokia5110 *n, u8 y)
 }
 
 void
-nu_nokia_putc(const struct nu_nokia5110 *n, char c)
+nu__Nokia__putc(const struct nu__Nokia5110 *n, char c)
 {
     u32 ui;
 
     write_data(n, 0x00);
     for (ui = 0; ui < 5; ui++) {
-        nu_wdt_clear();
+        nu__WDT__clear();
         write_data(n, (BYTE) ASCII[c - 0x20][ui]);
     }
 
@@ -274,25 +274,25 @@ nu_nokia_putc(const struct nu_nokia5110 *n, char c)
 }
 
 void
-nu_nokia_puts(const struct nu_nokia5110 *n, const char *str)
+nu__Nokia__puts(const struct nu__Nokia5110 *n, const char *str)
 {
     while (*str) {
-        nu_wdt_clear();
-        nu_nokia_putc(n, *str++);
+        nu__WDT__clear();
+        nu__Nokia__putc(n, *str++);
     }
 }
 
 /* x should be in the range 0-83 */
 /* y should be in the range 0-5 */
 void
-nu_nokia_goto_xy(const struct nu_nokia5110 *n, u8 x, u8 y)
+nu__Nokia__goto_xy(const struct nu__Nokia5110 *n, u8 x, u8 y)
 {
-    nu_nokia_cmd_set_ram_x_addr(n, x);
-    nu_nokia_cmd_set_ram_y_addr(n, y);
+    nu__Nokia__cmd_set_ram_x_addr(n, x);
+    nu__Nokia__cmd_set_ram_y_addr(n, y);
 }
 
 void
-nu_nokia_set_pixel(const struct nu_nokia5110 *n, u8 x, u8 y)
+nu__Nokia__set_pixel(const struct nu__Nokia5110 *n, u8 x, u8 y)
 {
   /* The LCD has 6 rows, with 8 pixels per  row.
    * 'y_mod' is the row that the pixel is in.
@@ -306,64 +306,64 @@ nu_nokia_set_pixel(const struct nu_nokia5110 *n, u8 x, u8 y)
       return;
 
   /* Write the updated pixel out to the LCD */
-  nu_nokia_goto_xy(n, x, y_mod);
+  nu__Nokia__goto_xy(n, x, y_mod);
   write_data(n, val);
 }
 
 void
-nu_nokia_printf(const struct nu_nokia5110 *n, const char *fmt, ...)
+nu__Nokia__printf(const struct nu__Nokia5110 *n, const char *fmt, ...)
 {
     va_list fmtargs;
     char buffer[72];
     va_start(fmtargs, fmt);
     vsnprintf(buffer, sizeof(buffer), fmt, fmtargs);
     va_end(fmtargs);
-    nu_nokia_puts(n, buffer);
+    nu__Nokia__puts(n, buffer);
 }
 
 /*this function isn't currently in nokia5110.h, not sure if
  that is because it is old and should be deleted or if it should
  be in nokia5110.h*/
 static void
-nu_nokia_report(struct nu_error_reporting_dev *e,
+nu__Nokia__report(struct nu__ErrorReportingDev *e,
                 const char *file, UNUSED const char *func, u32 line,
                 UNUSED const char *expr,
                 UNUSED enum nu_report_priority priority,
                 const char *fmtd_msg)
 {
-    struct nu_nokia5110 *np = _nu_erd_to_nokia5110(e);
+    struct nu__Nokia5110 *np = _nu_erd_to_nokia5110(e);
 
-    nu_nokia_clear(np);
-    nu_nokia_goto_xy(np, 0,0);
-    nu_nokia_printf(np, "%.6s:%d", file, line);
-    nu_nokia_goto_xy(np, 0, 1);
-    nu_nokia_goto_xy(np, 0, 3);
-    nu_nokia_printf(np, "%.36s", fmtd_msg);
+    nu__Nokia__clear(np);
+    nu__Nokia__goto_xy(np, 0,0);
+    nu__Nokia__printf(np, "%.6s:%d", file, line);
+    nu__Nokia__goto_xy(np, 0, 1);
+    nu__Nokia__goto_xy(np, 0, 3);
+    nu__Nokia__printf(np, "%.36s", fmtd_msg);
 
 }
 
-const struct nu_vtbl_error_reporting_dev nokia_erd_ops = {
-    &nu_nokia_report,
+const struct nu__ErrorReportingDev__Vtbl nokia_erd_ops = {
+    &nu__Nokia__report,
     NULL
 };
 
 void
-nu_nokia_setup(struct nu_nokia5110 *n)
+nu__Nokia__setup(struct nu__Nokia5110 *n)
 {
-    nu_spi_setup(&(n->spi), 2000000, &nu_spi_platform_setup_defaults);
+    nu__Spi__setup(&(n->spi), 2000000, &nu__Spi__platform_setup_defaults);
 
-    nu_pin_set_digital_out(&(n->pin_dc));
-    nu_pin_set_digital_out(&(n->pin_reset));
+    nu__Pin__set_digital_out(&(n->pin_dc));
+    nu__Pin__set_digital_out(&(n->pin_reset));
 
     nokia_drive_reset_low(n);
     nokia_drive_reset_high(n);
 
-    nu_nokia_cmd_func_set(n, (enum nu_nokia_cmd_func_set_options) (NU_NOKIA_ADDRESSING_HORIZONTAL|NU_NOKIA_ACTIVE|NU_NOKIA_INSTRUCTIONS_EXTENDED));
-    nu_nokia_cmd_set_contrast(n, 57);
-    nu_nokia_cmd_set_temp_coeff(n, NU_NOKIA_TEMP_COEFF_0);
-    nu_nokia_cmd_set_bias(n, 4);
-    nu_nokia_cmd_func_set(n, (enum nu_nokia_cmd_func_set_options) (NU_NOKIA_ADDRESSING_HORIZONTAL|NU_NOKIA_ACTIVE|NU_NOKIA_INSTRUCTIONS_BASIC));
-    nu_nokia_cmd_set_disp_mode(n, NU_NOKIA_DISP_MODE_NORMAL);
+    nu__Nokia__cmd_func_set(n, (enum nu__Nokia__CmdFuncSetOptions) (NU_NOKIA_ADDRESSING_HORIZONTAL|NU_NOKIA_ACTIVE|NU_NOKIA_INSTRUCTIONS_EXTENDED));
+    nu__Nokia__cmd_set_contrast(n, 57);
+    nu__Nokia__cmd_set_temp_coeff(n, NU_NOKIA_TEMP_COEFF_0);
+    nu__Nokia__cmd_set_bias(n, 4);
+    nu__Nokia__cmd_func_set(n, (enum nu__Nokia__CmdFuncSetOptions) (NU_NOKIA_ADDRESSING_HORIZONTAL|NU_NOKIA_ACTIVE|NU_NOKIA_INSTRUCTIONS_BASIC));
+    nu__Nokia__cmd_set_disp_mode(n, NU_NOKIA_DISP_MODE_NORMAL);
 
-    nu_nokia_clear(n);
+    nu__Nokia__clear(n);
 }

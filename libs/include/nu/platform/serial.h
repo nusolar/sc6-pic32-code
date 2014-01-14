@@ -17,9 +17,9 @@ extern "C" {
 #elif NU_PLATFORM==NU_PLATFORM_PIC32MX
 #include <peripheral/uart.h>
 
-extern const struct nu_serial_platform_ops nu_serial_platform_ops;
+extern const struct nu__Serial__PlatformOps nu__Serial__platform_ops;
 
-typedef struct nu_serial_platform {
+typedef struct nu__Serial__Platform {
     UART_MODULE module;
 } nu_init_serial_platform_args_t;
 
@@ -31,25 +31,25 @@ typedef struct nu_serial_platform {
 #define NU_SERIAL_UART4 {UART2}
 
 static ALWAYSINLINE void
-NU_INIT_SERIAL_PLATFORM(struct nu_serial_platform *p,
+NU_INIT_SERIAL_PLATFORM(struct nu__Serial__Platform *p,
         const nu_init_serial_platform_args_t *args)
 {
     p->module = args->module;
 }
 
-enum nu_serial_module_interrupt {
+enum nu__Serial__ModuleInterrupt {
     NU_USE_UART_INTERRUPT,
     NU_NOT_USE_UART_INTERRUPT
 };
 
-static const struct nu_serial_platform_setup_args {
-    enum nu_serial_module_interrupt use_interrupt;
+static const struct nu__Serial__PlatformSetupArgs {
+    enum nu__Serial__ModuleInterrupt use_interrupt;
     INT_PRIORITY int_priority;
     UART_FIFO_MODE interrupt_modes;
     UART_LINE_CONTROL_MODE line_control_modes;
     UART_CONFIGURATION uart_config;
     UART_ENABLE_MODE enable_modes;
-} nu_serial_platform_setup_defaults = {
+} nu__Serial__platform_setup_defaults = {
     NU_NOT_USE_UART_INTERRUPT,
     INT_PRIORITY_DISABLED,
     (UART_FIFO_MODE)0,

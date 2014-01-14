@@ -12,7 +12,7 @@ namespace nu {
 	 * System parameters, like the clock frequency and peripheral bus frequency.
 	 */
 	namespace param {
-		static ALWAYSINLINE reg_t& Hz()		{ return nu_hz; }
+		static ALWAYSINLINE reg_t& Hz()		{ return nu__Param__Hz; }
 		static ALWAYSINLINE reg_t  MHz()	{ return NU_MHZ; }
 
 		static ALWAYSINLINE reg_t  default_hz() { return NU_DEFAULT_HZ; }

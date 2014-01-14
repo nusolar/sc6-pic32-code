@@ -10,13 +10,13 @@ extern "C" {
 /**
  * Clear WatchDogTimer
  */
-extern void (*nu_wdt_clear) (void);
+extern void (*nu__WDT__clear) (void);
 
 void
-nu_wdt_clear_enable(void);
+nu__WDT__clear_enable(void);
 
 void
-nu_wdt_clear_disable(void);
+nu__WDT__clear_disable(void);
 
 #ifdef __cplusplus
 } /* extern "C" */

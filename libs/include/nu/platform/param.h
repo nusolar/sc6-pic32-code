@@ -15,13 +15,13 @@ extern "C" {
 #elif NU_PLATFORM==NU_PLATFORM_GENERIC
 
 #define NU_DEFAULT_HZ (80000000UL)
-#define NU_PBUS_FREQ_HZ (nu_hz)
+#define NU_PBUS_FREQ_HZ (nu__Param__Hz)
 
 #elif NU_PLATFORM==NU_PLATFORM_PIC32MX
 
 #include <xc.h>
 #define NU_DEFAULT_HZ (80000000UL)
-#define NU_PBUS_FREQ_HZ (nu_hz/((u32)(1 << OSCCONbits.PBDIV)))
+#define NU_PBUS_FREQ_HZ (nu__Param__Hz/((u32)(1 << OSCCONbits.PBDIV)))
 
 #endif /* NU_PLATFORM switch */
 

@@ -4,11 +4,11 @@
 /*
  * NU_SPI_PLATFORM_INIT
  * NU_INIT_SPI_PLATFORM
- * nu_init_spi_platform_args_t
+ * nu__Spi__PlatformInitArgs_t
  * (optional) nu_init_spi_platform_defaults
- * nu_spi_platform_setup
- * nu_spi_platform_setup_args_t
- * (optional) nu_spi_platform_setup_defaults
+ * nu__Spi__platform_setup
+ * nu__Spi__platform_setup_args_t
+ * (optional) nu__Spi__platform_setup_defaults
  */
 #include "nu/platform/spi.h"
 #include "nu/peripheral/pinctl.h"
@@ -19,41 +19,41 @@
 extern "C" {
 #endif
 
-	struct nu_spi {
-		struct nu_pin cs;
-		struct nu_spi_platform platform;
+	struct nu__Spi {
+		struct nu__Pin cs;
+		struct nu__Spi__Platform platform;
 	};
 
 	static ALWAYSINLINE void
-	NU_INIT_SPI(struct nu_spi *s,
-			const nu_init_pin_platform_args_t *pa,
-			const nu_init_spi_platform_args_t *a)
+	NU_INIT_SPI(struct nu__Spi *s,
+			const nu__Pin__PlatformInitArgs_t *pa,
+			const nu__Spi__PlatformInitArgs_t *a)
 	{
 		NU_INIT_PIN_PLATFORM(&(s->cs.platform), pa);
 		NU_INIT_SPI_PLATFORM(&(s->platform), a);
 	}
 
 	static ALWAYSINLINE void
-	nu_spi_cs_high(const struct nu_spi *s)
+	nu__Spi__cs_high(const struct nu__Spi *s)
 	{
-		nu_pin_set(&(s->cs));
+		nu__Pin__set(&(s->cs));
 	}
 
 	static ALWAYSINLINE void
-	nu_spi_cs_low(const struct nu_spi *s)
+	nu__Spi__cs_low(const struct nu__Spi *s)
 	{
-		nu_pin_clear(&(s->cs));
+		nu__Pin__clear(&(s->cs));
 	}
 
 	void
-	nu_spi_setup(struct nu_spi *s, u32 bitrate,
-			const struct nu_spi_platform_setup_args *args);
+	nu__Spi__setup(struct nu__Spi *s, u32 bitrate,
+			const struct nu__Spi__PlatformSetupArgs *args);
 
 	size_t
-	nu_spi_tx(const struct nu_spi *s, const void *src, size_t n);
+	nu__Spi__tx(const struct nu__Spi *s, const void *src, size_t n);
 
 	size_t
-	nu_spi_rx(const struct nu_spi *s, void *dst, size_t n);
+	nu__Spi__rx(const struct nu__Spi *s, void *dst, size_t n);
 
 #ifdef __cplusplus
 } /* extern "C" */

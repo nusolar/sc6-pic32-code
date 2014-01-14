@@ -177,6 +177,6 @@ s32
 ds_set_limits(struct ds18x20 *d, union romcode rc, float low, float high);
 
 s32
-ds_new(struct ds18x20 *d, struct nu_pin pin, enum ds_parasitic_power parasitic_power);
+ds_new(struct ds18x20 *d, struct nu__Pin pin, enum ds_parasitic_power parasitic_power);
 
 #endif

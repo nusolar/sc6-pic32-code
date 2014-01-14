@@ -5,17 +5,17 @@
 #include "nu/utility/bits.h"
 #include <peripheral/CAN.h>
 
-struct nu_can_tx_attr {
+struct nu__Can__TxAttr {
     u32 eid;
     CAN_CHANNEL chn;
-    enum nu_can_id_type id_type;
+    enum nu__Can__id_type id_type;
     u16 sid;
     bool rtr;
     u8 padding;
 };
 
 s32
-nu_can_tx(const struct nu_can *c, const struct nu_can_tx_attr *a,
+nu__Can__tx(const struct nu__Can *c, const struct nu__Can__TxAttr *a,
           const void *src, size_t n) {
     CANTxMessageBuffer *message = CANGetTxMessageBuffer(c->module, a->chn);
     if (n > 8)

@@ -15,7 +15,7 @@ const uint16_t MPPT_ANSWER_FRAME_BASE_ID = 0b1110111<<4;
 #define MPPT_ANSWER_FRAME_SID(mpptIdOffset) \
             (MPPT_ANSWER_FRAME_BASE_ID + ((mpptIdOffset)<<1) + 1)
 
-union PACKED answerDataField {
+union PACKED nu__MpptRace__AnswerDataField {
     struct PACKED {
         /** battery voltage level reached */
         unsigned bvlr       :1;

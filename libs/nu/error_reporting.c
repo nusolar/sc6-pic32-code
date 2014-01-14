@@ -66,23 +66,23 @@ nu_reporting_register_panic_posthook(nu_reporting_posthook func)
 }
 
 void
-nu_reporting_register(struct nu_error_reporting_dev *erd)
+nu_reporting_register(struct nu__ErrorReportingDev *erd)
 {
-     list_add(&(erd->list), &erd_list);
+     nu__List__add(&(erd->list), &erd_list);
 }
 
 void
-nu_reporting_unregister(struct nu_error_reporting_dev *erd)
+nu_reporting_unregister(struct nu__ErrorReportingDev *erd)
 {
-    list_del(&(erd->list));
+    nu__List__del(&(erd->list));
 }
 
 void
 nu_reporting_clear(enum nu_report_priority max_priority)
 {
-    struct nu_error_reporting_dev *pos;
-    list_for_each_entry(pos, &erd_list, list) {
-        nu_wdt_clear();
+    struct nu__ErrorReportingDev *pos;
+    nu__List__for_each_entry(pos, &erd_list, list) {
+        nu__WDT__clear();
         if (pos->min_priority <= max_priority)
             pos->op->reset_err_state(pos);
     }
@@ -95,7 +95,7 @@ nu_vwarn(char const * file, char const * func, const u32 line,
 {
     const char *msg = NULL;
     s32 siz;
-    struct nu_error_reporting_dev *pos = NULL;
+    struct nu__ErrorReportingDev *pos = NULL;
 
     if (!warn_enter())
         return;
@@ -120,8 +120,8 @@ nu_vwarn(char const * file, char const * func, const u32 line,
         msg = "No msg...vsnprintf() error inside reporting library";
     }
 
-    list_for_each_entry(pos, &erd_list, list) {
-        nu_wdt_clear();
+    nu__List__for_each_entry(pos, &erd_list, list) {
+        nu__WDT__clear();
         if (pos->min_priority <= priority)
             pos->op->report(pos, file, func, line, expr, priority, msg);
     }
@@ -138,7 +138,7 @@ nu_vpanic(char const * file, char const * func, const u32 line,
 {
     const char *msg = NULL;
     s32 siz;
-    struct nu_error_reporting_dev *pos = NULL;
+    struct nu__ErrorReportingDev *pos = NULL;
 
     if (!panic_enter())
         return;
@@ -163,8 +163,8 @@ nu_vpanic(char const * file, char const * func, const u32 line,
         msg = "No msg...vsnprintf() error inside reporting library";
     }
 
-    list_for_each_entry(pos, &erd_list, list) {
-        nu_wdt_clear();
+    nu__List__for_each_entry(pos, &erd_list, list) {
+        nu__WDT__clear();
         pos->op->report(pos, file, func, line, expr, NU_REP_PANIC, msg);
     }
 

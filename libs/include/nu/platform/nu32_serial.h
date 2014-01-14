@@ -13,12 +13,12 @@ extern "C" {
 
 #elif NU_PLATFORM==NU_PLATFORM_PIC32MX
 
-DEPRECATED extern struct nu_serial *nu_nu32_serial;
-extern struct nu_serial *nu_nu32_serial1;
-extern struct nu_serial *nu_nu32_serial2;
+DEPRECATED extern struct nu__Serial *nu__Nu32__serial;
+extern struct nu__Serial *nu__Nu32__serial1;
+extern struct nu__Serial *nu__Nu32__serial2;
 
 void
-nu_nu32_setup_serial(nu_nu32_version_t version);
+nu__Nu32__setup_serial(nu__Nu32__Version_t version);
 
 #endif /* NU_PLATFORM switch */
 

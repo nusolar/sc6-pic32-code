@@ -246,7 +246,7 @@ namespace nu {
 				return 0xFFFFFFFF;
 			return n;
 			// TODO OneWire CRC
-//			return crcTableFast(crc_table, data, n, 8, CRC_DIRECT, 0x00, CRC_8_DALLAS,
+//			return nu__CRC__table_fast(crc_table, data, n, 8, CRC_DIRECT, 0x00, CRC_8_DALLAS,
 //				CRC_REVERSE_DATA_BYTES, CRC_REVERSE_BEFORE_FINAL_XOR, 0x00);
 		}
 	};

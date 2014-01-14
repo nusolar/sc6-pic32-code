@@ -9,11 +9,11 @@
  */
 namespace nu {
 	namespace WDT {
-		static ALWAYSINLINE void clear()	{nu_wdt_clear();}
-		static ALWAYSINLINE void enable_clear()		{nu_wdt_clear_enable();}
-		static ALWAYSINLINE void disable_clear()	{nu_wdt_clear_disable();}
-		static ALWAYSINLINE void enable()	{nu_wdt_enable();}
-		static ALWAYSINLINE void disable()	{nu_wdt_disable();}
+		static ALWAYSINLINE void clear()	{nu__WDT__clear();}
+		static ALWAYSINLINE void enable_clear()		{nu__WDT__clear_enable();}
+		static ALWAYSINLINE void disable_clear()	{nu__WDT__clear_disable();}
+		static ALWAYSINLINE void enable()	{nu__WDT__enable();}
+		static ALWAYSINLINE void disable()	{nu__WDT__disable();}
 	}
 }
 

@@ -37,7 +37,7 @@ init_sequence(const struct ds18x20 *d)
     init_sequence(d)
 
 s32
-ds_new(struct ds18x20 *d, struct nu_pin pin,
+ds_new(struct ds18x20 *d, struct nu__Pin pin,
        enum ds_parasitic_power parasitic_power)
 {
     s32 err;
@@ -293,7 +293,7 @@ ds_copy_scratch(struct ds18x20 *d, union romcode rc)
     return 0;
 }
 
-/* recall EEPROM 
+/* recall EEPROM
  * EEPROM -> scratchpad */
 s32
 ds_recall_e2(struct ds18x20 *d, union romcode rc)
@@ -322,7 +322,7 @@ ds_read_power_supply(struct ds18x20 *d, union romcode rc)
     if ((err = tx_cmd(d, DS_READ_POWER)) < 0)
         return err;
     rx_bit = w1_rx_bit(&(d->w1));
-    
+
     if (rx_bit == 0)
         return PARASITIC_POWER_ENABLE;
     else if (rx_bit == 1)

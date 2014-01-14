@@ -22,7 +22,7 @@
 ************************************/
 
 /* not in any particular order... */
-enum nu_nokia_cmd_func_set_options {
+enum nu__Nokia__CmdFuncSetOptions {
     NU_NOKIA_DC_DATA                = 0,
     NU_NOKIA_DC_COMMAND             = 1<<0,
 
@@ -46,14 +46,14 @@ enum nu_nokia_cmd_func_set_options {
     NU_NOKIA_TEMP_COEFF_3           = 1<<7 | 1<<6
 };
 
-struct nu_nokia5110 {
-    struct nu_error_reporting_dev erd;
-    struct nu_spi spi;
-    struct nu_pin pin_reset;   /* active LOW*/
-    struct nu_pin pin_dc;      /* data/command input */
+struct nu__Nokia5110 {
+    struct nu__ErrorReportingDev erd;
+    struct nu__Spi spi;
+    struct nu__Pin pin_reset;   /* active LOW*/
+    struct nu__Pin pin_dc;      /* data/command input */
 };
 #define _nu_erd_to_nokia5110(erdp) \
-    container_of((erdp), struct nu_nokia5110, erd)
+    container_of((erdp), struct nu__Nokia5110, erd)
 #define NU_NOKIA_ERD_INIT(min_priority, chn, cs_ltr, cs_num, reset_ltr, reset_num, dc_ltr, dc_num) \
     { \
     NU_ERD_INIT(min_priority, &nokia_erd_ops), \
@@ -64,48 +64,48 @@ struct nu_nokia5110 {
 #define NU_NOKIA_INIT(chn, cs_ltr, cs_num, reset_ltr, reset_num, dc_ltr, dc_num)   \
     NU_NOKIA_ERD_INIT(REP_DEBUG, chn, cs_ltr, cs_num, reset_ltr, reset_num, dc_ltr, dc_num)
 #define NU_NOKIA_ERD(name, min_priority, chn, cs_ltr, cs_num, reset_ltr, reset_num, dc_ltr, dc_num)  \
-    struct nu_nokia5110 name = NU_NOKIA_ERD_INIT(min_priority, chn, cs_ltr, cs_num, reset_ltr, reset_num, dc_ltr, dc_num)
+    struct nu__Nokia5110 name = NU_NOKIA_ERD_INIT(min_priority, chn, cs_ltr, cs_num, reset_ltr, reset_num, dc_ltr, dc_num)
 #define NU_NOKIA(name, chn, cs_ltr, cs_num, reset_ltr, reset_num, dc_ltr, dc_num)  \
-    struct nu_nokia5110 name = NU_NOKIA_INIT(chn, cs_ltr, cs_num, reset_ltr, reset_num, dc_ltr, dc_num)
+    struct nu__Nokia5110 name = NU_NOKIA_INIT(chn, cs_ltr, cs_num, reset_ltr, reset_num, dc_ltr, dc_num)
 
 void
-nu_nokia_setup(struct nu_nokia5110 *n);
+nu__Nokia__setup(struct nu__Nokia5110 *n);
 
 void
-nu_nokia_cmd_func_set(const struct nu_nokia5110 *self,
-                    enum nu_nokia_cmd_func_set_options opt);
+nu__Nokia__cmd_func_set(const struct nu__Nokia5110 *self,
+                    enum nu__Nokia__CmdFuncSetOptions opt);
 
 void
-nu_nokia_cmd_set_vop(const struct nu_nokia5110 *self, u8 vop);
+nu__Nokia__cmd_set_vop(const struct nu__Nokia5110 *self, u8 vop);
 
-/* ALIAS("nu_nokia_cmd_set_vop") void*/
-#define nu_nokia_cmd_set_contrast(self, vop) nu_nokia_cmd_set_vop(self, vop)
-
-void
-nu_nokia_cmd_set_temp_coeff(const struct nu_nokia5110 *n, enum nu_nokia_cmd_func_set_options coeff);
+/* ALIAS("nu__Nokia__cmd_set_vop") void*/
+#define nu__Nokia__cmd_set_contrast(self, vop) nu__Nokia__cmd_set_vop(self, vop)
 
 void
-nu_nokia_cmd_set_bias(const struct nu_nokia5110 *n, u8 bias);
+nu__Nokia__cmd_set_temp_coeff(const struct nu__Nokia5110 *n, enum nu__Nokia__CmdFuncSetOptions coeff);
 
 void
-nu_nokia_cmd_set_disp_mode(const struct nu_nokia5110 *n, enum nu_nokia_cmd_func_set_options mode);
+nu__Nokia__cmd_set_bias(const struct nu__Nokia5110 *n, u8 bias);
 
 void
-nu_nokia_putc(const struct nu_nokia5110 *n, char c);
+nu__Nokia__cmd_set_disp_mode(const struct nu__Nokia5110 *n, enum nu__Nokia__CmdFuncSetOptions mode);
+
+void
+nu__Nokia__putc(const struct nu__Nokia5110 *n, char c);
 
 void PRINTF(2,3)
-nu_nokia_printf(const struct nu_nokia5110 *n, const char *fmt, ...);
+nu__Nokia__printf(const struct nu__Nokia5110 *n, const char *fmt, ...);
 
 void
-nu_nokia_puts(const struct nu_nokia5110 *n, const char *s);
+nu__Nokia__puts(const struct nu__Nokia5110 *n, const char *s);
 
 void
-nu_nokia_goto_xy(const struct nu_nokia5110 *n, u8 x, u8 y);
+nu__Nokia__goto_xy(const struct nu__Nokia5110 *n, u8 x, u8 y);
 
 void
-nu_nokia_set_pixel(const struct nu_nokia5110 *n, u8 x, u8 y);
+nu__Nokia__set_pixel(const struct nu__Nokia5110 *n, u8 x, u8 y);
 
 void
-nu_nokia_clear(const struct nu_nokia5110 *n);
+nu__Nokia__clear(const struct nu__Nokia5110 *n);
 
 #endif

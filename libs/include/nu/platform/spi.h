@@ -9,14 +9,14 @@
 extern "C" {
 #endif
 
-	struct nu_spi_platform;
-	struct nu_spi_platform_setup_args;
+	struct nu__Spi__Platform;
+	struct nu__Spi__PlatformSetupArgs;
 
-	struct nu_spi_platform_ops {
-		void (*setup)   (struct nu_spi_platform *p, u32 bitrate,
-				const struct nu_spi_platform_setup_args *args);
-		s32 (*putchar)  (const struct nu_spi_platform *p, s32 c);
-		s32 (*getchar)  (const struct nu_spi_platform *p);
+	struct nu__Spi__PlatformOps {
+		void (*setup)   (struct nu__Spi__Platform *p, u32 bitrate,
+				const struct nu__Spi__PlatformSetupArgs *args);
+		s32 (*putchar)  (const struct nu__Spi__Platform *p, s32 c);
+		s32 (*getchar)  (const struct nu__Spi__Platform *p);
 	};
 
 
@@ -29,17 +29,17 @@ extern "C" {
 	#elif NU_PLATFORM==NU_PLATFORM_PIC32MX
 	#include <peripheral/spi.h>
 
-	extern const struct nu_spi_platform_ops nu_spi_platform_ops;
-	static const struct nu_spi_platform_setup_args {
+	extern const struct nu__Spi__PlatformOps nu__Spi__platform_ops;
+	static const struct nu__Spi__PlatformSetupArgs {
 		SpiOpenFlags oflags;
-	} nu_spi_platform_setup_defaults = {
+	} nu__Spi__platform_setup_defaults = {
 		(SpiOpenFlags)SPI_OPEN_MSTEN|SPI_OPEN_MODE8,
 	};
 
 
-	typedef struct nu_spi_platform {
+	typedef struct nu__Spi__Platform {
 		SpiChannel chn;
-	} nu_init_spi_platform_args_t;
+	} nu__Spi__PlatformInitArgs_t;
 	#define NU_SPI_PLATFORM_INIT(chn) { chn }
 
 	#define NU_SPI_CHANNEL1 { SPI_CHANNEL1 }
@@ -48,8 +48,8 @@ extern "C" {
 	#define NU_SPI_CHANNEL4 { SPI_CHANNEL4 }
 
 	static ALWAYSINLINE void
-	NU_INIT_SPI_PLATFORM(struct nu_spi_platform *p,
-			const nu_init_spi_platform_args_t *args)
+	NU_INIT_SPI_PLATFORM(struct nu__Spi__Platform *p,
+			const nu__Spi__PlatformInitArgs_t *args)
 	{
 		p->chn = args->chn;
 	}

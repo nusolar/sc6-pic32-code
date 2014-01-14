@@ -26,18 +26,18 @@ extern "C" {
 
 #elif NU_PLATFORM==NU_PLATFORM_PIC32MX
 
-enum _nu_nu32_version {
+enum __nu__Nu32__Version {
     NU_NU32_V1,
     NU_NU32_V2
 };
 
-typedef enum _nu_nu32_version nu_nu32_version_t;
+typedef enum __nu__Nu32__Version nu__Nu32__Version_t;
 
-extern struct nu_pin *nu_nu32_switch;
-#define nu_nu32_user nu_nu32_switch
+extern struct nu__Pin *nu__Nu32__switch;
+#define nu__Nu32__user nu__Nu32__switch
 
 void
-nu_nu32_setup(nu_nu32_version_t version, nu_hz_t hz);
+nu__Nu32__setup(nu__Nu32__Version_t version, nu__Param__Hz_t hz);
 
 #endif /* NU_PLATFORM switch */
 

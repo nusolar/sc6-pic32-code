@@ -2,19 +2,19 @@
 #include "nu/errorcodes.h"
 
 int32_t
-nu_ws20_init(struct nu_ws20 *self);
+nu__WS20__init(struct nu__WS20 *self);
 int32_t
-tx_frame(const struct nu_ws20 *self, const void *src, size_t siz, uint32_t addr);
+tx_frame(const struct nu__WS20 *self, const void *src, size_t siz, uint32_t addr);
 
 static const struct vtbl_wavesculptor20 wavesculptor20_ops = {
-    .driveCmd       = &nu_ws20_drive_cmd,
-    .powerCmd       = &nu_ws20_power_cmd,
-    .resetCmd       = &nu_ws20_reset_cmd,
-    .sendIdFrame    = &nu_ws20_send_id_frame,
+    .driveCmd       = &nu__WS20__drive_cmd,
+    .powerCmd       = &nu__WS20__power_cmd,
+    .resetCmd       = &nu__WS20__reset_cmd,
+    .sendIdFrame    = &nu__WS20__send_id_frame,
 };
 
 int32_t
-nu_ws20_init(struct nu_ws20 *self)
+nu__WS20__init(struct nu__WS20 *self)
 {
     if (self == NULL)
         return -ENULPTR;
@@ -23,15 +23,15 @@ nu_ws20_init(struct nu_ws20 *self)
 }
 
 int32_t
-nu_ws20_new(struct nu_ws20 *self,
+nu__WS20__new(struct nu__WS20 *self,
                     uint32_t driverControlsSerialNo,
                     uint16_t driverControlsBaseAddr,
                     uint16_t motorControllerBaseAddr, CAN_MODULE module,
                     CAN_CHANNEL txChn, CAN_CHANNEL rxChn,
                     uint32_t canBusSpeedHz, CAN_BIT_TQ phaseSeg2Tq,
                     CAN_BIT_TQ phaseSeg1Tq, CAN_BIT_TQ propSegTq,
-                    enum nu_can_phase_seg2_time_select selectAutoSet,
-                    enum nu_can_sample_times sample3Times, CAN_BIT_TQ syncJumpWidth)
+                    enum nu__Can__phase_seg2_time_select selectAutoSet,
+                    enum nu__Can__sample_times sample3Times, CAN_BIT_TQ syncJumpWidth)
 {
     int32_t err = 0;
 
@@ -61,25 +61,25 @@ nu_ws20_new(struct nu_ws20 *self,
                                 CAN_RX_FULL_RECEIVE, 0)) < 0)
         return err;
 
-    return nu_ws20_init(self);
+    return nu__WS20__init(self);
 }
 
 int32_t
-nu_ws20_new_easy(struct nu_ws20 *self,
+nu__WS20__new_easy(struct nu__WS20 *self,
                     CAN_MODULE module,
                     CAN_CHANNEL txChn, CAN_CHANNEL rxChn)
 {
     if (self == NULL)
         return -ENULPTR;
 
-    return nu_ws20_new(self, module, 1, ADDR_WS20_RX_BASE,
+    return nu__WS20__new(self, module, 1, ADDR_WS20_RX_BASE,
             ADDR_WS20_TX_BASE, txChn, rxChn,
             WAVESCULPTOR20_BUS_SPEED_DEFAULT, CAN_BIT_3TQ, CAN_BIT_5TQ,
             CAN_BIT_1TQ, AUTO_SET, THREE_TIMES, CAN_BIT_1TQ);
 }
 
 int32_t
-tx_frame(const struct nu_ws20 *self, const void *src, size_t siz,
+tx_frame(const struct nu__WS20 *self, const void *src, size_t siz,
             uint32_t addr)
 {
     if (self == NULL || src == NULL)
@@ -91,7 +91,7 @@ tx_frame(const struct nu_ws20 *self, const void *src, size_t siz,
 }
 
 int32_t
-nu_ws20_drive_cmd(const struct nu_ws20 *self, float motorCurrentPercent,
+nu__WS20__drive_cmd(const struct nu__WS20 *self, float motorCurrentPercent,
             float motorVelocityMperS)
 {
     if (self == NULL)
@@ -109,7 +109,7 @@ nu_ws20_drive_cmd(const struct nu_ws20 *self, float motorCurrentPercent,
 }
 
 int32_t
-nu_ws20_power_cmd(const struct nu_ws20 *self, float busCurrent)
+nu__WS20__power_cmd(const struct nu__WS20 *self, float busCurrent)
 {
     if (self == NULL)
         return -ENULPTR;
@@ -123,7 +123,7 @@ nu_ws20_power_cmd(const struct nu_ws20 *self, float busCurrent)
 }
 
 int32_t
-nu_ws20_reset_cmd(const struct nu_ws20 *self)
+nu__WS20__reset_cmd(const struct nu__WS20 *self)
 {
     if (self == NULL)
         return -ENULPTR;
@@ -134,7 +134,7 @@ nu_ws20_reset_cmd(const struct nu_ws20 *self)
 }
 
 int32_t
-nu_ws20_send_id_frame(const struct nu_ws20 *self)
+nu__WS20__send_id_frame(const struct nu__WS20 *self)
 {
     if (self == NULL)
         return -ENULPTR;

@@ -2,35 +2,35 @@
 #include "nu/compiler.h"
 
 static void
-producer_enter(struct nu_async_io *a, struct circ_buf *b)
+producer_enter(struct nu__AsyncIO *a, struct circ_buf *b)
 {
     (void)a;
     (void)b;
 }
 
 static void
-producer_exit(struct nu_async_io *a, struct circ_buf *b)
+producer_exit(struct nu__AsyncIO *a, struct circ_buf *b)
 {
     (void)a;
     (void)b;
 }
 
 static void
-consumer_enter(struct nu_async_io *a, struct circ_buf *b)
+consumer_enter(struct nu__AsyncIO *a, struct circ_buf *b)
 {
     (void)a;
     (void)b;
 }
 
 static void
-consumer_exit(struct nu_async_io *a, struct circ_buf *b)
+consumer_exit(struct nu__AsyncIO *a, struct circ_buf *b)
 {
     (void)a;
     (void)b;
 }
 
 size_t
-nu_async_io_tx_enqueue(struct nu_async_io *a, const void *src, size_t n, bool overrun)
+nu__AsyncIO__tx_enqueue(struct nu__AsyncIO *a, const void *src, size_t n, bool overrun)
 {
     struct circ_buf *tx_buf = &(a->tx_buf);
     size_t ui;
@@ -49,7 +49,7 @@ nu_async_io_tx_enqueue(struct nu_async_io *a, const void *src, size_t n, bool ov
 }
 
 size_t
-nu_async_io_rx_dequeue(struct nu_async_io *a, void *dst, size_t n)
+nu__AsyncIO__rx_dequeue(struct nu__AsyncIO *a, void *dst, size_t n)
 {
     (void)a;
     (void)dst;
@@ -60,7 +60,7 @@ nu_async_io_rx_dequeue(struct nu_async_io *a, void *dst, size_t n)
 }
 
 ssize_t
-nu_async_io_tx(struct nu_async_io *a)
+nu__AsyncIO__tx(struct nu__AsyncIO *a)
 {
     struct circ_buf *buf = &(a->tx_buf);
     int cnt_to_end;
@@ -91,7 +91,7 @@ nu_async_io_tx(struct nu_async_io *a)
 }
 
 ssize_t
-nu_async_io_rx(struct nu_async_io *a)
+nu__AsyncIO__rx(struct nu__AsyncIO *a)
 {
     (void)a;
     producer_enter(a, &(a->rx_buf));

@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   wdt.h
  * Author: alex
  *
@@ -27,10 +27,10 @@ static ALWAYSINLINE
 void nu_platform_wdt_clearable(void)	{ClearWDT();}
 
 static ALWAYSINLINE
-void nu_wdt_enable(void)	{EnableWDT();}
+void nu__WDT__enable(void)	{EnableWDT();}
 
 static ALWAYSINLINE
-void nu_wdt_disable(void)	{DisableWDT();}
+void nu__WDT__disable(void)	{DisableWDT();}
 
 #endif /* NU_PLATFORM switch */
 

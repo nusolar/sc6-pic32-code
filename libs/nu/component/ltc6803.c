@@ -2,7 +2,7 @@
 #include "nu/errorcodes.h"
 #include "nu/timer.h"
 
-enum ltc6803_cmds {
+enum nu__LTC6803__Cmds {
     WRITECFGS   = 0x01,
     RDCFGS,
     RDCV        = 0x04,
@@ -138,55 +138,55 @@ union PACKED RawVoltages {
 };
 
 //static int32_t
-//ltc6803_write_cfgs (struct ltc6803 *self, const union ltc6803_cfg *cfgs);
+//nu__LTC6803__write_cfgs (struct nu__LTC6803 *self, const union nu__LTC6803__Cfg *cfgs);
 //
 //static int32_t
-//ltc6803_read_cfgs (struct ltc6803 *self, union ltc6803_cfg *cfgs);
+//nu__LTC6803__read_cfgs (struct nu__LTC6803 *self, union nu__LTC6803__Cfg *cfgs);
 //
 //static int32_t
-//ltc6803_cfgs_match (struct ltc6803 *self, const union ltc6803_cfg *cfgs);
+//nu__LTC6803__cfgs_match (struct nu__LTC6803 *self, const union nu__LTC6803__Cfg *cfgs);
 //
 //static int32_t
-//ltc6803_start_voltage_conversion (struct ltc6803 *self);
+//nu__LTC6803__start_voltage_conversion (struct nu__LTC6803 *self);
 //
 //static int32_t
-//ltc6803_start_open_wire_conversion (struct ltc6803 *self);
+//nu__LTC6803__start_open_wire_conversion (struct nu__LTC6803 *self);
 //
 //static int32_t
-//ltc6803_read_voltages (struct ltc6803 *self, float *voltages);
+//nu__LTC6803__read_voltages (struct nu__LTC6803 *self, float *voltages);
 //
 //static int32_t
-//ltc6803_post (struct ltc6803 *self);
+//nu__LTC6803__post (struct nu__LTC6803 *self);
 //
 //static int32_t
-//ltc6803_check_open_wire(struct ltc6803 *self, uint16_t *openWire, const float *voltages);
+//nu__LTC6803__check_open_wire(struct nu__LTC6803 *self, uint16_t *openWire, const float *voltages);
 
 static int32_t
-ltc6803_send_with_pec (struct ltc6803 *self, const void *data, size_t len);
+nu__LTC6803__send_with_pec (struct nu__LTC6803 *self, const void *data, size_t len);
 
 static int32_t
-ltc6803_send_cmd_and_pec (struct ltc6803 *self, enum ltc6803_cmds cmd);
+nu__LTC6803__send_cmd_and_pec (struct nu__LTC6803 *self, enum nu__LTC6803__Cmds cmd);
 
 static int32_t
-ltc6803_rx_data_check_pecs (struct ltc6803 *self, void *data, size_t len);
+nu__LTC6803__rx_data_check_pecs (struct nu__LTC6803 *self, void *data, size_t len);
 
 static int32_t
-ltc6803_convert_voltages(struct ltc6803 *self, union RawVoltages *cvrs, float *cellVoltages);
+nu__LTC6803__convert_voltages(struct nu__LTC6803 *self, union RawVoltages *cvrs, float *cellVoltages);
 
 static int32_t
-ltc6803_read_raw_volts (struct ltc6803 *self, union RawVoltages *rxRv);
+nu__LTC6803__read_raw_volts (struct nu__LTC6803 *self, union RawVoltages *rxRv);
 
 static float
-ltc6803_convert_ref_to_volts(int ref);
+nu__LTC6803__convert_ref_to_volts(int ref);
 
 /*static const struct vtblLtc6803 ltc6803Ops = {
-    .ltc6803_write_cfgs						= &ltc6803_write_cfgs,
-    .ltc6803_cfgs_match						= &ltc6803_cfgs_match,
-    .ltc6803_start_voltage_conversion		= &ltc6803_start_voltage_conversion,
-    .ltc6803_start_open_wire_conversion		= &ltc6803_start_open_wire_conversion,
-    .ltc6803_read_voltages					= &ltc6803_read_voltages,
-    .ltc6803_post							= &ltc6803_post,
-    .ltc6803_check_open_wire				= &ltc6803_check_open_wire
+    .nu__LTC6803__write_cfgs						= &nu__LTC6803__write_cfgs,
+    .nu__LTC6803__cfgs_match						= &nu__LTC6803__cfgs_match,
+    .nu__LTC6803__start_voltage_conversion		= &nu__LTC6803__start_voltage_conversion,
+    .nu__LTC6803__start_open_wire_conversion		= &nu__LTC6803__start_open_wire_conversion,
+    .nu__LTC6803__read_voltages					= &nu__LTC6803__read_voltages,
+    .nu__LTC6803__post							= &nu__LTC6803__post,
+    .nu__LTC6803__check_open_wire				= &nu__LTC6803__check_open_wire
 };*/
 
 /*
@@ -205,7 +205,7 @@ ltc6803_convert_ref_to_volts(int ref);
  * DON'T reverse CRC result before Final XOR
  */
 static long long
-crcTableFast (const void *data, size_t len)
+nu__LTC6803__crc_table_fast (const void *data, size_t len)
 {
     if (data == NULL)
         return -ENULPTR;
@@ -226,12 +226,12 @@ crcTableFast (const void *data, size_t len)
 }
 
 static int32_t
-ltc6803_init (struct ltc6803 *self, const union ltc6803_cfg *cfgs);
+nu__LTC6803__init (struct nu__LTC6803 *self, const union nu__LTC6803__Cfg *cfgs);
 
 int32_t
-ltc6803_new (struct ltc6803 *self, SpiChannel chn,
+nu__LTC6803__new (struct nu__LTC6803 *self, SpiChannel chn,
         IoPortId csPinLtr,          uint32_t csPinNum,
-        uint32_t numDevices,    const union ltc6803_cfg *cfgs)
+        uint32_t numDevices,    const union nu__LTC6803__Cfg *cfgs)
 {
     int32_t err;
 
@@ -247,14 +247,14 @@ ltc6803_new (struct ltc6803 *self, SpiChannel chn,
                     AUTO_CS_PIN_DISABLE, csPinLtr, csPinNum)) < 0)
         return err;
 
-    if ((err = ltc6803_init(self, cfgs)) < 0)
+    if ((err = nu__LTC6803__init(self, cfgs)) < 0)
         return err;
 
     return 0;
 }
 
 static int32_t
-ltc6803_init (struct ltc6803 *self, const union ltc6803_cfg *cfgs)
+nu__LTC6803__init (struct nu__LTC6803 *self, const union nu__LTC6803__Cfg *cfgs)
 {
     int32_t err;
     uint32_t maxAttempts = 3;
@@ -262,13 +262,13 @@ ltc6803_init (struct ltc6803 *self, const union ltc6803_cfg *cfgs)
     if (!self || !cfgs)
         return -ENULPTR;
 
-    nu_spi_cs_high(&(self->spi));
+    nu__Spi__cs_high(&(self->spi));
 
     while (maxAttempts--) {
-        /* @TODO ltc6803_cfgs_match() is redundant as it is now called by ltc6803_write_cfgs() */
-        if ((err = ltc6803_write_cfgs(self, cfgs)) < 0)
+        /* @TODO nu__LTC6803__cfgs_match() is redundant as it is now called by nu__LTC6803__write_cfgs() */
+        if ((err = nu__LTC6803__write_cfgs(self, cfgs)) < 0)
             continue;
-        if ((err = ltc6803_cfgs_match(self, cfgs)) >= 0)
+        if ((err = nu__LTC6803__cfgs_match(self, cfgs)) >= 0)
             break;
     }
 
@@ -276,26 +276,26 @@ ltc6803_init (struct ltc6803 *self, const union ltc6803_cfg *cfgs)
 }
 
 static int
-transactionCmd (struct ltc6803 *self, enum ltc6803_cmds cmd)
+transactionCmd (struct nu__LTC6803 *self, enum nu__LTC6803__Cmds cmd)
 {
     int err;
 
     if (self == NULL)
         return -ENULPTR;
 
-	nu_spi_cs_low(&(self->spi));
-    if ((err = ltc6803_send_cmd_and_pec(self, cmd))) {
-        nu_spi_cs_high(&(self->spi));
+	nu__Spi__cs_low(&(self->spi));
+    if ((err = nu__LTC6803__send_cmd_and_pec(self, cmd))) {
+        nu__Spi__cs_high(&(self->spi));
         return err;
     }
-    nu_spi_cs_high(&(self->spi));
+    nu__Spi__cs_high(&(self->spi));
 
     return 0;
 }
 
 /* dst[0] is bottom device */
 static int
-transactionCmdRx (struct ltc6803 *self, enum ltc6803_cmds cmd, void *dst, size_t len)
+transactionCmdRx (struct nu__LTC6803 *self, enum nu__LTC6803__Cmds cmd, void *dst, size_t len)
 {
     int32_t err = 0;
     uint32_t maxAttempts = 3;
@@ -304,74 +304,74 @@ transactionCmdRx (struct ltc6803 *self, enum ltc6803_cmds cmd, void *dst, size_t
         return -ENULPTR;
 
     while (maxAttempts--) {
-		nu_spi_cs_high(&(self->spi));
-		nu_spi_cs_low(&(self->spi));
+		nu__Spi__cs_high(&(self->spi));
+		nu__Spi__cs_low(&(self->spi));
         /* @FIXME @HACK this line may be unneeded or even bad? */
-        
-        if ((err = ltc6803_send_cmd_and_pec(self, cmd)) < 0)
+
+        if ((err = nu__LTC6803__send_cmd_and_pec(self, cmd)) < 0)
             return err;
-        
-        if ((err = ltc6803_rx_data_check_pecs(self, dst, len)) >= 0)
+
+        if ((err = nu__LTC6803__rx_data_check_pecs(self, dst, len)) >= 0)
             break;
     }
     if (err < 0) {
-        nu_spi_cs_high(&(self->spi));
+        nu__Spi__cs_high(&(self->spi));
         return err;
     }
-    nu_spi_cs_high(&(self->spi));
+    nu__Spi__cs_high(&(self->spi));
 
     return 0;
 }
 
 /* data[0] is bottom device */
 static int
-transactionCmdTx (struct ltc6803 *self, enum ltc6803_cmds cmd, const void *data, size_t sizeOneElem)
+transactionCmdTx (struct nu__LTC6803 *self, enum nu__LTC6803__Cmds cmd, const void *data, size_t sizeOneElem)
 {
     int err;
 
     if (self == NULL || data == NULL)
         return -ENULPTR;
 
-    nu_spi_cs_low(&(self->spi));
-    if ((err = ltc6803_send_cmd_and_pec(self, cmd))) {
-        nu_spi_cs_high(&(self->spi));
+    nu__Spi__cs_low(&(self->spi));
+    if ((err = nu__LTC6803__send_cmd_and_pec(self, cmd))) {
+        nu__Spi__cs_high(&(self->spi));
         return err;
     }
 
     const BYTE *dataBytes = (const BYTE *)data;
     long i;
     for (i = self->num_devices - 1; i >= 0; --i)
-        if ((err = ltc6803_send_with_pec(self, dataBytes+i*sizeOneElem, sizeOneElem)) < 0) {
-            nu_spi_cs_high(&(self->spi));
+        if ((err = nu__LTC6803__send_with_pec(self, dataBytes+i*sizeOneElem, sizeOneElem)) < 0) {
+            nu__Spi__cs_high(&(self->spi));
             return err;
         }
 
-    nu_spi_cs_high(&(self->spi));
+    nu__Spi__cs_high(&(self->spi));
 
     return 0;
 }
 
 PURE INLINE u8
-ltc6803_convert_uv_limit (double vuv)
+nu__LTC6803__convert_uv_limit (double vuv)
 {
     return (u8) ((vuv/(16*.0015)) + 31);
 }
 
 PURE INLINE u8
-ltc6803_convert_ov_limit (double vov)
+nu__LTC6803__convert_ov_limit (double vov)
 {
     return (u8) ((vov/(16*.0015)) + 32);
 }
 
 static float
-ltc6803_convert_ref_to_volts (int ref)
+nu__LTC6803__convert_ref_to_volts (int ref)
 {
     return (((double)ref - 512) * .0015);
 }
 
 /* writes are top to bottom */
 s32
-ltc6803_write_cfgs (struct ltc6803 *self, const union ltc6803_cfg *cfgs)
+nu__LTC6803__write_cfgs (struct nu__LTC6803 *self, const union nu__LTC6803__Cfg *cfgs)
 {
     int err;
 
@@ -381,17 +381,17 @@ ltc6803_write_cfgs (struct ltc6803 *self, const union ltc6803_cfg *cfgs)
     if ((err = transactionCmdTx(self, WRITECFGS, cfgs, sizeof(*cfgs))))
         return err;
 
-    return ltc6803_cfgs_match(self, cfgs);
+    return nu__LTC6803__cfgs_match(self, cfgs);
 }
 
 static double
-ltc6803_convert_voltage(unsigned int rawV)
+nu__LTC6803__convert_voltage(unsigned int rawV)
 {
     return ((double)rawV-512)*0.0015;
 }
 
 static int
-ltc6803_convert_voltages(struct ltc6803 *self, union RawVoltages *cvrs, float *cellVoltages)
+nu__LTC6803__convert_voltages(struct nu__LTC6803 *self, union RawVoltages *cvrs, float *cellVoltages)
 {
     if (self == NULL || cvrs == NULL  || cellVoltages == NULL)
         return -ENULPTR;
@@ -403,15 +403,15 @@ ltc6803_convert_voltages(struct ltc6803 *self, union RawVoltages *cvrs, float *c
         unsigned int j;
         for (j = 0; j < voltagePairsPerDevice; ++j) {
             raw_voltage_pair currentVPair = cvrs[i].voltagePair[j];
-            cellVoltages[i*cellsPerDevice+j*2]      = ltc6803_convert_voltage(currentVPair.voltages.v1);
-            cellVoltages[i*cellsPerDevice+j*2+1]    = ltc6803_convert_voltage(currentVPair.voltages.v2);
+            cellVoltages[i*cellsPerDevice+j*2]      = nu__LTC6803__convert_voltage(currentVPair.voltages.v1);
+            cellVoltages[i*cellsPerDevice+j*2+1]    = nu__LTC6803__convert_voltage(currentVPair.voltages.v2);
         }
     }
     return 0;
 }
 
 int32_t
-ltc6803_start_voltage_conversion (struct ltc6803 *self)
+nu__LTC6803__start_voltage_conversion (struct nu__LTC6803 *self)
 {
     if (self == NULL)
         return -ENULPTR;
@@ -420,7 +420,7 @@ ltc6803_start_voltage_conversion (struct ltc6803 *self)
 }
 
 int32_t
-ltc6803_start_open_wire_conversion (struct ltc6803 *self)
+nu__LTC6803__start_open_wire_conversion (struct nu__LTC6803 *self)
 {
     if (self == NULL)
         return -ENULPTR;
@@ -429,7 +429,7 @@ ltc6803_start_open_wire_conversion (struct ltc6803 *self)
 }
 
 static s32
-ltc6803_read_dagn (struct ltc6803 *self, union diagnostic *dagn)
+nu__LTC6803__read_dagn (struct nu__LTC6803 *self, union diagnostic *dagn)
 {
     int err;
 
@@ -439,26 +439,26 @@ ltc6803_read_dagn (struct ltc6803 *self, union diagnostic *dagn)
     if ((err = transactionCmd(self, DAGN)))
         return err;
 
-    nu_delay_ms(25);
+    nu__Timer__delay_ms(25);
 
     return transactionCmdRx(self, READ_DAGN, dagn, sizeof(*dagn) * self->num_devices);
 }
 
 
 s32
-ltc6803_read_voltages (struct ltc6803 *self, float *voltages)
+nu__LTC6803__read_voltages (struct nu__LTC6803 *self, float *voltages)
 {
     int err;
     union RawVoltages rxRv[(self->num_devices)];
 
-    if ((err = ltc6803_read_raw_volts(self, rxRv)))
+    if ((err = nu__LTC6803__read_raw_volts(self, rxRv)))
         return err;
 
-    return ltc6803_convert_voltages(self, rxRv, voltages);
+    return nu__LTC6803__convert_voltages(self, rxRv, voltages);
 }
 
 static int
-ltc6803_read_raw_volts (struct ltc6803 *self, union RawVoltages *rxRv)
+nu__LTC6803__read_raw_volts (struct nu__LTC6803 *self, union RawVoltages *rxRv)
 {
     if (self == NULL || rxRv == NULL)
         return -ENULPTR;
@@ -468,7 +468,7 @@ ltc6803_read_raw_volts (struct ltc6803 *self, union RawVoltages *rxRv)
 
 /* reads are top to bottom as well USING THIS FUNCTION */
 s32
-ltc6803_read_cfgs (struct ltc6803 *self, union ltc6803_cfg *cfgs)
+nu__LTC6803__read_cfgs (struct nu__LTC6803 *self, union nu__LTC6803__Cfg *cfgs)
 {
     if (self == NULL || cfgs == NULL)
         return -ENULPTR;
@@ -477,7 +477,7 @@ ltc6803_read_cfgs (struct ltc6803 *self, union ltc6803_cfg *cfgs)
 }
 
 static int
-ltc6803_rx_data_check_pecs (struct ltc6803 *self, void *data, size_t len)
+nu__LTC6803__rx_data_check_pecs (struct nu__LTC6803 *self, void *data, size_t len)
 {
     int err = 0, pecResult = 0;
 
@@ -497,7 +497,7 @@ ltc6803_rx_data_check_pecs (struct ltc6803 *self, void *data, size_t len)
 
         BYTE pec = rcvBuff[sizeof(rcvBuff)-1];
 
-        int crc = (int) crcTableFast(&dataBytes[i*sizeOneElement], sizeOneElement);
+        int crc = (int) nu__LTC6803__crc_table_fast(&dataBytes[i*sizeOneElement], sizeOneElement);
         if (crc < 0 && !err)    /* error, but only record if we don't already have an error */
             err = crc;
 
@@ -517,7 +517,7 @@ ltc6803_rx_data_check_pecs (struct ltc6803 *self, void *data, size_t len)
 }
 
 s32
-ltc6803_cfgs_match (struct ltc6803 *self, const union ltc6803_cfg *cfgs)
+nu__LTC6803__cfgs_match (struct nu__LTC6803 *self, const union nu__LTC6803__Cfg *cfgs)
 {
     int err;
     uint32_t maxAttempts = 3;
@@ -525,9 +525,9 @@ ltc6803_cfgs_match (struct ltc6803 *self, const union ltc6803_cfg *cfgs)
     if (self == NULL || cfgs == NULL)
         return -ENULPTR;
 
-    union ltc6803_cfg rxCfgs[self->num_devices];
+    union nu__LTC6803__Cfg rxCfgs[self->num_devices];
     while (maxAttempts--)
-        if (!(err = ltc6803_read_cfgs(self, rxCfgs)))
+        if (!(err = nu__LTC6803__read_cfgs(self, rxCfgs)))
             break;
 
     if (err) {
@@ -543,7 +543,7 @@ ltc6803_cfgs_match (struct ltc6803 *self, const union ltc6803_cfg *cfgs)
 
             err = -ELTC6803CFG;
 
-            union ltc6803_cfg zeroCfg;
+            union nu__LTC6803__Cfg zeroCfg;
             memset(&zeroCfg, 0, sizeof(zeroCfg));
             if (!memcmp(rxCfgs[i].bytes, zeroCfg.bytes, sizeof(*rxCfgs)) &&
                     memcmp(cfgs[i].bytes, zeroCfg.bytes, sizeof(*cfgs))) {
@@ -559,28 +559,28 @@ ltc6803_cfgs_match (struct ltc6803 *self, const union ltc6803_cfg *cfgs)
 }
 
 static int
-ltc6803_send_cmd_and_pec (struct ltc6803 *self, enum ltc6803_cmds cmd)
+nu__LTC6803__send_cmd_and_pec (struct nu__LTC6803 *self, enum nu__LTC6803__Cmds cmd)
 {
     int err;
 
     if (self == NULL)
         return -ENULPTR;
 
-    if ((err = ltc6803_send_with_pec(self, &cmd, 1)))
+    if ((err = nu__LTC6803__send_with_pec(self, &cmd, 1)))
         return err;
 
     return 0;
 }
 
 static int
-ltc6803_send_with_pec (struct ltc6803 *self, const void *data, size_t len)
+nu__LTC6803__send_with_pec (struct nu__LTC6803 *self, const void *data, size_t len)
 {
     int err;
 
     if (self == NULL || data == NULL)
         return -ENULPTR;
 
-    long pec = (long)crcTableFast(data, len);
+    long pec = (long)nu__LTC6803__crc_table_fast(data, len);
     if (pec < 0)    /* error */
         return (int) pec;
 
@@ -594,18 +594,18 @@ ltc6803_send_with_pec (struct ltc6803 *self, const void *data, size_t len)
 }
 
 s32
-ltc6803_post (struct ltc6803 *l)
+nu__LTC6803__post (struct nu__LTC6803 *l)
 {
     int err = 0;
-    
+
     if ((err = transactionCmd(l, STCVAD_SELFTEST1)) < 0)
         return err;
 
-    nu_delay_ms(25);
+    nu__Timer__delay_ms(25);
 
     union RawVoltages rxRv[(l->num_devices)];
     memset(rxRv, 0, sizeof(rxRv));
-    if ((err = ltc6803_read_raw_volts(l, rxRv)))
+    if ((err = nu__LTC6803__read_raw_volts(l, rxRv)))
         return err;
 
     union RawVoltages expected[(l->num_devices)];
@@ -614,14 +614,14 @@ ltc6803_post (struct ltc6803 *l)
         return -ELTC6803ADC;
 
     union diagnostic dagn[l->num_devices];
-    if ((err = ltc6803_read_dagn(l, dagn)))
+    if ((err = nu__LTC6803__read_dagn(l, dagn)))
         return err;
 
     unsigned int i;
     for (i = 0; i < l->num_devices; ++i) {
         if (dagn[i].bits.muxfail == 1)
             return -ELTC6803MUX;
-        if (ltc6803_convert_ref_to_volts(dagn[i].bits.ref) < 2.1f || ltc6803_convert_ref_to_volts(dagn[i].bits.ref) > 2.9f)
+        if (nu__LTC6803__convert_ref_to_volts(dagn[i].bits.ref) < 2.1f || nu__LTC6803__convert_ref_to_volts(dagn[i].bits.ref) > 2.9f)
             return -ELTC6803REF;
     }
 
@@ -629,7 +629,7 @@ ltc6803_post (struct ltc6803 *l)
 }
 
 s32
-ltc6803_check_open_wire(struct ltc6803 *self, u16 *openWire, const float *voltages)
+nu__LTC6803__check_open_wire(struct nu__LTC6803 *self, u16 *openWire, const float *voltages)
 {
     u32 ui;
     for (ui = 0; ui < self->num_devices; ++ui) {

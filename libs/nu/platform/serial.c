@@ -11,8 +11,8 @@
 #elif NU_PLATFORM==NU_PLATFORM_PIC32MX
 
 static void
-nu_serial_platform_setup(struct nu_serial_platform *platform, u32 baud,
-	const struct nu_serial_platform_setup_args *arg)
+nu__Serial__platform_setup(struct nu__Serial__Platform *platform, u32 baud,
+	const struct nu__Serial__PlatformSetupArgs *arg)
 {
     UARTConfigure(platform->module, arg->uart_config);
     UARTSetFifoMode(platform->module, arg->interrupt_modes);
@@ -59,7 +59,7 @@ nu_serial_platform_setup(struct nu_serial_platform *platform, u32 baud,
 }
 
 static s32
-nu_serial_platform_putchar(const struct nu_serial_platform *p, s32 c)
+nu__Serial__platform_putchar(const struct nu__Serial__Platform *p, s32 c)
 {
     while (!UARTTransmitterIsReady(p->module))
         Nop();
@@ -68,16 +68,16 @@ nu_serial_platform_putchar(const struct nu_serial_platform *p, s32 c)
 }
 
 static s32
-nu_serial_platform_getchar(const struct nu_serial_platform *p)
+nu__Serial__platform_getchar(const struct nu__Serial__Platform *p)
 {
     return UARTReceivedDataIsAvailable(p->module) ?
         UARTGetDataByte(p->module) : EOF;
 }
 
-const struct nu_serial_platform_ops nu_serial_platform_ops = {
-    nu_serial_platform_setup,
-    nu_serial_platform_putchar,
-    nu_serial_platform_getchar
+const struct nu__Serial__PlatformOps nu__Serial__platform_ops = {
+    nu__Serial__platform_setup,
+    nu__Serial__platform_putchar,
+    nu__Serial__platform_getchar
 };
 
 #endif /* NU_PLATFORM switch */
