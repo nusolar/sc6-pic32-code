@@ -1,10 +1,10 @@
 #ifndef NU_LTC6803_H
 #define NU_LTC6803_H 1
 
-#include "nu/compiler.h"
-#include "nu/types.h"
-#include "nu/spi.h"
+#include "nu/peripheral/spi.h"
 #include "nu/utility.h"
+#include "nu/types.h"
+#include "nu/compiler.h"
 
 /**
  *  The Battery Voltage chip
@@ -134,17 +134,17 @@ enum ltc6803_cfgr5 {
     LTC6803_VOV0    = 1
 };
 
-struct ltc6803 {
-    struct nu_spi spi;
+struct PACKED ltc6803 {
+    struct PACKED nu_spi spi;
     u32 num_devices;
-    struct ltc6803_flags {
+    struct PACKED ltc6803_flags {
         u32 mismatch_cfgs;
         u32 mismatch_pecs;
     } flags;
 };
 
-union ltc6803_cfg {
-    struct ltc6803_cfg_registers {
+union PACKED ltc6803_cfg {
+    struct PACKED ltc6803_cfg_registers {
         u8 cfgr0;
         u8 cfgr1;
         u8 cfgr2;
@@ -152,7 +152,7 @@ union ltc6803_cfg {
         u8 cfgr4;
         u8 cfgr5;
     } registers;
-    PACKED struct ltc6803_cfg_bits {
+    struct PACKED ltc6803_cfg_bits {
         unsigned cdc    :3;
         unsigned cell10 :1;
         unsigned lvlpl  :1;
@@ -189,7 +189,7 @@ union ltc6803_cfg {
     u8 bytes[6];
 };
 
-STATIC_ASSERT(6 == sizeof(union BpsConfig), SIZE_MISMATCH);
+STATIC_ASSERT(6 == sizeof(union ltc6803_cfg), SIZE_MISMATCH);
 
 s32
 ltc6803_write_cfgs(struct ltc6803 *l, const union ltc6803_cfg *cfgs);
@@ -220,10 +220,10 @@ ltc6803_new (struct ltc6803 *self, SpiChannel _chn,
         IoPortId _csPinLtr,         uint32_t _csPinNum,
         uint32_t _numDevices,   const union ltc6803_cfg *cfgs);
 
-PURE u8
+PURE INLINE u8
 ltc6803_convert_uv_limit(double vuv);
 
-PURE u8
+PURE INLINE u8
 ltc6803_convert_ov_limit(double vov);
 
 #endif

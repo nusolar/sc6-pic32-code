@@ -1,10 +1,10 @@
 #ifndef NU_DS18X20_H
 #define NU_DS18X20_H 1
 
-#include "nu/compiler.h"
-#include "nu/types.h"
-#include "nu/onewire.h"
+#include "nu/peripheral/onewire.h"
 #include "nu/utility.h"
+#include "nu/types.h"
+#include "nu/compiler.h"
 
 extern const u8             DS18B20_FAMILY_CODE;
 extern const u8             DS18S20_FAMILY_CODE;
@@ -36,7 +36,7 @@ PACKED struct ds18b20_scratch {   /* excludes CRC */
             u8 user2;
         };
     };
-    
+
     /* read/write */
     union {
         struct {

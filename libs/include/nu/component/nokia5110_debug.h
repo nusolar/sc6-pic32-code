@@ -1,7 +1,7 @@
 #ifndef NU_NOKIA5110_DEBUG_H
 #define NU_NOKIA5110_DEBUG_H 1
 
-#include "nu/nokia5110.h"
+#include "nu/component/nokia5110.h"
 
 /**
  * @def PRINTDEBUG()
@@ -59,7 +59,7 @@ ASSERT FAILED:
                         }while(0)
 
 inline void
-setDebugScreen (const struct nokia5110 *n) __attribute__((always_inline));
+setDebugScreen (const struct nu_nokia5110 *n) __attribute__((always_inline));
 
 void
 printDebug (const char *file, int line);

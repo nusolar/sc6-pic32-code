@@ -1,5 +1,5 @@
 #include "nu/platform/spi.h"
-#include "nu/spi.h"
+#include "nu/peripheral/spi.h"
 #include "nu/timer.h"
 
 #if NU_PLATFORM==NU_PLATFORM_UNKNOWN

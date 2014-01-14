@@ -11,9 +11,9 @@
  */
 
 #include "nu/component/led.h"
+#include "nu/peripheral/serial.h"
+#include "nu/peripheral/pinctl.h"
 #include "nu/param.h"
-#include "nu/pinctl.h"
-#include "nu/serial.h"
 #include "nu/compiler.h"
 #include "nu/platform.h"
 

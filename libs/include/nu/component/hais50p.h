@@ -3,7 +3,7 @@
 
 #include "nu/compiler.h"
 
-static ALWAYSINLINE float
-voltageToCurrent(float voltage);
+static INLINE float
+nu__Hais50p__voltage_to_current(float voltage);
 
 #endif

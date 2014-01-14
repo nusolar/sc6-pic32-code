@@ -6,7 +6,7 @@
 #include <stdint.h>
 
 #ifndef __bool_true_false_are_defined
-typedef enum { false = 0, true } bool;
+typedef enum { false = 0, true = 1 } bool;
 #endif
 
 typedef BIT bit;

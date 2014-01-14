@@ -1,10 +1,10 @@
 #ifndef NU_AD7685_H
 #define NU_AD7685_H 1
 
-#include "nu/spi.h"
+#include "nu/peripheral/spi.h"
+#include "nu/peripheral/pinctl.h"
 #include "nu/compiler.h"
 #include "nu/types.h"
-#include "nu/pinctl.h"
 
 /**
  *  The Analog-to-Digital Converter used on the BMS current sensor
@@ -45,7 +45,7 @@ struct nu_ad7685 {
     struct nu_ad7685 name = NU_AD7685_INIT(chn, convert_pin, num_devices, opt)
 
 s32 MUST_CHECK
-nu_ad7685_setup(struct nu_ad7685 *a);
+nu_ad7685_setup(struct nu_ad7685 *self);
 
 /* microvolts */
 void

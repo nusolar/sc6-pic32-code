@@ -1,6 +1,6 @@
-#include "nu/param.h"
 #include "nu/platform/serial.h"
-#include "nu/serial.h"
+#include "nu/peripheral/serial.h"
+#include "nu/param.h"
 
 #if NU_PLATFORM==NU_PLATFORM_UNKNOWN
 #error "Unknown NU_PLATFORM in nu/platform/serial.c"

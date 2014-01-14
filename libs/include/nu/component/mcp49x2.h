@@ -1,10 +1,10 @@
 #ifndef NU_MCP49X2_H
 #define NU_MCP49X2_H 1
 
-#include "nu/compiler.h"
+#include "nu/peripheral/spi.h"
+#include "nu/peripheral/pinctl.h"
 #include "nu/types.h"
-#include "nu/pinctl.h"
-#include "nu/spi.h"
+#include "nu/compiler.h"
 
 enum nu_mcp49_dac {
     NU_MCP49_DAC_A = 0,
@@ -32,7 +32,7 @@ struct nu_mcp49x2 {
 
 /* max bitrate 20MHz */
 MUST_CHECK s32
-nu_mcp49x2_setup(const struct nu_mcp49x2 *m, u32 bitrate);
+nu_mcp49x2_setup(struct nu_mcp49x2 *m, u32 bitrate);
 
 void
 nu_mcp49x2_write(const struct nu_mcp49x2 *m, enum nu_mcp49_dac dac, bool vref_buf_enable, enum nu_mcp49_output_gain gain, bool shutdown, u16 data);

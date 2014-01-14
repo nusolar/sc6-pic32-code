@@ -1,7 +1,7 @@
 #ifndef NU_PLATFORM_PINCTL_H
 #define NU_PLATFORM_PINCTL_H 1
 
-#include "nu/pinctl.h"
+#include "nu/peripheral/pinctl.h"
 #include "nu/types.h"
 #include "nu/compiler.h"
 #include "nu/platform.h"

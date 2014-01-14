@@ -6,6 +6,8 @@
  * within enum classes for scoping.
  */
 
+#include "nu/compiler.h"
+#include <cstdint>
 #pragma GCC diagnostic ignored "-pedantic"
 
 namespace nu

@@ -1,14 +1,13 @@
 #ifndef NUPP_CAN_HPP
 #define NUPP_CAN_HPP 1
 
+#include "nupp/peripheral/can_def.hpp"
 #include "nu/compiler.h"
 #include <cstdint>
 #include <new>
 extern "C" {
 #include <plib.h>
 }
-
-#include "nupp/peripheral/can_def.hpp"
 
 namespace nu {
 	namespace can {

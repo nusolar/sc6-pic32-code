@@ -1,7 +1,7 @@
 #ifndef NU_PLATFORM_NU32_SERIAL_H
 #define NU_PLATFORM_NU32_SERIAL_H 1
 
-#include "nu/serial.h"
+#include "nu/peripheral/serial.h"
 #include "nu/platform/nu32.h"
 
 #ifdef __cplusplus

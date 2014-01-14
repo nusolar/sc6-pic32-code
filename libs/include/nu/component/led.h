@@ -1,11 +1,11 @@
 #ifndef NU_LED_H
 #define NU_LED_H 1
 
-#include "nu/compiler.h"
+#include "nu/peripheral/pinctl.h"
+#include "nu/utility/data.h"
 #include "nu/error_reporting.h"
 #include "nu/types.h"
-#include "nu/pinctl.h"
-#include "nu/utility/data.h"
+#include "nu/compiler.h"
 
 struct nu_led {
     struct nu_error_reporting_dev erd;

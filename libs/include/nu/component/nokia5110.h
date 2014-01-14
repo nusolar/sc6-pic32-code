@@ -1,12 +1,12 @@
 #ifndef NU_NOKIA5110_H
 #define NU_NOKIA5110_H 1
 
-#include "nu/compiler.h"
+#include "nu/peripheral/spi.h"
+#include "nu/peripheral/pinctl.h"
+#include "nu/utility.h"
 #include "nu/error_reporting.h"
 #include "nu/types.h"
-#include "nu/pinctl.h"
-#include "nu/spi.h"
-#include "nu/utility.h"
+#include "nu/compiler.h"
 
 /***********************************
 *  Schematic:
@@ -17,7 +17,7 @@
 *  LCD 5-D/C		----->	NU32v2 E0
 *  LCD 6-DNK(MOSI)/SDO	----->	NU32v2 F8
 *  LCD 7-SCLK		----->	NU32v2 D15
-*  LCD 8-LED		----->	330 ohm	----->	5V 
+*  LCD 8-LED		----->	330 ohm	----->	5V
 *  (8-LED for backlight only if desired)
 ************************************/
 
@@ -78,8 +78,8 @@ nu_nokia_cmd_func_set(const struct nu_nokia5110 *self,
 void
 nu_nokia_cmd_set_vop(const struct nu_nokia5110 *self, u8 vop);
 
-ALIAS("nu_nokia_cmd_set_vop") void
-nu_nokia_cmd_set_contrast(const struct nu_nokia5110 *self, u8 vop);
+/* ALIAS("nu_nokia_cmd_set_vop") void*/
+#define nu_nokia_cmd_set_contrast(self, vop) nu_nokia_cmd_set_vop(self, vop)
 
 void
 nu_nokia_cmd_set_temp_coeff(const struct nu_nokia5110 *n, enum nu_nokia_cmd_func_set_options coeff);
