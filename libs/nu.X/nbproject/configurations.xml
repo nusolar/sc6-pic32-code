@@ -128,7 +128,7 @@
         <targetPluginBoard></targetPluginBoard>
         <platformTool>PICkit3PlatformTool</platformTool>
         <languageToolchain>XC32</languageToolchain>
-        <languageToolchainVersion>1.30</languageToolchainVersion>
+        <languageToolchainVersion>1.31</languageToolchainVersion>
         <platform>4</platform>
       </toolsSet>
       <compileType>
@@ -145,10 +145,40 @@
         <makeCustomizationNormalizeHexFile>false</makeCustomizationNormalizeHexFile>
       </makeCustomizationType>
       <item path="../nu/component/ltc6803.c" ex="true" overriding="false">
+        <C32>
+        </C32>
+        <C32-AS>
+        </C32-AS>
+        <C32-LD>
+        </C32-LD>
+        <C32CPP>
+        </C32CPP>
+        <C32Global>
+        </C32Global>
       </item>
       <item path="../nu/component/ws20.c" ex="true" overriding="false">
+        <C32>
+        </C32>
+        <C32-AS>
+        </C32-AS>
+        <C32-LD>
+        </C32-LD>
+        <C32CPP>
+        </C32CPP>
+        <C32Global>
+        </C32Global>
       </item>
       <item path="../nu/peripheral/onewire.c" ex="true" overriding="false">
+        <C32>
+        </C32>
+        <C32-AS>
+        </C32-AS>
+        <C32-LD>
+        </C32-LD>
+        <C32CPP>
+        </C32CPP>
+        <C32Global>
+        </C32Global>
       </item>
       <C32>
         <property key="additional-warnings" value="true"/>
@@ -159,6 +189,7 @@
         <property key="exclude-floating-point" value="true"/>
         <property key="extra-include-directories" value="../include"/>
         <property key="generate-16-bit-code" value="false"/>
+        <property key="generate-micro-compressed-code" value="false"/>
         <property key="isolate-each-function" value="true"/>
         <property key="make-warnings-into-errors" value="false"/>
         <property key="optimization-level" value="-O1"/>
@@ -199,6 +230,7 @@
         <property key="extra-lib-directories" value=""/>
         <property key="generate-16-bit-code" value="false"/>
         <property key="generate-cross-reference-file" value="false"/>
+        <property key="generate-micro-compressed-code" value="false"/>
         <property key="heap-size" value=""/>
         <property key="input-libraries" value=""/>
         <property key="linker-symbols" value=""/>
@@ -226,6 +258,7 @@
         <property key="exclude-floating-point" value="false"/>
         <property key="extra-include-directories" value=""/>
         <property key="generate-16-bit-code" value="false"/>
+        <property key="generate-micro-compressed-code" value="false"/>
         <property key="isolate-each-function" value="false"/>
         <property key="make-warnings-into-errors" value="false"/>
         <property key="optimization-level" value=""/>

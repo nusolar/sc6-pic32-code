@@ -10,6 +10,7 @@
             <cpp-extensions>cpp</cpp-extensions>
             <header-extensions/>
             <sourceEncoding>ISO-8859-1</sourceEncoding>
+            <asminc-extensions/>
             <make-dep-projects>
                 <make-dep-project>../../libs/nupp.X</make-dep-project>
             </make-dep-projects>
