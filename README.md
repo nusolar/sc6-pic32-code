@@ -23,7 +23,7 @@ Turn on boards
 
 MPLAB Projects
 ----
-### Our Library
+### Library
 NU++ provides a stack-based standard C++ library for embedded systems, C++ interfaces for common circuitry (e.g. digital outputs), class implementations for devices that use these (e.g. LEDs, Buttons, Pedals), C++ interfaces for common communication protocols like CAN, SPI, UART, and 1-Wire, and class implementations for devices that use these (e.g. voltage/current/temperature sensors).
 
 Moreover, due to optimization issues, NU++ also includes classes for our boards.
@@ -39,14 +39,6 @@ An MPLAB compiler bug prevents optimization of any C or C++ main project, so the
 
 * `car_driver_controls_cpp.X` — calls `nu::DriverControls::main()`, [detailed below](#Boards)
 
-* `car_steering_wheel_cpp.X` — calls `nu::SteeringWheel::main()`, [detailed below](#Boards).
-
-* `car_bms.X` — lots of BMS
-
-* `car_driver_controls.X` — sets up pins. UNIMPLEMENTED
-
-* `car_steering_wheel.X` — indefinitely update Button values. UNIMPLEMENTED
-
 ### Electrical utilities.
 
 * `get_tempSensors.X` — Utility to get 1-wire temperature sensors' serial numbers, to populate the table in the BMS code.
@@ -59,7 +51,7 @@ NU++ API
 ----
 In `namespace nu`.
 
-### Basic classes
+### /
 `array.hpp` — `class nu::Array<typename T, size_t N>` replaces the C++ STL `std::vector`, and is an array on the Stack. `Array<T,N> foo;` is equivalent to `T foo[N];` except that `foo` may be passed *by value* as a C++ reference type. This obviates checking for `NULL` pointers, and many calls to `alloca`. Warning: copying `nu::Array`s will deep-copy their elements.
 
 `bitset.hpp` — `class nu::Bitset<int N>` represents a collection of `N` bits. Can be cast to an `unsigned long`. Convenient for iterating over "bitfield structs".
@@ -70,24 +62,16 @@ In `namespace nu`.
 
 `stream.hpp` — `class nu::OStream` allows easy C++ streaming to devices with `<<`. You must finalize OStream output with the `nu::end` stream manipulator. All subclasses must implement `nu::OStream::puts(const char *)`, to handle all stream output.
 
-### Internal systems
-`flash.hpp` — functions to read/write/clear PIC32 flash memory, in `namespace nu::flash`. UNIMPLEMENTED
-
 `param.hpp` — functions to query the clock frequency, in `namespace nu::param`.
 
 `timer.hpp` — functions for delays, in `namespace nu::timer`.
 
 `wdt.hpp` — functions to Enable/Disable/Clear the WatchDog timer, in `namespace nu::WDT`.
 
-### Simple Circuit Devices
+### /peripheral/
+`flash.hpp` — UNIMPLEMENTED
+
 `pinctl.hpp` — `class nu::Pin` wraps setting, clearing, toggling, & reading a pin. `nu::DigitalIn`, `nu::DigitalOut`, and `nu::AnalogIn` specialize digital and analog pins.
-
-`button.hpp` — a simple digital button, `nu::Button` subclasses `nu::Pin`.
-
-`led.hpp` — a simple digital LED, `nu::Led` subclasses `nu::Pin`.
-
-### Communication protocols
-These classes encapsulate hardware communication, and the process of TX'ing and RX'ing data. Devices that communicate over a protocol subclass it, and are listed in the subsequent section.
 
 `can.hpp` — declares `namespace nu::can` for CAN communication, with `nu::can::Module` and `nu::can::Channel`.
 
@@ -99,7 +83,12 @@ These classes encapsulate hardware communication, and the process of TX'ing and 
 
 `serial.hpp` — `class nu::Serial` wraps all communication with a Serial/UART device.
 
-### Hardware
+### /component/
+
+`button.hpp` — a simple digital button, `nu::Button` subclasses `nu::Pin`.
+
+`led.hpp` — a simple digital LED, `nu::Led` subclasses `nu::Pin`.
+
 `nokia5110.hpp` — a small LCD, `nu::Nokia5110` subclasses `nu::SPI`.
 
 `ulcd28pt.hpp` — the SteeringWheel LCD, `nu::uLCD28PT` subclasses `nu::Serial`
@@ -112,12 +101,10 @@ These classes encapsulate hardware communication, and the process of TX'ing and 
 
 `hais.hpp` — the analog HAIS current sensors (e.g. HAIS-50P). As NU uses HAIS-50P in conjunction with the AD7685 ADC, `nu::HAIS` subclasses `nu::AD7685`.
 
-### <a name="Boards"/> Boards
+### <a name="Boards"/> /board/
 Board classes are collections of Hardware devices and methods to manipulate them. Each board's `main()` method starts the run-loop and never returns. Several NU boards contain an NU32 miniboard, and consequentially their classes subclass `nu::Nu32`.
 
 `nu32.hpp` — `nu::Nu32` is the Nu32 development board. Subclasses MUST call its constructor.
-
-`steering_wheel.hpp` — the NU steering-wheel board. Displays info on LCD.
 
 `driver_controls.hpp` — the NU driver-controls board. Subclasses `nu::Nu32`. Controls pedals & switches, signals, & motor-controller communication.
 
@@ -211,11 +198,11 @@ Programming Style
 Use Java-style indentation and braces. For function, struct, and variable names are `nu_lowercase_with_underscores`. Class names are `PascalCase`. Use `struct` keyword instead of `class` whenever possible.
 
 ### C
-For indentation: K&R style is used. For function signatures: Linux style is used. For all public symbols: the `nu_` namespace is used. For function, struct, and variable names: `nu_lowercase_with_underscores` is used. Macros are `NU_ALL_CAPS`. For example:
+For indentation: K&R style is used. For function signatures: Linux style is used. For all public symbols: the `Nu__` namespace is used. For structs and enums: `Nu__ClassName__EnumName` is used. For functions and variables, `Nu__ClassName__lowercase_with_underscores`. For macros are `NU_ALL_CAPS`. For example:
 
 ```C
 static ALWAYSINLINE void
-NU_INIT_PIN(struct nu_pin *p, IoPortId ltr, u32 num)
+NU_INIT_PIN(struct Nu__Pin *p, IoPortId ltr, u32 num)
 {
     p->ltr = ltr;
     p->num = num;
