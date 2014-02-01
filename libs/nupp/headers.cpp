@@ -5,6 +5,11 @@
 #include "nupp/board/output_board.hpp"
 #include "nupp/board/pedals.hpp"
 
+// Automotives systems
+#include "nupp/comm/currentsensor.hpp"
+#include "nupp/comm/tempsensor.hpp"
+#include "nupp/comm/voltagesensor.hpp"
+
 // PCB components
 #include "nupp/component/ad7685.hpp"
 #include "nupp/component/hais.hpp"

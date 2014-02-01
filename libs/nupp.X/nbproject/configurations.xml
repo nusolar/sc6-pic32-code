@@ -27,6 +27,11 @@
           <itemPath>../include/nupp/board/nu32.hpp</itemPath>
           <itemPath>../include/nupp/board/pedals.hpp</itemPath>
         </logicalFolder>
+        <logicalFolder name="f5" displayName="comm" projectFiles="true">
+          <itemPath>../include/nupp/comm/currentsensor.hpp</itemPath>
+          <itemPath>../include/nupp/comm/tempsensor.hpp</itemPath>
+          <itemPath>../include/nupp/comm/voltagesensor.hpp</itemPath>
+        </logicalFolder>
         <logicalFolder name="f3" displayName="component" projectFiles="true">
           <itemPath>../include/nupp/component/ad7685.hpp</itemPath>
           <itemPath>../include/nupp/component/ds18x20.hpp</itemPath>

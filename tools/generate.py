@@ -108,14 +108,14 @@ class CanPacket:
 		[StructLayout(LayoutKind.Explicit)]
 		struct byte_array
 		{
-			 [FieldOffset(0)]
-			 public UInt64 data;
+			[FieldOffset(0)]
+			public UInt64 data;
 		}
 	}
 	"""
 	cs_class_template = dedent(cs_class_template)
 
-	def __init__(self, name = 'error', layout = Layout.Empty, field_names = (), id = 0):
+	def __init__(self, name='error', layout=Layout.Empty, field_names=(), id=0):
 		if type(name) is not str:
 			raise TypeError("type of [name] for CanPacket must be <str>.")
 		if type(layout) not in (list, tuple):
@@ -154,7 +154,6 @@ class CanPacket:
 		''' Returns C# source code for this CanPacket.'''
 		if self.layout is Layout.CustomBitField:
 			raise NotImplementedError("TODO")
-
 
 
 class CanBasePacket:
@@ -250,7 +249,7 @@ class Namespace:
 	}"""
 	cs_namespace_template = dedent(cs_namespace_template)
 
-	def __init__(self, name = 'default'):
+	def __init__(self, name='default'):
 		if type(name) is not str:
 			raise TypeError('Type of [name] must be <str>.')
 
@@ -283,9 +282,8 @@ class Namespace:
 			contents.append(indent(the_class.get_cpp(), '\t'))
 		contents = '\n\n'.join(contents)
 
-		format_args = {'name': self.name, 'indented_contents':contents}
+		format_args = {'name': self.name, 'indented_contents': contents}
 		return self.cpp_namespace_template % format_args
-
 
 	def get_cs(self):
 		raise NotImplementedError("TODO")
