@@ -1,71 +1,50 @@
-#include "nu/can.h"
-#include "nu/common_pragmas.h"
-#include "nu/nokia5110.h"
-#include "nu/nu32.h"
-#include "nu/pinctl.h"
-#include "nu/ws20.h"
+#ifndef NU_DRIVERCONTROLS_H
+#define NU_DRIVERCONTROLS_H
 
-static const CAN(ws_can,        CAN1);
-static const CAN(common_can,    CAN2);
-static const NU_NOKIA(display, SPI_CHANNEL2, IOPORT_E, BIT_9, IOPORT_G, BIT_9, IOPORT_A, BIT_9);
+#include "nu/platform/nu32.h"
+#include "nu/component/ws20.h"
+#include "nu/component/nokia5110.h"
+#include "nu/peripheral/can.h"
+#include "nu/peripheral/pinctl.h"
 
-#define ANALOG_INS                          \
+//static const NU_CAN(ws_can,        CAN1);
+//static const NU_CAN(common_can,    CAN2);
+//static const NU_NOKIA(display, SPI_CHANNEL2, IOPORT_E, BIT_9, IOPORT_G, BIT_9, IOPORT_A, BIT_9);
+
+#define ANALOG_INS(ANA_IN)                          \
     ANA_IN(regen_pedal,  IOPORT_B, BIT_0)   \
     ANA_IN(accel_pedal,  IOPORT_B, BIT_1)   \
     ANA_IN(airgap_pot,   IOPORT_B, BIT_4)
-#define ANA_IN(name, ltr, num)   static const NU_PIN(name, ltr, num);
-ANALOG_INS
-#undef ANA_IN
-
-#define DIGITAL_INS                                 \
+#define DIGITAL_INS(DIGI_IN)                                 \
     DIGI_IN(brake_pedal,         IOPORT_B, BIT_2)   \
     DIGI_IN(headlight_switch,    IOPORT_B, BIT_3)   \
     DIGI_IN(airgap_enable,       IOPORT_B, BIT_5)   \
     DIGI_IN(regen_enable,        IOPORT_B, BIT_8)   \
     DIGI_IN(reverse_switch,      IOPORT_B, BIT_9)
-#define DIGI_IN(name, ltr, num)  static const NU_PIN(name, ltr, num);
-DIGITAL_INS
-#undef DIGI_IN
-
-#define DIGITAL_OUTS    \
+#define DIGITAL_OUTS(DIGI_OUT)    \
     DIGI_OUT(lights_brake,   IOPORT_D, BIT_0)    \
     DIGI_OUT(lights_l,       IOPORT_D, BIT_1)    \
     DIGI_OUT(lights_r,       IOPORT_D, BIT_2)    \
     DIGI_OUT(headlights,     IOPORT_D, BIT_3)
-#define DIGI_OUT(name, ltr, num) static const NU_PIN(name, ltr, num);
-DIGITAL_OUTS
-#undef DIGI_OUT
+
+#define NU_DC_PIN_DECL(name, ltr, num)   struct nu__Pin name;
+
+struct nu__DriverControls
+{
+	ANALOG_INS(NU_DC_PIN_DECL)
+	DIGITAL_INS(NU_DC_PIN_DECL)
+	DIGITAL_OUTS(NU_DC_PIN_DECL)
+};
 
 
 /**
  * Setup Driver Control inputs via pinctl
  */
-static void
-setup_pins(void)
-{
-#define ANA_IN(name, ltr, num)   nu_pin_set_analog_in(&name);
-    ANALOG_INS
-#undef ANA_IN
-#define DIGI_IN(name, ltr, num)  nu_pin_set_digital_in(&name);
-    DIGITAL_INS
-#undef DIGI_IN
-#define DIGI_OUT(name, ltr, num) nu_pin_set_digital_out(&name); nu_pin_clear(&name);
-    DIGITAL_OUTS
-#undef DIGI_OUT
-}
+void
+nu__DriverControls__setup_pins(struct nu__DriverControls *self);
 
 s32
-main(void)
-{
-    setup_pins();
-    // read pins
-    // assemble DC CAN struct
-    // send
-    // send acceleration / power CAN pkt to motor controller
-    // Draw status on Nokia
-    // Listen for commands, implement them
-    return 0;
-}
+nu__DriverControls__main(void);
 
 #if 0
 
@@ -590,3 +569,5 @@ main(void)
 }
 
 #endif
+
+#endif /* NU_DRIVERCONTROLS_H */

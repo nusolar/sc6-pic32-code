@@ -50,7 +50,7 @@ typedef struct nu__Pin__Platform {
     IoPortId ltr;
     u32 num;
 } nu__Pin__PlatformInitArgs_t;
-#define NU_PIN_PLATFORM_INIT(ltr, num) {ltr, num}
+#define NU_PIN_PLATFORM_INIT(ltr, num) ((nu__Pin__PlatformInitArgs_t){ltr, num})
 
 static ALWAYSINLINE void
 NU_INIT_PIN_PLATFORM(struct nu__Pin__Platform *p,

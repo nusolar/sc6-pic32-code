@@ -1,11 +1,13 @@
-#include "nu/common_pragmas.h"
+#ifndef NU_BPS_H
+#define NU_BPS_H
+
+#include "nu/peripheral/pinctl.h"
 #include "nu/types.h"
-#include "nu/pinctl.h"
 
 /** Trip codes that will be reported right before the car trips, and [hopefully]
  *  right after the car comes back up.
  */
-#define BMS_TRIPCODES \
+#define BMS_TRIPCODES(BMS_TRIPCODE) \
     BMS_TRIPCODE(NONE) \
     BMS_TRIPCODE(OTHER) \
     BMS_TRIPCODE(OW_BUS_FAILURE) \
@@ -19,28 +21,20 @@
     BMS_TRIPCODE(OVER_TEMP) \
     BMS_TRIPCODE(UNDER_TEMP)
 
-enum tripcode {
-#define TRIPCODE(x) BMS_TRIP_##x,
-    TRIPCODES
-#undef TRIPCODE
-};
+#define BMS_TRIPCODE_ENUM(x) BMS_TRIP_##x,
+#define BMS_TRIPCODE_STR(x) #x,
 
-static char const * const tripcode_str[] = {
-#define TRIPCODE(x) #x,
-    TRIPCODES
-#undef TRIPCODE
+enum nu__BPS__Tripcode {
+    BMS_TRIPCODES(BMS_TRIPCODE_ENUM)
 };
+extern char const * const nu__BPS__tripcode_str[];
 
-static const NU_PIN(pin_main_relay,     NU_PIN_D2);
-static const NU_PIN(pin_array_relay,    NU_PIN_D3);
-static const struct nu_pin pin_batt_bypass =
-    NU_PIN_INIT(IOPORT_D, BIT_0|BIT_1|BIT_2|BIT_3|BIT_4|BIT_5);
+//static const NU_PIN(pin_main_relay,     NU_PIN_D2);
+//static const NU_PIN(pin_array_relay,    NU_PIN_D3);
+//static const struct nu__Pin pin_batt_bypass = NU_PIN_INIT(IOPORT_D, BIT_0|BIT_1|BIT_2|BIT_3|BIT_4|BIT_5);
 
 s32
-main(void)
-{
-    return 0;
-}
+nu__BPS__main(void);
 
 #if 0
 
@@ -1413,3 +1407,5 @@ main(void)
 }
 
 #endif
+
+#endif /* NU_BPS_H */

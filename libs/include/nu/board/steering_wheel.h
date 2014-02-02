@@ -1,15 +1,17 @@
-#include "nu/button.h"
-#include "nu/common_pragmas.h"
-#include "nu/compiler.h"
-#include "nu/nu32.h"
-#include "nu/can.h"
-#include "nu/types.h"
-#include "nu/serial.h"
-#include "nu/pinctl.h"
-#include "nu/utility.h"
+#ifndef NU_STEERINGWHEEL_H
+#define NU_STEERINGWHEEL_H
 
-static const NU_CAN(common_can, CAN1);
-static const NU_SERIAL(display, UART2);
+#include "nu/component/button.h"
+#include "nu/platform/nu32.h"
+#include "nu/peripheral/can.h"
+#include "nu/peripheral/serial.h"
+#include "nu/peripheral/pinctl.h"
+#include "nu/types.h"
+#include "nu/utility.h"
+#include "nu/compiler.h"
+
+//static const NU_CAN(common_can, CAN1);
+//static const NU_SERIAL(display, UART2);
 
 /**
  * buttons - list of Digital-In Pins
@@ -26,7 +28,7 @@ static const NU_SERIAL(display, UART2);
     _PIN(cruise_down,  A, 15)
 #define _PIN(name, ltr, num)    \
     static BTN(name, IOPORT_##ltr, BIT_##num, 10, 5);
-DIGITAL_IN_PINS
+//DIGITAL_IN_PINS
 #undef _PIN
 
 /**
@@ -47,30 +49,11 @@ DIGITAL_IN_PINS
     _LED(cruise_down,  A, 15)
 #define _LED(name, ltr, num)    \
     static const NU_PIN(led_##name, IOPORT_##ltr, BIT_##num);
-LED_PINS
+//LED_PINS
 #undef _LED
 
 s32
-main(void)
-{
-    while (1) {
-        /* update button debounce values */
-#define _PIN(name, ltr, num)    \
-        btn_update(&name);
-        DIGITAL_IN_PINS
-#undef _PIN
-        /* nu_serial_printf(&display, "Speed %i", 25); */
-        // check each btn_pressed
-        // assemble CAN buttons packet
-        // send
-        // check each LED
-        // assemble CAN LED packet
-        // send
-        // receive any CAN LED rx packets, implement
-        // draw Status on Nokia
-    }
-    return 0;
-}
+nu__SteeringWheel__main(void);
 
 #if 0
 
@@ -385,3 +368,5 @@ main(void)
 }
 
 #endif
+
+#endif /* NU_STEERINGWHEEL_H */

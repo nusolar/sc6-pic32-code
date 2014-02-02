@@ -5,6 +5,11 @@
                    displayName="Header Files"
                    projectFiles="true">
       <logicalFolder name="f1" displayName="nu" projectFiles="true">
+        <logicalFolder name="f5" displayName="board" projectFiles="true">
+          <itemPath>../include/nu/board/bps.h</itemPath>
+          <itemPath>../include/nu/board/drivercontrols.h</itemPath>
+          <itemPath>../include/nu/board/steering_wheel.h</itemPath>
+        </logicalFolder>
         <logicalFolder name="f3" displayName="component" projectFiles="true">
           <itemPath>../include/nu/component/ad7685.h</itemPath>
           <itemPath>../include/nu/component/ds18x20.h</itemPath>
@@ -61,6 +66,7 @@
         <itemPath>../include/nu/wdt.h</itemPath>
         <itemPath>../include/nu/async_io.h</itemPath>
         <itemPath>../include/nu/platform.h</itemPath>
+        <itemPath>../include/nu/types.h</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
@@ -70,6 +76,11 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <logicalFolder name="f4" displayName="board" projectFiles="true">
+        <itemPath>../nu/board/bps.c</itemPath>
+        <itemPath>../nu/board/drivercontrols.c</itemPath>
+        <itemPath>../nu/board/steering_wheel.c</itemPath>
+      </logicalFolder>
       <logicalFolder name="f2" displayName="component" projectFiles="true">
         <itemPath>../nu/component/ad7685.c</itemPath>
         <itemPath>../nu/component/ds18x20.c</itemPath>
