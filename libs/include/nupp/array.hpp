@@ -12,28 +12,31 @@ namespace nu {
 	class Array {
 		T array[N];
 	public:
-		INLINE T& at(const size_t index) {
+		ALWAYSINLINE T& at(const size_t index) {
 			return array[index];
 		}
-		INLINE T  at(const size_t index) const {
+		ALWAYSINLINE T  at(const size_t index) const {
 			return array[index];
 		}
 		
-		INLINE T& operator[] (const size_t index) {return at(index);}
-		INLINE T  operator[] (const size_t index) const {return at(index);}
+		ALWAYSINLINE T& operator[] (const size_t index) {return at(index);}
+		ALWAYSINLINE T  operator[] (const size_t index) const {return at(index);}
 
-		INLINE operator void *() {
+		ALWAYSINLINE operator void *() {
 			return (void *)array;
 		}
-		INLINE operator const void *() const {
+		ALWAYSINLINE operator const void *() const {
 			return (const void *)array;
 		}
-		INLINE const T *data() {
+		ALWAYSINLINE T *data() {
+			return (T*)array;
+		}
+		ALWAYSINLINE const T *data() const {
 			return (const T*)array;
 		}
 
-		INLINE size_t count() {return N;}
-		INLINE size_t size() {return sizeof(T)*N;}
+		ALWAYSINLINE size_t count() {return N;}
+		ALWAYSINLINE size_t size() {return sizeof(T)*N;}
 
 		INLINE Array<T, N>& operator= (T& rvalue) {
 			for (unsigned i=0; i<N; i++) {
@@ -70,8 +73,8 @@ namespace nu {
 			return result;
 		}
 
-		INLINE Array<T,N>() {}
-		INLINE Array<T,N>(T init) {*this = init;}
+		ALWAYSINLINE Array<T,N>() {}
+		ALWAYSINLINE Array<T,N>(T init) {*this = init;}
 	};
 }
 

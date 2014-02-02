@@ -9,8 +9,9 @@
 #define	NU_BPS_HPP
 
 #include "nupp/board/nu32.hpp"
-#include "nupp/component/ltc6804.hpp"
-#include "nupp/component/ds18x20.hpp"
+#include "nupp/comm/voltagesensor.hpp"
+#include "nupp/comm/currentsensor.hpp"
+#include "nupp/comm/tempsensor.hpp"
 #include "nupp/component/nokia5110.hpp"
 #include "nupp/component/button.hpp"
 #include "nupp/peripheral/usbhid.hpp"
@@ -29,6 +30,7 @@
 #define NU_BPS_CONVERSION_TIME_MS 2.3 //ms - time for LTC6804s to complete conversion.
 
 namespace nu {
+	/*
 	struct BpsMode {
 		struct Mode {
 			int id;
@@ -90,7 +92,7 @@ namespace nu {
 				}
 			}
 		}
-	};
+	};*/
 
  	struct BPS: protected Nu32 {
 		static const size_t N_MODULES = 32;
@@ -141,9 +143,10 @@ namespace nu {
 		can::Module common_can;
 		Nokia5110 lcd1, lcd2;
 
-		AnalogIn current_sensor0, current_sensor1; // Current ADCs
-		LTC6804<3> voltage_sensor; //on D9, SPI Chn 1
-		DS18X20<32> temp_sensor; //on A0
+#warning "CONFIG in sensor class definitions"
+		VoltageSensor voltage_sensor; //on D9, SPI Chn 1
+		CurrentSensor current_sensor; // on F12, SPI Chn 4 
+		TempSensor temp_sensor; //on A0
 
 		Timer mode_timeout_clock;
 		Timer precharge_timer;
@@ -189,7 +192,7 @@ namespace nu {
 		/**
 		 * The BPS's HID report.
 		 */
-		struct Report {
+		/*struct Report {
 			// scientific data
 			double cc_battery, cc_array, wh_battery, wh_array;
 			int16_t current0, current1; // 10bit voltage, 0-5V
@@ -214,7 +217,7 @@ namespace nu {
 				memcpy(voltages, s.voltages.data(), sizeof(voltages));
 				memcpy(temperatures, s.temperatures.data(), sizeof(temperatures));
 			}
-		};
+		};*/
 
 
 		INLINE BPS(): Nu32(Nu32::V2011),
@@ -227,10 +230,9 @@ namespace nu {
 			common_can(CAN1),
 			lcd1(PIN(G, 9), SPI_CHANNEL2, PIN(A, 9),  PIN(E, 9)),
 			lcd2(PIN(E, 8), SPI_CHANNEL2, PIN(A, 10), PIN(E, 9)),
-			current_sensor0(PIN(B, 0)),
-			current_sensor1(PIN(B, 1)),
-			voltage_sensor(PIN(D, 9), SPI_CHANNEL1),
-			temp_sensor(PIN(A, 0)),
+			voltage_sensor(),
+			current_sensor(),
+			temp_sensor(),
 			mode_timeout_clock(NU_BPS_TIMEOUT_INT_MS, Timer::ms, true),
 			precharge_timer(NU_BPS_PRECHARGE_TIME_MS, Timer::ms, false),
 			lcd_timer(1, Timer::s, true),
@@ -241,32 +243,8 @@ namespace nu {
 			common_can.out().setup_tx(CAN_HIGH_MEDIUM_PRIORITY);
 			common_can.err().setup_tx(CAN_LOWEST_PRIORITY);
 
-			// configure sensors
-			this->configure_sensors();
-
-			// begin conversion
-			voltage_sensor.start_voltage_conversion();
-			temp_sensor.perform_temperature_conversion();
-		}
-
-		INLINE void configure_sensors() {
-			// send random data, to wake LTCs
-			voltage_sensor.cs.low();
-			voltage_sensor.tx(&state.mode, 1);
-			voltage_sensor.cs.high();
-			timer::delay_ms(3);
-
-			// prepare LTC configuration
-			LTC6804<3>::Configuration cfg0 = {0};
-			cfg0.bits.adcopt = 0; // normal ADC mode
-			cfg0.bits.refon = 1; // stay on
-			cfg0.bits.vuv = (voltage_sensor.convert_uv_limit(MIN_VOLTAGE)+1) & 0xfff; // set voltage limit, & mask 12 bits
-			cfg0.bits.vov = voltage_sensor.convert_ov_limit(MAX_VOLTAGE) & 0xfff;
-
-			// write LTC6804 config register, also resetting LTC's WatchDogTimer
-			Array<LTC6804<3>::Configuration, 3> cfgs;
-			cfgs = cfg0;
-			voltage_sensor.write_configs(cfgs);
+			// Initialize sensors,
+			this->read_ins();
 		}
 
 		INLINE void read_ins() {
@@ -282,14 +260,9 @@ namespace nu {
 				}
 			}
 
-			state.current0 = current_sensor0.read() & 0x3ff; //mask 10 bits
-			state.current1 = current_sensor1.read() & 0x3ff;
-			temp_sensor.update_temperatures(state.temperatures);
-			voltage_sensor.read_volts(state.voltages);
-
-			// repopulate data
-			temp_sensor.perform_temperature_conversion();
-			voltage_sensor.start_voltage_conversion();
+			voltage_sensor.read();
+			current_sensor.read();
+			temp_sensor.read();
 		}
 
 		INLINE void recv_can() {
@@ -314,10 +287,10 @@ namespace nu {
 			}
 		}
 
-		INLINE void hid_tx_callback(unsigned char *data, size_t len) {
+		/*INLINE void hid_tx_callback(unsigned char *data, size_t len) {
 			Report r = Report(state);
 			memcpy(data, &r, len);
-		}
+		}*/
 
 		INLINE void check_trip_conditions() {
 			TripCode trip_code = NONE;
@@ -513,7 +486,6 @@ namespace nu {
 			while (true) {
 				WDT::clear();
 				this->recv_can();
-				this->configure_sensors();
 				this->read_ins();
 				this->check_trip_conditions();
 				this->check_mode_safety();

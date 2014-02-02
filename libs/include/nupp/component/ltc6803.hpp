@@ -20,6 +20,17 @@ namespace nu {
 	/**
 	 * Limited to 32 devices
 	 * LTC6803 uses the CRC-8-CCITT algorithm.
+	 *
+	 * The LTC6803 outputs its voltages in 12bit UInt's, as multiples of 1.5mV,
+	 *     OFFSET BY 0x200 (768mV).
+	 * A reading of 0x200 indicates a measurement of 0V == (0x200-0x200)*1.5mV.
+	 * Similarly, 0x000 indicates a measurement of -768mV == (0x0-0x200)*1.5mV.
+	 * Similarly, 0x800 indicates a measurement of 2.304V == (0x800-0x200)*1.5mV.
+	 *
+	 * HOWEVER, like the class LTC6804, class LTC6803 receives and returns voltages
+	 * in multiples of 100uV, as UInt16's.
+	 * 
+	 * Call read_volts() to synchronously poll & get readings.
 	 */
 	template <uint32_t num_devices>
 	struct LTC6803: public SPI {
@@ -164,6 +175,7 @@ namespace nu {
 
 		#define voltage_pairs_per_dev 6
 		#define cells_per_device (voltage_pairs_per_dev*2)
+		#define total_cells (cells_per_device * num_devices)
 
 		union PACKED RawVoltagePair {
 			unsigned val :24;
@@ -186,11 +198,6 @@ namespace nu {
 		uint32_t mismatch_pecs;
 		bool is_openwire;
 
-		Array<float, num_devices*cells_per_device> values;
-		/** @warning NO BOUNDS CHECKING */
-		INLINE float operator[] (size_t index) const {return values[index];}
-		INLINE uint32_t count() {return num_devices;}
-
 		/**
 		 * Construct LTC6803 interface over basic SPI.
          * @param _cs The Chip Select pin for the LTC6803.
@@ -199,7 +206,7 @@ namespace nu {
 		INLINE LTC6803(Pin _cs, uint8_t _channel):
 			SPI(_cs, Spi(_channel, 100000, SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON),
 			    (SPI::tx_options)(TX_WAIT_START|TX_WAIT_END|TX_DISABLE_AUTO_CS)),
-			mismatch_pecs(0), is_openwire(false), values(0.0f) {}
+			mismatch_pecs(0), is_openwire(false) {}
 
 		INLINE void write_configs(Array<Configuration, num_devices> &config) {
 			write_cmd_tx(WRITECFGS, config, sizeof(Configuration));
@@ -207,16 +214,28 @@ namespace nu {
 		}
 		INLINE void start_voltage_conversion() {write_cmd_solo(STCVAD); is_openwire=false;}
 		INLINE void start_openwire_conversion() {write_cmd_solo(STOWAD); is_openwire=true;}
-		INLINE void update_volts() {
-			Array<RawVoltages, num_devices> rx_rv;
-			read_volts_raw(rx_rv);
-			convert_voltages(rx_rv);
+		/* Outputs in 100uV multiples */
+		INLINE void read_volts(Array<uint16_t, total_cells> &rx_rv) {
+			Array<RawVoltages, num_devices> rv;
+			read_volts_raw(rv);
+
+			for (unsigned iDevice=0; iDevice<num_devices; iDevice++) {
+				for (unsigned iPair=0; iPair<voltage_pairs_per_dev; iPair++) {
+					RawVoltagePair &pair = rv[iDevice].voltage_pair[iPair];
+#warning "Averaging is for crude low-pass filtering"
+					rx_rv[iDevice*cells_per_device+iPair*2]	=
+							(uint16_t)(pair.voltages.v1/2 + rx_rv[iDevice*cells_per_device+iPair*2]/2);
+					rx_rv[iDevice*cells_per_device+iPair*2+1] =
+							(uint16_t)(pair.voltages.v2/2 + rx_rv[iDevice*cells_per_device+iPair*2+1]/2);
+				}
+			}
 		}
 
-		PURE INLINE BYTE convert_uv_limit(float vuv) {return (BYTE) ((vuv/(16*.0015)) + 31);}
-		PURE INLINE BYTE convert_ov_limit(float vov) {return (BYTE) ((vov/(16*.0015)) + 32);}
-		PURE INLINE float convert_ref_to_v(float ref) {return (((float)ref - 512) * .0015);}
-		PURE INLINE float convert_voltage(uint32_t raw) {return ((float)raw-512)*0.0015;}
+		/* Inputs and Outputs in 100uV multiples. Equations from Datasheet p24-p25 */
+		PURE INLINE BYTE convert_uv_limit(float vuv) {return (BYTE) ((vuv/(16*15)) + 31);}
+		PURE INLINE BYTE convert_ov_limit(float vov) {return (BYTE) ((vov/(16*15)) + 32);}
+		PURE INLINE uint16_t convert_ref_to_v(float ref) {return (((float)ref - 0x200) * 15);}
+		PURE INLINE uint16_t convert_voltage(uint16_t raw) {return (raw - 0x200)*15;}
 
 	private:
 		INLINE bool confirm_configs(Array<Configuration, num_devices> &config) {
@@ -291,16 +310,6 @@ namespace nu {
 
 			Array<Diagnostic, num_devices> diag();
 			read_diags(diag);
-		}
-
-		INLINE void convert_voltages(Array<RawVoltages, num_devices> &rv) {
-			for (unsigned i=0; i<num_devices; i++) {
-				for (unsigned j=0; j<voltage_pairs_per_dev; j++) {
-					RawVoltagePair &pair = rv[i].voltage_pair[j];
-					(values[i*cells_per_device+j*2]	 += convert_voltage(pair.voltages.v1))/=2;
-					(values[i*cells_per_device+j*2+1] += convert_voltage(pair.voltages.v2))/=2;
-				}
-			}
 		}
 	};
 }

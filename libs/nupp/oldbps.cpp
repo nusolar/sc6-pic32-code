@@ -6,18 +6,18 @@
 //  Copyright (c) 2013 Alex Chandel. All rights reserved.
 //
 
-#include "nupp/board/bms.hpp"
+#include "nupp/board/oldbps.hpp"
 #include <new>
 
 using namespace nu;
 
-const char *BMS::Trip::name[] = {
+const char *OldBMS::Trip::name[] = {
 	NU_TRIPCODE(NU_ERROR_NAMES)
 };
 
-void nu::BMS::main(nu::BMS *bms) {
+void nu::OldBMS::main(nu::OldBMS *bms) {
 	nu::WDT::disable();
-	new (bms) nu::BMS();
+	new (bms) nu::OldBMS();
 	bms->boot();
 	bms->run_loop();
 }

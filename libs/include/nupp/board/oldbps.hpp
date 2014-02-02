@@ -6,15 +6,14 @@
 //  Copyright (c) 2013 Alex Chandel. All rights reserved.
 //
 
-#ifndef NUPP_BMS_HPP
-#define NUPP_BMS_HPP 1
+#ifndef NUPP_OLDBMS_HPP
+#define NUPP_OLDBMS_HPP 1
 
 #include "nupp/board/nu32.hpp"
+#include "nupp/comm/voltagesensor.hpp"
+#include "nupp/comm/currentsensor.hpp"
+#include "nupp/comm/tempsensor.hpp"
 #include "nupp/component/nokia5110.hpp"
-#include "nupp/component/hais.hpp"
-#include "nupp/component/ad7685.hpp"
-#include "nupp/component/ltc6803.hpp"
-#include "nupp/component/ds18x20.hpp"
 #include "nupp/peripheral/can.hpp"
 #include "nupp/peripheral/pinctl.hpp"
 #include "nupp/timer.hpp"
@@ -42,7 +41,7 @@ namespace nu {
 	 * informs telemetry; emergency-trips the car if needed.
 	 * TODO: Separate configuration declarations.
 	 */
-	struct BMS: protected nu::Nu32 {
+	struct OldBMS: protected nu::Nu32 {
 		struct Trip {
 
 			#define NU_TRIPCODE(X)\
@@ -66,7 +65,7 @@ namespace nu {
 
 			static const char* name[];
 
-			static void trip(tripcode code, uint32_t module, BMS *self) {
+			static void trip(tripcode code, uint32_t module, OldBMS *self) {
 				if (module == 21 || module == 22) return;
 
 				can::frame::bms::tx::trip trip_pkt(0);
@@ -75,8 +74,8 @@ namespace nu {
 				self->common_can.err().tx(trip_pkt);
 
 				can::frame::bms::tx::trip_pt_current current_pkt(0);
-				current_pkt.frame().low = self->current_sensor[0]; // TODO sort
-				current_pkt.frame().low = self->current_sensor[1];
+				current_pkt.frame().low = self->current_sensor.currents[0]; // TODO sort
+				current_pkt.frame().high = self->current_sensor.currents[1];
 				self->common_can.err().tx(current_pkt);
 
 				can::frame::bms::tx::trip_pt_temp temp_pkt(0);
@@ -95,7 +94,7 @@ namespace nu {
 				self->lcd1.goto_xy(0, 3);
 				self->lcd1 << module << ", " << code << end;
 				self->lcd1.goto_xy(0, 4);
-				self->lcd1 << "V: " << self->voltage_sensor[module < 32? module: 0] << end;
+				self->lcd1 << "V: " << self->voltage_sensor.voltages[module < 32? module: 0] << end;
 				while (true) Nop();
 			}
 		};
@@ -104,16 +103,15 @@ namespace nu {
 		DigitalIn bits[6];
 		can::Module common_can, mppt_can;
 		Nokia5110 lcd1, lcd2;
-		HAIS<2> current_sensor; // 2 ADCs
-		LTC6803<3> voltage_sensor; // 3 LTCs
-		DS18X20<32> temp_sensor; //on A0
+		
+		VoltageSensor voltage_sensor; // 3 LTCs
+		CurrentSensor current_sensor; // 2 ADCs
+		TempSensor temp_sensor; //on A0
 
 		Timer can_voltage_packet_timer;
 		Timer can_heartbeat_packet_timer;
 		Timer can_current_packet_timer;
 		Timer can_other_packet_timer;
-		Timer openwire_timer;
-		Timer voltage_measuring_timer;
 		Timer lcd_clock;
 		
 
@@ -128,7 +126,6 @@ namespace nu {
 			float highest_volt, lowest_volt;
 			float highest_temp, lowest_temp;
 			float highest_current, lowest_current;
-			// temps are stored below
 
 			bool ow;
 			uint32_t last_trip_module, last_voltage_pkt_module;
@@ -136,10 +133,7 @@ namespace nu {
 			uint32_t disabled_module;
 			uint32_t uptime;
 			uint32_t module_i;
-			bool has_configured_ltcs;
 		} state;
-
-		Array<float, State::num_modules> temperatures; // in degC
 
 
 		/**
@@ -147,33 +141,28 @@ namespace nu {
 		 * 3 Voltage sensor modules, 32 Temperature sensors, and more.
 		 * TODO: Lots
 		 */
-		BMS(): Nu32(Nu32::V2011),
+		OldBMS(): Nu32(Nu32::V2011),
 			main_relay(PIN(D, 2), false),
 			array_relay(PIN(D, 3), false),
 			bits(),
 			common_can(CAN1), mppt_can(CAN2),
 			lcd1(PIN(G, 9), SPI_CHANNEL2, PIN(A, 9),  PIN(E, 9)),
 			lcd2(PIN(E, 8), SPI_CHANNEL2, PIN(A, 9), PIN(E, 9)),
-			current_sensor(
-				AD7685<2>(PIN(F, 12), SPI_CHANNEL4, PIN(F, 12), // Convert & CS are same pin
-				AD7685<2>::CHAIN_MODE_NO_BUSY), hais::P50),
-			voltage_sensor(PIN(D, 9), SPI_CHANNEL1),
-			temp_sensor(PIN(A, 0)),
+			voltage_sensor(),
+			current_sensor(),
+			temp_sensor(),
 
 			can_voltage_packet_timer(NU_VOLTAGE_PKTS_INTERVAL_MS, Timer::ms, false),
 			can_heartbeat_packet_timer(NU_HEARTBEAT_INTERVAL_MS, Timer::ms, false),
 			can_current_packet_timer(NU_SINGLE_PKTS_INTERVAL_MS, Timer::ms, false),
 			can_other_packet_timer(NU_SINGLE_PKTS_INTERVAL_MS+1, Timer::ms, false),
-			openwire_timer(2, Timer::s, false),
-			voltage_measuring_timer(16, Timer::ms, false),
 			lcd_clock(1, Timer::s, false),
 			
-			state(), temperatures()
+			state()
 		{
 			WDT::clear();
 			state.last_trip_module = 12345;
 			state.disabled_module = 63;
-			state.has_configured_ltcs = false;
 
 			for (uint8_t i=0; i<6; i++) {
 				bits[i] = DigitalIn(Pin(Pin::B, i));
@@ -189,71 +178,32 @@ namespace nu {
 
 
 		INLINE void read_ins() {
-			// read measured voltages, redoing conversion occasionally
-			if (this->voltage_measuring_timer.has_expired())
-			{
-				if (state.has_configured_ltcs)
-				{
-					this->voltage_sensor.update_volts();
-				}
-				else
-				{
-					state.has_configured_ltcs = true;
-				}
-
-				LTC6803<3>::Configuration cfg0;
-				memset(cfg0.bytes, 0, sizeof(cfg0.bytes));
-				cfg0.bits.cdc = LTC6803<3>::CDC_MSMTONLY;
-				cfg0.bits.wdt = true;
-				cfg0.bits.lvlpl = true;
-				cfg0.bits.vov = voltage_sensor.convert_ov_limit(NU_MAX_VOLTAGE);
-				cfg0.bits.vuv = voltage_sensor.convert_uv_limit(NU_MIN_VOLTAGE);
-				Array<LTC6803<3>::Configuration, 3> cfg;
-				cfg = cfg0;
-				this->voltage_sensor.write_configs(cfg);
-
-				// when OpenWire timer expires, switch to measuring Voltage.
-				if (this->openwire_timer.has_expired())
-				{
-					this->voltage_sensor.start_openwire_conversion();
-					this->openwire_timer.reset();
-				}
-				else
-				{
-					this->voltage_sensor.start_voltage_conversion();
-				}
-				
-				this->voltage_measuring_timer.reset();
-			}
-
-			this->temp_sensor.perform_temperature_conversion();
-			this->temp_sensor.update_temperatures(this->temperatures);
-
-			this->current_sensor.read_current();
-
 			state.disabled_module = 0;
 			for (unsigned i=0; i<6; i++) {
 				state.disabled_module |= (uint32_t)(((bool)bits[i].read()) << i);
 			}
 
-			state.highest_volt = this->voltage_sensor[0];
-			state.highest_current = this->current_sensor[0];
-			state.highest_temp = this->temperatures[0];
+			this->voltage_sensor.read();
+			this->current_sensor.read();
+			this->temp_sensor.read();
+
+			state.highest_volt = this->voltage_sensor.voltages[0];
+			state.highest_current = this->current_sensor.currents[0];
+			state.highest_temp = this->temp_sensor.temperatures[0];
 		}
 
 		INLINE void check_batteries() {
 			for (unsigned i=0; i<state.num_modules; i++) {
-				if (voltage_sensor[i] + (i==0? .15: 0) > NU_MAX_VOLTAGE)
+				if (voltage_sensor.voltages[i] + (i==0? .15: 0) > NU_MAX_VOLTAGE)
 					Trip::trip(Trip::OVER_VOLTAGE, i, this);
-				if (voltage_sensor[i] + (i==0? .15: 0) < NU_MIN_VOLTAGE)
+				if (voltage_sensor.voltages[i] + (i==0? .15: 0) < NU_MIN_VOLTAGE)
 					Trip::trip(Trip::UNDER_VOLTAGE, i, this);
-				if (this->temperatures[i] > NU_MAX_TEMP) Trip::trip(Trip::OVER_TEMP, i, this);
-				if (this->temperatures
-						[i] < NU_MIN_TEMP) Trip::trip(Trip::UNDER_TEMP, i, this);
+				if (this->temp_sensor.temperatures[i] > NU_MAX_TEMP) Trip::trip(Trip::OVER_TEMP, i, this);
+				if (this->temp_sensor.temperatures[i] < NU_MIN_TEMP) Trip::trip(Trip::UNDER_TEMP, i, this);
 			}
-			if (current_sensor[0] > NU_MAX_BATT_CURRENT_DISCHARGING)
+			if (current_sensor.currents[0] > NU_MAX_BATT_CURRENT_DISCHARGING)
 				Trip::trip(Trip::OVER_CURRENT_DISCHARGE, 100, this); // BattADC
-			if (current_sensor[0] < NU_MAX_BATT_CURRENT_CHARGING)
+			if (current_sensor.currents[0] < NU_MAX_BATT_CURRENT_CHARGING)
 				Trip::trip(Trip::OVER_CURRENT_CHARGE, 100, this);
 //			if (current_sensor[1] > NU_MAX_ARRAY_CURRENT)
 //				Trip::trip(Trip::OVER_CURRENT_CHARGE, 101, this); // ArrayADC
@@ -320,15 +270,15 @@ namespace nu {
 				can::frame::bms::tx::owVoltage ow_pkt(0);
 				// update module to send
 				t_pkt.frame().sensor = state.last_voltage_pkt_module;
-				t_pkt.frame().temp = this->temperatures[state.last_voltage_pkt_module];
+				t_pkt.frame().temp = this->temp_sensor.temperatures[state.last_voltage_pkt_module];
 				if (state.ow) {
 					ow_pkt.frame().module = state.last_voltage_pkt_module;
-					ow_pkt.frame().ow_voltage = voltage_sensor[state.last_voltage_pkt_module];
+					ow_pkt.frame().ow_voltage = voltage_sensor.voltages[state.last_voltage_pkt_module];
 					common_can.out().tx(ow_pkt);
 				}
 				else {
 					v_pkt.frame().module = state.last_voltage_pkt_module;
-					v_pkt.frame().voltage = voltage_sensor[state.last_voltage_pkt_module];
+					v_pkt.frame().voltage = voltage_sensor.voltages[state.last_voltage_pkt_module];
 					common_can.out().tx(v_pkt);
 				}
 				common_can.out().tx(t_pkt);
@@ -358,8 +308,8 @@ namespace nu {
 				can::frame::bms::tx::cc_mppt1 cc_mppt1_pkt(0);
 				can::frame::bms::tx::cc_mppt2 cc_mppt2_pkt(0);
 				can::frame::bms::tx::cc_mppt3 cc_mppt3_pkt(0);
-				current_pkt.frame().array = current_sensor[0]; // Marked "BattADC"
-				current_pkt.frame().battery = current_sensor[1]; // Marked "ArrayADC"
+				current_pkt.frame().array = current_sensor.currents[0]; // Marked "BattADC"
+				current_pkt.frame().battery = current_sensor.currents[1]; // Marked "ArrayADC"
 				cc_array_pkt.frame().count = state.cc_array;
 				cc_batt_pkt.frame().count = state.cc_battery;
 				cc_mppt1_pkt.frame().count = state.cc_mppt[0];
@@ -420,7 +370,7 @@ namespace nu {
 					lcd1.lcd_clear();
 					lcd1 << "ZELDA " << state.module_i << end;
 					lcd1.goto_xy(0, 1);
-					lcd1 << "V: " << voltage_sensor[state.module_i] << end;
+					lcd1 << "V: " << voltage_sensor.voltages[state.module_i] << end;
 					lcd1.goto_xy(0, 2);
 					lcd1 << "T: " << state.highest_temp << end;
 					lcd1.goto_xy(0, 3);
@@ -461,8 +411,8 @@ namespace nu {
 			timer::delay_s(1);
 		}
 
-		static NORETURN void main(BMS *bms);
+		static NORETURN void main(OldBMS *bms);
 	};
 }
 
-#endif /* defined(NUPP_BMS_HPP) */
+#endif /* defined(NUPP_OLDBMS_HPP) */

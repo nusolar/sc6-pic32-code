@@ -3,6 +3,7 @@
 import argparse
 from textwrap import dedent, indent
 
+
 class Layout:
 	""" Static Class.
 	Contains bit layouts for CAN packets. When we define the CAN
@@ -437,7 +438,7 @@ class Unarchiver:
 	using Namespace and CanPacket objects. Produces source code.
 	'''
 
-	cpp_comment = """\
+	cpp_comment_prepend = """\
 	/*
 	 * CAN frames are implemented as PACKED structs,
 	 * within namespaces for scoping.
@@ -445,8 +446,16 @@ class Unarchiver:
 	 * CAN addresses are uint16_t's,
 	 * within enum classes for scoping.
 	 */
+	#include "nu/compiler.h"
+	#include <cstdint>
+	#pragma GCC diagnostic ignored "-pedantic"
 	\n"""
-	cpp_comment = dedent(cpp_comment)
+	cpp_comment_prepend = dedent(cpp_comment_prepend)
+
+	cpp_comment_postpend = """\
+	#pragma GCC diagnostic warning "-pedantic"
+	\n"""
+	cpp_comment_postpend = dedent(cpp_comment_postpend)
 
 	def __init__(self, data=can_def):
 		frame_namespace = Namespace('frame')
@@ -462,7 +471,6 @@ class Unarchiver:
 		can.add_namespace(frame_namespace)
 		self.nu = Namespace('nu')
 		self.nu.add_namespace(can)
-
 
 	def deserialize_namespace(self, namespace_data):
 		name = namespace_data['name']
@@ -490,9 +498,8 @@ class Unarchiver:
 
 		return the_namespace
 
-
 	def get_cpp(self):
-		return self.cpp_comment + self.nu.get_cpp()
+		return self.cpp_comment_prepend + self.nu.get_cpp() + self.cpp_comment_postpend
 
 	def get_cs(self):
 		raise NotImplementedError("TODO")

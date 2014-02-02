@@ -44,6 +44,7 @@ namespace nu {
 		bool is_running;
 
 
+		/** A timer interval, the units, and whether it arms now */
 		INLINE Timer(uint64_t _tick_interval, Unit _unit, bool arm_now):
 			tick_interval(0),
 			unit(Timer::s),

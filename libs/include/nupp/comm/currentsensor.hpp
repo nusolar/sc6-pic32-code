@@ -5,32 +5,49 @@
  * Created on January 28, 2014, 12:33 AM
  */
 
-#ifndef CURRENTSENSOR_HPP
-#define	CURRENTSENSOR_HPP 1
+#ifndef NU_CURRENTSENSOR_HPP
+#define	NU_CURRENTSENSOR_HPP 1
 
 #include "nupp/component/hais.hpp"
+#include "nupp/component/ad7685.hpp"
 
 namespace nu
 {
+	/**
+	 * This current sensor obtains readings from the AD7685 with 76.294uV
+	 * precision. These represent readings from the HAIS50P with 6103.5uA
+	 * nominal precision (precision from datasheet is actually .01*50A==500mA).
+	 *
+	 * For space, current readings are stored in centiamps.
+	 */
 	struct CurrentSensor
 	{
-		HAIS<2> current_sensor; // 2 ADCs
-		int16_t current0, current1; // 16bit voltage, 0-5V
+		static const HAIS::PN pn = HAIS::P50;
+		AD7685<2> current_adc; // 2 ADCs
+		Array<int16_t, 2> currents; // centiamps
 
 		INLINE CurrentSensor():
-			current_sensor(
+			current_adc(
 				AD7685<2>(PIN(F, 12), SPI_CHANNEL4, PIN(F, 12), // Convert & CS are same pin
-				AD7685<2>::CHAIN_MODE_NO_BUSY), hais::P50)
+				AD7685<2>::CHAIN_MODE_NO_BUSY)),
+			currents(0)
 		{
 		}
 
 		void read()
 		{
 			// NEED TIMER
-			this->current_sensor.read_current();
+			// Store 32bit microvoltages, 0-5V, in buffer
+			Array<uint32_t, 2> buffer;
+			this->current_adc.convert_read_uv(buffer);
+			for (unsigned iCurrent=0; iCurrent<2; iCurrent++)
+			{
+				// Downcast to 16bit is safe, because maximum value is +- 20000.
+				this->currents[iCurrent] = (int16_t)(HAIS::voltage_to_current(buffer[iCurrent], pn)/10000);
+			}
 		}
 	};
 }
 
-#endif	/* CURRENTSENSOR_HPP */
+#endif	/* NU_CURRENTSENSOR_HPP */
 

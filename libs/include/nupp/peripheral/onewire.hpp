@@ -4,8 +4,8 @@
 #include "nupp/peripheral/pinctl.hpp"
 #include "nupp/timer.hpp"
 #include "nupp/errorcodes.hpp"
-#include "nu/compiler.h"
 #include "nu/crc.h"
+#include "nu/compiler.h"
 
 
 namespace nu {

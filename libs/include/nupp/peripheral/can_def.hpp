@@ -5,7 +5,6 @@
  * CAN addresses are uint16_t's,
  * within enum classes for scoping.
  */
-
 #include "nu/compiler.h"
 #include <cstdint>
 #pragma GCC diagnostic ignored "-pedantic"
@@ -1377,6 +1376,6 @@ namespace nu
 			}
 		}
 	}
-}
+}#pragma GCC diagnostic warning "-pedantic"
 
-#pragma GCC diagnostic warning "-pedantic"
+
