@@ -1,13 +1,16 @@
 #include "nu/common_pragmas.h"
 #include "nupp/board/pedals.hpp"
+#include <cstdint>
 
+#define CLASS nu::Pedals
 #define div_roundup(DIVIDEND, DIVISOR) ((long long)((DIVIDEND)/(DIVISOR)) + (((DIVIDEND)%(DIVISOR)>0)? 1: 0))
 
-// Allocate the size of nu::Pedals, rounding up.
-uint64_t arena[div_roundup(sizeof(nu::Pedals), 8)] ALIGNED(__BIGGEST_ALIGNMENT__);
+// Allocate the size of CLASS, rounding up.
+uint64_t arena[div_roundup(sizeof(CLASS), 8)] ALIGNED(__BIGGEST_ALIGNMENT__);
 
 // Exception handling, copy-pasted directly from MicroChip's example code.
-extern "C" {
+extern "C"
+{
 	void kill(void); // implemented below, in C++
 
 	static enum exceptions {
@@ -39,7 +42,8 @@ extern "C" {
 
 		kill();
 
-		while (1) {
+		while (1)
+		{
 			Nop();
 			// Examine _excep_code to identify the type of exception
 			// Examine _excep_addr to find the address that caused the exception
@@ -47,13 +51,14 @@ extern "C" {
 	}
 }
 
-void kill() {
-	((nu::Pedals *)arena)->emergency_shutoff();
+void kill()
+{
+	((CLASS *)arena)->emergency_shutoff();
 }
 
-/** Call nu::Pedals::main(), NEVER RETURN */
-int main(int argc, const char* argv[]) {
-	nu::Pedals::main((nu::Pedals *)arena);
-	return 0;
+/** Call CLASS::main(), NEVER RETURN */
+int main()
+{
+	CLASS::main((CLASS *)arena);
+    return 0;
 }
-

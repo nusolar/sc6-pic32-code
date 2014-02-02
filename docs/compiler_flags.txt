@@ -60,4 +60,6 @@
 -Wno-unused-function
 
 -pedantic
+--param max-inline-insns-single=2000
+--param large-function-growth=200
 -Weffc++

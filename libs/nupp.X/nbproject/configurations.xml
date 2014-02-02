@@ -21,7 +21,6 @@
       </logicalFolder>
       <logicalFolder name="f1" displayName="nupp" projectFiles="true">
         <logicalFolder name="f2" displayName="board" projectFiles="true">
-          <itemPath>../include/nupp/board/bms.hpp</itemPath>
           <itemPath>../include/nupp/board/bps.hpp</itemPath>
           <itemPath>../include/nupp/board/output_board.hpp</itemPath>
           <itemPath>../include/nupp/board/nu32.hpp</itemPath>
@@ -88,7 +87,6 @@
         <itemPath>../nupp/headers.cpp</itemPath>
         <itemPath>../nupp/nokia5110.cpp</itemPath>
         <itemPath>../nupp/nu32.cpp</itemPath>
-        <itemPath>../nupp/bms.cpp</itemPath>
         <itemPath>../nupp/stream.cpp</itemPath>
         <itemPath>../nupp/pin.cpp</itemPath>
         <itemPath>../nupp/bps.cpp</itemPath>
@@ -157,7 +155,7 @@
         <property key="use-cci" value="false"/>
         <property key="use-iar" value="false"/>
         <property key="use-indirect-calls" value="false"/>
-        <appendMe value="-std=gnu99  -fthread-jumps -fcrossjumping -foptimize-sibling-calls -fcse-follow-jumps -fcse-skip-blocks -fgcse -fgcse-lm -fexpensive-optimizations -fstrength-reduce -frerun-cse-after-loop -fschedule-insns -fschedule-insns2 -fsched-interblock -fsched-spec -fregmove -fstrict-aliasing -fdelete-null-pointer-checks -freorder-blocks -freorder-functions -falign-functions -falign-jumps -falign-loops -falign-labels -ftree-pre -ftree-vrp  -ftree-switch-conversion -finline-small-functions -findirect-inlining -fipa-sra -fcaller-saves -fpeephole2 -fstrict-overflow  -fdata-sections -ffunction-sections  -Wall -Wcast-align -Wcast-qual -Wconversion -Wdisabled-optimization -Wendif-labels -Wextra -Wfloat-equal -Winline -Winvalid-pch -Wmissing-format-attribute -Wmissing-noreturn -Wno-packed -Wno-padded -Wpointer-arith -Wredundant-decls -Wshadow -Wundef -Wunreachable-code -Wwrite-strings -Wno-unused-function  -pedantic"/>
+        <appendMe value="-std=gnu99  -fthread-jumps -fcrossjumping -foptimize-sibling-calls -fcse-follow-jumps -fcse-skip-blocks -fgcse -fgcse-lm -fexpensive-optimizations -fstrength-reduce -frerun-cse-after-loop -fschedule-insns -fschedule-insns2 -fsched-interblock -fsched-spec -fregmove -fstrict-aliasing -fdelete-null-pointer-checks -freorder-blocks -freorder-functions -falign-functions -falign-jumps -falign-loops -falign-labels -ftree-pre -ftree-vrp  -ftree-switch-conversion -finline-small-functions -findirect-inlining -fipa-sra -fcaller-saves -fpeephole2 -fstrict-overflow  -fdata-sections -ffunction-sections  -Wall -Wcast-align -Wcast-qual -Wconversion -Wdisabled-optimization -Wendif-labels -Wextra -Wfloat-equal -Winline -Winvalid-pch -Wmissing-format-attribute -Wmissing-noreturn -Wno-packed -Wno-padded -Wpointer-arith -Wredundant-decls -Wshadow -Wundef -Wunreachable-code -Wwrite-strings -Wno-unused-function  -pedantic --param max-inline-insns-single=2000 --param large-function-growth=200"/>
       </C32>
       <C32-AS>
         <property key="assembler-symbols" value=""/>
@@ -226,7 +224,7 @@
         <property key="use-cci" value="false"/>
         <property key="use-iar" value="false"/>
         <property key="use-indirect-calls" value="false"/>
-        <appendMe value="-std=gnu++0x  -fthread-jumps -fcrossjumping -foptimize-sibling-calls -fcse-follow-jumps -fcse-skip-blocks -fgcse -fgcse-lm -fexpensive-optimizations -fstrength-reduce -frerun-cse-after-loop -fschedule-insns -fschedule-insns2 -fsched-interblock -fsched-spec -fregmove -fstrict-aliasing -fdelete-null-pointer-checks -freorder-blocks -freorder-functions -falign-functions -falign-jumps -falign-loops -falign-labels -ftree-pre -ftree-vrp  -ftree-switch-conversion -finline-small-functions -findirect-inlining -fipa-sra -fcaller-saves -fpeephole2 -fstrict-overflow  -fdata-sections -ffunction-sections  -Wall -Wcast-align -Wcast-qual -Wconversion -Wdisabled-optimization -Weffc++ -Wendif-labels -Wextra -Wfloat-equal -Winline -Winvalid-pch -Wmissing-format-attribute -Wmissing-noreturn -Wno-packed -Wno-padded -Wpointer-arith -Wredundant-decls -Wshadow -Wundef -Wunreachable-code -Wwrite-strings -Wno-unused-function  -pedantic "/>
+        <appendMe value="-std=gnu++0x  -fthread-jumps -fcrossjumping -foptimize-sibling-calls -fcse-follow-jumps -fcse-skip-blocks -fgcse -fgcse-lm -fexpensive-optimizations -fstrength-reduce -frerun-cse-after-loop -fschedule-insns -fschedule-insns2 -fsched-interblock -fsched-spec -fregmove -fstrict-aliasing -fdelete-null-pointer-checks -freorder-blocks -freorder-functions -falign-functions -falign-jumps -falign-loops -falign-labels -ftree-pre -ftree-vrp  -ftree-switch-conversion -finline-small-functions -findirect-inlining -fipa-sra -fcaller-saves -fpeephole2 -fstrict-overflow  -fdata-sections -ffunction-sections  -Wall -Wcast-align -Wcast-qual -Wconversion -Wdisabled-optimization -Wendif-labels -Wextra -Wfloat-equal -Winline -Winvalid-pch -Wmissing-format-attribute -Wmissing-noreturn -Wno-packed -Wno-padded -Wpointer-arith -Wredundant-decls -Wshadow -Wundef -Wunreachable-code -Wwrite-strings -Wno-unused-function  -pedantic --param max-inline-insns-single=2000 --param large-function-growth=200 -Weffc++ "/>
       </C32CPP>
       <C32Global>
         <property key="legacy-libc" value="false"/>
