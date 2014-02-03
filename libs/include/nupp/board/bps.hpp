@@ -14,7 +14,6 @@
 #include "nupp/comm/tempsensor.hpp"
 #include "nupp/component/nokia5110.hpp"
 #include "nupp/component/button.hpp"
-#include "nupp/peripheral/usbhid.hpp"
 #include "nupp/peripheral/serial.hpp"
 #include "nupp/peripheral/spi.hpp"
 #include "nupp/peripheral/can.hpp"
@@ -22,7 +21,6 @@
 #include "nupp/timer.hpp"
 #include "nupp/wdt.hpp"
 #include "nupp/array.hpp"
-#include "nupp/closure.hpp"
 #include "nu/compiler.h"
 
 #define NU_BPS_TIMEOUT_INT_MS 100 //ms
@@ -98,13 +96,13 @@ namespace nu {
 		static const size_t N_MODULES = 32;
 		static const uint16_t MAX_VOLTAGE = 43000; // multiple of 100uV
 		static const uint16_t MIN_VOLTAGE = 27500; // 100uV
-		static const uint32_t MAX_TEMP = 45;
-		static const uint32_t MIN_TEMP = 0;
-		static const float MAX_BATT_CURRENT_DISCHARGING = 72; // 72.8
-		static const float MAX_BATT_CURRENT_CHARGING = -32; // 36.4
+		static const int16_t MAX_TEMP = 450; // deciCelcius
+		static const int16_t MIN_TEMP = 0;
+		static const int16_t MAX_BATT_CURRENT_DISCHARGING = 7200; // centiamps, 72.8
+		static const int16_t MAX_BATT_CURRENT_CHARGING = -3200; // centiamps, -36.4
 
-		static const uint16_t MIN_DISCHARGE_VOLTAGE = MIN_VOLTAGE + 100;
-		static const uint16_t MAX_CHARGE_VOLTAGE = MAX_VOLTAGE + 10;
+		static const uint16_t MIN_DISCHARGE_VOLTAGE = MIN_VOLTAGE + 500;
+		static const uint16_t MAX_CHARGE_VOLTAGE = MAX_VOLTAGE + 100;
 
 		enum TripCode {
 			NONE = 0,
@@ -119,10 +117,10 @@ namespace nu {
 		enum Modes {
 			OFF = 0,
 			DISCHARGING = 1,
-			DRIVE = 2,
-
-			CHARGING = 5,
-			CHARGING_DRIVE = 6
+			DRIVE = 2|1,
+			EMPTY_CHARGING = 4,
+			CHARGING = 4|1,
+			CHARGING_DRIVE = 4|2|1
 		};
 
 		enum Precharge {
@@ -143,25 +141,31 @@ namespace nu {
 		can::Module common_can;
 		Nokia5110 lcd1, lcd2;
 
-#warning "CONFIG in sensor class definitions"
+#warning "CONFIGURE in sensor class definitions"
 		VoltageSensor voltage_sensor; //on D9, SPI Chn 1
-		CurrentSensor current_sensor; // on F12, SPI Chn 4 
+		CurrentSensor current_sensor; // on F12, SPI Chn 4
 		TempSensor temp_sensor; //on A0
 
 		Timer mode_timeout_clock;
 		Timer precharge_timer;
+		Timer can_timer;
 		Timer lcd_timer;
 
 		/**
 		 * Aggregated data of the Sensors and the BMS.
 		 */
 		struct State {
-
 			// scientific data
 			double cc_battery, cc_array, wh_battery, wh_array;
-			int16_t current0, current1; // 10bit voltage, 0-5V
-			Array<uint16_t, 36> voltages; // in 100uv. 4 extra voltages, for empty LTC slots
-			Array<float, N_MODULES> temperatures; // in degC
+
+			// uptime, used in the Run Loop
+			uint32_t uptime; //s
+
+			// error data
+			int8_t error;
+			int8_t error_value;
+			int8_t last_error;
+			int8_t last_error_value;
 
 			// Trip Code & data
 			TripCode trip_code;
@@ -170,57 +174,17 @@ namespace nu {
 			// Protection modes & timers
 			Modes mode;
 			Precharge precharging;
-
-			// error data
 			int8_t disabled_module;
-			int8_t last_error;
-			int8_t error;
-			int8_t error_value;
-
-			// timers & indices used in the Run Loop
-			uint32_t uptime; //s
-			uint8_t module_i;
 
 			INLINE State(): cc_battery(0), cc_array(0), wh_battery(0), wh_array(0),
-				current0(0), current1(0), voltages(0), temperatures(0),
+				uptime(0),
+				error(NOERR), error_value(0), last_error(0), last_error_value(0),
 				trip_code(NONE), trip_data(0),
-				mode(OFF), precharging(PC_OFF),
-				disabled_module(-1), last_error(0), error(NOERR), error_value(0),
-				uptime(0), module_i(0) {}
+				mode(OFF), precharging(PC_OFF), disabled_module(-1) {}
 		} state;
 
-		/**
-		 * The BPS's HID report.
-		 */
-		/*struct Report {
-			// scientific data
-			double cc_battery, cc_array, wh_battery, wh_array;
-			int16_t current0, current1; // 10bit voltage, 0-5V
-			uint16_t voltages[32]; // in 100uv
-			float temperatures[32];
-			// protection data
-			uint8_t mode, precharge;
-			// error data
-			int8_t disabled_module;
-			int8_t last_error;
-			int8_t error;
-			int8_t error_value;
 
-			INLINE Report (State s): cc_battery(s.cc_battery), cc_array(s.cc_array),
-				wh_battery(s.wh_battery), wh_array(s.wh_array),
-				current0(s.current0), current1(s.current1),
-				voltages(), temperatures(),
-				mode(s.mode), precharge(s.precharging),
-				disabled_module(s.disabled_module), last_error(s.last_error),
-				error(s.error), error_value(s.error_value)
-			{
-				memcpy(voltages, s.voltages.data(), sizeof(voltages));
-				memcpy(temperatures, s.temperatures.data(), sizeof(temperatures));
-			}
-		};*/
-
-
-		INLINE BPS(): Nu32(Nu32::V2011),
+		BPS(): Nu32(Nu32::V2011),
 			main_relay(PIN(D, 1), false),
 			array_relay(PIN(D, 2), false),
 			precharge_relay(PIN(D, 3), false),
@@ -235,6 +199,7 @@ namespace nu {
 			temp_sensor(),
 			mode_timeout_clock(NU_BPS_TIMEOUT_INT_MS, Timer::ms, true),
 			precharge_timer(NU_BPS_PRECHARGE_TIME_MS, Timer::ms, false),
+			can_timer(10, Timer::ms, true),
 			lcd_timer(1, Timer::s, true),
 			state()
 		{
@@ -287,11 +252,6 @@ namespace nu {
 			}
 		}
 
-		/*INLINE void hid_tx_callback(unsigned char *data, size_t len) {
-			Report r = Report(state);
-			memcpy(data, &r, len);
-		}*/
-
 		INLINE void check_trip_conditions() {
 			TripCode trip_code = NONE;
 			int8_t trip_data = -1;
@@ -300,13 +260,13 @@ namespace nu {
 				if (i == state.disabled_module) {
 					continue;
 				}
-				if (state.voltages[i] > MAX_VOLTAGE) {
+				if (this->voltage_sensor.voltages[i] > MAX_VOLTAGE) {
 					trip_code = OVER_VOLT;
-				} else if (state.voltages[i] < MIN_VOLTAGE) {
+				} else if (this->voltage_sensor.voltages[i] < MIN_VOLTAGE) {
 					trip_code = UNDER_VOLT;
-				} else if (state.temperatures[i] > MAX_TEMP) {
+				} else if (this->temp_sensor.temperatures[i] > MAX_TEMP) {
 					trip_code = OVER_TEMP;
-				} else if (state.temperatures[i] < MIN_TEMP) {
+				} else if (this->temp_sensor.temperatures[i] < MIN_TEMP) {
 					trip_code = UNDER_TEMP;
 				} else {
 					continue;
@@ -316,10 +276,10 @@ namespace nu {
 				break;
 			}
 
-			if (state.current0 > MAX_BATT_CURRENT_DISCHARGING) {
+			if (this->current_sensor.currents[0] > MAX_BATT_CURRENT_DISCHARGING) {
 				trip_code = OVER_CURR_DISCHARGING;
 				trip_data = 0;
-			} else if (state.current0 < MAX_BATT_CURRENT_CHARGING) {
+			} else if (this->current_sensor.currents[0] < MAX_BATT_CURRENT_CHARGING) {
 				trip_code = OVER_CURR_CHARGING;
 				trip_data = 0;
 			}
@@ -335,7 +295,7 @@ namespace nu {
 		}
 
 		/**
-		 * Sets the Battery Protection Mode, based on state.mode.
+		 * Sets the Battery Protection Relays, based on the Mode.
 		 * Either OFF, a DISCHARGE mode, or CHARGING.
 		 *
 		 * Be careful, CHARGING mode is permitted in two circumstances:
@@ -451,14 +411,16 @@ namespace nu {
 
 		INLINE void draw_lcd() {
 			if (this->lcd_timer.has_expired()) {
+				uint8_t module_i = state.uptime % N_MODULES; // next module index
+
 				lcd1.lcd_clear();
-				lcd1 << "ZELDA " << state.module_i << end;
+				lcd1 << "ZELDA " << module_i << end;
 				lcd1.goto_xy(0, 1);
-				lcd1 << "V: " << state.voltages[state.module_i] << end;
+				lcd1 << "V: " << this->voltage_sensor.voltages[module_i] << end;
 				lcd1.goto_xy(0, 2);
-				lcd1 << "T: " << state.temperatures[state.module_i] << end;
+				lcd1 << "T: " << this->temp_sensor.temperatures[module_i] << end;
 				lcd1.goto_xy(0, 3);
-				lcd1 << "I0: " <<  state.current0 << end;
+				lcd1 << "I0: " <<  this->current_sensor.currents[0] << end;
 				lcd1.goto_xy(0, 4);
 				lcd1 << "Off: " << state.disabled_module << end;
 				lcd1.goto_xy(0, 5);
@@ -466,7 +428,6 @@ namespace nu {
 						"-" << precharge_relay.status() << "-" << motor_relay.status() << end;
 				led1.toggle();
 
-				++state.module_i %= N_MODULES; // next module index
 				++state.uptime; // increase uptime by 1 second
 				this->lcd_timer.reset(); // reset LCD update clock
 			}

@@ -6,6 +6,7 @@
 namespace nu {
 	/**
 	 * A stack-allocated array. This replaces std::array and std::vector.
+	 * All methods are ALWAYSINLINE'd for speed.
 	 * @warning NO BOUNDS CHECKING
 	 */
 	template <typename T, size_t N>
@@ -38,7 +39,7 @@ namespace nu {
 		ALWAYSINLINE size_t count() {return N;}
 		ALWAYSINLINE size_t size() {return sizeof(T)*N;}
 
-		INLINE Array<T, N>& operator= (T& rvalue) {
+		ALWAYSINLINE Array<T, N>& operator= (T& rvalue) {
 			for (unsigned i=0; i<N; i++) {
 				at(i) = rvalue;
 			}
@@ -50,14 +51,14 @@ namespace nu {
          * @param rvalue The array to be copied.
          */
 		template <typename T2>
-		INLINE Array<T, N>& operator= (Array<T2, N>& rvalue) {
+		ALWAYSINLINE Array<T, N>& operator= (Array<T2, N>& rvalue) {
 			for (unsigned i=0; i<N; i++) {
 				at(i) = rvalue[i];
 			}
 			return *this;
 		}
 
-		INLINE bool operator== (Array<T,N>& rvalue) {
+		ALWAYSINLINE bool operator== (Array<T,N>& rvalue) {
 			bool result = true;
 			for (unsigned i=0; i<N; i++) {
 				result *= (at(i) == rvalue[i]);
@@ -65,7 +66,7 @@ namespace nu {
 			return result;
 		}
 
-		INLINE bool byte_compare (Array<T,N>& rvalue) {
+		ALWAYSINLINE bool byte_compare (Array<T,N>& rvalue) {
 			bool result = true;
 			for (unsigned i=0; i<N; i++) {
 				result &= (memcmp(&array[i], &rvalue.array[i], sizeof(array[i])) == 0);

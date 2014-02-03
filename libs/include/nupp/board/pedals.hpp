@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   pedals.hpp
  * Author: alex
  *
@@ -28,6 +28,8 @@ namespace nu {
 		DigitalOut headlights; // D2
 		DigitalOut lights_brake; // D3
 
+		Timer os_timer;
+
 		struct state_t {
 			uint16_t accel_raw;
 			bool brake_en;
@@ -37,8 +39,6 @@ namespace nu {
 
 			bool gear, reverse_en, regen_en, cruise_en;
 			bool left, right, headlights, horn;
-
-			uint64_t os_timer;
 		} state;
 
 		Pedals():
@@ -51,6 +51,7 @@ namespace nu {
 			lights_l(PIN(D, 1)),
 			headlights(PIN(D, 2)),
 			lights_brake(PIN(D, 3)),
+			os_timer(OS_TIMEOUT_MS, Timer::ms, false),
 			state()
 		{
 			WDT::clear();
@@ -66,27 +67,29 @@ namespace nu {
 			common_can.in().rx(incoming, id);
 			switch (id) {
 				case (uint32_t)can::frame::os::tx::driver_input_k: {
+					// KEEP IN SYNC with flags in /driver-server/SolarCar/DataAggregator.cs
 					can::frame::os::tx::driver_input pkt(incoming);
 					this->state.gear = pkt.frame().gearFlags | 1<<0;
 					this->state.reverse_en = pkt.frame().gearFlags | 1<<1;
-					this->state.horn = pkt.frame().horn;
-					this->state.left = pkt.frame().lightsFlags | 1<<0;
-					this->state.right = pkt.frame().lightsFlags | 1<<1;
-					this->state.headlights = pkt.frame().lightsFlags | 1<<2;
-					
+
+					this->state.left = pkt.frame().signalFlags | 1<<0;
+					this->state.right = pkt.frame().signalFlags | 1<<1;
+					this->state.headlights = pkt.frame().signalFlags | 1<<2;
+					this->state.horn = pkt.frame().signalFlags | 1<<3;
+
+					os_timer.reset();
 				}
 
 				default: {
 					// Kill things if OS times-out.
-					uint32_t os_time = (uint32_t)timer::ms();
-					if ((os_time > this->state.os_timer + OS_TIMEOUT_MS)||
-							(os_time < this->state.os_timer && os_time > OS_TIMEOUT_MS)) {
+					if (os_timer.has_expired()) {
 						this->state.gear = false;
 						this->state.reverse_en = false;
-						this->state.horn = false;
-						this->state.headlights = false;
+
 						this->state.left = false;
 						this->state.right = false;
+						this->state.headlights = false;
+						this->state.horn = false;
 					}
 				}
 			}
@@ -106,7 +109,7 @@ namespace nu {
 			this->lights_brake.set(state.brake_en);
 			this->horn.set(state.horn);
 			this->headlights.set(state.headlights);
-			
+
 			// Toggle turn-signal once per second
 			bool tick = timer::s()%2;
 			this->lights_l.set(this->state.left? tick: 0);

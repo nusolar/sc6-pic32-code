@@ -42,12 +42,17 @@ class Layout:
 	]
 
 	Trip = [
-		'int32_t %s',
-		'uint32_t %s'
+		'int16_t %s',
+		'uint16_t %s',
+		'uint16_t %s',
+		'uint16_t %s'
 	]
 
 	Error = [
-		'char %s[8]'
+		'int16_t %s',
+		'int16_t %s',
+		'int16_t %s',
+		'int16_t %s'
 	]
 
 	Status = [
@@ -56,9 +61,9 @@ class Layout:
 	]
 
 	PedalBoard = [
-		'uint16_t %s', # accel pedal
-		'uint16_t %s', # regen pedal
-		'uint32_t %s' # bool brake
+		'uint16_t %s',  # accel pedal
+		'uint16_t %s',  # regen pedal
+		'uint32_t %s'   # bool brake
 	]
 
 	CustomBitField = [
@@ -315,12 +320,10 @@ can_def = [
 				'name': 'tx',
 				'base': 0x210,
 				'contents': [
-					['heartbeat', Layout.Status, ('bms_str', 'reserved')],
-					['error', Layout.Error, ['message']],
-					['uptime', Layout.Double, ('seconds',)],
-					['last_reset', Layout.Trip, ('last_reset_code', 'reserved')],
-					['batt_bypass', Layout.Module, ('module', 'reserved')],
-					['current', Layout.Float2, ('array', 'battery')],
+					['heartbeat', Layout.Status, ('bms_str', 'uptime_s')],
+					['error', Layout.Error, ['error', 'error_value', 'last_error', 'last_error_value']],
+					['bps_status', Layout.UInt16x4, ('mode', 'disabled_module', 'reserved', 'reserved1')],
+					['current', Layout.UInt16x4, ('array', 'battery', 'reserved', 'reserved1')],
 					['cc_array', Layout.Double, ('count',)],
 					['cc_batt', Layout.Double, ('count',)],
 					['cc_mppt1', Layout.Double, ('count',)],
@@ -330,14 +333,9 @@ can_def = [
 					['Wh_mppt1', Layout.Double, ('count',)],
 					['Wh_mppt2', Layout.Double, ('count',)],
 					['Wh_mppt3', Layout.Double, ('count',)],
-					['voltage', Layout.Module, ('module', 'voltage')],
-					['owVoltage', Layout.Module, ('module', 'ow_voltage')],
-					['temp', Layout.Module, ('sensor', 'temp')],
-					['trip', Layout.Trip, ('trip_code', 'module')],
-					['last_trip', Layout.Trip, ('trip_code', 'module')],
-					['trip_pt_current', Layout.Float2, ('low', 'high')],
-					['trip_pt_voltage', Layout.Float2, ('low', 'high')],
-					['trip_pt_temp', Layout.Float2, ('low', 'high')]
+					['voltage_temp', Layout.UInt16x4, ('module', 'voltage', 'temp', 'reserved')],
+					['trip_pt', Layout.Trip, ('trip_code', 'module', 'low_current', 'high_current')],
+					['trip_pt_voltage_temp', Layout.UInt16x4, ('low_volt', 'high_volt', 'low_temp', 'high_temp')],
 				]
 			}
 		]
@@ -347,7 +345,7 @@ can_def = [
 		'contents': [
 			{
 				'name': 'rx',
-				'base': 0x500, # == Tritium's Driver Controls' tx base but we don't use that.
+				'base': 0x500,  # == Tritium's Driver Controls' tx base but we don't use that.
 				'contents': [
 					['driver_controls_id', Layout.Status, ['drvId', 'serialNo']],
 					['drive_cmd', Layout.Float2, ['motorVelocity', 'motorCurrent']],
@@ -406,7 +404,7 @@ can_def = [
 				'name': 'tx',
 				'base': 0x310,
 				'contents': [
-					['driver_input', Layout.UInt16x4, ['power', 'gearFlags', 'lightsFlags', 'horn']]
+					['driver_input', Layout.UInt16x4, ['power', 'gearFlags', 'signalFlags', 'reserved']]
 				]
 			},
 		]
@@ -416,14 +414,14 @@ can_def = [
 		'contents': [
 			{
 				'name': 'rx',
-				'base': 0b11100010000, # 0x710
+				'base': 0b11100010000,  # 0x710
 				'contents': [
 					['mppt', Layout.Empty]
 				]
 			},
 			{
 				'name': 'tx',
-				'base': 0b11100010000, # 0x710
+				'base': 0b11100010000,  # 0x710
 				'contents': [
 					['mppt', Layout.Empty]
 				]
@@ -453,7 +451,7 @@ class Unarchiver:
 	cpp_comment_prepend = dedent(cpp_comment_prepend)
 
 	cpp_comment_postpend = """\
-	#pragma GCC diagnostic warning "-pedantic"
+	\n#pragma GCC diagnostic warning "-pedantic"
 	\n"""
 	cpp_comment_postpend = dedent(cpp_comment_postpend)
 
@@ -540,4 +538,3 @@ def main():
 
 if __name__ == '__main__':
 	main()
-

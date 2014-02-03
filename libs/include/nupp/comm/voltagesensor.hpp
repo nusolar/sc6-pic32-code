@@ -19,7 +19,7 @@ namespace nu
 		static const uint16_t MIN_VOLTAGE = 27500; // 100uV
 
 		LTC6803<3> voltage_sensor; // 3 LTCs
-		Array<uint16_t, 3*12> voltages; // 36 readings, but only 32 sensors are connected
+		Array<uint16_t, 3*12> voltages; // in 100uv. 4 extra voltages, for unused LTC slots
 		Timer voltage_measuring_timer;
 		Timer openwire_timer;
 		bool has_configured_ltcs;

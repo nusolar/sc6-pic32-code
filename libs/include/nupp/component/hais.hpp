@@ -27,7 +27,8 @@ namespace nu
 			P400 = 400
 		};
 		
-		/** Convert ADC voltage output to measured current. TAKES MICROVOLTS
+		/** Convert ADC voltage output to measured current.
+		 * TAKES MICROVOLTS, gives MICROAMPS
 		 *
 		 * V_out = V_ref + (0.625*I_p/(I_pn))
 		 * V_ref = 2.5 +/- 0.025V
@@ -35,6 +36,8 @@ namespace nu
 		 * I_p   = primary current (measured current)
 		 *
 		 * Ergo, (8*I_pn/5) Amperes/Volt. For example, 80A/V for the HAIS50P.
+		 * Max value is technically 0xffffffff --> 343397383600uA ~= 343397A.
+		 * Max value is really 4999923 --> 199993840uA ~= 199.99A
 		 */
 		static PURE INLINE int32_t voltage_to_current(int32_t voltage, PN I_pn)
 		{

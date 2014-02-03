@@ -15,7 +15,7 @@ namespace nu
 	struct TempSensor
 	{
 		DS18X20<32> temp_sensor; //on A0
-		Array<float, 32> temperatures; // in degrees C
+		Array<int16_t, 32> temperatures; // in decidegrees C
 		Timer temp_measuring_clock;
 		bool has_configured_ds;
 

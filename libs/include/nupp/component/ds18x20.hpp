@@ -13,6 +13,14 @@
 #include "nu/compiler.h"
 
 namespace nu {
+	/**
+	 * DS18X20 supports 9, 10, 11, and 12bit resolution.
+	 *
+	 * Default resolution at powerup is 12bit, corresponding to 0.0625C precision
+	 * and a max temperature of 127.9375C, 0x7ff, or 0b11111111111 (12 ones).
+	 *
+	 * Class DS18X20 returns its temperatures in deciCelcius.
+	 */
 	template <size_t num_devices>
 	struct DS18X20: public OneWire {
 		static const typename OneWire::romcode roms[32];
@@ -47,15 +55,17 @@ namespace nu {
 			this->read_scratch(&scr, sizeof(scr));
 		}
 
-		static PURE INLINE float convert_temperature(uint16_t temp) {
-			return (float)temp/16;
+		/** Convert temperature from 1/256th C to 1/10th C */
+		static PURE INLINE int16_t convert_temperature(int16_t temp) {
+			return (int16_t)(temp*10/16);
 		}
 
-		INLINE void update_temperatures(Array<float, num_devices> &values) {
+		INLINE void update_temperatures(Array<int16_t, num_devices> &values) {
 			Array<scratch, num_devices> scratches;
 			for (unsigned i=0; i<num_devices; i++) {
 				this->read_temperature(this->roms[i], scratches[i]);
-				values[i] = convert_temperature(scratches[i].temperature);
+				// DS18X20 uses repeated sign bits, so we zero them out.
+				values[i] = convert_temperature((int16_t)(scratches[i].temperature|0x87ff));
 			}
 		}
 	};

@@ -95,7 +95,10 @@ namespace nu {
 			timer::delay_us(5);
 		}
 
-		/** Compute compute the actual reading in microvolts */
+		/**
+		 * Compute compute the actual reading in microvolts
+		 * Max value is 0xffff --> 4999923 uV
+		 */
 		INLINE uint32_t convert_uv(uint16_t val){
 			return (uint32_t)((5000000 * (uint64_t)val)>>16);
 		}

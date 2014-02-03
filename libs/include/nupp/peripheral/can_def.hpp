@@ -72,8 +72,8 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								int32_t trip_code;
-								uint32_t module;
+								int16_t trip_code;
+								uint16_t module;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -238,27 +238,20 @@ namespace nu
 					{
 						heartbeat_k = 0x210,
 						error_k = 0x211,
-						uptime_k = 0x212,
-						last_reset_k = 0x213,
-						batt_bypass_k = 0x214,
-						current_k = 0x215,
-						cc_array_k = 0x216,
-						cc_batt_k = 0x217,
-						cc_mppt1_k = 0x218,
-						cc_mppt2_k = 0x219,
-						cc_mppt3_k = 0x21a,
-						Wh_batt_k = 0x21b,
-						Wh_mppt1_k = 0x21c,
-						Wh_mppt2_k = 0x21d,
-						Wh_mppt3_k = 0x21e,
-						voltage_k = 0x21f,
-						owVoltage_k = 0x220,
-						temp_k = 0x221,
-						trip_k = 0x222,
-						last_trip_k = 0x223,
-						trip_pt_current_k = 0x224,
-						trip_pt_voltage_k = 0x225,
-						trip_pt_temp_k = 0x226
+						bps_status_k = 0x212,
+						current_k = 0x213,
+						cc_array_k = 0x214,
+						cc_batt_k = 0x215,
+						cc_mppt1_k = 0x216,
+						cc_mppt2_k = 0x217,
+						cc_mppt3_k = 0x218,
+						Wh_batt_k = 0x219,
+						Wh_mppt1_k = 0x21a,
+						Wh_mppt2_k = 0x21b,
+						Wh_mppt3_k = 0x21c,
+						voltage_temp_k = 0x21d,
+						trip_pt_k = 0x21e,
+						trip_pt_voltage_temp_k = 0x21f
 					};
 
 					class heartbeat: public Packet
@@ -272,7 +265,7 @@ namespace nu
 							struct PACKED
 							{
 								char bms_str[4];
-								uint32_t reserved;
+								uint32_t uptime_s;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -293,7 +286,10 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								char message[8];
+								int16_t error;
+								int16_t error_value;
+								int16_t last_error;
+								int16_t last_error_value;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -304,7 +300,7 @@ namespace nu
 						error(const Packet& p): Packet(p.data()) {}
 					};
 
-					class uptime: public Packet
+					class bps_status: public Packet
 					{
 						static const uint32_t _id = 0x212;
 					public:
@@ -314,18 +310,21 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								double seconds;
+								uint16_t mode;
+								uint16_t disabled_module;
+								uint16_t reserved;
+								uint16_t reserved1;
 							};
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
 						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
-						uptime(): Packet(0) {}
-						uptime(const uint64_t _i): Packet(_i) {}
-						uptime(const Packet& p): Packet(p.data()) {}
+						bps_status(): Packet(0) {}
+						bps_status(const uint64_t _i): Packet(_i) {}
+						bps_status(const Packet& p): Packet(p.data()) {}
 					};
 
-					class last_reset: public Packet
+					class current: public Packet
 					{
 						static const uint32_t _id = 0x213;
 					public:
@@ -335,52 +334,10 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								int32_t last_reset_code;
-								uint32_t reserved;
-							};
-						};
-						uint32_t id() const {return _id;}
-						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
-						last_reset(): Packet(0) {}
-						last_reset(const uint64_t _i): Packet(_i) {}
-						last_reset(const Packet& p): Packet(p.data()) {}
-					};
-
-					class batt_bypass: public Packet
-					{
-						static const uint32_t _id = 0x214;
-					public:
-						union layout_t
-						{
-							uint64_t data;
-							uint8_t bytes[8];
-							struct PACKED
-							{
-								uint32_t module;
-								float reserved;
-							};
-						};
-						uint32_t id() const {return _id;}
-						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
-						batt_bypass(): Packet(0) {}
-						batt_bypass(const uint64_t _i): Packet(_i) {}
-						batt_bypass(const Packet& p): Packet(p.data()) {}
-					};
-
-					class current: public Packet
-					{
-						static const uint32_t _id = 0x215;
-					public:
-						union layout_t
-						{
-							uint64_t data;
-							uint8_t bytes[8];
-							struct PACKED
-							{
-								float array;
-								float battery;
+								uint16_t array;
+								uint16_t battery;
+								uint16_t reserved;
+								uint16_t reserved1;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -393,7 +350,7 @@ namespace nu
 
 					class cc_array: public Packet
 					{
-						static const uint32_t _id = 0x216;
+						static const uint32_t _id = 0x214;
 					public:
 						union layout_t
 						{
@@ -414,7 +371,7 @@ namespace nu
 
 					class cc_batt: public Packet
 					{
-						static const uint32_t _id = 0x217;
+						static const uint32_t _id = 0x215;
 					public:
 						union layout_t
 						{
@@ -435,7 +392,7 @@ namespace nu
 
 					class cc_mppt1: public Packet
 					{
-						static const uint32_t _id = 0x218;
+						static const uint32_t _id = 0x216;
 					public:
 						union layout_t
 						{
@@ -456,7 +413,7 @@ namespace nu
 
 					class cc_mppt2: public Packet
 					{
-						static const uint32_t _id = 0x219;
+						static const uint32_t _id = 0x217;
 					public:
 						union layout_t
 						{
@@ -477,7 +434,7 @@ namespace nu
 
 					class cc_mppt3: public Packet
 					{
-						static const uint32_t _id = 0x21a;
+						static const uint32_t _id = 0x218;
 					public:
 						union layout_t
 						{
@@ -498,7 +455,7 @@ namespace nu
 
 					class Wh_batt: public Packet
 					{
-						static const uint32_t _id = 0x21b;
+						static const uint32_t _id = 0x219;
 					public:
 						union layout_t
 						{
@@ -519,7 +476,7 @@ namespace nu
 
 					class Wh_mppt1: public Packet
 					{
-						static const uint32_t _id = 0x21c;
+						static const uint32_t _id = 0x21a;
 					public:
 						union layout_t
 						{
@@ -540,7 +497,7 @@ namespace nu
 
 					class Wh_mppt2: public Packet
 					{
-						static const uint32_t _id = 0x21d;
+						static const uint32_t _id = 0x21b;
 					public:
 						union layout_t
 						{
@@ -561,7 +518,7 @@ namespace nu
 
 					class Wh_mppt3: public Packet
 					{
-						static const uint32_t _id = 0x21e;
+						static const uint32_t _id = 0x21c;
 					public:
 						union layout_t
 						{
@@ -580,7 +537,55 @@ namespace nu
 						Wh_mppt3(const Packet& p): Packet(p.data()) {}
 					};
 
-					class voltage: public Packet
+					class voltage_temp: public Packet
+					{
+						static const uint32_t _id = 0x21d;
+					public:
+						union layout_t
+						{
+							uint64_t data;
+							uint8_t bytes[8];
+							struct PACKED
+							{
+								uint16_t module;
+								uint16_t voltage;
+								uint16_t temp;
+								uint16_t reserved;
+							};
+						};
+						uint32_t id() const {return _id;}
+						layout_t &frame() {return *(layout_t *)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
+						voltage_temp(): Packet(0) {}
+						voltage_temp(const uint64_t _i): Packet(_i) {}
+						voltage_temp(const Packet& p): Packet(p.data()) {}
+					};
+
+					class trip_pt: public Packet
+					{
+						static const uint32_t _id = 0x21e;
+					public:
+						union layout_t
+						{
+							uint64_t data;
+							uint8_t bytes[8];
+							struct PACKED
+							{
+								int16_t trip_code;
+								uint16_t module;
+								uint16_t low_current;
+								uint16_t high_current;
+							};
+						};
+						uint32_t id() const {return _id;}
+						layout_t &frame() {return *(layout_t *)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
+						trip_pt(): Packet(0) {}
+						trip_pt(const uint64_t _i): Packet(_i) {}
+						trip_pt(const Packet& p): Packet(p.data()) {}
+					};
+
+					class trip_pt_voltage_temp: public Packet
 					{
 						static const uint32_t _id = 0x21f;
 					public:
@@ -590,170 +595,18 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								uint32_t module;
-								float voltage;
+								uint16_t low_volt;
+								uint16_t high_volt;
+								uint16_t low_temp;
+								uint16_t high_temp;
 							};
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
 						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
-						voltage(): Packet(0) {}
-						voltage(const uint64_t _i): Packet(_i) {}
-						voltage(const Packet& p): Packet(p.data()) {}
-					};
-
-					class owVoltage: public Packet
-					{
-						static const uint32_t _id = 0x220;
-					public:
-						union layout_t
-						{
-							uint64_t data;
-							uint8_t bytes[8];
-							struct PACKED
-							{
-								uint32_t module;
-								float ow_voltage;
-							};
-						};
-						uint32_t id() const {return _id;}
-						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
-						owVoltage(): Packet(0) {}
-						owVoltage(const uint64_t _i): Packet(_i) {}
-						owVoltage(const Packet& p): Packet(p.data()) {}
-					};
-
-					class temp: public Packet
-					{
-						static const uint32_t _id = 0x221;
-					public:
-						union layout_t
-						{
-							uint64_t data;
-							uint8_t bytes[8];
-							struct PACKED
-							{
-								uint32_t sensor;
-								float temp;
-							};
-						};
-						uint32_t id() const {return _id;}
-						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
-						temp(): Packet(0) {}
-						temp(const uint64_t _i): Packet(_i) {}
-						temp(const Packet& p): Packet(p.data()) {}
-					};
-
-					class trip: public Packet
-					{
-						static const uint32_t _id = 0x222;
-					public:
-						union layout_t
-						{
-							uint64_t data;
-							uint8_t bytes[8];
-							struct PACKED
-							{
-								int32_t trip_code;
-								uint32_t module;
-							};
-						};
-						uint32_t id() const {return _id;}
-						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
-						trip(): Packet(0) {}
-						trip(const uint64_t _i): Packet(_i) {}
-						trip(const Packet& p): Packet(p.data()) {}
-					};
-
-					class last_trip: public Packet
-					{
-						static const uint32_t _id = 0x223;
-					public:
-						union layout_t
-						{
-							uint64_t data;
-							uint8_t bytes[8];
-							struct PACKED
-							{
-								int32_t trip_code;
-								uint32_t module;
-							};
-						};
-						uint32_t id() const {return _id;}
-						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
-						last_trip(): Packet(0) {}
-						last_trip(const uint64_t _i): Packet(_i) {}
-						last_trip(const Packet& p): Packet(p.data()) {}
-					};
-
-					class trip_pt_current: public Packet
-					{
-						static const uint32_t _id = 0x224;
-					public:
-						union layout_t
-						{
-							uint64_t data;
-							uint8_t bytes[8];
-							struct PACKED
-							{
-								float low;
-								float high;
-							};
-						};
-						uint32_t id() const {return _id;}
-						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
-						trip_pt_current(): Packet(0) {}
-						trip_pt_current(const uint64_t _i): Packet(_i) {}
-						trip_pt_current(const Packet& p): Packet(p.data()) {}
-					};
-
-					class trip_pt_voltage: public Packet
-					{
-						static const uint32_t _id = 0x225;
-					public:
-						union layout_t
-						{
-							uint64_t data;
-							uint8_t bytes[8];
-							struct PACKED
-							{
-								float low;
-								float high;
-							};
-						};
-						uint32_t id() const {return _id;}
-						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
-						trip_pt_voltage(): Packet(0) {}
-						trip_pt_voltage(const uint64_t _i): Packet(_i) {}
-						trip_pt_voltage(const Packet& p): Packet(p.data()) {}
-					};
-
-					class trip_pt_temp: public Packet
-					{
-						static const uint32_t _id = 0x226;
-					public:
-						union layout_t
-						{
-							uint64_t data;
-							uint8_t bytes[8];
-							struct PACKED
-							{
-								float low;
-								float high;
-							};
-						};
-						uint32_t id() const {return _id;}
-						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
-						trip_pt_temp(): Packet(0) {}
-						trip_pt_temp(const uint64_t _i): Packet(_i) {}
-						trip_pt_temp(const Packet& p): Packet(p.data()) {}
+						trip_pt_voltage_temp(): Packet(0) {}
+						trip_pt_voltage_temp(const uint64_t _i): Packet(_i) {}
+						trip_pt_voltage_temp(const Packet& p): Packet(p.data()) {}
 					};
 				}
 			}
@@ -1300,8 +1153,8 @@ namespace nu
 							{
 								uint16_t power;
 								uint16_t gearFlags;
-								uint16_t lightsFlags;
-								uint16_t horn;
+								uint16_t signalFlags;
+								uint16_t reserved;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -1376,6 +1229,7 @@ namespace nu
 			}
 		}
 	}
-}#pragma GCC diagnostic warning "-pedantic"
+}
+#pragma GCC diagnostic warning "-pedantic"
 
 
