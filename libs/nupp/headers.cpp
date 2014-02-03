@@ -1,6 +1,5 @@
 // printed circuit boards
 #include "nupp/board/bps.hpp"
-#include "nupp/board/oldbps.hpp"
 #include "nupp/board/pedals.hpp"
 #include "nupp/board/output_board.hpp"
 #include "nupp/board/nu32.hpp"
