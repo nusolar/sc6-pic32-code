@@ -10,7 +10,7 @@ extern "C" {
 }
 
 namespace nu {
-	namespace can {
+	namespace Can {
 		struct Module;
 
 		/**
@@ -56,10 +56,10 @@ namespace nu {
 								uint32_t mask_bits);
 
 			int32_t rx(void *dest, uint32_t &id);
-			int32_t rx(frame::Packet &p, uint32_t &id);
+			int32_t rx(Packet &p, uint32_t &id);
 			int32_t tx(const void *data, size_t num_bytes, uint16_t std_id,
 					uint32_t ext_id = 0, id_type type = STANDARD_ID);
-			int32_t tx(const frame::Packet &p);
+			int32_t tx(const Packet &p);
 		};
 
 

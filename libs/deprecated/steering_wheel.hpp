@@ -85,17 +85,17 @@ namespace nu {
 
 		Button *buttons[SW_N_BTNS];
 		Led *leds[SW_N_LEDS];
-		can::Module common_can;
+		Can::Module common_can;
 		uLCD28PT lcd;
 
 		/** State of Steering Wheel & car */
 		struct state {
 			Bitset<SW_N_BTNS> btns; // state of buttons & LEDs
 			Bitset<SW_N_LEDS> leds;
-			can::frame::sw::rx::buttons buttons;
-			can::frame::sw::rx::lights lights; // requested LED state
-			can::frame::ws20::tx::motor_velocity velo;
-			can::frame::ws20::tx::current_vector curr;
+			Can::Addr::sw::rx::buttons buttons;
+			Can::Addr::sw::rx::lights lights; // requested LED state
+			Can::Addr::ws20::tx::motor_velocity velo;
+			Can::Addr::ws20::tx::current_vector curr;
 
 			ALWAYSINLINE state(): btns(0), leds(0), buttons(), lights(), velo(), curr() {}
 		} state;
@@ -186,23 +186,23 @@ namespace nu {
 		 */
 		ALWAYSINLINE void recv_can() {
 			WDT::clear();
-			can::frame::Packet incoming;
+			Can::Packet incoming;
 			uint32_t id;
 			common_can.in().rx(incoming.bytes(), id);
 
 			switch (id) {
-				case (uint32_t)can::frame::sw::rx::buttons_k:
+				case (uint32_t)Can::Addr::sw::rx::buttons_k:
 					state.buttons.data() = incoming.data();
 					state.btns &= ~state.buttons.data();
 					break;
-				case (uint32_t)can::frame::sw::rx::lights_k:
+				case (uint32_t)Can::Addr::sw::rx::lights_k:
 					state.lights.data() = incoming.data();
 					// WARNING: unimplemented
 					break;
-				case (uint32_t)can::frame::ws20::tx::motor_velocity_k:
+				case (uint32_t)Can::Addr::ws20::tx::motor_velocity_k:
 					state.velo.data() = incoming.data();
 					break;
-				case (uint32_t)can::frame::ws20::tx::current_vector_k:
+				case (uint32_t)Can::Addr::ws20::tx::current_vector_k:
 					state.curr.data() = incoming.data();
 					break;
 				default:
@@ -238,17 +238,17 @@ namespace nu {
 		ALWAYSINLINE void send_can() {
 			WDT::clear();
 
-			can::frame::sw::tx::buttons btns_pkt;
+			Can::Addr::sw::tx::buttons btns_pkt;
 			btns_pkt.data() = (uint64_t) state.btns;
 			common_can.out().tx(btns_pkt.bytes(),
 								4, // 64->32 ok. WARNING BIT ORDER?
-								(uint16_t)can::frame::sw::tx::buttons_k);
+								(uint16_t)Can::Addr::sw::tx::buttons_k);
 
-			can::frame::sw::tx::lights lts_pkt;
+			Can::Addr::sw::tx::lights lts_pkt;
 			lts_pkt.data() = (uint64_t) state.leds;
 			common_can.out().tx(lts_pkt.bytes(),
 								4, // 64->32 ok. WARNING BIT ORDER?
-								(uint16_t)can::frame::sw::tx::lights_k);
+								(uint16_t)Can::Addr::sw::tx::lights_k);
 		}
 
 		/**
@@ -272,7 +272,7 @@ namespace nu {
 			WDT::clear();
 			animate_leds();
 			read_ins();
-			can::frame::ws20::tx::motor_velocity x(0);
+			Can::Addr::ws20::tx::motor_velocity x(0);
 			x.frame.contents = {50, 50};
 			lcd << x;
 		}

@@ -4,6 +4,8 @@ import argparse
 from textwrap import dedent, indent
 
 
+### The possible memory layouts of a CAN frame: ###
+
 class Layout:
 	""" Static Class.
 	Contains bit layouts for CAN packets. When we define the CAN
@@ -12,154 +14,56 @@ class Layout:
 	Empty = []
 
 	Module = [
-		'uint32_t %s',
-		'float %s'
+		'UInt32',
+		'Single'
 	]
 
-	Double = [
-		'double %s'
+	Float64x1 = [
+		'Double'
 	]
 
 	Float32x2 = [
-		'float %s',
-		'float %s'
+		'Single',
+		'Single'
 	]
 
 	UInt64x1 = [
-		'uint64_t %s'
+		'UInt64'
 	]
 
 	UInt32x2 = [
-		'uint32_t %s',
-		'uint32_t %s'
+		'UInt32',
+		'UInt32'
 	]
 
 	UInt16x4 = [
-		'uint16_t %s',
-		'uint16_t %s',
-		'uint16_t %s',
-		'uint16_t %s'
+		'UInt16',
+		'UInt16',
+		'UInt16',
+		'UInt16'
+	]
+
+	Int16x4 = [
+		'Int16',
+		'Int16',
+		'Int16',
+		'Int16'
 	]
 
 	Trip = [
-		'int16_t %s',
-		'uint16_t %s',
-		'uint16_t %s',
-		'uint16_t %s'
-	]
-
-	Error = [
-		'int16_t %s',
-		'int16_t %s',
-		'int16_t %s',
-		'int16_t %s'
+		'Int16',
+		'UInt16',
+		'UInt16',
+		'UInt16'
 	]
 
 	Status = [
-		'char %s[4]',
-		'uint32_t %s'
-	]
-
-	PedalBoard = [
-		'uint16_t %s',  # accel pedal
-		'uint16_t %s',  # regen pedal
-		'uint32_t %s'   # bool brake
-	]
-
-	CustomBitField = [
-		'%s'
+		'UInt32',  # ACTUALLY supposed to be char[4] in c++
+		'UInt32'
 	]
 
 
-class BitFields:
-	OSStatus = [
-		['power', 1],
-		['drive', 1],
-		['reverse', 1],
-		['signals', 2],
-		['headlights', 1],
-		['horn', 1]
-	]
-
-
-class CanPacket:
-	cpp_class_template = """\
-	class %(name)s: public Packet
-	{
-		static const uint32_t _id = %(id)s;
-	public:
-		union layout_t
-		{
-			uint64_t data;
-			uint8_t bytes[8];
-			struct PACKED
-			{
-	%(indented_fields)s
-			};
-		};
-		uint32_t id() const {return _id;}
-		layout_t &frame() {return *(layout_t *)&Packet::frame();}
-		layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
-		%(name)s(): Packet(0) {}
-		%(name)s(const uint64_t _i): Packet(_i) {}
-		%(name)s(const Packet& p): Packet(p.data()) {}
-	};"""
-	cpp_class_template = dedent(cpp_class_template)
-
-	cs_class_template = """\
-	class %(name)s: public CanPacket
-	{
-		public const UInt16 _id = %(id)s;
-
-		[StructLayout(LayoutKind.Explicit)]
-		struct byte_array
-		{
-			[FieldOffset(0)]
-			public UInt64 data;
-		}
-	}"""
-	cs_class_template = dedent(cs_class_template)
-
-	def __init__(self, name='error', layout=Layout.Empty, field_names=(), id=0):
-		if type(name) is not str:
-			raise TypeError("type of [name] for CanPacket must be <str>.")
-		if type(layout) not in (list, tuple):
-			raise TypeError("type of [layout] for CanPacket must be iterable.")
-		if type(field_names) not in (list, tuple):
-			raise TypeError("type of [field_names] for CanPacket must be iterable.")
-		if type(id) is not int:
-			raise TypeError("type of [id] for CanPacket must be <int>.")
-
-		self.name = name
-		self.layout = layout
-		self.field_names = field_names
-		self.id = hex(id)
-
-	def get_cpp(self):
-		'''Returns C++ source code for this CanPacket.'''
-		if self.layout is Layout.CustomBitField:
-			raise NotImplementedError("TODO")
-
-		# construct struct members, indent, & join with newlines
-		members = []
-		for layout, name in zip(self.layout, self.field_names):
-			try:
-				members.append('\t\t\t' + layout % name + ';')
-			except TypeError as e:
-				print('name = ' + self.name)
-				print('layout = ' + layout)
-				print("members = " + name)
-				raise e
-		members = '\n'.join(members)
-
-		format_args = {'name': self.name, 'id': self.id, 'indented_fields': members}
-		return self.cpp_class_template % format_args
-
-	def get_cs(self):
-		''' Returns C# source code for this CanPacket.'''
-		if self.layout is Layout.CustomBitField:
-			raise NotImplementedError("TODO")
-
+### Internal representations of Abstract Syntax Elements for generated sourcecode: ###
 
 class CanBasePacket:
 	cpp_class_packet = """\
@@ -198,6 +102,132 @@ class CanBasePacket:
 	cs_class_packet = """\
 	class Packet
 	{
+		[StructLayout(LayoutKind.Explicit)]
+		public struct UInt64x1
+		{
+			[FieldOffset(0)]
+			public UInt64 uint64_0;
+		}
+
+		[StructLayout(LayoutKind.Explicit)]
+		public struct Float64x1
+		{
+			[FieldOffset(0)]
+			public Double double_0;
+		}
+
+		[StructLayout(LayoutKind.Explicit)]
+		public struct Float32x2
+		{
+			[FieldOffset(0)]
+			public Single single_0;
+			[FieldOffset(4)]
+			public Single single_1;
+		}
+
+		[StructLayout(LayoutKind.Explicit)]
+		public struct UInt32x2
+		{
+			[FieldOffset(0)]
+			public UInt32 uint32_0;
+			[FieldOffset(4)]
+			public UInt32 uint32_1;
+		}
+
+		[StructLayout(LayoutKind.Explicit)]
+		public struct UInt16x4
+		{
+			[FieldOffset(0)]
+			public UInt16 uint16_0;
+			[FieldOffset(2)]
+			public UInt16 uint16_1;
+			[FieldOffset(4)]
+			public UInt16 uint16_2;
+			[FieldOffset(6)]
+			public UInt16 uint16_3;
+		}
+
+		[StructLayout(LayoutKind.Explicit)]
+		public struct Int16x4
+		{
+			[FieldOffset(0)]
+			public Int16 int16_0;
+			[FieldOffset(2)]
+			public Int16 int16_1;
+			[FieldOffset(4)]
+			public Int16 int16_2;
+			[FieldOffset(6)]
+			public Int16 int16_3;
+		}
+
+		[StructLayout(LayoutKind.Explicit)]
+		public struct Status
+		{
+			[FieldOffset(0)]
+			public UInt32 uint32_0;
+			[FieldOffset(4)]
+			public UInt32 uint32_1;
+		}
+
+		[StructLayout(LayoutKind.Explicit)]
+		public struct Trip
+		{
+			[FieldOffset(0)]
+			public Int16 int16_0;
+			[FieldOffset(2)]
+			public UInt16 uint16_1;
+			[FieldOffset(4)]
+			public UInt16 uint16_2;
+			[FieldOffset(6)]
+			public UInt16 uint16_3;
+		}
+
+		[StructLayout(LayoutKind.Explicit)]
+		public struct UInt8x8
+		{
+			[FieldOffset(0)]
+			public Byte byte_0;
+			[FieldOffset(1)]
+			public Byte byte_1;
+			[FieldOffset(2)]
+			public Byte byte_2;
+			[FieldOffset(3)]
+			public Byte byte_3;
+			[FieldOffset(4)]
+			public Byte byte_4;
+			[FieldOffset(5)]
+			public Byte byte_5;
+			[FieldOffset(6)]
+			public Byte byte_6;
+			[FieldOffset(7)]
+			public Byte byte_7;
+		}
+
+		[StructLayout(LayoutKind.Explicit)]
+		public struct Frame
+		{
+			[FieldOffset(0)]
+			public UInt64 data;
+			[FieldOffset(0)]
+			public Float64x1 float64x1;
+			[FieldOffset(0)]
+			public Float32x2 float32x2;
+			[FieldOffset(0)]
+			public UInt64x1 uint64x1;
+			[FieldOffset(0)]
+			public UInt32x2 uint32x2;
+			[FieldOffset(0)]
+			public UInt16x4 uint16x4;
+			[FieldOffset(0)]
+			public Int16x4 int16x4;
+			[FieldOffset(0)]
+			public UInt8x8 uint8x8;
+			[FieldOffset(0)]
+			public Trip trip;
+			[FieldOffset(0)]
+			public Status status;
+		}
+
 		UInt16 id = 0;
 		Byte length = 0;
 		public Frame frame = new Frame();
@@ -230,6 +260,113 @@ class CanBasePacket:
 		return self.cs_class_packet
 
 
+class CanPacket:
+	cpp_indented_field_template = '\t\t\t%(field_type)s %(name)s;'
+
+	cpp_class_template = """\
+	class %(name)s: public Packet
+	{
+		static const uint32_t _id = %(id)s;
+	public:
+		union layout_t
+		{
+			uint64_t data;
+			uint8_t bytes[8];
+			struct PACKED
+			{
+	%(indented_fields)s
+			};
+		};
+		uint32_t id() const {return _id;}
+		layout_t &frame() {return *(layout_t *)&Packet::frame();}
+		layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
+		%(name)s(): Packet(0) {}
+		%(name)s(const uint64_t _i): Packet(_i) {}
+		%(name)s(const Packet& p): Packet(p.data()) {}
+	};"""
+	cpp_class_template = dedent(cpp_class_template)
+
+	cs_property_template = """\
+	public %(field_type)s %(field_name)s
+	{
+		get { return this.frame.%(lower_frame_type)s.%(lower_field_type)s_%(index)i; }
+		set { this.frame.%(lower_frame_type)s.%(lower_field_type)s_%(index)i = value; }
+	}
+	"""
+	cs_property_template = dedent(cs_property_template)
+
+	cs_class_template = """\
+	class %(name)s: Packet
+	{
+		public %(name)s(UInt64 data = 0) : base(%(id)s, 8, data)
+		{
+		}
+
+		public const UInt16 _id = %(id)s;
+
+		%(indented_fields)s
+	}"""
+	cs_class_template = dedent(cs_class_template)
+
+	def __init__(self, name='error', layout=Layout.Empty, field_names=(), id=0):
+		if type(name) is not str:
+			raise TypeError("type of [name] for CanPacket must be <str>.")
+		if type(layout) not in (list, tuple):
+			raise TypeError("type of [layout] for CanPacket must be iterable.")
+		if type(field_names) not in (list, tuple):
+			raise TypeError("type of [field_names] for CanPacket must be iterable.")
+		if type(id) is not int:
+			raise TypeError("type of [id] for CanPacket must be <int>.")
+
+		self.name = name
+		self.id = hex(id)
+		self.layout = layout
+		self.field_names = field_names
+
+		# EVIL BLACK MAGIC to get c# type name
+		self.lower_frame_type = next(k for k, v in Layout.__dict__.items() if v == layout).lower()
+
+	def get_cpp(self):
+		'''Returns C++ source code for this CanPacket.'''
+
+		# construct struct members, indent, & join with newlines
+		members = []
+		for field_type, name in zip(self.layout, self.field_names):
+			try:
+				format_args = {'field_type': field_type, 'name': name}
+				members.append(self.cpp_indented_field_template % format_args)
+			except TypeError as e:
+				print('name = ' + self.name)
+				print('field_type = ' + field_type)
+				print("member = " + name)
+				raise e
+		members = '\n'.join(members)
+
+		format_args = {'name': self.name, 'id': self.id, 'indented_fields': members}
+		return self.cpp_class_template % format_args
+
+	def get_cs(self):
+		''' Returns C# source code for this CanPacket.'''
+
+		# construct struct members, indent, & join with newlines
+		members = []
+		for field_type, name, index in zip(self.layout, self.field_names, range(len(self.layout))):
+			try:
+				format_args = {'field_name': name, 'index': index,
+							   'field_type': field_type, 'lower_field_type': field_type.lower(),
+							   'lower_frame_type': self.lower_frame_type}
+				members.append(indent(self.cs_property_template % format_args, '\t'))
+			except TypeError as e:
+				print('name = ' + self.name)
+				print('field_type = ' + field_type)
+				print("member = " + name)
+				raise e
+		members = '\n'.join(members)
+
+		format_args = {'name': self.name, 'id': self.id, 'indented_fields': members}
+		return self.cs_class_template % format_args
+
+
 class CanEnum:
 	cpp_enum_template = """\
 	enum %(name)s
@@ -257,9 +394,8 @@ class CanEnum:
 		self.constants.append([name, number])
 
 	def get_cpp(self):
-		indented_fields = ['\t%s = %s' % (name, number) for name, number in self.constants]
+		indented_fields = ('\t%s = %s' % (name, number) for name, number in self.constants)
 		indented_fields = ',\n'.join(indented_fields)
-
 		format_args = {'name': self.name, 'indented_fields': indented_fields}
 		return self.cpp_enum_template % format_args
 
@@ -278,7 +414,7 @@ class Namespace:
 	cs_namespace_template = """\
 	namespace %(name)s
 	{
-		%(contents)s
+	%(indented_contents)s
 	}"""
 	cs_namespace_template = dedent(cs_namespace_template)
 
@@ -310,67 +446,78 @@ class Namespace:
 		self.contents.append(the_enum)
 
 	def get_cpp(self):
-		contents = []
-		for the_class in self.contents:
-			contents.append(indent(the_class.get_cpp(), '\t'))
+		contents = (indent(the_class.get_cpp(), '\t') for the_class in self.contents)
 		contents = '\n\n'.join(contents)
-
 		format_args = {'name': self.name, 'indented_contents': contents}
 		return self.cpp_namespace_template % format_args
 
 	def get_cs(self):
-		raise NotImplementedError("TODO")
-
+		contents = (indent(the_class.get_cs(), '\t') for the_class in self.contents
+			if not isinstance(the_class, CanEnum))
+		contents = '\n\n'.join(contents)
+		format_args = {'name': self.name, 'indented_contents': contents}
+		return self.cs_namespace_template % format_args
 
 ### Serialized CAN definitions: ###
 
 can_def = [
 	{
+		'type': 'namespace',
 		'name': 'bps',
 		'contents': [
 			{
+				'type': 'enumerated_namespace',
 				'name': 'rx',
 				'base': 0x200,
 				'contents': [
-					['trip', Layout.Trip, ['trip_code', 'module']],
-					['reset_cc_batt', Layout.Empty],
-					['reset_cc_array', Layout.Empty],
-					['reset_cc_mppt1', Layout.Empty],
-					['reset_cc_mppt2', Layout.Empty],
-					['reset_cc_mppt3', Layout.Empty],
-					['reset_cc_Wh', Layout.Empty],
-					['reset_cc_all', Layout.Empty]
+					['trip',			Layout.Trip,	['trip_code', 'module']],
+					['reset_cc_batt',	Layout.Empty],
+					['reset_cc_array',	Layout.Empty],
+					['reset_cc_mppt1',	Layout.Empty],
+					['reset_cc_mppt2',	Layout.Empty],
+					['reset_cc_mppt3',	Layout.Empty],
+					['reset_cc_Wh',		Layout.Empty],
+					['reset_cc_all',	Layout.Empty]
 					# MAX = 0x20F
 				]
 			},
 			{
+				'type': 'enumerated_namespace',
 				'name': 'tx',
 				'base': 0x210,
 				'contents': [
-					['heartbeat', Layout.Status, ('bms_str', 'uptime_s')],
-					['error', Layout.Error, ['error', 'error_value', 'last_error', 'last_error_value']],
-					['bps_status', Layout.UInt16x4, ('mode', 'disabled_module', 'reserved', 'reserved1')],
-					['current', Layout.UInt16x4, ('array', 'battery', 'reserved', 'reserved1')],
-					['cc_array', Layout.Double, ('count',)],
-					['cc_batt', Layout.Double, ('count',)],
-					['cc_mppt1', Layout.Double, ('count',)],
-					['cc_mppt2', Layout.Double, ('count',)],
-					['cc_mppt3', Layout.Double, ('count',)],
-					['Wh_batt', Layout.Double, ('count',)],
-					['Wh_mppt1', Layout.Double, ('count',)],
-					['Wh_mppt2', Layout.Double, ('count',)],
-					['Wh_mppt3', Layout.Double, ('count',)],
-					['voltage_temp', Layout.UInt16x4, ('module', 'voltage', 'temp', 'reserved')],
-					['trip_pt', Layout.Trip, ('trip_code', 'module', 'low_current', 'high_current')],
-					['trip_pt_voltage_temp', Layout.UInt16x4, ('low_volt', 'high_volt', 'low_temp', 'high_temp')],
+					['heartbeat',	Layout.Status,	['bms_str', 'uptime_s']],
+					['errors',		Layout.Int16x4,		['error', 'error_value',
+														 'last_error', 'last_error_value']],
+					['bps_status',	Layout.UInt16x4,	['mode', 'disabled_module',
+														 'reserved', 'reserved1']],
+					['current',		Layout.UInt16x4,	['array', 'battery',
+														 'reserved', 'reserved1']],
+					['voltage_temp', Layout.UInt16x4,	['module', 'voltage',
+														 'temp', 'reserved']],
+					['cc_array',	Layout.Float64x1,	['count', ]],
+					['cc_batt',		Layout.Float64x1,	['count', ]],
+					['cc_mppt1',	Layout.Float64x1,	['count', ]],
+					['cc_mppt2',	Layout.Float64x1,	['count', ]],
+					['cc_mppt3',	Layout.Float64x1,	['count', ]],
+					['Wh_batt',		Layout.Float64x1,	['count', ]],
+					['Wh_mppt1',	Layout.Float64x1,	['count', ]],
+					['Wh_mppt2',	Layout.Float64x1,	['count', ]],
+					['Wh_mppt3',	Layout.Float64x1,	['count', ]],
+					['trip_pt',		Layout.Trip,	['trip_code', 'module',
+													 'low_current', 'high_current']],
+					['trip_pt_voltage_temp',	Layout.UInt16x4,
+						['low_volt', 'high_volt', 'low_temp', 'high_temp']],
 				]
 			}
 		]
 	},
 	{
+		'type': 'namespace',
 		'name': 'ws20',
 		'contents': [
 			{
+				'type': 'enumerated_namespace',
 				'name': 'rx',
 				'base': 0x500,  # == Tritium's Driver Controls' tx base but we don't use that.
 				'contents': [
@@ -382,33 +529,37 @@ can_def = [
 				]
 			},
 			{
+				'type': 'enumerated_namespace',
 				'name': 'tx',
 				'base': 0x400,
 				'contents': [
-					['motor_id', Layout.Status, ['tritiumId', 'serialNo']],
-					['motor_status_info', Layout.UInt16x4, ['limitFlags', 'errorFlags', 'activeMotor', 'reserved']],
-					['motor_bus', Layout.Float32x2, ['busVoltage', 'busCurrent']],
-					['motor_velocity', Layout.Float32x2, ['motorVelocity', 'vehicleVelocity']],
-					['motor_phase', Layout.Float32x2, ['phaseBCurrent', 'phaseACurrent']],
-					['voltage_vector', Layout.Float32x2, ['voltageIm', 'voltageRe']],
-					['current_vector', Layout.Float32x2, ['currentIm', 'currentRe']],
-					['backemf', Layout.Float32x2, ['backEmfIm', 'backEmfRe']],
-					['rail_15v_1pt65v', Layout.Float32x2, ['onePtSixtyFiveVRef', 'fifteenVPowerRail']],
-					['rail_2pt5v_1pt2v', Layout.Float32x2, ['onePtTwoVSupply', 'twoPtFiveVSupply']],
-					['fanspeed', Layout.Float32x2, ['fanDrive', 'fanRpm']],
-					['sinks_temp', Layout.Float32x2, ['motorTemp', 'heatsinkTemp']],
-					['cpu_airin_temp', Layout.Float32x2, ['processorTemp', 'airInletTemp']],
-					['cap_airout_temp', Layout.Float32x2, ['capacitorTemp', 'airOutTemp']],
-					['odom_bus_ah', Layout.Float32x2, ['odom', 'dcBusAmpHours']]
+					['motor_id',		Layout.Status,		['tritiumId', 'serialNo']],
+					['motor_status_info', Layout.UInt16x4,	['limitFlags', 'errorFlags',
+															 'activeMotor', 'reserved']],
+					['motor_bus',		Layout.Float32x2,	['busVoltage', 'busCurrent']],
+					['motor_velocity',	Layout.Float32x2,	['motorVelocity', 'vehicleVelocity']],
+					['motor_phase',		Layout.Float32x2,	['phaseBCurrent', 'phaseACurrent']],
+					['voltage_vector',	Layout.Float32x2,	['voltageIm', 'voltageRe']],
+					['current_vector',	Layout.Float32x2,	['currentIm', 'currentRe']],
+					['backemf',			Layout.Float32x2,	['backEmfIm', 'backEmfRe']],
+					['rail_15v_1pt65v',	Layout.Float32x2,	['onePtSixtyFiveVRef', 'fifteenVPowerRail']],
+					['rail_2pt5v_1pt2v', Layout.Float32x2,	['onePtTwoVSupply', 'twoPtFiveVSupply']],
+					['fanspeed',		Layout.Float32x2,	['fanDrive', 'fanRpm']],
+					['sinks_temp',		Layout.Float32x2,	['motorTemp', 'heatsinkTemp']],
+					['cpu_airin_temp',	Layout.Float32x2,	['processorTemp', 'airInletTemp']],
+					['cap_airout_temp',	Layout.Float32x2,	['capacitorTemp', 'airOutTemp']],
+					['odom_bus_ah',		Layout.Float32x2,	['odom', 'dcBusAmpHours']]
 					# MAX = 0x4FF
 				]
 			}
 		]
 	},
 	{
+		'type': 'namespace',
 		'name': 'pedals',
 		'contents': [
 			{
+				'type': 'enumerated_namespace',
 				'name': 'rx',
 				'base': 0x100,
 				'contents': [
@@ -416,30 +567,35 @@ can_def = [
 				]
 			},
 			{
+				'type': 'enumerated_namespace',
 				'name': 'tx',
 				'base': 0x110,
 				'contents': [
-					['pedals', Layout.UInt16x4, ['accel_pedal', 'brake_pedal', 'reserved', 'reserved1']]
+					['pedals', Layout.UInt16x4, ['accel_pedal', 'regen_pedal', 'brake_pedal', 'reserved1']]
 				]
 			},
 		]
 	},
 	{
+		'type': 'namespace',
 		'name': 'os',
 		'contents': [
 			{
+				'type': 'enumerated_namespace',
 				'name': 'tx',
 				'base': 0x310,
 				'contents': [
-					['driver_input', Layout.UInt16x4, ['power', 'gearFlags', 'signalFlags', 'reserved']]
+					['user_cmds', Layout.UInt16x4, ['power', 'gearFlags', 'signalFlags', 'reserved']]
 				]
 			},
 		]
 	},
 	{
+		'type': 'namespace',
 		'name': 'mppt',
 		'contents': [
 			{
+				'type': 'enumerated_namespace',
 				'name': 'rx',
 				'base': 0b11100010000,  # 0x710
 				'contents': [
@@ -447,6 +603,7 @@ can_def = [
 				]
 			},
 			{
+				'type': 'enumerated_namespace',
 				'name': 'tx',
 				'base': 0b11100010000,  # 0x710
 				'contents': [
@@ -458,12 +615,14 @@ can_def = [
 ]
 
 
-class Unarchiver:
+### A source-code generating deserializer: ###
+
+class Deserializer:
 	'''Parses the serialized CAN definitions and creates internal representations
 	using Namespace and CanPacket objects. Produces source code.
 	'''
 
-	cpp_comment_prepend = """\
+	cpp_surrounding_file = """\
 	/*
 	 * CAN frames are implemented as PACKED structs,
 	 * within namespaces for scoping.
@@ -474,28 +633,50 @@ class Unarchiver:
 	#include "nu/compiler.h"
 	#include <cstdint>
 	#pragma GCC diagnostic ignored "-pedantic"
+	#define UInt64 uint64_t
+	#define UInt32 uint32_t
+	#define UInt16 uint16_t
+	#define Int16 int16_t
+	#define Byte uint8_t
+	#define Char int8_t
+	#define Double double
+	#define Single float
+	\n
+	%(contents)s
+	\n
+	#undef UInt64
+	#undef UInt32
+	#undef UInt16
+	#undef Int16
+	#undef Byte
+	#undef Char
+	#undef Double
+	#undef Single
+	#pragma GCC diagnostic warning "-pedantic"
 	\n"""
-	cpp_comment_prepend = dedent(cpp_comment_prepend)
+	cpp_surrounding_file = dedent(cpp_surrounding_file)
 
-	cpp_comment_postpend = """\
-	\n#pragma GCC diagnostic warning "-pedantic"
+	cs_surrounding_file = """\
+	using System;
+	using System.Runtime.InteropServices;
+	\n
+	%(contents)s
 	\n"""
-	cpp_comment_postpend = dedent(cpp_comment_postpend)
+	cs_surrounding_file = dedent(cs_surrounding_file)
 
 	def __init__(self, data=can_def):
-		frame_namespace = Namespace('frame')
-		frame_namespace.add_class(CanBasePacket())
-
+		addr_namespace = Namespace('Addr')
 		for outer_namespace_data in data:
 			outer_namespace = Namespace(outer_namespace_data['name'])
 			for subspace_data in outer_namespace_data['contents']:
 				outer_namespace.add_namespace(self.deserialize_namespace(subspace_data))
-			frame_namespace.add_namespace(outer_namespace)
+			addr_namespace.add_namespace(outer_namespace)
 
-		can = Namespace('can')
-		can.add_namespace(frame_namespace)
+		can_namespace = Namespace('Can')
+		can_namespace.add_class(CanBasePacket())
+		can_namespace.add_namespace(addr_namespace)
 		self.nu = Namespace('nu')
-		self.nu.add_namespace(can)
+		self.nu.add_namespace(can_namespace)
 
 	def deserialize_namespace(self, namespace_data):
 		name = namespace_data['name']
@@ -524,10 +705,11 @@ class Unarchiver:
 		return the_namespace
 
 	def get_cpp(self):
-		return self.cpp_comment_prepend + self.nu.get_cpp() + self.cpp_comment_postpend
+		return self.cpp_surrounding_file % {'contents': self.nu.get_cpp()}
 
 	def get_cs(self):
-		raise NotImplementedError("TODO")
+		self.nu.name = "SolarCar"
+		return self.cs_surrounding_file % {'contents': self.nu.get_cs()}
 
 	def get_root_namespace(self):
 		return self.nu
@@ -547,7 +729,7 @@ def main():
 		help='Print generated source code to stdout.')
 
 	args = parser.parse_args()
-	data = Unarchiver()
+	data = Deserializer()
 
 	if args.lang == 'cpp':
 		source = data.get_cpp()

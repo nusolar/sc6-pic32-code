@@ -19,7 +19,7 @@ namespace nu
 {
 	struct Pedals
 	{
-		can::Module common_can;
+		Can::Module common_can;
 		AnalogIn regen_pedal, accel_pedal;
 		DigitalIn brake_pedal;
 
@@ -62,7 +62,7 @@ namespace nu
 			WDT::clear();
 #warning "Need to receive BPS packets too!"
 			common_can.in().setup_rx();
-			common_can.in().add_filter(CAN_FILTER0, CAN_SID, can::frame::os::tx::driver_input_k,
+			common_can.in().add_filter(CAN_FILTER0, CAN_SID, Can::Addr::os::tx::driver_input_k,
 				CAN_FILTER_MASK0, CAN_FILTER_MASK_IDE_TYPE, 0x7FF);
 			common_can.out().setup_tx(CAN_HIGH_MEDIUM_PRIORITY);
 		}
@@ -70,18 +70,18 @@ namespace nu
 		INLINE void recv_can()
 		{
 			uint32_t id;
-			can::frame::Packet incoming;
+			Can::Packet incoming;
 
 			common_can.in().rx(incoming, id);
 			switch (id) {
-				case (uint32_t)can::frame::bps::tx::bps_status_k: {
-					can::frame::bps::tx::bps_status pkt(incoming);
+				case (uint32_t)Can::Addr::bps::tx::bps_status_k: {
+					Can::Addr::bps::tx::bps_status pkt(incoming);
 					this->state.bps_drive = pkt.frame().mode | 1<<1;
 					break;
 				}
-				case (uint32_t)can::frame::os::tx::driver_input_k: {
+				case (uint32_t)Can::Addr::os::tx::driver_input_k: {
 					// KEEP IN SYNC with flags in /driver-server/SolarCar/DataAggregator.cs
-					can::frame::os::tx::driver_input pkt(incoming);
+					Can::Addr::os::tx::driver_input pkt(incoming);
 					this->state.gear = pkt.frame().gearFlags | 1<<0;
 					this->state.reverse_en = pkt.frame().gearFlags | 1<<1;
 
@@ -140,7 +140,7 @@ namespace nu
 			if (ws20_timer.has_expired())
 			{
 				// Initialize Drive Command with zero [current, velocity]
-				can::frame::ws20::rx::drive_cmd drive(0);
+				Can::Addr::ws20::rx::drive_cmd drive(0);
 				// need clearance from BPS & OS to drive
 				if (state.bps_drive && state.gear)
 				{
@@ -173,7 +173,7 @@ namespace nu
 				common_can.out().tx(drive);
 
 				// Also send a pedals update
-				can::frame::pedals::tx::pedals report(0);
+				Can::Addr::pedals::tx::pedals report(0);
 				report.frame().accel_pedal = (this->state.accel_raw) | 0x3ff;
 				report.frame().brake_pedal = this->state.brake_en;
 				common_can.out().tx(report);
@@ -194,7 +194,7 @@ namespace nu
 
 		INLINE void emergency_shutoff()
 		{
-			can::frame::ws20::rx::drive_cmd drive(0);
+			Can::Addr::ws20::rx::drive_cmd drive(0);
 			common_can.out().tx(drive);
 		}
 

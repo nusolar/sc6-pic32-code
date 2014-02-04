@@ -130,7 +130,7 @@ namespace nu
 		DigitalOut main_relay, array_relay, precharge_relay, motor_relay;
 		Button bypass_button;
 		Serial com;
-		can::Module common_can;
+		Can::Module common_can;
 		Nokia5110 lcd1, lcd2;
 
 		VoltageSensor voltage_sensor; //on D9, SPI Chn 1
@@ -225,14 +225,14 @@ namespace nu
 
 		INLINE void recv_can()
 		{
-			can::frame::Packet pkt(0);
+			Can::Packet pkt(0);
 			uint32_t id;
 			common_can.in().rx(pkt,id);
 
 			switch (id)
 			{
-				case can::frame::os::tx::driver_input_k: {
-					can::frame::os::tx::driver_input data(pkt);
+				case Can::Addr::os::tx::driver_input_k: {
+					Can::Addr::os::tx::driver_input data(pkt);
 					state.mode = (Modes)data.frame().power;
 					this->mode_timeout_clock.reset();
 					break;
@@ -412,7 +412,7 @@ namespace nu
 			/*
 			if (this->can_timer.has_expired())
 			{
-				can::frame::bps::tx::bps_status pkt(0);
+				Can::Addr::bps::tx::bps_status pkt(0);
 				pkt.mode = this->state.mode;
 				pkt.disabled_module = this->state.disabled_module;
 				this->common_can.out().tx(pkt);

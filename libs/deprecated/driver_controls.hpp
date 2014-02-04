@@ -48,7 +48,7 @@
 namespace nu {
 	struct DriverControls: public Nu32 {
 		DC_PINS(DC_DECLARE) // FUCK MPLAB
-		can::Module ws_can, common_can;
+		Can::Module ws_can, common_can;
 		Nokia5110 lcd;
 
 		/**
@@ -124,18 +124,18 @@ namespace nu {
 		 */
 		ALWAYSINLINE void recv_can() {
 			uint32_t id;
-			can::frame::Packet incoming;
+			Can::Packet incoming;
 
 			ws_can.in().rx(incoming, id);
 			switch (id) {
-				case can::frame::ws20::tx::motor_velocity_k: {
-					can::frame::ws20::tx::motor_velocity velo(incoming);
+				case Can::Addr::ws20::tx::motor_velocity_k: {
+					Can::Addr::ws20::tx::motor_velocity velo(incoming);
 					state.velocity = velo.frame.contents.vehicleVelocity;
 					if (!state.cruise_en) state.cruise = state.velocity;
 					break;
 				}
-				case can::frame::ws20::tx::motor_bus_k: {
-					can::frame::ws20::tx::motor_bus bus(incoming);
+				case Can::Addr::ws20::tx::motor_bus_k: {
+					Can::Addr::ws20::tx::motor_bus bus(incoming);
 					break;
 				}
 				default:
@@ -144,8 +144,8 @@ namespace nu {
 
 			common_can.in().rx(incoming, id);
 			switch (id) {
-				case (uint32_t)can::frame::sw::tx::buttons_k: {
-					can::frame::sw::tx::buttons btns(incoming);
+				case (uint32_t)Can::Addr::sw::tx::buttons_k: {
+					Can::Addr::sw::tx::buttons btns(incoming);
 					state.cruise_en ^=		btns.frame.contents.cruise_en;
 					state.cruise += (float)2*btns.frame.contents.cruise_up;
 					state.cruise -= (float)2*btns.frame.contents.cruise_down;
@@ -153,7 +153,7 @@ namespace nu {
 					state.lights_r =		btns.frame.contents.right;
 					state.lights_hazard =	btns.frame.contents.hazard;
 
-					can::frame::sw::rx::buttons ack(0);
+					Can::Addr::sw::rx::buttons ack(0);
 					ack.frame.contents.cruise_en	= btns.frame.contents.cruise_en;
 					ack.frame.contents.cruise_up	= btns.frame.contents.cruise_up;
 					ack.frame.contents.cruise_down	= btns.frame.contents.cruise_down;
@@ -163,13 +163,13 @@ namespace nu {
 					ack.frame.contents.hazard		= btns.frame.contents.hazard;
 					ack.frame.contents.horn			= btns.frame.contents.horn;
 
-					can::frame::sw::rx::lights lights_cmd(0);
+					Can::Addr::sw::rx::lights lights_cmd(0);
 					lights_cmd.frame.contents.left = state.lights_l;
 					lights_cmd.frame.contents.right = state.lights_r;
 					lights_cmd.frame.contents.hazard = state.lights_hazard;
 					lights_cmd.frame.contents.horn = state.horn;
 
-					common_can.out().tx(ack.bytes(), 8, can::frame::sw::rx::buttons_k);
+					common_can.out().tx(ack.bytes(), 8, Can::Addr::sw::rx::buttons_k);
 
 					state.sw_timer = (uint32_t)timer::ms(); // Reset SW time-out
 					break;
@@ -207,7 +207,7 @@ namespace nu {
 		ALWAYSINLINE void set_motor() {
 			WDT::clear();
 
-			can::frame::ws20::rx::drive_cmd drive(0); // Zero-init [current, velocity]
+			Can::Addr::ws20::rx::drive_cmd drive(0); // Zero-init [current, velocity]
 
 			if (state.brake_en) {
 				state.cruise_en = 0;
@@ -255,7 +255,7 @@ namespace nu {
 			set_lights();
 			set_motor();
 
-			static can::frame::Packet frame(0);
+			static Can::Packet frame(0);
 			static uint32_t id = 0;
 			ws_can.in().rx(frame, id);
 
@@ -267,13 +267,13 @@ namespace nu {
 				lcd << "ZELDA id:" << id << end;
 				lcd.goto_xy(0,1);
 				switch (id) {
-					case can::frame::ws20::tx::motor_velocity_k: {
-						can::frame::ws20::tx::motor_velocity mv(frame);
+					case Can::Addr::ws20::tx::motor_velocity_k: {
+						Can::Addr::ws20::tx::motor_velocity mv(frame);
 						lcd << (mv.frame.contents.motorVelocity) << end;
 						break;
 					}
-					case can::frame::ws20::tx::motor_bus_k: {
-						can::frame::ws20::tx::motor_bus mb(frame);
+					case Can::Addr::ws20::tx::motor_bus_k: {
+						Can::Addr::ws20::tx::motor_bus mb(frame);
 						lcd << (mb.frame.contents.busCurrent) << end;
 						break;
 					}

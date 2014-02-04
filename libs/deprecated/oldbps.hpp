@@ -68,21 +68,21 @@ namespace nu {
 			static void trip(tripcode code, uint32_t module, OldBMS *self) {
 				if (module == 21 || module == 22) return;
 
-				can::frame::bms::tx::trip trip_pkt(0);
+				Can::Addr::bms::tx::trip trip_pkt(0);
 				trip_pkt.frame().trip_code = (int32_t)code;
 				trip_pkt.frame().module = module;
 				self->common_can.err().tx(trip_pkt);
 
-				can::frame::bms::tx::trip_pt_current current_pkt(0);
+				Can::Addr::bms::tx::trip_pt_current current_pkt(0);
 				current_pkt.frame().low = self->current_sensor.currents[0]; // TODO sort
 				current_pkt.frame().high = self->current_sensor.currents[1];
 				self->common_can.err().tx(current_pkt);
 
-				can::frame::bms::tx::trip_pt_temp temp_pkt(0);
+				Can::Addr::bms::tx::trip_pt_temp temp_pkt(0);
 				// TODO
 				self->common_can.err().tx(temp_pkt);
 
-				can::frame::bms::tx::trip_pt_voltage volt_pkt(0);
+				Can::Addr::bms::tx::trip_pt_voltage volt_pkt(0);
 				// TODO
 				self->common_can.err().tx(volt_pkt);
 
@@ -101,9 +101,9 @@ namespace nu {
 
 		DigitalOut main_relay, array_relay;
 		DigitalIn bits[6];
-		can::Module common_can, mppt_can;
+		Can::Module common_can, mppt_can;
 		Nokia5110 lcd1, lcd2;
-		
+
 		VoltageSensor voltage_sensor; // 3 LTCs
 		CurrentSensor current_sensor; // 2 ADCs
 		TempSensor temp_sensor; //on A0
@@ -113,7 +113,7 @@ namespace nu {
 		Timer can_current_packet_timer;
 		Timer can_other_packet_timer;
 		Timer lcd_clock;
-		
+
 
 		/**
 		 * The state of the Batteries and the BMS.
@@ -157,7 +157,7 @@ namespace nu {
 			can_current_packet_timer(NU_SINGLE_PKTS_INTERVAL_MS, Timer::ms, false),
 			can_other_packet_timer(NU_SINGLE_PKTS_INTERVAL_MS+1, Timer::ms, false),
 			lcd_clock(1, Timer::s, false),
-			
+
 			state()
 		{
 			WDT::clear();
@@ -212,30 +212,30 @@ namespace nu {
 		}
 
 		INLINE void recv_can() {
-			can::frame::Packet pkt(0);
+			Can::Packet pkt(0);
 			uint32_t id;
 			common_can.in().rx(pkt,id);
 			switch (id) {
-				case can::frame::bms::rx::trip_k: {
-					can::frame::bms::rx::trip trip_pkt(pkt);
+				case Can::Addr::bms::rx::trip_k: {
+					Can::Addr::bms::rx::trip trip_pkt(pkt);
 					Trip::trip((Trip::tripcode) trip_pkt.frame().trip_code, trip_pkt.frame().module, this);
 				}
-				case can::frame::bms::rx::reset_cc_batt_k: {
+				case Can::Addr::bms::rx::reset_cc_batt_k: {
 					state.cc_battery=0;
 				}
-				case can::frame::bms::rx::reset_cc_array_k: {
+				case Can::Addr::bms::rx::reset_cc_array_k: {
 					state.cc_array=0;
 				}
-				case can::frame::bms::rx::reset_cc_mppt1_k: {
+				case Can::Addr::bms::rx::reset_cc_mppt1_k: {
 					state.cc_mppt[0]=0;
 				}
-				case can::frame::bms::rx::reset_cc_mppt2_k: {
+				case Can::Addr::bms::rx::reset_cc_mppt2_k: {
 					state.cc_mppt[1]=0;
 				}
-				case can::frame::bms::rx::reset_cc_mppt3_k: {
+				case Can::Addr::bms::rx::reset_cc_mppt3_k: {
 					state.cc_mppt[2]=0;
 				}
-				case can::frame::bms::rx::reset_cc_Wh_k: {
+				case Can::Addr::bms::rx::reset_cc_Wh_k: {
 					state.wh_battery=0;
 					state.wh_array=0;
 					state.wh_mppt_in[0]=0;
@@ -245,7 +245,7 @@ namespace nu {
 					state.wh_mppt_out[1]=0;
 					state.wh_mppt_out[2]=0;
 				}
-				case can::frame::bms::rx::reset_cc_all_k: {
+				case Can::Addr::bms::rx::reset_cc_all_k: {
 					state.cc_battery=0;
 					state.cc_array=0;
 					state.cc_mppt[0]=0;
@@ -265,9 +265,9 @@ namespace nu {
 
 		INLINE void send_can() {
 			if (this->can_voltage_packet_timer.has_expired()) {
-				can::frame::bms::tx::voltage v_pkt(0);
-				can::frame::bms::tx::temp t_pkt(0);
-				can::frame::bms::tx::owVoltage ow_pkt(0);
+				Can::Addr::bms::tx::voltage v_pkt(0);
+				Can::Addr::bms::tx::temp t_pkt(0);
+				Can::Addr::bms::tx::owVoltage ow_pkt(0);
 				// update module to send
 				t_pkt.frame().sensor = state.last_voltage_pkt_module;
 				t_pkt.frame().temp = this->temp_sensor.temperatures[state.last_voltage_pkt_module];
@@ -292,7 +292,7 @@ namespace nu {
 
 
 			if (this->can_heartbeat_packet_timer.has_expired()) {
-				can::frame::bms::tx::heartbeat pkt(0);
+				Can::Addr::bms::tx::heartbeat pkt(0);
 				// update module to send
 				memcpy(pkt.frame().bms_str, "zlda", 4);
 				common_can.out().tx(pkt);
@@ -302,12 +302,12 @@ namespace nu {
 
 
 			if (this->can_current_packet_timer.has_expired()) {
-				can::frame::bms::tx::current current_pkt(0);
-				can::frame::bms::tx::cc_array cc_array_pkt(0);
-				can::frame::bms::tx::cc_batt  cc_batt_pkt(0);
-				can::frame::bms::tx::cc_mppt1 cc_mppt1_pkt(0);
-				can::frame::bms::tx::cc_mppt2 cc_mppt2_pkt(0);
-				can::frame::bms::tx::cc_mppt3 cc_mppt3_pkt(0);
+				Can::Addr::bms::tx::current current_pkt(0);
+				Can::Addr::bms::tx::cc_array cc_array_pkt(0);
+				Can::Addr::bms::tx::cc_batt  cc_batt_pkt(0);
+				Can::Addr::bms::tx::cc_mppt1 cc_mppt1_pkt(0);
+				Can::Addr::bms::tx::cc_mppt2 cc_mppt2_pkt(0);
+				Can::Addr::bms::tx::cc_mppt3 cc_mppt3_pkt(0);
 				current_pkt.frame().array = current_sensor.currents[0]; // Marked "BattADC"
 				current_pkt.frame().battery = current_sensor.currents[1]; // Marked "ArrayADC"
 				cc_array_pkt.frame().count = state.cc_array;
@@ -327,12 +327,12 @@ namespace nu {
 
 
 			if (this->can_other_packet_timer.has_expired()) {
-				can::frame::bms::tx::uptime uptime_pkt(0);
-				can::frame::bms::tx::batt_bypass batt_bypass_pkt(0);
-				can::frame::bms::tx::Wh_batt Wh_batt_pkt(0);
-				can::frame::bms::tx::Wh_mppt1 Wh_mppt1_pkt(0);
-				can::frame::bms::tx::Wh_mppt2 Wh_mppt2_pkt(0);
-				can::frame::bms::tx::Wh_mppt3 Wh_mppt3_pkt(0);
+				Can::Addr::bms::tx::uptime uptime_pkt(0);
+				Can::Addr::bms::tx::batt_bypass batt_bypass_pkt(0);
+				Can::Addr::bms::tx::Wh_batt Wh_batt_pkt(0);
+				Can::Addr::bms::tx::Wh_mppt1 Wh_mppt1_pkt(0);
+				Can::Addr::bms::tx::Wh_mppt2 Wh_mppt2_pkt(0);
+				Can::Addr::bms::tx::Wh_mppt3 Wh_mppt3_pkt(0);
 				uptime_pkt.frame().seconds = state.uptime;
 				batt_bypass_pkt.frame().module = state.disabled_module;
 				Wh_batt_pkt.frame().count = state.wh_battery;
@@ -392,7 +392,7 @@ namespace nu {
 			main_relay.low(); // Unnecessary precaution
 			array_relay.low();
 
-//			can::frame::bms::tx::last_trip trip_pkt(0);
+//			Can::Addr::bms::tx::last_trip trip_pkt(0);
 
 			for (unsigned i=0; i<20; i++) {
 				read_ins();

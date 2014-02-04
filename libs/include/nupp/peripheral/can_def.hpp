@@ -8,44 +8,53 @@
 #include "nu/compiler.h"
 #include <cstdint>
 #pragma GCC diagnostic ignored "-pedantic"
+#define UInt64 uint64_t
+#define UInt32 uint32_t
+#define UInt16 uint16_t
+#define Int16 int16_t
+#define Byte uint8_t
+#define Char int8_t
+#define Double double
+#define Single float
+
 
 namespace nu
 {
-	namespace can
+	namespace Can
 	{
-		namespace frame
+		struct Packet
 		{
-			struct Packet
+			union frame_t
 			{
-				union frame_t
-				{
-					uint64_t data;
-					uint8_t bytes[8];
-				};
-
-			private:
-				static const uint32_t _id = 0;
-				frame_t _frame;
-
-			public:
-				virtual uint32_t id() const {return _id;}
-				frame_t &frame() {return _frame;}
-				frame_t frame() const {return _frame;}
-
-				uint64_t &data() {return frame().data;}
-				uint64_t data() const {return frame().data;}
-
-				uint8_t *bytes() {return frame().bytes;}
-				const uint8_t *bytes() const {return frame().bytes;}
-
-				virtual ~Packet() {}
-				Packet(): _frame{0} {}
-				Packet(const uint64_t _data): _frame{_data} {}
-				Packet(const Packet& p): _frame{p.data()} {}
-				Packet& operator= (const uint64_t _data) {data() = _data; return *this;}
-				Packet& operator= (const Packet& p) {data() = p.data(); return *this;}
+				uint64_t data;
+				uint8_t bytes[8];
 			};
 
+		private:
+			static const uint32_t _id = 0;
+			frame_t _frame;
+
+		public:
+			virtual uint32_t id() const {return _id;}
+			frame_t &frame() {return _frame;}
+			frame_t frame() const {return _frame;}
+
+			uint64_t &data() {return frame().data;}
+			uint64_t data() const {return frame().data;}
+
+			uint8_t *bytes() {return frame().bytes;}
+			const uint8_t *bytes() const {return frame().bytes;}
+
+			virtual ~Packet() {}
+			Packet(): _frame{0} {}
+			Packet(const uint64_t _data): _frame{_data} {}
+			Packet(const Packet& p): _frame{p.data()} {}
+			Packet& operator= (const uint64_t _data) {data() = _data; return *this;}
+			Packet& operator= (const Packet& p) {data() = p.data(); return *this;}
+		};
+
+		namespace Addr
+		{
 			namespace bps
 			{
 				namespace rx
@@ -72,8 +81,8 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								int16_t trip_code;
-								uint16_t module;
+								Int16 trip_code;
+								UInt16 module;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -240,16 +249,16 @@ namespace nu
 						error_k = 0x211,
 						bps_status_k = 0x212,
 						current_k = 0x213,
-						cc_array_k = 0x214,
-						cc_batt_k = 0x215,
-						cc_mppt1_k = 0x216,
-						cc_mppt2_k = 0x217,
-						cc_mppt3_k = 0x218,
-						Wh_batt_k = 0x219,
-						Wh_mppt1_k = 0x21a,
-						Wh_mppt2_k = 0x21b,
-						Wh_mppt3_k = 0x21c,
-						voltage_temp_k = 0x21d,
+						voltage_temp_k = 0x214,
+						cc_array_k = 0x215,
+						cc_batt_k = 0x216,
+						cc_mppt1_k = 0x217,
+						cc_mppt2_k = 0x218,
+						cc_mppt3_k = 0x219,
+						Wh_batt_k = 0x21a,
+						Wh_mppt1_k = 0x21b,
+						Wh_mppt2_k = 0x21c,
+						Wh_mppt3_k = 0x21d,
 						trip_pt_k = 0x21e,
 						trip_pt_voltage_temp_k = 0x21f
 					};
@@ -264,8 +273,8 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								char bms_str[4];
-								uint32_t uptime_s;
+								UInt32 bms_str;
+								UInt32 uptime_s;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -286,10 +295,10 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								int16_t error;
-								int16_t error_value;
-								int16_t last_error;
-								int16_t last_error_value;
+								Int16 error;
+								Int16 error_value;
+								Int16 last_error;
+								Int16 last_error_value;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -310,10 +319,10 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								uint16_t mode;
-								uint16_t disabled_module;
-								uint16_t reserved;
-								uint16_t reserved1;
+								UInt16 mode;
+								UInt16 disabled_module;
+								UInt16 reserved;
+								UInt16 reserved1;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -334,10 +343,10 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								uint16_t array;
-								uint16_t battery;
-								uint16_t reserved;
-								uint16_t reserved1;
+								UInt16 array;
+								UInt16 battery;
+								UInt16 reserved;
+								UInt16 reserved1;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -348,7 +357,7 @@ namespace nu
 						current(const Packet& p): Packet(p.data()) {}
 					};
 
-					class cc_array: public Packet
+					class voltage_temp: public Packet
 					{
 						static const uint32_t _id = 0x214;
 					public:
@@ -358,7 +367,31 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								double count;
+								UInt16 module;
+								UInt16 voltage;
+								UInt16 temp;
+								UInt16 reserved;
+							};
+						};
+						uint32_t id() const {return _id;}
+						layout_t &frame() {return *(layout_t *)&Packet::frame();}
+						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
+						voltage_temp(): Packet(0) {}
+						voltage_temp(const uint64_t _i): Packet(_i) {}
+						voltage_temp(const Packet& p): Packet(p.data()) {}
+					};
+
+					class cc_array: public Packet
+					{
+						static const uint32_t _id = 0x215;
+					public:
+						union layout_t
+						{
+							uint64_t data;
+							uint8_t bytes[8];
+							struct PACKED
+							{
+								Double count;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -371,7 +404,7 @@ namespace nu
 
 					class cc_batt: public Packet
 					{
-						static const uint32_t _id = 0x215;
+						static const uint32_t _id = 0x216;
 					public:
 						union layout_t
 						{
@@ -379,7 +412,7 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								double count;
+								Double count;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -392,7 +425,7 @@ namespace nu
 
 					class cc_mppt1: public Packet
 					{
-						static const uint32_t _id = 0x216;
+						static const uint32_t _id = 0x217;
 					public:
 						union layout_t
 						{
@@ -400,7 +433,7 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								double count;
+								Double count;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -413,7 +446,7 @@ namespace nu
 
 					class cc_mppt2: public Packet
 					{
-						static const uint32_t _id = 0x217;
+						static const uint32_t _id = 0x218;
 					public:
 						union layout_t
 						{
@@ -421,7 +454,7 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								double count;
+								Double count;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -434,7 +467,7 @@ namespace nu
 
 					class cc_mppt3: public Packet
 					{
-						static const uint32_t _id = 0x218;
+						static const uint32_t _id = 0x219;
 					public:
 						union layout_t
 						{
@@ -442,7 +475,7 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								double count;
+								Double count;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -455,7 +488,7 @@ namespace nu
 
 					class Wh_batt: public Packet
 					{
-						static const uint32_t _id = 0x219;
+						static const uint32_t _id = 0x21a;
 					public:
 						union layout_t
 						{
@@ -463,7 +496,7 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								double count;
+								Double count;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -476,7 +509,7 @@ namespace nu
 
 					class Wh_mppt1: public Packet
 					{
-						static const uint32_t _id = 0x21a;
+						static const uint32_t _id = 0x21b;
 					public:
 						union layout_t
 						{
@@ -484,7 +517,7 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								double count;
+								Double count;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -497,7 +530,7 @@ namespace nu
 
 					class Wh_mppt2: public Packet
 					{
-						static const uint32_t _id = 0x21b;
+						static const uint32_t _id = 0x21c;
 					public:
 						union layout_t
 						{
@@ -505,7 +538,7 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								double count;
+								Double count;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -518,27 +551,6 @@ namespace nu
 
 					class Wh_mppt3: public Packet
 					{
-						static const uint32_t _id = 0x21c;
-					public:
-						union layout_t
-						{
-							uint64_t data;
-							uint8_t bytes[8];
-							struct PACKED
-							{
-								double count;
-							};
-						};
-						uint32_t id() const {return _id;}
-						layout_t &frame() {return *(layout_t *)&Packet::frame();}
-						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
-						Wh_mppt3(): Packet(0) {}
-						Wh_mppt3(const uint64_t _i): Packet(_i) {}
-						Wh_mppt3(const Packet& p): Packet(p.data()) {}
-					};
-
-					class voltage_temp: public Packet
-					{
 						static const uint32_t _id = 0x21d;
 					public:
 						union layout_t
@@ -547,18 +559,15 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								uint16_t module;
-								uint16_t voltage;
-								uint16_t temp;
-								uint16_t reserved;
+								Double count;
 							};
 						};
 						uint32_t id() const {return _id;}
 						layout_t &frame() {return *(layout_t *)&Packet::frame();}
 						layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
-						voltage_temp(): Packet(0) {}
-						voltage_temp(const uint64_t _i): Packet(_i) {}
-						voltage_temp(const Packet& p): Packet(p.data()) {}
+						Wh_mppt3(): Packet(0) {}
+						Wh_mppt3(const uint64_t _i): Packet(_i) {}
+						Wh_mppt3(const Packet& p): Packet(p.data()) {}
 					};
 
 					class trip_pt: public Packet
@@ -571,10 +580,10 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								int16_t trip_code;
-								uint16_t module;
-								uint16_t low_current;
-								uint16_t high_current;
+								Int16 trip_code;
+								UInt16 module;
+								UInt16 low_current;
+								UInt16 high_current;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -595,10 +604,10 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								uint16_t low_volt;
-								uint16_t high_volt;
-								uint16_t low_temp;
-								uint16_t high_temp;
+								UInt16 low_volt;
+								UInt16 high_volt;
+								UInt16 low_temp;
+								UInt16 high_temp;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -633,8 +642,8 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								char drvId[4];
-								uint32_t serialNo;
+								UInt32 drvId;
+								UInt32 serialNo;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -655,8 +664,8 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								float motorVelocity;
-								float motorCurrent;
+								Single motorVelocity;
+								Single motorCurrent;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -677,8 +686,8 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								float reserved;
-								float busCurrent;
+								Single reserved;
+								Single busCurrent;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -699,8 +708,8 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								uint32_t unused1;
-								uint32_t unused2;
+								UInt32 unused1;
+								UInt32 unused2;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -743,8 +752,8 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								char tritiumId[4];
-								uint32_t serialNo;
+								UInt32 tritiumId;
+								UInt32 serialNo;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -765,10 +774,10 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								uint16_t limitFlags;
-								uint16_t errorFlags;
-								uint16_t activeMotor;
-								uint16_t reserved;
+								UInt16 limitFlags;
+								UInt16 errorFlags;
+								UInt16 activeMotor;
+								UInt16 reserved;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -789,8 +798,8 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								float busVoltage;
-								float busCurrent;
+								Single busVoltage;
+								Single busCurrent;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -811,8 +820,8 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								float motorVelocity;
-								float vehicleVelocity;
+								Single motorVelocity;
+								Single vehicleVelocity;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -833,8 +842,8 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								float phaseBCurrent;
-								float phaseACurrent;
+								Single phaseBCurrent;
+								Single phaseACurrent;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -855,8 +864,8 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								float voltageIm;
-								float voltageRe;
+								Single voltageIm;
+								Single voltageRe;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -877,8 +886,8 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								float currentIm;
-								float currentRe;
+								Single currentIm;
+								Single currentRe;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -899,8 +908,8 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								float backEmfIm;
-								float backEmfRe;
+								Single backEmfIm;
+								Single backEmfRe;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -921,8 +930,8 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								float onePtSixtyFiveVRef;
-								float fifteenVPowerRail;
+								Single onePtSixtyFiveVRef;
+								Single fifteenVPowerRail;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -943,8 +952,8 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								float onePtTwoVSupply;
-								float twoPtFiveVSupply;
+								Single onePtTwoVSupply;
+								Single twoPtFiveVSupply;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -965,8 +974,8 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								float fanDrive;
-								float fanRpm;
+								Single fanDrive;
+								Single fanRpm;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -987,8 +996,8 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								float motorTemp;
-								float heatsinkTemp;
+								Single motorTemp;
+								Single heatsinkTemp;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -1009,8 +1018,8 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								float processorTemp;
-								float airInletTemp;
+								Single processorTemp;
+								Single airInletTemp;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -1031,8 +1040,8 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								float capacitorTemp;
-								float airOutTemp;
+								Single capacitorTemp;
+								Single airOutTemp;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -1053,8 +1062,8 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								float odom;
-								float dcBusAmpHours;
+								Single odom;
+								Single dcBusAmpHours;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -1086,8 +1095,8 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								float velocity;
-								float current;
+								Single velocity;
+								Single current;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -1116,10 +1125,10 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								uint16_t accel_pedal;
-								uint16_t brake_pedal;
-								uint16_t reserved;
-								uint16_t reserved1;
+								UInt16 accel_pedal;
+								UInt16 regen_pedal;
+								UInt16 brake_pedal;
+								UInt16 reserved1;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -1151,10 +1160,10 @@ namespace nu
 							uint8_t bytes[8];
 							struct PACKED
 							{
-								uint16_t power;
-								uint16_t gearFlags;
-								uint16_t signalFlags;
-								uint16_t reserved;
+								UInt16 power;
+								UInt16 gearFlags;
+								UInt16 signalFlags;
+								UInt16 reserved;
 							};
 						};
 						uint32_t id() const {return _id;}
@@ -1230,6 +1239,16 @@ namespace nu
 		}
 	}
 }
+
+
+#undef UInt64
+#undef UInt32
+#undef UInt16
+#undef Int16
+#undef Byte
+#undef Char
+#undef Double
+#undef Single
 #pragma GCC diagnostic warning "-pedantic"
 
 
