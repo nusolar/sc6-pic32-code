@@ -21,11 +21,8 @@
 #include "nupp/timer.hpp"
 #include "nupp/wdt.hpp"
 #include "nupp/array.hpp"
+#include "nu/config.h"
 #include "nu/compiler.h"
-
-#define NU_BPS_TIMEOUT_INT_MS 100 //ms
-#define NU_BPS_PRECHARGE_TIME_MS 2000 //ms
-#define NU_BPS_CONVERSION_TIME_MS 2.3 //ms - time for LTC6804s to complete conversion.
 
 namespace nu
 {
@@ -95,17 +92,6 @@ namespace nu
 
  	struct BPS: protected Nu32
  	{
-		static const size_t N_MODULES = 32;
-		static const uint16_t MAX_VOLTAGE = 43000; // multiple of 100uV
-		static const uint16_t MIN_VOLTAGE = 27500; // 100uV
-		static const int16_t MAX_TEMP = 450; // deciCelcius
-		static const int16_t MIN_TEMP = 0;
-		static const int16_t MAX_BATT_CURRENT_DISCHARGING = 7200; // centiamps, 72.8
-		static const int16_t MAX_BATT_CURRENT_CHARGING = -3200; // centiamps, -36.4
-
-		static const uint16_t MIN_DISCHARGE_VOLTAGE = MIN_VOLTAGE + 500;
-		static const uint16_t MAX_CHARGE_VOLTAGE = MAX_VOLTAGE + 100;
-
 		enum TripCode
 		{
 			NONE = 0,
@@ -147,7 +133,6 @@ namespace nu
 		can::Module common_can;
 		Nokia5110 lcd1, lcd2;
 
-#warning "CONFIGURE in sensor class definitions"
 		VoltageSensor voltage_sensor; //on D9, SPI Chn 1
 		CurrentSensor current_sensor; // on F12, SPI Chn 4
 		TempSensor temp_sensor; //on A0
@@ -204,10 +189,10 @@ namespace nu
 			voltage_sensor(),
 			current_sensor(),
 			temp_sensor(),
-			mode_timeout_clock(NU_BPS_TIMEOUT_INT_MS, Timer::ms, true),
+			mode_timeout_clock(NU_BPS_OS_TIMEOUT_INT_MS, Timer::ms, true),
 			precharge_timer(NU_BPS_PRECHARGE_TIME_MS, Timer::ms, false),
-			can_timer(10, Timer::ms, true),
-			lcd_timer(1, Timer::s, true),
+			can_timer(NU_BPS_CAN_TIMER_MS, Timer::ms, true),
+			lcd_timer(1, Timer::s, false),
 			state()
 		{
 			WDT::clear();
@@ -228,8 +213,8 @@ namespace nu
 			// increment disabled module if it's pressed
 			if (bypass_button.toggled()) {
 				++state.disabled_module;
-				if (state.disabled_module == (int8_t)N_MODULES) {
-					state.disabled_module = -1;
+				if (state.disabled_module > (int8_t)NU_BPS_N_MODULES) {
+					state.disabled_module = 0;
 				}
 			}
 
@@ -269,18 +254,18 @@ namespace nu
 			TripCode trip_code = NONE;
 			int8_t trip_data = -1;
 
-			for (uint8_t i=0; i<N_MODULES; ++i)
+			for (uint8_t i=0; i<NU_BPS_N_MODULES; ++i)
 			{
 				if (i == state.disabled_module) {
 					continue;
 				}
-				if (this->voltage_sensor.voltages[i] > MAX_VOLTAGE) {
+				if (this->voltage_sensor.voltages[i] > NU_BPS_MAX_VOLTAGE) {
 					trip_code = OVER_VOLT;
-				} else if (this->voltage_sensor.voltages[i] < MIN_VOLTAGE) {
+				} else if (this->voltage_sensor.voltages[i] < NU_BPS_MIN_VOLTAGE) {
 					trip_code = UNDER_VOLT;
-				} else if (this->temp_sensor.temperatures[i] > MAX_TEMP) {
+				} else if (this->temp_sensor.temperatures[i] > NU_BPS_MAX_TEMP) {
 					trip_code = OVER_TEMP;
-				} else if (this->temp_sensor.temperatures[i] < MIN_TEMP) {
+				} else if (this->temp_sensor.temperatures[i] < NU_BPS_MIN_TEMP) {
 					trip_code = UNDER_TEMP;
 				} else {
 					continue;
@@ -290,10 +275,10 @@ namespace nu
 				break;
 			}
 
-			if (this->current_sensor.currents[0] > MAX_BATT_CURRENT_DISCHARGING) {
+			if (this->current_sensor.currents[0] > NU_BPS_MAX_BATT_CURRENT_DISCHARGING) {
 				trip_code = OVER_CURR_DISCHARGING;
 				trip_data = 0;
-			} else if (this->current_sensor.currents[0] < MAX_BATT_CURRENT_CHARGING) {
+			} else if (this->current_sensor.currents[0] < NU_BPS_MAX_BATT_CURRENT_CHARGING) {
 				trip_code = OVER_CURR_CHARGING;
 				trip_data = 0;
 			}
@@ -439,7 +424,7 @@ namespace nu
 		{
 			if (this->lcd_timer.has_expired())
 			{
-				uint8_t module_i = state.uptime % N_MODULES; // next module index
+				uint8_t module_i = state.uptime % NU_BPS_N_MODULES; // next module index
 
 				lcd1.lcd_clear();
 				lcd1 << "ZELDA " << module_i << end;

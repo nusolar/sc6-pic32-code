@@ -10,14 +10,12 @@
 
 #include "nupp/component/ltc6803.hpp"
 #include "nupp/timer.hpp"
+#include "nu/config.h"
 
 namespace nu
 {
 	struct VoltageSensor
 	{
-		static const uint16_t MAX_VOLTAGE = 43000; // multiple of 100uV
-		static const uint16_t MIN_VOLTAGE = 27500; // 100uV
-
 		LTC6803<3> voltage_sensor; // 3 LTCs
 		Array<uint16_t, 3*12> voltages; // in 100uv. 4 extra voltages, for unused LTC slots
 		Timer voltage_measuring_timer;
@@ -27,8 +25,8 @@ namespace nu
 		INLINE VoltageSensor():
 			voltage_sensor(PIN(D, 9), SPI_CHANNEL1),
 			voltages(0),
-			voltage_measuring_timer(16, Timer::ms, false),
-			openwire_timer(2, Timer::s, false),
+			voltage_measuring_timer(NU_BPS_LTC6803_MEASURE_INT_MS, Timer::ms, false),
+			openwire_timer(NU_BPS_LTC6803_OPENWIRE_INT_S, Timer::s, false),
 			has_configured_ltcs(false)
 		{
 		}
@@ -60,8 +58,8 @@ namespace nu
 			cfg0.bits.cdc = LTC6803<3>::CDC_MSMTONLY;
 			cfg0.bits.wdt = true;
 			cfg0.bits.lvlpl = true;
-			cfg0.bits.vov = voltage_sensor.convert_ov_limit(MAX_VOLTAGE);
-			cfg0.bits.vuv = voltage_sensor.convert_uv_limit(MIN_VOLTAGE);
+			cfg0.bits.vov = voltage_sensor.convert_ov_limit(NU_BPS_MAX_VOLTAGE);
+			cfg0.bits.vuv = voltage_sensor.convert_uv_limit(NU_BPS_MIN_VOLTAGE);
 			Array<LTC6803<3>::Configuration, 3> cfg;
 			cfg = cfg0;
 

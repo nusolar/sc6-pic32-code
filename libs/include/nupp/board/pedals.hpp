@@ -12,17 +12,13 @@
 #include "nupp/peripheral/can.hpp"
 #include "nupp/wdt.hpp"
 #include "nupp/timer.hpp"
+#include "nu/config.h"
 #include "nu/compiler.h"
 
 namespace nu
 {
 	struct Pedals
 	{
-		// Tritium recommends ~100ms for Motor Controller Drive Commands.
-		// We use 50ms for precision. MUST BE <250ms or it will shut down.
-		static const uint64_t WS20_TIMEOUT_MS = 50; // 50ms
-		static const uint64_t OS_TIMEOUT_MS = 100; // 100ms
-
 		can::Module common_can;
 		AnalogIn regen_pedal, accel_pedal;
 		DigitalIn brake_pedal;
@@ -59,13 +55,15 @@ namespace nu
 			lights_l(PIN(D, 1)),
 			headlights(PIN(D, 2)),
 			lights_brake(PIN(D, 3)),
-			ws20_timer(WS20_TIMEOUT_MS, Timer::ms, false),
-			os_timer(OS_TIMEOUT_MS, Timer::ms, false),
+			ws20_timer(NU_PEDALS_WS20_TIMEOUT_MS, Timer::ms, false),
+			os_timer(NU_PEDALS_OS_TIMEOUT_MS, Timer::ms, false),
 			state()
 		{
 			WDT::clear();
+#warning "Need to receive BPS packets too!"
 			common_can.in().setup_rx();
-			common_can.in().add_filter(CAN_FILTER0, CAN_SID, 0x310, CAN_FILTER_MASK0, CAN_FILTER_MASK_IDE_TYPE, 0x7FF); // 0x310 == OS status
+			common_can.in().add_filter(CAN_FILTER0, CAN_SID, can::frame::os::tx::driver_input_k,
+				CAN_FILTER_MASK0, CAN_FILTER_MASK_IDE_TYPE, 0x7FF);
 			common_can.out().setup_tx(CAN_HIGH_MEDIUM_PRIORITY);
 		}
 
@@ -151,7 +149,7 @@ namespace nu
 						state.cruise_en = 0;
 						if (state.regen_en)
 						{
-							drive.frame().motorCurrent = 0.2; // REGEN_AMOUNT
+							drive.frame().motorCurrent = NU_PEDALS_REGEN_PROPORTION;
 						}
 						else
 						{
@@ -162,7 +160,7 @@ namespace nu
 					{
 						//drive.frame.contents = {state.cruise, 1};
 					}
-					else if (state.accel_motor > 0.05)
+					else if (state.accel_motor > NU_PEDALS_ACCEL_SENSITIVITY)
 					{
 						drive.frame().motorVelocity = 100; // Max 100m/s
 						drive.frame().motorCurrent = state.accel_motor; // accel percent

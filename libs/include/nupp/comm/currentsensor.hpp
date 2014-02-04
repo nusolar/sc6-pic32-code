@@ -36,7 +36,6 @@ namespace nu
 
 		void read()
 		{
-			// NEED TIMER
 			// Store 32bit microvoltages, 0-5V, in buffer. Max value 4999923uV
 			Array<uint32_t, 2> buffer;
 			this->current_adc.convert_read_uv(buffer);

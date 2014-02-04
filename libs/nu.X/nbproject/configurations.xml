@@ -67,6 +67,7 @@
         <itemPath>../include/nu/async_io.h</itemPath>
         <itemPath>../include/nu/platform.h</itemPath>
         <itemPath>../include/nu/types.h</itemPath>
+        <itemPath>../include/nu/config.h</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="LinkerScript"

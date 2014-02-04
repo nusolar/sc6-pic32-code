@@ -17,7 +17,7 @@ namespace nu {
 	 * DS18X20 supports 9, 10, 11, and 12bit resolution.
 	 *
 	 * Default resolution at powerup is 12bit, corresponding to 0.0625C precision
-	 * and a max temperature of 127.9375C, 0x7ff, or 0b11111111111 (12 ones).
+	 * and a max temperature of 127.9375C, 0x7ff, or 0b11111111111 (11 ones).
 	 *
 	 * Class DS18X20 returns its temperatures in deciCelcius.
 	 */
@@ -55,7 +55,7 @@ namespace nu {
 			this->read_scratch(&scr, sizeof(scr));
 		}
 
-		/** Convert temperature from 1/256th C to 1/10th C */
+		/** Convert temperature from 1/16th C to 1/10th C */
 		static PURE INLINE int16_t convert_temperature(int16_t temp) {
 			return (int16_t)(temp*10/16);
 		}
