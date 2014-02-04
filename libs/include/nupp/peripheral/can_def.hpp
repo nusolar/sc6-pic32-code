@@ -46,7 +46,7 @@ namespace nu
 				Packet& operator= (const Packet& p) {data() = p.data(); return *this;}
 			};
 
-			namespace bms
+			namespace bps
 			{
 				namespace rx
 				{

@@ -14,8 +14,13 @@
 #include "nupp/timer.hpp"
 #include "nu/compiler.h"
 
-namespace nu {
-	struct Pedals {
+namespace nu
+{
+	struct Pedals
+	{
+		// Tritium recommends ~100ms for Motor Controller Drive Commands.
+		// We use 50ms for precision. MUST BE <250ms or it will shut down.
+		static const uint64_t WS20_TIMEOUT_MS = 50; // 50ms
 		static const uint64_t OS_TIMEOUT_MS = 100; // 100ms
 
 		can::Module common_can;
@@ -28,15 +33,18 @@ namespace nu {
 		DigitalOut headlights; // D2
 		DigitalOut lights_brake; // D3
 
+		Timer ws20_timer;
 		Timer os_timer;
 
-		struct state_t {
+		struct state_t
+		{
 			uint16_t accel_raw;
 			bool brake_en;
 
 			float accel_motor;
 			float cruise;
 
+			bool bps_drive;
 			bool gear, reverse_en, regen_en, cruise_en;
 			bool left, right, headlights, horn;
 		} state;
@@ -51,6 +59,7 @@ namespace nu {
 			lights_l(PIN(D, 1)),
 			headlights(PIN(D, 2)),
 			lights_brake(PIN(D, 3)),
+			ws20_timer(WS20_TIMEOUT_MS, Timer::ms, false),
 			os_timer(OS_TIMEOUT_MS, Timer::ms, false),
 			state()
 		{
@@ -60,12 +69,18 @@ namespace nu {
 			common_can.out().setup_tx(CAN_HIGH_MEDIUM_PRIORITY);
 		}
 
-		INLINE void recv_can() {
+		INLINE void recv_can()
+		{
 			uint32_t id;
 			can::frame::Packet incoming;
 
 			common_can.in().rx(incoming, id);
 			switch (id) {
+				case (uint32_t)can::frame::bps::tx::bps_status_k: {
+					can::frame::bps::tx::bps_status pkt(incoming);
+					this->state.bps_drive = pkt.frame().mode | 1<<1;
+					break;
+				}
 				case (uint32_t)can::frame::os::tx::driver_input_k: {
 					// KEEP IN SYNC with flags in /driver-server/SolarCar/DataAggregator.cs
 					can::frame::os::tx::driver_input pkt(incoming);
@@ -78,11 +93,12 @@ namespace nu {
 					this->state.horn = pkt.frame().signalFlags | 1<<3;
 
 					os_timer.reset();
+					break;
 				}
-
 				default: {
 					// Kill things if OS times-out.
-					if (os_timer.has_expired()) {
+					if (os_timer.has_expired())
+					{
 						this->state.gear = false;
 						this->state.reverse_en = false;
 
@@ -91,11 +107,13 @@ namespace nu {
 						this->state.headlights = false;
 						this->state.horn = false;
 					}
+					break;
 				}
 			}
 		}
 
-		INLINE void read_ins() {
+		INLINE void read_ins()
+		{
 			WDT::clear();
 			// read raw inputs
 			state.accel_raw = (uint16_t) accel_pedal.read();
@@ -104,7 +122,8 @@ namespace nu {
 			state.accel_motor = ((float)state.accel_raw + 1)/1024;
 		}
 
-		INLINE void set_signals() {
+		INLINE void set_signals()
+		{
 			WDT::clear();
 			this->lights_brake.set(state.brake_en);
 			this->horn.set(state.horn);
@@ -116,41 +135,57 @@ namespace nu {
 			this->lights_r.set(this->state.right? tick: 0);
 		}
 
-		INLINE void send_can() {
+		INLINE void send_can()
+		{
 			WDT::clear();
 
-			can::frame::ws20::rx::drive_cmd drive(0); // Zero-init [current, velocity]
-
-			if (state.gear) {
-				if (state.brake_en) {
-					state.cruise_en = 0;
-					if (state.regen_en){
-						drive.frame().motorCurrent = 0.2; // REGEN_AMOUNT
-					} else {
-						Nop(); // Normal braking.
+			if (ws20_timer.has_expired())
+			{
+				// Initialize Drive Command with zero [current, velocity]
+				can::frame::ws20::rx::drive_cmd drive(0);
+				// need clearance from BPS & OS to drive
+				if (state.bps_drive && state.gear)
+				{
+					if (state.brake_en)
+					{
+						state.cruise_en = 0;
+						if (state.regen_en)
+						{
+							drive.frame().motorCurrent = 0.2; // REGEN_AMOUNT
+						}
+						else
+						{
+							Nop(); // Normal braking.
+						}
 					}
-				} else if (state.cruise_en) {
-					//drive.frame.contents = {state.cruise, 1};
-				} else if (state.accel_motor > 0.05) {
-					drive.frame().motorVelocity = 101; // Max 101m/s
-					drive.frame().motorCurrent = state.accel_motor; // accel percent
+					else if (state.cruise_en)
+					{
+						//drive.frame.contents = {state.cruise, 1};
+					}
+					else if (state.accel_motor > 0.05)
+					{
+						drive.frame().motorVelocity = 100; // Max 100m/s
+						drive.frame().motorCurrent = state.accel_motor; // accel percent
+					}
+					if (state.reverse_en)
+					{
+						drive.frame().motorVelocity *= -1;
+					}
 				}
+				common_can.out().tx(drive);
 
-				if (state.reverse_en) {
-					drive.frame().motorVelocity *= -1;
-				}
+				// Also send a pedals update
+				can::frame::pedals::tx::pedals report(0);
+				report.frame().accel_pedal = (this->state.accel_raw) | 0x3ff;
+				report.frame().brake_pedal = this->state.brake_en;
+				common_can.out().tx(report);
 			}
-
-			common_can.out().tx(drive);
-
-			can::frame::pedals::tx::pedals report(0);
-			report.frame().accel_pedal = (this->state.accel_raw) | 0x3ff;
-			report.frame().brake_pedal = this->state.brake_en;
-			common_can.out().tx(report);
 		}
 
-		INLINE NORETURN void run_loop() {
-			while (true) {
+		INLINE NORETURN void run_loop()
+		{
+			while (true)
+			{
 				WDT::clear();
 				this->recv_can();
 				this->read_ins();
@@ -159,7 +194,8 @@ namespace nu {
 			}
 		}
 
-		INLINE void emergency_shutoff() {
+		INLINE void emergency_shutoff()
+		{
 			can::frame::ws20::rx::drive_cmd drive(0);
 			common_can.out().tx(drive);
 		}

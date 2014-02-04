@@ -27,7 +27,8 @@
 #define NU_BPS_PRECHARGE_TIME_MS 2000 //ms
 #define NU_BPS_CONVERSION_TIME_MS 2.3 //ms - time for LTC6804s to complete conversion.
 
-namespace nu {
+namespace nu
+{
 	/*
 	struct BpsMode {
 		struct Mode {
@@ -92,7 +93,8 @@ namespace nu {
 		}
 	};*/
 
- 	struct BPS: protected Nu32 {
+ 	struct BPS: protected Nu32
+ 	{
 		static const size_t N_MODULES = 32;
 		static const uint16_t MAX_VOLTAGE = 43000; // multiple of 100uV
 		static const uint16_t MIN_VOLTAGE = 27500; // 100uV
@@ -104,7 +106,8 @@ namespace nu {
 		static const uint16_t MIN_DISCHARGE_VOLTAGE = MIN_VOLTAGE + 500;
 		static const uint16_t MAX_CHARGE_VOLTAGE = MAX_VOLTAGE + 100;
 
-		enum TripCode {
+		enum TripCode
+		{
 			NONE = 0,
 			OVER_VOLT,
 			UNDER_VOLT,
@@ -114,7 +117,8 @@ namespace nu {
 			OVER_CURR_CHARGING
 		};
 
-		enum Modes {
+		enum Modes
+		{
 			OFF = 0,
 			DISCHARGING = 1,
 			DRIVE = 2|1,
@@ -123,13 +127,15 @@ namespace nu {
 			CHARGING_DRIVE = 4|2|1
 		};
 
-		enum Precharge {
+		enum Precharge
+		{
 			PC_OFF = 0,
 			PC_CHARGING = 1,
 			PC_CHARGED = 2
 		};
 
-		enum Errors {
+		enum Errors
+		{
 			NOERR = 0,
 			BADMODE,
 			BADPC
@@ -154,7 +160,8 @@ namespace nu {
 		/**
 		 * Aggregated data of the Sensors and the BMS.
 		 */
-		struct State {
+		struct State
+		{
 			// scientific data
 			double cc_battery, cc_array, wh_battery, wh_array;
 
@@ -212,7 +219,8 @@ namespace nu {
 			this->read_ins();
 		}
 
-		INLINE void read_ins() {
+		INLINE void read_ins()
+		{
 			// debounce bypass button
 			for (unsigned i=0; i<10; i++) {
 				bypass_button.update();
@@ -230,33 +238,39 @@ namespace nu {
 			temp_sensor.read();
 		}
 
-		INLINE void recv_can() {
+		INLINE void recv_can()
+		{
 			can::frame::Packet pkt(0);
 			uint32_t id;
 			common_can.in().rx(pkt,id);
 
-			switch (id) {
+			switch (id)
+			{
 				case can::frame::os::tx::driver_input_k: {
 					can::frame::os::tx::driver_input data(pkt);
 					state.mode = (Modes)data.frame().power;
 					this->mode_timeout_clock.reset();
+					break;
 				}
 				default: {
 				}
 			}
 
 			// If state.mode_timeout_clock isn't updated fast enough, turn OFF.
-			if (this->mode_timeout_clock.has_expired()) {
+			if (this->mode_timeout_clock.has_expired())
+			{
 				this->mode_timeout_clock.kill();
 				state.mode = OFF;
 			}
 		}
 
-		INLINE void check_trip_conditions() {
+		INLINE void check_trip_conditions()
+		{
 			TripCode trip_code = NONE;
 			int8_t trip_data = -1;
 
-			for (uint8_t i=0; i<N_MODULES; ++i) {
+			for (uint8_t i=0; i<N_MODULES; ++i)
+			{
 				if (i == state.disabled_module) {
 					continue;
 				}
@@ -288,8 +302,10 @@ namespace nu {
 			state.trip_data = trip_data;
 		}
 
-		INLINE void check_mode_safety() {
-			if (state.trip_code != NONE) {
+		INLINE void check_mode_safety()
+		{
+			if (state.trip_code != NONE)
+			{
 				state.mode = OFF;
 			}
 		}
@@ -304,7 +320,8 @@ namespace nu {
 		 *
 		 * If state.mode is not valid, sets state.error.
 		 */
-		INLINE void set_relays() {
+		INLINE void set_relays()
+		{
 			bool has_error = false;
 
 			switch (state.mode) {
@@ -405,12 +422,23 @@ namespace nu {
 			}
 		}
 
-		INLINE void send_can() {
-			// state.time = timer::ms();
+		INLINE void send_can()
+		{
+			/*
+			if (this->can_timer.has_expired())
+			{
+				can::frame::bps::tx::bps_status pkt(0);
+				pkt.mode = this->state.mode;
+				pkt.disabled_module = this->state.disabled_module;
+				this->common_can.out().tx(pkt);
+			}
+			*/
 		}
 
-		INLINE void draw_lcd() {
-			if (this->lcd_timer.has_expired()) {
+		INLINE void draw_lcd()
+		{
+			if (this->lcd_timer.has_expired())
+			{
 				uint8_t module_i = state.uptime % N_MODULES; // next module index
 
 				lcd1.lcd_clear();
@@ -433,7 +461,8 @@ namespace nu {
 			}
 		}
 
-		INLINE void emergency_shutoff() {
+		INLINE void emergency_shutoff()
+		{
 			main_relay.low();
 			array_relay.low();
 			motor_relay.low();
@@ -443,7 +472,8 @@ namespace nu {
 		/**
 		 * The main run loop.
 		 */
-		INLINE NORETURN void run_loop() {
+		INLINE NORETURN void run_loop()
+		{
 			while (true) {
 				WDT::clear();
 				this->recv_can();
@@ -451,6 +481,7 @@ namespace nu {
 				this->check_trip_conditions();
 				this->check_mode_safety();
 				this->set_relays();
+				this->send_can();
 				this->draw_lcd();
 			}
 		}

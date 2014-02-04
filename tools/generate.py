@@ -20,12 +20,12 @@ class Layout:
 		'double %s'
 	]
 
-	Float2 = [
+	Float32x2 = [
 		'float %s',
 		'float %s'
 	]
 
-	UInt64 = [
+	UInt64x1 = [
 		'uint64_t %s'
 	]
 
@@ -117,8 +117,7 @@ class CanPacket:
 			[FieldOffset(0)]
 			public UInt64 data;
 		}
-	}
-	"""
+	}"""
 	cs_class_template = dedent(cs_class_template)
 
 	def __init__(self, name='error', layout=Layout.Empty, field_names=(), id=0):
@@ -196,11 +195,39 @@ class CanBasePacket:
 	};"""
 	cpp_class_packet = dedent(cpp_class_packet)
 
+	cs_class_packet = """\
+	class Packet
+	{
+		UInt16 id = 0;
+		Byte length = 0;
+		public Frame frame = new Frame();
+
+		public UInt16 ID { get { return this.id; } }
+
+		public Byte Length { get { return this.length; } }
+
+		public UInt64 Data { get { return this.frame.data; } }
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="SolarCar.Can.Packet"/> class.
+		/// </summary>
+		/// <param name="id">CAN ID, maximum 0x7FF for standard CAN.</param>
+		/// <param name="length">Length of CAN Data.</param>
+		/// <param name="data">Data in CAN frame.</param>
+		public Packet(UInt16 id, Byte length, UInt64 data)
+		{
+			this.id = id;
+			this.length = length;
+			this.frame.data = data;
+		}
+	}"""
+	cs_class_packet = dedent(cs_class_packet)
+
 	def get_cpp(self):
 		return self.cpp_class_packet
 
 	def get_cs(self):
-		raise ""
+		return self.cs_class_packet
 
 
 class CanEnum:
@@ -249,9 +276,9 @@ class Namespace:
 	cpp_namespace_template = dedent(cpp_namespace_template)
 
 	cs_namespace_template = """\
-	namespace {name}
+	namespace %(name)s
 	{
-	{contents}
+		%(contents)s
 	}"""
 	cs_namespace_template = dedent(cs_namespace_template)
 
@@ -299,7 +326,7 @@ class Namespace:
 
 can_def = [
 	{
-		'name': 'bms',
+		'name': 'bps',
 		'contents': [
 			{
 				'name': 'rx',
@@ -348,8 +375,8 @@ can_def = [
 				'base': 0x500,  # == Tritium's Driver Controls' tx base but we don't use that.
 				'contents': [
 					['driver_controls_id', Layout.Status, ['drvId', 'serialNo']],
-					['drive_cmd', Layout.Float2, ['motorVelocity', 'motorCurrent']],
-					['power_cmd', Layout.Float2, ['reserved', 'busCurrent']],
+					['drive_cmd', Layout.Float32x2, ['motorVelocity', 'motorCurrent']],
+					['power_cmd', Layout.Float32x2, ['reserved', 'busCurrent']],
 					['reset_cmd', Layout.UInt32x2, ['unused1', 'unused2']]
 					# MAX = 0x510 ?
 				]
@@ -360,19 +387,19 @@ can_def = [
 				'contents': [
 					['motor_id', Layout.Status, ['tritiumId', 'serialNo']],
 					['motor_status_info', Layout.UInt16x4, ['limitFlags', 'errorFlags', 'activeMotor', 'reserved']],
-					['motor_bus', Layout.Float2, ['busVoltage', 'busCurrent']],
-					['motor_velocity', Layout.Float2, ['motorVelocity', 'vehicleVelocity']],
-					['motor_phase', Layout.Float2, ['phaseBCurrent', 'phaseACurrent']],
-					['voltage_vector', Layout.Float2, ['voltageIm', 'voltageRe']],
-					['current_vector', Layout.Float2, ['currentIm', 'currentRe']],
-					['backemf', Layout.Float2, ['backEmfIm', 'backEmfRe']],
-					['rail_15v_1pt65v', Layout.Float2, ['onePtSixtyFiveVRef', 'fifteenVPowerRail']],
-					['rail_2pt5v_1pt2v', Layout.Float2, ['onePtTwoVSupply', 'twoPtFiveVSupply']],
-					['fanspeed', Layout.Float2, ['fanDrive', 'fanRpm']],
-					['sinks_temp', Layout.Float2, ['motorTemp', 'heatsinkTemp']],
-					['cpu_airin_temp', Layout.Float2, ['processorTemp', 'airInletTemp']],
-					['cap_airout_temp', Layout.Float2, ['capacitorTemp', 'airOutTemp']],
-					['odom_bus_ah', Layout.Float2, ['odom', 'dcBusAmpHours']]
+					['motor_bus', Layout.Float32x2, ['busVoltage', 'busCurrent']],
+					['motor_velocity', Layout.Float32x2, ['motorVelocity', 'vehicleVelocity']],
+					['motor_phase', Layout.Float32x2, ['phaseBCurrent', 'phaseACurrent']],
+					['voltage_vector', Layout.Float32x2, ['voltageIm', 'voltageRe']],
+					['current_vector', Layout.Float32x2, ['currentIm', 'currentRe']],
+					['backemf', Layout.Float32x2, ['backEmfIm', 'backEmfRe']],
+					['rail_15v_1pt65v', Layout.Float32x2, ['onePtSixtyFiveVRef', 'fifteenVPowerRail']],
+					['rail_2pt5v_1pt2v', Layout.Float32x2, ['onePtTwoVSupply', 'twoPtFiveVSupply']],
+					['fanspeed', Layout.Float32x2, ['fanDrive', 'fanRpm']],
+					['sinks_temp', Layout.Float32x2, ['motorTemp', 'heatsinkTemp']],
+					['cpu_airin_temp', Layout.Float32x2, ['processorTemp', 'airInletTemp']],
+					['cap_airout_temp', Layout.Float32x2, ['capacitorTemp', 'airOutTemp']],
+					['odom_bus_ah', Layout.Float32x2, ['odom', 'dcBusAmpHours']]
 					# MAX = 0x4FF
 				]
 			}
@@ -385,7 +412,7 @@ can_def = [
 				'name': 'rx',
 				'base': 0x100,
 				'contents': [
-					['cruise', Layout.Float2, ['velocity', 'current']]
+					['cruise', Layout.Float32x2, ['velocity', 'current']]
 				]
 			},
 			{
