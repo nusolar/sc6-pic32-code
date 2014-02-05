@@ -6,6 +6,7 @@
 *.pptx
 *.xls
 *.xlsx
+*.graffle
 
 *.hex
 *.elf

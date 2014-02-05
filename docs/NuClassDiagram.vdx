@@ -1,0 +1,5279 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<VisioDocument xmlns="http://schemas.microsoft.com/visio/2003/core">
+  <DocumentSettings>
+    <GlueSettings>12</GlueSettings>
+    <SnapSettings>52</SnapSettings>
+  </DocumentSettings>
+  <PrintSetup>
+    <PaperWidth>7.76772</PaperWidth>
+    <PaperHeight>10.8735</PaperHeight>
+    <PrintLandscape>0</PrintLandscape>
+    <PageLeftMargin>0.25</PageLeftMargin>
+    <PageRightMargin>0.25</PageRightMargin>
+    <PageTopMargin>0.25</PageTopMargin>
+    <PageBottomMargin>0.569444</PageBottomMargin>
+    <PrintCenteredH>1</PrintCenteredH>
+    <PrintCenteredV>1</PrintCenteredV>
+  </PrintSetup>
+  <Fonts>
+    <FontEntry ID="0" Name="Helvetica"/>
+  </Fonts>
+  <FaceNames>
+    <FaceName ID="0" Name="Helvetica"/>
+  </FaceNames>
+  <Pages>
+    <Page ID="0" NameU="Canvas 1">
+      <PageSheet>
+        <RulerGrid>
+          <XGridSpacing>0.0555556</XGridSpacing>
+          <YGridSpacing>0.0555556</YGridSpacing>
+        </RulerGrid>
+        <PageProps>
+          <PageScale>1</PageScale>
+          <DrawingScale>1</DrawingScale>
+          <PageWidth>7.76772</PageWidth>
+          <PageHeight>10.8735</PageHeight>
+          <DrawingSizeType>3</DrawingSizeType>
+          <ShdwOffsetX>0</ShdwOffsetX>
+          <ShdwOffsetY>0.0277778</ShdwOffsetY>
+        </PageProps>
+        <Layer IX="0">
+          <Name>Classes</Name>
+          <Visible>1</Visible>
+          <Print>1</Print>
+          <Lock>0</Lock>
+        </Layer>
+        <Layer IX="1">
+          <Name>Namespaces</Name>
+          <Visible>1</Visible>
+          <Print>1</Print>
+          <Lock>0</Lock>
+        </Layer>
+      </PageSheet>
+      <Shapes>
+        <Shape ID="1" Type="Shape" Name="Rectangle No Fill No Fill.1">
+          <XForm>
+            <Angle>-0</Angle>
+            <PinX>3.543307297759586</PinX>
+            <PinY>10.33213043212891</PinY>
+            <Width>6.299212998814053</Width>
+            <Height>0.8858267996046278</Height>
+            <LocPinX>3.149606499407026</LocPinX>
+            <LocPinY>0.4429133998023139</LocPinY>
+          </XForm>
+          <TextXForm>
+            <TxtPinX F="Width*0.000000">0</TxtPinX>
+            <TxtPinY F="Height*0.078395">0.06944444444444445</TxtPinY>
+            <TxtWidth F="Width*1.000000">6.299212998814053</TxtWidth>
+            <TxtHeight F="Height*0.843210">0.7469379107157389</TxtHeight>
+            <TxtLocPinX>0</TxtLocPinX>
+            <TxtLocPinY>0</TxtLocPinY>
+          </TextXForm>
+          <Misc>
+            <ObjType>1</ObjType>
+          </Misc>
+          <Line>
+            <LinePattern>1</LinePattern>
+            <LineWeight>0.0138889</LineWeight>
+            <LineColor>0</LineColor>
+            <LineColorTrans>0</LineColorTrans>
+            <Rounding>0</Rounding>
+            <LineCap>0</LineCap>
+          </Line>
+          <Fill>
+            <FillPattern>0</FillPattern>
+            <FillForegnd>#ffffff</FillForegnd>
+            <FillForegndTrans>0</FillForegndTrans>
+            <ShdwPattern>0</ShdwPattern>
+            <ShdwForegnd>0</ShdwForegnd>
+            <ShdwForegndTrans>0.5</ShdwForegndTrans>
+            <ShapeShdwType>1</ShapeShdwType>
+            <ShapeShdwOffsetX>0</ShapeShdwOffsetX>
+            <ShapeShdwOffsetY>-0.0277778</ShapeShdwOffsetY>
+          </Fill>
+          <Geom IX="0">
+            <NoFill>0</NoFill>
+            <NoLine>0</NoLine>
+            <MoveTo IX="1">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.8858267996046278</Y>
+            </MoveTo>
+            <LineTo IX="2">
+              <X F="Width*1.000000">6.299212998814053</X>
+              <Y F="Height*1.000000">0.8858267996046278</Y>
+            </LineTo>
+            <LineTo IX="3">
+              <X F="Width*1.000000">6.299212998814053</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="4">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="5">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.8858267996046278</Y>
+            </LineTo>
+          </Geom>
+          <LayerMem>
+            <LayerMember>1</LayerMember>
+          </LayerMem>
+          <Connection ID="0">
+            <X F="Width*1.000000">6.299212998814053</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="1">
+            <X F="Width*1.000000">6.299212998814053</X>
+            <Y F="Width*0.140625">0.8858267996046278</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="2">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.140625">0.8858267996046278</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="3">
+            <X F="Width*-0.000000">-3.947459643111667e-16</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="4">
+            <X F="Width*0.500000">3.149606499407026</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="5">
+            <X F="Width*0.500000">3.149606499407026</X>
+            <Y F="Width*0.140625">0.8858267996046278</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="6">
+            <X F="Width*1.000000">6.299212998814053</X>
+            <Y F="Width*0.070312">0.4429133998023139</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="7">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.070312">0.4429133998023139</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="8">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.103151">0.6497699023923874</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="9">
+            <X F="Width*0.008558">0.05390866484385073</X>
+            <Y F="Width*0.033741">0.2125426248167356</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="10">
+            <X F="Width*1.000000">6.299212998814053</X>
+            <Y F="Width*0.101382">0.638628582675139</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="11">
+            <X F="Width*1.000000">6.299212998814053</X>
+            <Y F="Width*0.033268">0.2095610848661797</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="12">
+            <X F="Width*0.225690">1.421669381702344</X>
+            <Y F="Width*0.136973">0.8628201059652965</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="13">
+            <X F="Width*0.779780">4.912000312215222</X>
+            <Y F="Width*0.137598">0.866762035223537</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="14">
+            <X F="Width*0.770639">4.854420538826857</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="15">
+            <X F="Width*0.241576">1.521741464957524</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <TextBlock>
+            <LeftMargin>0.0694444</LeftMargin>
+            <RightMargin>0.0694444</RightMargin>
+            <VerticalAlign>2</VerticalAlign>
+            <DefaultTabStop>0</DefaultTabStop>
+          </TextBlock>
+          <Char IX="0">
+            <Font>0</Font>
+            <Color>0</Color>
+            <Style>0</Style>
+            <Size>0.166667</Size>
+            <ColorTrans>0</ColorTrans>
+          </Char>
+          <Para IX="0">
+            <IndFirst>0</IndFirst>
+            <IndLeft>0</IndLeft>
+            <IndRight>-0</IndRight>
+            <SpLine>-1.2</SpLine>
+            <SpBefore>0</SpBefore>
+            <HorzAlign>0</HorzAlign>
+          </Para>
+          <Text><cp IX="0"/><pp IX="0"/>board</Text>
+        </Shape>
+        <Shape ID="2" Type="Shape" Name="Rectangle No Fill No Fill.2">
+          <XForm>
+            <Angle>-0</Angle>
+            <PinX>3.543307297759586</PinX>
+            <PinY>9.151028000646168</PinY>
+            <Width>6.299212998814053</Width>
+            <Height>0.8858267929818895</Height>
+            <LocPinX>3.149606499407026</LocPinX>
+            <LocPinY>0.4429133964909447</LocPinY>
+          </XForm>
+          <TextXForm>
+            <TxtPinX F="Width*0.000000">0</TxtPinX>
+            <TxtPinY F="Height*0.078395">0.06944444444444445</TxtPinY>
+            <TxtWidth F="Width*1.000000">6.299212998814053</TxtWidth>
+            <TxtHeight F="Height*0.843210">0.7469379040930006</TxtHeight>
+            <TxtLocPinX>0</TxtLocPinX>
+            <TxtLocPinY>0</TxtLocPinY>
+          </TextXForm>
+          <Misc>
+            <ObjType>1</ObjType>
+          </Misc>
+          <Line>
+            <LinePattern>1</LinePattern>
+            <LineWeight>0.0138889</LineWeight>
+            <LineColor>0</LineColor>
+            <LineColorTrans>0</LineColorTrans>
+            <Rounding>0</Rounding>
+            <LineCap>0</LineCap>
+          </Line>
+          <Fill>
+            <FillPattern>0</FillPattern>
+            <FillForegnd>#ffffff</FillForegnd>
+            <FillForegndTrans>0</FillForegndTrans>
+            <ShdwPattern>0</ShdwPattern>
+            <ShdwForegnd>0</ShdwForegnd>
+            <ShdwForegndTrans>0.5</ShdwForegndTrans>
+            <ShapeShdwType>1</ShapeShdwType>
+            <ShapeShdwOffsetX>0</ShapeShdwOffsetX>
+            <ShapeShdwOffsetY>-0.0277778</ShapeShdwOffsetY>
+          </Fill>
+          <Geom IX="0">
+            <NoFill>0</NoFill>
+            <NoLine>0</NoLine>
+            <MoveTo IX="1">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.8858267929818895</Y>
+            </MoveTo>
+            <LineTo IX="2">
+              <X F="Width*1.000000">6.299212998814053</X>
+              <Y F="Height*1.000000">0.8858267929818895</Y>
+            </LineTo>
+            <LineTo IX="3">
+              <X F="Width*1.000000">6.299212998814053</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="4">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="5">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.8858267929818895</Y>
+            </LineTo>
+          </Geom>
+          <LayerMem>
+            <LayerMember>1</LayerMember>
+          </LayerMem>
+          <Connection ID="0">
+            <X F="Width*1.000000">6.299212998814053</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="1">
+            <X F="Width*1.000000">6.299212998814053</X>
+            <Y F="Width*0.140625">0.8858267929818895</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="2">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.140625">0.8858267929818895</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="3">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="4">
+            <X F="Width*0.500000">3.149606499407026</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="5">
+            <X F="Width*0.500000">3.149606499407026</X>
+            <Y F="Width*0.140625">0.8858267929818895</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="6">
+            <X F="Width*1.000000">6.299212998814053</X>
+            <Y F="Width*0.070312">0.4429133964909447</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="7">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.070312">0.4429133964909447</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="8">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.103151">0.6497698975344895</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="9">
+            <X F="Width*0.008558">0.05390866484385073</X>
+            <Y F="Width*0.033741">0.2125426232276955</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="10">
+            <X F="Width*1.000000">6.299212998814053</X>
+            <Y F="Width*0.101382">0.6386285779005375</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="11">
+            <X F="Width*1.000000">6.299212998814053</X>
+            <Y F="Width*0.033268">0.2095610832994307</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="12">
+            <X F="Width*0.225690">1.421669381702344</X>
+            <Y F="Width*0.136973">0.862820099514564</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="13">
+            <X F="Width*0.779780">4.912000312215222</X>
+            <Y F="Width*0.137598">0.8667620287433332</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="14">
+            <X F="Width*0.770639">4.854420538826855</X>
+            <Y F="Width*0.000000">3.947459643111667e-16</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="15">
+            <X F="Width*0.241576">1.521741464957524</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <TextBlock>
+            <LeftMargin>0.0694444</LeftMargin>
+            <RightMargin>0.0694444</RightMargin>
+            <VerticalAlign>2</VerticalAlign>
+            <DefaultTabStop>0</DefaultTabStop>
+          </TextBlock>
+          <Char IX="0">
+            <Font>0</Font>
+            <Color>0</Color>
+            <Style>0</Style>
+            <Size>0.166667</Size>
+            <ColorTrans>0</ColorTrans>
+          </Char>
+          <Para IX="0">
+            <IndFirst>0</IndFirst>
+            <IndLeft>0</IndLeft>
+            <IndRight>-0</IndRight>
+            <SpLine>-1.2</SpLine>
+            <SpBefore>0</SpBefore>
+            <HorzAlign>0</HorzAlign>
+          </Para>
+          <Text><cp IX="0"/><pp IX="0"/>comm</Text>
+        </Shape>
+        <Shape ID="3" Type="Shape" Name="Rectangle No Fill No Fill.3">
+          <XForm>
+            <Angle>-0</Angle>
+            <PinX>3.543307304382324</PinX>
+            <PinY>7.182523926099141</PinY>
+            <Width>6.299212985568577</Width>
+            <Height>2.460630072487725</Height>
+            <LocPinX>3.149606492784288</LocPinX>
+            <LocPinY>1.230315036243863</LocPinY>
+          </XForm>
+          <TextXForm>
+            <TxtPinX F="Width*0.000000">0</TxtPinX>
+            <TxtPinY F="Height*0.028222">0.06944444444444445</TxtPinY>
+            <TxtWidth F="Width*1.000000">6.299212985568577</TxtWidth>
+            <TxtHeight F="Height*0.943556">2.321741183598836</TxtHeight>
+            <TxtLocPinX>0</TxtLocPinX>
+            <TxtLocPinY>0</TxtLocPinY>
+          </TextXForm>
+          <Misc>
+            <ObjType>1</ObjType>
+          </Misc>
+          <Line>
+            <LinePattern>1</LinePattern>
+            <LineWeight>0.0138889</LineWeight>
+            <LineColor>0</LineColor>
+            <LineColorTrans>0</LineColorTrans>
+            <Rounding>0</Rounding>
+            <LineCap>0</LineCap>
+          </Line>
+          <Fill>
+            <FillPattern>0</FillPattern>
+            <FillForegnd>#ffffff</FillForegnd>
+            <FillForegndTrans>0</FillForegndTrans>
+            <ShdwPattern>0</ShdwPattern>
+            <ShdwForegnd>0</ShdwForegnd>
+            <ShdwForegndTrans>0.5</ShdwForegndTrans>
+            <ShapeShdwType>1</ShapeShdwType>
+            <ShapeShdwOffsetX>0</ShapeShdwOffsetX>
+            <ShapeShdwOffsetY>-0.0277778</ShapeShdwOffsetY>
+          </Fill>
+          <Geom IX="0">
+            <NoFill>0</NoFill>
+            <NoLine>0</NoLine>
+            <MoveTo IX="1">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">2.460630072487725</Y>
+            </MoveTo>
+            <LineTo IX="2">
+              <X F="Width*1.000000">6.299212985568577</X>
+              <Y F="Height*1.000000">2.460630072487725</Y>
+            </LineTo>
+            <LineTo IX="3">
+              <X F="Width*1.000000">6.299212985568577</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="4">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="5">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">2.460630072487725</Y>
+            </LineTo>
+          </Geom>
+          <LayerMem>
+            <LayerMember>1</LayerMember>
+          </LayerMem>
+          <Connection ID="0">
+            <X F="Width*1.000000">6.299212985568577</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="1">
+            <X F="Width*1.000000">6.299212985568577</X>
+            <Y F="Width*0.390625">2.460630072487725</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="2">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.390625">2.460630072487725</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="3">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="4">
+            <X F="Width*0.500000">3.149606492784288</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="5">
+            <X F="Width*0.500000">3.149606492784288</X>
+            <Y F="Width*0.390625">2.460630072487725</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="6">
+            <X F="Width*1.000000">6.299212985568577</X>
+            <Y F="Width*0.195312">1.230315036243863</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="7">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.195312">1.230315036243863</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="8">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.286530">1.804916449511051</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="9">
+            <X F="Width*0.008558">0.05390866473049587</X>
+            <Y F="Width*0.093725">0.5903961977024876</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="10">
+            <X F="Width*1.000000">6.299212985568576</X>
+            <Y F="Width*0.281617">1.773968338259848</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="11">
+            <X F="Width*1.000000">6.299212985568576</X>
+            <Y F="Width*0.092411">0.5821141420365987</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="12">
+            <X F="Width*0.225690">1.421669378712972</X>
+            <Y F="Width*0.380480">2.396722588245074</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="13">
+            <X F="Width*0.779780">4.912000301886664</X>
+            <Y F="Width*0.382218">2.407672392067644</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="14">
+            <X F="Width*0.770639">4.854420528619373</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="15">
+            <X F="Width*0.241576">1.52174146175773</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <TextBlock>
+            <LeftMargin>0.0694444</LeftMargin>
+            <RightMargin>0.0694444</RightMargin>
+            <VerticalAlign>2</VerticalAlign>
+            <DefaultTabStop>0</DefaultTabStop>
+          </TextBlock>
+          <Char IX="0">
+            <Font>0</Font>
+            <Color>0</Color>
+            <Style>0</Style>
+            <Size>0.166667</Size>
+            <ColorTrans>0</ColorTrans>
+          </Char>
+          <Para IX="0">
+            <IndFirst>0</IndFirst>
+            <IndLeft>0</IndLeft>
+            <IndRight>-0</IndRight>
+            <SpLine>-1.2</SpLine>
+            <SpBefore>0</SpBefore>
+            <HorzAlign>0</HorzAlign>
+          </Para>
+          <Text><cp IX="0"/><pp IX="0"/>component</Text>
+        </Shape>
+        <Shape ID="4" Type="Shape" Name="Rectangle No Fill No Fill.4">
+          <XForm>
+            <Angle>-0</Angle>
+            <PinX>3.543307304382324</PinX>
+            <PinY>4.426618244912889</PinY>
+            <Width>6.299212985568577</Width>
+            <Height>2.460630072487725</Height>
+            <LocPinX>3.149606492784288</LocPinX>
+            <LocPinY>1.230315036243863</LocPinY>
+          </XForm>
+          <TextXForm>
+            <TxtPinX F="Width*0.000000">0</TxtPinX>
+            <TxtPinY F="Height*0.028222">0.06944444444444445</TxtPinY>
+            <TxtWidth F="Width*1.000000">6.299212985568577</TxtWidth>
+            <TxtHeight F="Height*0.943556">2.321741183598836</TxtHeight>
+            <TxtLocPinX>0</TxtLocPinX>
+            <TxtLocPinY>0</TxtLocPinY>
+          </TextXForm>
+          <Misc>
+            <ObjType>1</ObjType>
+          </Misc>
+          <Line>
+            <LinePattern>1</LinePattern>
+            <LineWeight>0.0138889</LineWeight>
+            <LineColor>0</LineColor>
+            <LineColorTrans>0</LineColorTrans>
+            <Rounding>0</Rounding>
+            <LineCap>0</LineCap>
+          </Line>
+          <Fill>
+            <FillPattern>0</FillPattern>
+            <FillForegnd>#ffffff</FillForegnd>
+            <FillForegndTrans>0</FillForegndTrans>
+            <ShdwPattern>0</ShdwPattern>
+            <ShdwForegnd>0</ShdwForegnd>
+            <ShdwForegndTrans>0.5</ShdwForegndTrans>
+            <ShapeShdwType>1</ShapeShdwType>
+            <ShapeShdwOffsetX>0</ShapeShdwOffsetX>
+            <ShapeShdwOffsetY>-0.0277778</ShapeShdwOffsetY>
+          </Fill>
+          <Geom IX="0">
+            <NoFill>0</NoFill>
+            <NoLine>0</NoLine>
+            <MoveTo IX="1">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">2.460630072487725</Y>
+            </MoveTo>
+            <LineTo IX="2">
+              <X F="Width*1.000000">6.299212985568577</X>
+              <Y F="Height*1.000000">2.460630072487725</Y>
+            </LineTo>
+            <LineTo IX="3">
+              <X F="Width*1.000000">6.299212985568577</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="4">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="5">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">2.460630072487725</Y>
+            </LineTo>
+          </Geom>
+          <LayerMem>
+            <LayerMember>1</LayerMember>
+          </LayerMem>
+          <Connection ID="0">
+            <X F="Width*1.000000">6.299212985568577</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="1">
+            <X F="Width*1.000000">6.299212985568577</X>
+            <Y F="Width*0.390625">2.460630072487725</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="2">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.390625">2.460630072487725</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="3">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="4">
+            <X F="Width*0.500000">3.149606492784288</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="5">
+            <X F="Width*0.500000">3.149606492784288</X>
+            <Y F="Width*0.390625">2.460630072487725</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="6">
+            <X F="Width*1.000000">6.299212985568577</X>
+            <Y F="Width*0.195312">1.230315036243863</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="7">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.195312">1.230315036243863</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="8">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.286530">1.804916449511051</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="9">
+            <X F="Width*0.008558">0.05390866473049587</X>
+            <Y F="Width*0.093725">0.5903961977024876</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="10">
+            <X F="Width*1.000000">6.299212985568576</X>
+            <Y F="Width*0.281617">1.773968338259848</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="11">
+            <X F="Width*1.000000">6.299212985568576</X>
+            <Y F="Width*0.092411">0.5821141420365987</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="12">
+            <X F="Width*0.225690">1.421669378712972</X>
+            <Y F="Width*0.380480">2.396722588245074</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="13">
+            <X F="Width*0.779780">4.912000301886664</X>
+            <Y F="Width*0.382218">2.407672392067644</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="14">
+            <X F="Width*0.770639">4.854420528619373</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="15">
+            <X F="Width*0.241576">1.52174146175773</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <TextBlock>
+            <LeftMargin>0.0694444</LeftMargin>
+            <RightMargin>0.0694444</RightMargin>
+            <VerticalAlign>2</VerticalAlign>
+            <DefaultTabStop>0</DefaultTabStop>
+          </TextBlock>
+          <Char IX="0">
+            <Font>0</Font>
+            <Color>0</Color>
+            <Style>0</Style>
+            <Size>0.166667</Size>
+            <ColorTrans>0</ColorTrans>
+          </Char>
+          <Para IX="0">
+            <IndFirst>0</IndFirst>
+            <IndLeft>0</IndLeft>
+            <IndRight>-0</IndRight>
+            <SpLine>-1.2</SpLine>
+            <SpBefore>0</SpBefore>
+            <HorzAlign>0</HorzAlign>
+          </Para>
+          <Text><cp IX="0"/><pp IX="0"/>peripheral</Text>
+        </Shape>
+        <Shape ID="5" Type="Shape" Name="Rectangle No Fill No Fill.5">
+          <XForm>
+            <Angle>-0</Angle>
+            <PinX>3.543307304382324</PinX>
+            <PinY>2.470417337285148</PinY>
+            <Width>6.299212985568577</Width>
+            <Height>0.9104331268204583</Height>
+            <LocPinX>3.149606492784288</LocPinX>
+            <LocPinY>0.4552165634102291</LocPinY>
+          </XForm>
+          <TextXForm>
+            <TxtPinX F="Width*0.000000">0</TxtPinX>
+            <TxtPinY F="Height*0.076276">0.06944444444444445</TxtPinY>
+            <TxtWidth F="Width*1.000000">6.299212985568577</TxtWidth>
+            <TxtHeight F="Height*0.847447">0.7715442379315695</TxtHeight>
+            <TxtLocPinX>0</TxtLocPinX>
+            <TxtLocPinY>0</TxtLocPinY>
+          </TextXForm>
+          <Misc>
+            <ObjType>1</ObjType>
+          </Misc>
+          <Line>
+            <LinePattern>1</LinePattern>
+            <LineWeight>0.0138889</LineWeight>
+            <LineColor>0</LineColor>
+            <LineColorTrans>0</LineColorTrans>
+            <Rounding>0</Rounding>
+            <LineCap>0</LineCap>
+          </Line>
+          <Fill>
+            <FillPattern>0</FillPattern>
+            <FillForegnd>#ffffff</FillForegnd>
+            <FillForegndTrans>0</FillForegndTrans>
+            <ShdwPattern>0</ShdwPattern>
+            <ShdwForegnd>0</ShdwForegnd>
+            <ShdwForegndTrans>0.5</ShdwForegndTrans>
+            <ShapeShdwType>1</ShapeShdwType>
+            <ShapeShdwOffsetX>0</ShapeShdwOffsetX>
+            <ShapeShdwOffsetY>-0.0277778</ShapeShdwOffsetY>
+          </Fill>
+          <Geom IX="0">
+            <NoFill>0</NoFill>
+            <NoLine>0</NoLine>
+            <MoveTo IX="1">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.9104331268204583</Y>
+            </MoveTo>
+            <LineTo IX="2">
+              <X F="Width*1.000000">6.299212985568577</X>
+              <Y F="Height*1.000000">0.9104331268204583</Y>
+            </LineTo>
+            <LineTo IX="3">
+              <X F="Width*1.000000">6.299212985568577</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="4">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="5">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.9104331268204583</Y>
+            </LineTo>
+          </Geom>
+          <LayerMem>
+            <LayerMember>1</LayerMember>
+          </LayerMem>
+          <Connection ID="0">
+            <X F="Width*1.000000">6.299212985568583</X>
+            <Y F="Width*-0.000000">-1.578983857244667e-15</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="1">
+            <X F="Width*1.000000">6.299212985568577</X>
+            <Y F="Width*0.144531">0.9104331268204583</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="2">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.144531">0.9104331268204583</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="3">
+            <X F="Width*-0.000000">-6.315935428978668e-15</X>
+            <Y F="Width*-0.000000">-1.578983857244667e-15</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="4">
+            <X F="Width*0.500000">3.149606492784288</X>
+            <Y F="Width*-0.000000">-1.578983857244667e-15</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="5">
+            <X F="Width*0.500000">3.149606492784288</X>
+            <Y F="Width*0.144531">0.9104331268204583</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="6">
+            <X F="Width*1.000000">6.299212985568577</X>
+            <Y F="Width*0.072266">0.4552165634102291</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="7">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.072266">0.4552165634102291</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="8">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.106016">0.6678190863190897</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="9">
+            <X F="Width*0.008558">0.05390866473049587</X>
+            <Y F="Width*0.034678">0.2184465931499204</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="10">
+            <X F="Width*1.000000">6.299212985568577</X>
+            <Y F="Width*0.104198">0.6563682851561433</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="11">
+            <X F="Width*1.000000">6.299212985568577</X>
+            <Y F="Width*0.034192">0.215382232553542</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="12">
+            <X F="Width*0.225690">1.421669378712972</X>
+            <Y F="Width*0.140777">0.8867873576506768</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="13">
+            <X F="Width*0.779780">4.912000301886664</X>
+            <Y F="Width*0.141421">0.8908387850650286</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="14">
+            <X F="Width*0.770639">4.854420528619375</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="15">
+            <X F="Width*0.241576">1.521741461757727</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <TextBlock>
+            <LeftMargin>0.0694444</LeftMargin>
+            <RightMargin>0.0694444</RightMargin>
+            <VerticalAlign>2</VerticalAlign>
+            <DefaultTabStop>0</DefaultTabStop>
+          </TextBlock>
+          <Char IX="0">
+            <Font>0</Font>
+            <Color>0</Color>
+            <Style>0</Style>
+            <Size>0.166667</Size>
+            <ColorTrans>0</ColorTrans>
+          </Char>
+          <Para IX="0">
+            <IndFirst>0</IndFirst>
+            <IndLeft>0</IndLeft>
+            <IndRight>-0</IndRight>
+            <SpLine>-1.2</SpLine>
+            <SpBefore>0</SpBefore>
+            <HorzAlign>0</HorzAlign>
+          </Para>
+          <Text><cp IX="0"/><pp IX="0"/>platform</Text>
+        </Shape>
+        <Shape ID="6" Type="Shape" Name="Rectangle No Fill No Fill.6">
+          <XForm>
+            <Angle>-0</Angle>
+            <PinX>3.543307304382324</PinX>
+            <PinY>1.28931490249104</PinY>
+            <Width>6.299212985568577</Width>
+            <Height>0.9104331268204583</Height>
+            <LocPinX>3.149606492784288</LocPinX>
+            <LocPinY>0.4552165634102291</LocPinY>
+          </XForm>
+          <TextXForm>
+            <TxtPinX F="Width*0.000000">0</TxtPinX>
+            <TxtPinY F="Height*0.076276">0.06944444444444445</TxtPinY>
+            <TxtWidth F="Width*1.000000">6.299212985568577</TxtWidth>
+            <TxtHeight F="Height*0.847447">0.7715442379315695</TxtHeight>
+            <TxtLocPinX>0</TxtLocPinX>
+            <TxtLocPinY>0</TxtLocPinY>
+          </TextXForm>
+          <Misc>
+            <ObjType>1</ObjType>
+          </Misc>
+          <Line>
+            <LinePattern>1</LinePattern>
+            <LineWeight>0.0138889</LineWeight>
+            <LineColor>0</LineColor>
+            <LineColorTrans>0</LineColorTrans>
+            <Rounding>0</Rounding>
+            <LineCap>0</LineCap>
+          </Line>
+          <Fill>
+            <FillPattern>0</FillPattern>
+            <FillForegnd>#ffffff</FillForegnd>
+            <FillForegndTrans>0</FillForegndTrans>
+            <ShdwPattern>0</ShdwPattern>
+            <ShdwForegnd>0</ShdwForegnd>
+            <ShdwForegndTrans>0.5</ShdwForegndTrans>
+            <ShapeShdwType>1</ShapeShdwType>
+            <ShapeShdwOffsetX>0</ShapeShdwOffsetX>
+            <ShapeShdwOffsetY>-0.0277778</ShapeShdwOffsetY>
+          </Fill>
+          <Geom IX="0">
+            <NoFill>0</NoFill>
+            <NoLine>0</NoLine>
+            <MoveTo IX="1">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.9104331268204583</Y>
+            </MoveTo>
+            <LineTo IX="2">
+              <X F="Width*1.000000">6.299212985568577</X>
+              <Y F="Height*1.000000">0.9104331268204583</Y>
+            </LineTo>
+            <LineTo IX="3">
+              <X F="Width*1.000000">6.299212985568577</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="4">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="5">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.9104331268204583</Y>
+            </LineTo>
+          </Geom>
+          <LayerMem>
+            <LayerMember>1</LayerMember>
+          </LayerMem>
+          <Connection ID="0">
+            <X F="Width*1.000000">6.299212985568583</X>
+            <Y F="Width*-0.000000">-1.578983857244667e-15</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="1">
+            <X F="Width*1.000000">6.299212985568577</X>
+            <Y F="Width*0.144531">0.9104331268204583</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="2">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.144531">0.9104331268204583</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="3">
+            <X F="Width*-0.000000">-6.315935428978668e-15</X>
+            <Y F="Width*-0.000000">-1.578983857244667e-15</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="4">
+            <X F="Width*0.500000">3.149606492784288</X>
+            <Y F="Width*-0.000000">-1.578983857244667e-15</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="5">
+            <X F="Width*0.500000">3.149606492784288</X>
+            <Y F="Width*0.144531">0.9104331268204567</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="6">
+            <X F="Width*1.000000">6.299212985568577</X>
+            <Y F="Width*0.072266">0.4552165634102291</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="7">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.072266">0.4552165634102291</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="8">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.106016">0.6678190863190897</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="9">
+            <X F="Width*0.008558">0.05390866473049587</X>
+            <Y F="Width*0.034678">0.2184465931499204</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="10">
+            <X F="Width*1.000000">6.299212985568577</X>
+            <Y F="Width*0.104198">0.6563682851561433</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="11">
+            <X F="Width*1.000000">6.299212985568577</X>
+            <Y F="Width*0.034192">0.215382232553542</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="12">
+            <X F="Width*0.225690">1.421669378712972</X>
+            <Y F="Width*0.140777">0.8867873576506768</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="13">
+            <X F="Width*0.779780">4.912000301886664</X>
+            <Y F="Width*0.141421">0.8908387850650286</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="14">
+            <X F="Width*0.770639">4.854420528619375</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="15">
+            <X F="Width*0.241576">1.521741461757727</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <TextBlock>
+            <LeftMargin>0.0694444</LeftMargin>
+            <RightMargin>0.0694444</RightMargin>
+            <VerticalAlign>2</VerticalAlign>
+            <DefaultTabStop>0</DefaultTabStop>
+          </TextBlock>
+          <Char IX="0">
+            <Font>0</Font>
+            <Color>0</Color>
+            <Style>0</Style>
+            <Size>0.166667</Size>
+            <ColorTrans>0</ColorTrans>
+          </Char>
+          <Para IX="0">
+            <IndFirst>0</IndFirst>
+            <IndLeft>0</IndLeft>
+            <IndRight>-0</IndRight>
+            <SpLine>-1.2</SpLine>
+            <SpBefore>0</SpBefore>
+            <HorzAlign>0</HorzAlign>
+          </Para>
+          <Text><cp IX="0"/><pp IX="0"/>MPLAB</Text>
+        </Shape>
+        <Shape ID="7" Type="Shape" Name="Rectangle Fill:Chalk.7">
+          <XForm>
+            <Angle>-0</Angle>
+            <PinX>2.137303246392144</PinX>
+            <PinY>1.280948744879828</PinY>
+            <Width>1.125</Width>
+            <Height>0.5</Height>
+            <LocPinX>0.5625</LocPinX>
+            <LocPinY>0.25</LocPinY>
+          </XForm>
+          <TextXForm>
+            <TxtPinX F="Width*0.000000">0</TxtPinX>
+            <TxtPinY F="Height*0.000000">0</TxtPinY>
+            <TxtWidth F="Width*1.000000">1.125</TxtWidth>
+            <TxtHeight F="Height*1.000000">0.5</TxtHeight>
+            <TxtLocPinX>0</TxtLocPinX>
+            <TxtLocPinY>0</TxtLocPinY>
+          </TextXForm>
+          <Misc>
+            <ObjType>1</ObjType>
+          </Misc>
+          <Line>
+            <LinePattern>1</LinePattern>
+            <LineWeight>0.0138889</LineWeight>
+            <LineColor>0</LineColor>
+            <LineColorTrans>0</LineColorTrans>
+            <Rounding>0</Rounding>
+            <LineCap>0</LineCap>
+          </Line>
+          <Fill>
+            <FillPattern>1</FillPattern>
+            <FillForegnd>#ffffff</FillForegnd>
+            <FillForegndTrans>0</FillForegndTrans>
+            <ShdwPattern>0</ShdwPattern>
+            <ShdwForegnd>0</ShdwForegnd>
+            <ShdwForegndTrans>0.5</ShdwForegndTrans>
+            <ShapeShdwType>1</ShapeShdwType>
+            <ShapeShdwOffsetX>0</ShapeShdwOffsetX>
+            <ShapeShdwOffsetY>-0.0277778</ShapeShdwOffsetY>
+          </Fill>
+          <Geom IX="0">
+            <NoFill>0</NoFill>
+            <NoLine>0</NoLine>
+            <MoveTo IX="1">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </MoveTo>
+            <LineTo IX="2">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+            <LineTo IX="3">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="4">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="5">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+          </Geom>
+          <LayerMem>
+            <LayerMember>1</LayerMember>
+          </LayerMem>
+          <Connection ID="0">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="1">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="2">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="3">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="4">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="5">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="6">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="7">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="8">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.326008">0.3667590000000003</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="9">
+            <X F="Width*0.008558">0.009627749999999935</X>
+            <Y F="Width*0.106639">0.1199685000000004</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="10">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.320418">0.3604703441802491</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="11">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.105143">0.1182855863921222</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="12">
+            <X F="Width*0.225690">0.25390125</X>
+            <Y F="Width*0.432901">0.4870140000000005</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="13">
+            <X F="Width*0.779780">0.8772525000000001</X>
+            <Y F="Width*0.434879">0.4892389999999993</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="14">
+            <X F="Width*0.770639">0.8669691130000522</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="15">
+            <X F="Width*0.241576">0.2717734974828648</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <TextBlock>
+            <LeftMargin>0.0694444</LeftMargin>
+            <RightMargin>0.0694444</RightMargin>
+            <VerticalAlign>1</VerticalAlign>
+            <DefaultTabStop>0</DefaultTabStop>
+          </TextBlock>
+          <Char IX="0">
+            <Font>0</Font>
+            <Color>0</Color>
+            <Style>0</Style>
+            <Size>0.166667</Size>
+            <ColorTrans>0</ColorTrans>
+          </Char>
+          <Para IX="0">
+            <IndFirst>0</IndFirst>
+            <IndLeft>0</IndLeft>
+            <IndRight>-0</IndRight>
+            <SpLine>-1.2</SpLine>
+            <SpBefore>0</SpBefore>
+            <HorzAlign>1</HorzAlign>
+          </Para>
+          <Text><cp IX="0"/><pp IX="0"/>&lt;plib.h&gt;</Text>
+        </Shape>
+        <Shape ID="8" Type="Shape" Name="Rectangle Fill:Chalk.8">
+          <XForm>
+            <Angle>-0</Angle>
+            <PinX>2.145669384797414</PinX>
+            <PinY>10.34197292195426</PinY>
+            <Width>1.14173227681054</Width>
+            <Height>0.5118110206392077</Height>
+            <LocPinX>0.5708661384052702</LocPinX>
+            <LocPinY>0.2559055103196038</LocPinY>
+          </XForm>
+          <TextXForm>
+            <TxtPinX F="Width*0.000000">0</TxtPinX>
+            <TxtPinY F="Height*0.000000">0</TxtPinY>
+            <TxtWidth F="Width*1.000000">1.14173227681054</TxtWidth>
+            <TxtHeight F="Height*1.000000">0.5118110206392077</TxtHeight>
+            <TxtLocPinX>0</TxtLocPinX>
+            <TxtLocPinY>0</TxtLocPinY>
+          </TextXForm>
+          <Misc>
+            <ObjType>1</ObjType>
+          </Misc>
+          <Line>
+            <LinePattern>1</LinePattern>
+            <LineWeight>0.0138889</LineWeight>
+            <LineColor>0</LineColor>
+            <LineColorTrans>0</LineColorTrans>
+            <Rounding>0</Rounding>
+            <LineCap>0</LineCap>
+          </Line>
+          <Fill>
+            <FillPattern>1</FillPattern>
+            <FillForegnd>#ffffff</FillForegnd>
+            <FillForegndTrans>0</FillForegndTrans>
+            <ShdwPattern>0</ShdwPattern>
+            <ShdwForegnd>0</ShdwForegnd>
+            <ShdwForegndTrans>0.5</ShdwForegndTrans>
+            <ShapeShdwType>1</ShapeShdwType>
+            <ShapeShdwOffsetX>0</ShapeShdwOffsetX>
+            <ShapeShdwOffsetY>-0.0277778</ShapeShdwOffsetY>
+          </Fill>
+          <Geom IX="0">
+            <NoFill>0</NoFill>
+            <NoLine>0</NoLine>
+            <MoveTo IX="1">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5118110206392077</Y>
+            </MoveTo>
+            <LineTo IX="2">
+              <X F="Width*1.000000">1.14173227681054</X>
+              <Y F="Height*1.000000">0.5118110206392077</Y>
+            </LineTo>
+            <LineTo IX="3">
+              <X F="Width*1.000000">1.14173227681054</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="4">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="5">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5118110206392077</Y>
+            </LineTo>
+          </Geom>
+          <LayerMem>
+            <LayerMember>0</LayerMember>
+          </LayerMem>
+          <Connection ID="0">
+            <X F="Width*1.000000">1.141732276810541</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="1">
+            <X F="Width*1.000000">1.14173227681054</X>
+            <Y F="Width*0.448276">0.5118110206392077</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="2">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.448276">0.5118110206392077</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="3">
+            <X F="Width*-0.000000">-3.947459643111667e-16</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="4">
+            <X F="Width*0.500000">0.5708661384052702</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="5">
+            <X F="Width*0.500000">0.5708661384052702</X>
+            <Y F="Width*0.448276">0.5118110206392077</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="6">
+            <X F="Width*1.000000">1.14173227681054</X>
+            <Y F="Width*0.224138">0.2559055103196038</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="7">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.224138">0.2559055103196038</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="8">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.328818">0.3754225962372303</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="9">
+            <X F="Width*0.008558">0.009770944824944609</X>
+            <Y F="Width*0.107558">0.1228024008591095</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="10">
+            <X F="Width*1.000000">1.14173227681054</X>
+            <Y F="Width*0.323180">0.3689853895301204</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="11">
+            <X F="Width*1.000000">1.14173227681054</X>
+            <Y F="Width*0.106049">0.121079733396518</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="12">
+            <X F="Width*0.225690">0.2576775575533709</X>
+            <Y F="Width*0.436633">0.4985182648111662</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="13">
+            <X F="Width*0.779780">0.8902999948113232</X>
+            <Y F="Width*0.438628">0.5007958238530106</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="14">
+            <X F="Width*0.770639">0.8798636616088567</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="15">
+            <X F="Width*0.241576">0.2758156213847766</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <TextBlock>
+            <LeftMargin>0.0694444</LeftMargin>
+            <RightMargin>0.0694444</RightMargin>
+            <VerticalAlign>1</VerticalAlign>
+            <DefaultTabStop>0</DefaultTabStop>
+          </TextBlock>
+          <Char IX="0">
+            <Font>0</Font>
+            <Color>0</Color>
+            <Style>0</Style>
+            <Size>0.166667</Size>
+            <ColorTrans>0</ColorTrans>
+          </Char>
+          <Para IX="0">
+            <IndFirst>0</IndFirst>
+            <IndLeft>0</IndLeft>
+            <IndRight>-0</IndRight>
+            <SpLine>-1.2</SpLine>
+            <SpBefore>0</SpBefore>
+            <HorzAlign>1</HorzAlign>
+          </Para>
+          <Text><cp IX="0"/><pp IX="0"/>BPS</Text>
+        </Shape>
+        <Shape ID="9" Type="Shape" Name="Rectangle Fill:Chalk.9">
+          <XForm>
+            <Angle>-0</Angle>
+            <PinX>3.712106492784288</PinX>
+            <PinY>10.33606741163466</PinY>
+            <Width>1.125</Width>
+            <Height>0.5</Height>
+            <LocPinX>0.5625</LocPinX>
+            <LocPinY>0.25</LocPinY>
+          </XForm>
+          <TextXForm>
+            <TxtPinX F="Width*0.000000">0</TxtPinX>
+            <TxtPinY F="Height*0.000000">0</TxtPinY>
+            <TxtWidth F="Width*1.000000">1.125</TxtWidth>
+            <TxtHeight F="Height*1.000000">0.5</TxtHeight>
+            <TxtLocPinX>0</TxtLocPinX>
+            <TxtLocPinY>0</TxtLocPinY>
+          </TextXForm>
+          <Misc>
+            <ObjType>1</ObjType>
+          </Misc>
+          <Line>
+            <LinePattern>1</LinePattern>
+            <LineWeight>0.0138889</LineWeight>
+            <LineColor>0</LineColor>
+            <LineColorTrans>0</LineColorTrans>
+            <Rounding>0</Rounding>
+            <LineCap>0</LineCap>
+          </Line>
+          <Fill>
+            <FillPattern>1</FillPattern>
+            <FillForegnd>#ffffff</FillForegnd>
+            <FillForegndTrans>0</FillForegndTrans>
+            <ShdwPattern>0</ShdwPattern>
+            <ShdwForegnd>0</ShdwForegnd>
+            <ShdwForegndTrans>0.5</ShdwForegndTrans>
+            <ShapeShdwType>1</ShapeShdwType>
+            <ShapeShdwOffsetX>0</ShapeShdwOffsetX>
+            <ShapeShdwOffsetY>-0.0277778</ShapeShdwOffsetY>
+          </Fill>
+          <Geom IX="0">
+            <NoFill>0</NoFill>
+            <NoLine>0</NoLine>
+            <MoveTo IX="1">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </MoveTo>
+            <LineTo IX="2">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+            <LineTo IX="3">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="4">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="5">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+          </Geom>
+          <LayerMem>
+            <LayerMember>0</LayerMember>
+          </LayerMem>
+          <Connection ID="0">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="1">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="2">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="3">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="4">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="5">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="6">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="7">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="8">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.326008">0.366759</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="9">
+            <X F="Width*0.008558">0.009627749999999935</X>
+            <Y F="Width*0.106639">0.1199685</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="10">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.320418">0.3604703441802501</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="11">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.105143">0.1182855863921216</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="12">
+            <X F="Width*0.225690">0.25390125</X>
+            <Y F="Width*0.432901">0.487014</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="13">
+            <X F="Width*0.779780">0.8772524999999997</X>
+            <Y F="Width*0.434879">0.489239</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="14">
+            <X F="Width*0.770639">0.8669691130000522</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="15">
+            <X F="Width*0.241576">0.271773497482864</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <TextBlock>
+            <LeftMargin>0.0694444</LeftMargin>
+            <RightMargin>0.0694444</RightMargin>
+            <VerticalAlign>1</VerticalAlign>
+            <DefaultTabStop>0</DefaultTabStop>
+          </TextBlock>
+          <Char IX="0">
+            <Font>0</Font>
+            <Color>0</Color>
+            <Style>0</Style>
+            <Size>0.166667</Size>
+            <ColorTrans>0</ColorTrans>
+          </Char>
+          <Para IX="0">
+            <IndFirst>0</IndFirst>
+            <IndLeft>0</IndLeft>
+            <IndRight>-0</IndRight>
+            <SpLine>-1.2</SpLine>
+            <SpBefore>0</SpBefore>
+            <HorzAlign>1</HorzAlign>
+          </Para>
+          <Text><cp IX="0"/><pp IX="0"/>Pedals</Text>
+        </Shape>
+        <Shape ID="10" Type="Shape" Name="Rectangle Fill:Chalk.10">
+          <XForm>
+            <Angle>-0</Angle>
+            <PinX>2.137303246392144</PinX>
+            <PinY>9.154964976840549</PinY>
+            <Width>1.125</Width>
+            <Height>0.5</Height>
+            <LocPinX>0.5625</LocPinX>
+            <LocPinY>0.25</LocPinY>
+          </XForm>
+          <TextXForm>
+            <TxtPinX F="Width*0.000000">0</TxtPinX>
+            <TxtPinY F="Height*0.000000">0</TxtPinY>
+            <TxtWidth F="Width*1.000000">1.125</TxtWidth>
+            <TxtHeight F="Height*1.000000">0.5</TxtHeight>
+            <TxtLocPinX>0</TxtLocPinX>
+            <TxtLocPinY>0</TxtLocPinY>
+          </TextXForm>
+          <Misc>
+            <ObjType>1</ObjType>
+          </Misc>
+          <Line>
+            <LinePattern>1</LinePattern>
+            <LineWeight>0.0138889</LineWeight>
+            <LineColor>0</LineColor>
+            <LineColorTrans>0</LineColorTrans>
+            <Rounding>0</Rounding>
+            <LineCap>0</LineCap>
+          </Line>
+          <Fill>
+            <FillPattern>1</FillPattern>
+            <FillForegnd>#ffffff</FillForegnd>
+            <FillForegndTrans>0</FillForegndTrans>
+            <ShdwPattern>0</ShdwPattern>
+            <ShdwForegnd>0</ShdwForegnd>
+            <ShdwForegndTrans>0.5</ShdwForegndTrans>
+            <ShapeShdwType>1</ShapeShdwType>
+            <ShapeShdwOffsetX>0</ShapeShdwOffsetX>
+            <ShapeShdwOffsetY>-0.0277778</ShapeShdwOffsetY>
+          </Fill>
+          <Geom IX="0">
+            <NoFill>0</NoFill>
+            <NoLine>0</NoLine>
+            <MoveTo IX="1">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </MoveTo>
+            <LineTo IX="2">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+            <LineTo IX="3">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="4">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="5">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+          </Geom>
+          <LayerMem>
+            <LayerMember>0</LayerMember>
+          </LayerMem>
+          <Connection ID="0">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="1">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="2">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="3">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="4">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="5">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="6">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="7">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="8">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.326008">0.3667590000000001</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="9">
+            <X F="Width*0.008558">0.009627749999999935</X>
+            <Y F="Width*0.106639">0.1199685</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="10">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.320418">0.3604703441802499</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="11">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.105143">0.1182855863921214</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="12">
+            <X F="Width*0.225690">0.25390125</X>
+            <Y F="Width*0.432901">0.4870140000000001</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="13">
+            <X F="Width*0.779780">0.8772525000000001</X>
+            <Y F="Width*0.434879">0.4892390000000001</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="14">
+            <X F="Width*0.770639">0.8669691130000514</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="15">
+            <X F="Width*0.241576">0.271773497482864</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <TextBlock>
+            <LeftMargin>0.0694444</LeftMargin>
+            <RightMargin>0.0694444</RightMargin>
+            <VerticalAlign>1</VerticalAlign>
+            <DefaultTabStop>0</DefaultTabStop>
+          </TextBlock>
+          <Char IX="0">
+            <Font>0</Font>
+            <Color>0</Color>
+            <Style>0</Style>
+            <Size>0.166667</Size>
+            <ColorTrans>0</ColorTrans>
+          </Char>
+          <Para IX="0">
+            <IndFirst>0</IndFirst>
+            <IndLeft>0</IndLeft>
+            <IndRight>-0</IndRight>
+            <SpLine>-1.2</SpLine>
+            <SpBefore>0</SpBefore>
+            <HorzAlign>1</HorzAlign>
+          </Para>
+          <Text><cp IX="0"/><pp IX="0"/>Voltage Sensor</Text>
+        </Shape>
+        <Shape ID="11" Type="Shape" Name="Rectangle Fill:Chalk.11">
+          <XForm>
+            <Angle>-0</Angle>
+            <PinX>3.712106492784288</PinX>
+            <PinY>9.154964976840549</PinY>
+            <Width>1.125</Width>
+            <Height>0.5</Height>
+            <LocPinX>0.5625</LocPinX>
+            <LocPinY>0.25</LocPinY>
+          </XForm>
+          <TextXForm>
+            <TxtPinX F="Width*0.000000">0</TxtPinX>
+            <TxtPinY F="Height*0.000000">0</TxtPinY>
+            <TxtWidth F="Width*1.000000">1.125</TxtWidth>
+            <TxtHeight F="Height*1.000000">0.5</TxtHeight>
+            <TxtLocPinX>0</TxtLocPinX>
+            <TxtLocPinY>0</TxtLocPinY>
+          </TextXForm>
+          <Misc>
+            <ObjType>1</ObjType>
+          </Misc>
+          <Line>
+            <LinePattern>1</LinePattern>
+            <LineWeight>0.0138889</LineWeight>
+            <LineColor>0</LineColor>
+            <LineColorTrans>0</LineColorTrans>
+            <Rounding>0</Rounding>
+            <LineCap>0</LineCap>
+          </Line>
+          <Fill>
+            <FillPattern>1</FillPattern>
+            <FillForegnd>#ffffff</FillForegnd>
+            <FillForegndTrans>0</FillForegndTrans>
+            <ShdwPattern>0</ShdwPattern>
+            <ShdwForegnd>0</ShdwForegnd>
+            <ShdwForegndTrans>0.5</ShdwForegndTrans>
+            <ShapeShdwType>1</ShapeShdwType>
+            <ShapeShdwOffsetX>0</ShapeShdwOffsetX>
+            <ShapeShdwOffsetY>-0.0277778</ShapeShdwOffsetY>
+          </Fill>
+          <Geom IX="0">
+            <NoFill>0</NoFill>
+            <NoLine>0</NoLine>
+            <MoveTo IX="1">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </MoveTo>
+            <LineTo IX="2">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+            <LineTo IX="3">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="4">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="5">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+          </Geom>
+          <LayerMem>
+            <LayerMember>0</LayerMember>
+          </LayerMem>
+          <Connection ID="0">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="1">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="2">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="3">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="4">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="5">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="6">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="7">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="8">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.326008">0.3667590000000001</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="9">
+            <X F="Width*0.008558">0.009627749999999935</X>
+            <Y F="Width*0.106639">0.1199685</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="10">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.320418">0.3604703441802499</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="11">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.105143">0.1182855863921214</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="12">
+            <X F="Width*0.225690">0.25390125</X>
+            <Y F="Width*0.432901">0.4870140000000001</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="13">
+            <X F="Width*0.779780">0.8772524999999997</X>
+            <Y F="Width*0.434879">0.4892390000000001</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="14">
+            <X F="Width*0.770639">0.8669691130000514</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="15">
+            <X F="Width*0.241576">0.271773497482864</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <TextBlock>
+            <LeftMargin>0.0694444</LeftMargin>
+            <RightMargin>0.0694444</RightMargin>
+            <VerticalAlign>1</VerticalAlign>
+            <DefaultTabStop>0</DefaultTabStop>
+          </TextBlock>
+          <Char IX="0">
+            <Font>0</Font>
+            <Color>0</Color>
+            <Style>0</Style>
+            <Size>0.166667</Size>
+            <ColorTrans>0</ColorTrans>
+          </Char>
+          <Para IX="0">
+            <IndFirst>0</IndFirst>
+            <IndLeft>0</IndLeft>
+            <IndRight>-0</IndRight>
+            <SpLine>-1.2</SpLine>
+            <SpBefore>0</SpBefore>
+            <HorzAlign>1</HorzAlign>
+          </Para>
+          <Text><cp IX="0"/><pp IX="0"/>Current Sensor</Text>
+        </Shape>
+        <Shape ID="12" Type="Shape" Name="Rectangle Fill:Chalk.12">
+          <XForm>
+            <Angle>-0</Angle>
+            <PinX>5.286909739176433</PinX>
+            <PinY>9.154964976840549</PinY>
+            <Width>1.125</Width>
+            <Height>0.5</Height>
+            <LocPinX>0.5625</LocPinX>
+            <LocPinY>0.25</LocPinY>
+          </XForm>
+          <TextXForm>
+            <TxtPinX F="Width*0.000000">0</TxtPinX>
+            <TxtPinY F="Height*0.000000">0</TxtPinY>
+            <TxtWidth F="Width*1.000000">1.125</TxtWidth>
+            <TxtHeight F="Height*1.000000">0.5</TxtHeight>
+            <TxtLocPinX>0</TxtLocPinX>
+            <TxtLocPinY>0</TxtLocPinY>
+          </TextXForm>
+          <Misc>
+            <ObjType>1</ObjType>
+          </Misc>
+          <Line>
+            <LinePattern>1</LinePattern>
+            <LineWeight>0.0138889</LineWeight>
+            <LineColor>0</LineColor>
+            <LineColorTrans>0</LineColorTrans>
+            <Rounding>0</Rounding>
+            <LineCap>0</LineCap>
+          </Line>
+          <Fill>
+            <FillPattern>1</FillPattern>
+            <FillForegnd>#ffffff</FillForegnd>
+            <FillForegndTrans>0</FillForegndTrans>
+            <ShdwPattern>0</ShdwPattern>
+            <ShdwForegnd>0</ShdwForegnd>
+            <ShdwForegndTrans>0.5</ShdwForegndTrans>
+            <ShapeShdwType>1</ShapeShdwType>
+            <ShapeShdwOffsetX>0</ShapeShdwOffsetX>
+            <ShapeShdwOffsetY>-0.0277778</ShapeShdwOffsetY>
+          </Fill>
+          <Geom IX="0">
+            <NoFill>0</NoFill>
+            <NoLine>0</NoLine>
+            <MoveTo IX="1">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </MoveTo>
+            <LineTo IX="2">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+            <LineTo IX="3">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="4">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="5">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+          </Geom>
+          <LayerMem>
+            <LayerMember>0</LayerMember>
+          </LayerMem>
+          <Connection ID="0">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="1">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="2">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="3">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="4">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="5">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="6">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="7">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="8">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.326008">0.3667590000000001</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="9">
+            <X F="Width*0.008558">0.009627749999999935</X>
+            <Y F="Width*0.106639">0.1199685</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="10">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.320418">0.3604703441802499</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="11">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.105143">0.1182855863921214</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="12">
+            <X F="Width*0.225690">0.25390125</X>
+            <Y F="Width*0.432901">0.4870140000000001</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="13">
+            <X F="Width*0.779780">0.8772524999999997</X>
+            <Y F="Width*0.434879">0.4892390000000001</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="14">
+            <X F="Width*0.770639">0.8669691130000514</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="15">
+            <X F="Width*0.241576">0.2717734974828632</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <TextBlock>
+            <LeftMargin>0.0694444</LeftMargin>
+            <RightMargin>0.0694444</RightMargin>
+            <VerticalAlign>1</VerticalAlign>
+            <DefaultTabStop>0</DefaultTabStop>
+          </TextBlock>
+          <Char IX="0">
+            <Font>0</Font>
+            <Color>0</Color>
+            <Style>0</Style>
+            <Size>0.166667</Size>
+            <ColorTrans>0</ColorTrans>
+          </Char>
+          <Para IX="0">
+            <IndFirst>0</IndFirst>
+            <IndLeft>0</IndLeft>
+            <IndRight>-0</IndRight>
+            <SpLine>-1.2</SpLine>
+            <SpBefore>0</SpBefore>
+            <HorzAlign>1</HorzAlign>
+          </Para>
+          <Text><cp IX="0"/><pp IX="0"/>Temp Sensor</Text>
+        </Shape>
+        <Shape ID="13" Type="Shape" Name="Rectangle Fill:Chalk.13">
+          <XForm>
+            <Angle>-0</Angle>
+            <PinX>2.137303246392144</PinX>
+            <PinY>7.973862542046441</PinY>
+            <Width>1.125</Width>
+            <Height>0.5</Height>
+            <LocPinX>0.5625</LocPinX>
+            <LocPinY>0.25</LocPinY>
+          </XForm>
+          <TextXForm>
+            <TxtPinX F="Width*0.000000">0</TxtPinX>
+            <TxtPinY F="Height*0.000000">0</TxtPinY>
+            <TxtWidth F="Width*1.000000">1.125</TxtWidth>
+            <TxtHeight F="Height*1.000000">0.5</TxtHeight>
+            <TxtLocPinX>0</TxtLocPinX>
+            <TxtLocPinY>0</TxtLocPinY>
+          </TextXForm>
+          <Misc>
+            <ObjType>1</ObjType>
+          </Misc>
+          <Line>
+            <LinePattern>1</LinePattern>
+            <LineWeight>0.0138889</LineWeight>
+            <LineColor>0</LineColor>
+            <LineColorTrans>0</LineColorTrans>
+            <Rounding>0</Rounding>
+            <LineCap>0</LineCap>
+          </Line>
+          <Fill>
+            <FillPattern>1</FillPattern>
+            <FillForegnd>#ffffff</FillForegnd>
+            <FillForegndTrans>0</FillForegndTrans>
+            <ShdwPattern>0</ShdwPattern>
+            <ShdwForegnd>0</ShdwForegnd>
+            <ShdwForegndTrans>0.5</ShdwForegndTrans>
+            <ShapeShdwType>1</ShapeShdwType>
+            <ShapeShdwOffsetX>0</ShapeShdwOffsetX>
+            <ShapeShdwOffsetY>-0.0277778</ShapeShdwOffsetY>
+          </Fill>
+          <Geom IX="0">
+            <NoFill>0</NoFill>
+            <NoLine>0</NoLine>
+            <MoveTo IX="1">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </MoveTo>
+            <LineTo IX="2">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+            <LineTo IX="3">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="4">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="5">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+          </Geom>
+          <LayerMem>
+            <LayerMember>0</LayerMember>
+          </LayerMem>
+          <Connection ID="0">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="1">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="2">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="3">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="4">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="5">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="6">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="7">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="8">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.326008">0.3667589999999998</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="9">
+            <X F="Width*0.008558">0.009627749999999935</X>
+            <Y F="Width*0.106639">0.1199685</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="10">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.320418">0.3604703441802499</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="11">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.105143">0.1182855863921214</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="12">
+            <X F="Width*0.225690">0.25390125</X>
+            <Y F="Width*0.432901">0.4870140000000001</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="13">
+            <X F="Width*0.779780">0.8772525000000001</X>
+            <Y F="Width*0.434879">0.4892390000000001</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="14">
+            <X F="Width*0.770639">0.8669691130000514</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="15">
+            <X F="Width*0.241576">0.2717734974828636</X>
+            <Y F="Width*-0.000000">-3.947459643111667e-16</Y>
+            <Type>0</Type>
+          </Connection>
+          <TextBlock>
+            <LeftMargin>0.0694444</LeftMargin>
+            <RightMargin>0.0694444</RightMargin>
+            <VerticalAlign>1</VerticalAlign>
+            <DefaultTabStop>0</DefaultTabStop>
+          </TextBlock>
+          <Char IX="0">
+            <Font>0</Font>
+            <Color>0</Color>
+            <Style>0</Style>
+            <Size>0.166667</Size>
+            <ColorTrans>0</ColorTrans>
+          </Char>
+          <Para IX="0">
+            <IndFirst>0</IndFirst>
+            <IndLeft>0</IndLeft>
+            <IndRight>-0</IndRight>
+            <SpLine>-1.2</SpLine>
+            <SpBefore>0</SpBefore>
+            <HorzAlign>1</HorzAlign>
+          </Para>
+          <Text><cp IX="0"/><pp IX="0"/>LTC6803</Text>
+        </Shape>
+        <Shape ID="14" Type="Shape" Name="Rectangle Fill:Chalk.14">
+          <XForm>
+            <Angle>-0</Angle>
+            <PinX>3.712106439802382</PinX>
+            <PinY>7.973862542046441</PinY>
+            <Width>1.125</Width>
+            <Height>0.5</Height>
+            <LocPinX>0.5625</LocPinX>
+            <LocPinY>0.25</LocPinY>
+          </XForm>
+          <TextXForm>
+            <TxtPinX F="Width*0.000000">0</TxtPinX>
+            <TxtPinY F="Height*0.000000">0</TxtPinY>
+            <TxtWidth F="Width*1.000000">1.125</TxtWidth>
+            <TxtHeight F="Height*1.000000">0.5</TxtHeight>
+            <TxtLocPinX>0</TxtLocPinX>
+            <TxtLocPinY>0</TxtLocPinY>
+          </TextXForm>
+          <Misc>
+            <ObjType>1</ObjType>
+          </Misc>
+          <Line>
+            <LinePattern>1</LinePattern>
+            <LineWeight>0.0138889</LineWeight>
+            <LineColor>0</LineColor>
+            <LineColorTrans>0</LineColorTrans>
+            <Rounding>0</Rounding>
+            <LineCap>0</LineCap>
+          </Line>
+          <Fill>
+            <FillPattern>1</FillPattern>
+            <FillForegnd>#ffffff</FillForegnd>
+            <FillForegndTrans>0</FillForegndTrans>
+            <ShdwPattern>0</ShdwPattern>
+            <ShdwForegnd>0</ShdwForegnd>
+            <ShdwForegndTrans>0.5</ShdwForegndTrans>
+            <ShapeShdwType>1</ShapeShdwType>
+            <ShapeShdwOffsetX>0</ShapeShdwOffsetX>
+            <ShapeShdwOffsetY>-0.0277778</ShapeShdwOffsetY>
+          </Fill>
+          <Geom IX="0">
+            <NoFill>0</NoFill>
+            <NoLine>0</NoLine>
+            <MoveTo IX="1">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </MoveTo>
+            <LineTo IX="2">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+            <LineTo IX="3">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="4">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="5">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+          </Geom>
+          <LayerMem>
+            <LayerMember>0</LayerMember>
+          </LayerMem>
+          <Connection ID="0">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="1">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="2">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="3">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="4">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="5">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="6">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="7">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="8">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.326008">0.3667589999999998</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="9">
+            <X F="Width*0.008558">0.009627749999999935</X>
+            <Y F="Width*0.106639">0.1199685</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="10">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.320418">0.3604703441802499</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="11">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.105143">0.1182855863921214</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="12">
+            <X F="Width*0.225690">0.25390125</X>
+            <Y F="Width*0.432901">0.4870140000000001</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="13">
+            <X F="Width*0.779780">0.8772524999999997</X>
+            <Y F="Width*0.434879">0.4892390000000001</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="14">
+            <X F="Width*0.770639">0.8669691130000514</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="15">
+            <X F="Width*0.241576">0.2717734974828636</X>
+            <Y F="Width*-0.000000">-3.947459643111667e-16</Y>
+            <Type>0</Type>
+          </Connection>
+          <TextBlock>
+            <LeftMargin>0.0694444</LeftMargin>
+            <RightMargin>0.0694444</RightMargin>
+            <VerticalAlign>1</VerticalAlign>
+            <DefaultTabStop>0</DefaultTabStop>
+          </TextBlock>
+          <Char IX="0">
+            <Font>0</Font>
+            <Color>0</Color>
+            <Style>0</Style>
+            <Size>0.166667</Size>
+            <ColorTrans>0</ColorTrans>
+          </Char>
+          <Para IX="0">
+            <IndFirst>0</IndFirst>
+            <IndLeft>0</IndLeft>
+            <IndRight>-0</IndRight>
+            <SpLine>-1.2</SpLine>
+            <SpBefore>0</SpBefore>
+            <HorzAlign>1</HorzAlign>
+          </Para>
+          <Text><cp IX="0"/><pp IX="0"/>AD7685</Text>
+        </Shape>
+        <Shape ID="15" Type="Shape" Name="Rectangle Fill:Chalk.15">
+          <XForm>
+            <Angle>-0</Angle>
+            <PinX>5.28690963321262</PinX>
+            <PinY>7.973862542046441</PinY>
+            <Width>1.125</Width>
+            <Height>0.5</Height>
+            <LocPinX>0.5625</LocPinX>
+            <LocPinY>0.25</LocPinY>
+          </XForm>
+          <TextXForm>
+            <TxtPinX F="Width*0.000000">0</TxtPinX>
+            <TxtPinY F="Height*0.000000">0</TxtPinY>
+            <TxtWidth F="Width*1.000000">1.125</TxtWidth>
+            <TxtHeight F="Height*1.000000">0.5</TxtHeight>
+            <TxtLocPinX>0</TxtLocPinX>
+            <TxtLocPinY>0</TxtLocPinY>
+          </TextXForm>
+          <Misc>
+            <ObjType>1</ObjType>
+          </Misc>
+          <Line>
+            <LinePattern>1</LinePattern>
+            <LineWeight>0.0138889</LineWeight>
+            <LineColor>0</LineColor>
+            <LineColorTrans>0</LineColorTrans>
+            <Rounding>0</Rounding>
+            <LineCap>0</LineCap>
+          </Line>
+          <Fill>
+            <FillPattern>1</FillPattern>
+            <FillForegnd>#ffffff</FillForegnd>
+            <FillForegndTrans>0</FillForegndTrans>
+            <ShdwPattern>0</ShdwPattern>
+            <ShdwForegnd>0</ShdwForegnd>
+            <ShdwForegndTrans>0.5</ShdwForegndTrans>
+            <ShapeShdwType>1</ShapeShdwType>
+            <ShapeShdwOffsetX>0</ShapeShdwOffsetX>
+            <ShapeShdwOffsetY>-0.0277778</ShapeShdwOffsetY>
+          </Fill>
+          <Geom IX="0">
+            <NoFill>0</NoFill>
+            <NoLine>0</NoLine>
+            <MoveTo IX="1">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </MoveTo>
+            <LineTo IX="2">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+            <LineTo IX="3">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="4">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="5">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+          </Geom>
+          <LayerMem>
+            <LayerMember>0</LayerMember>
+          </LayerMem>
+          <Connection ID="0">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="1">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="2">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="3">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="4">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="5">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="6">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="7">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="8">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.326008">0.3667589999999998</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="9">
+            <X F="Width*0.008558">0.009627749999999935</X>
+            <Y F="Width*0.106639">0.1199685</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="10">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.320418">0.3604703441802499</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="11">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.105143">0.1182855863921214</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="12">
+            <X F="Width*0.225690">0.25390125</X>
+            <Y F="Width*0.432901">0.4870140000000001</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="13">
+            <X F="Width*0.779780">0.8772524999999997</X>
+            <Y F="Width*0.434879">0.4892390000000001</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="14">
+            <X F="Width*0.770639">0.8669691130000514</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="15">
+            <X F="Width*0.241576">0.2717734974828632</X>
+            <Y F="Width*-0.000000">-3.947459643111667e-16</Y>
+            <Type>0</Type>
+          </Connection>
+          <TextBlock>
+            <LeftMargin>0.0694444</LeftMargin>
+            <RightMargin>0.0694444</RightMargin>
+            <VerticalAlign>1</VerticalAlign>
+            <DefaultTabStop>0</DefaultTabStop>
+          </TextBlock>
+          <Char IX="0">
+            <Font>0</Font>
+            <Color>0</Color>
+            <Style>0</Style>
+            <Size>0.166667</Size>
+            <ColorTrans>0</ColorTrans>
+          </Char>
+          <Para IX="0">
+            <IndFirst>0</IndFirst>
+            <IndLeft>0</IndLeft>
+            <IndRight>-0</IndRight>
+            <SpLine>-1.2</SpLine>
+            <SpBefore>0</SpBefore>
+            <HorzAlign>1</HorzAlign>
+          </Para>
+          <Text><cp IX="0"/><pp IX="0"/>DS18X20</Text>
+        </Shape>
+        <Shape ID="16" Type="Shape" Name="Rectangle Fill:Chalk.16">
+          <XForm>
+            <Angle>-0</Angle>
+            <PinX>2.137303246392144</PinX>
+            <PinY>7.174649907482995</PinY>
+            <Width>1.125</Width>
+            <Height>0.5</Height>
+            <LocPinX>0.5625</LocPinX>
+            <LocPinY>0.25</LocPinY>
+          </XForm>
+          <TextXForm>
+            <TxtPinX F="Width*0.000000">0</TxtPinX>
+            <TxtPinY F="Height*0.000000">0</TxtPinY>
+            <TxtWidth F="Width*1.000000">1.125</TxtWidth>
+            <TxtHeight F="Height*1.000000">0.5</TxtHeight>
+            <TxtLocPinX>0</TxtLocPinX>
+            <TxtLocPinY>0</TxtLocPinY>
+          </TextXForm>
+          <Misc>
+            <ObjType>1</ObjType>
+          </Misc>
+          <Line>
+            <LinePattern>1</LinePattern>
+            <LineWeight>0.0138889</LineWeight>
+            <LineColor>0</LineColor>
+            <LineColorTrans>0</LineColorTrans>
+            <Rounding>0</Rounding>
+            <LineCap>0</LineCap>
+          </Line>
+          <Fill>
+            <FillPattern>1</FillPattern>
+            <FillForegnd>#ffffff</FillForegnd>
+            <FillForegndTrans>0</FillForegndTrans>
+            <ShdwPattern>0</ShdwPattern>
+            <ShdwForegnd>0</ShdwForegnd>
+            <ShdwForegndTrans>0.5</ShdwForegndTrans>
+            <ShapeShdwType>1</ShapeShdwType>
+            <ShapeShdwOffsetX>0</ShapeShdwOffsetX>
+            <ShapeShdwOffsetY>-0.0277778</ShapeShdwOffsetY>
+          </Fill>
+          <Geom IX="0">
+            <NoFill>0</NoFill>
+            <NoLine>0</NoLine>
+            <MoveTo IX="1">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </MoveTo>
+            <LineTo IX="2">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+            <LineTo IX="3">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="4">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="5">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+          </Geom>
+          <LayerMem>
+            <LayerMember>0</LayerMember>
+          </LayerMem>
+          <Connection ID="0">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="1">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="2">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="3">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="4">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="5">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="6">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="7">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="8">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.326008">0.3667590000000003</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="9">
+            <X F="Width*0.008558">0.009627749999999935</X>
+            <Y F="Width*0.106639">0.1199685000000004</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="10">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.320418">0.3604703441802499</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="11">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.105143">0.1182855863921214</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="12">
+            <X F="Width*0.225690">0.25390125</X>
+            <Y F="Width*0.432901">0.4870140000000001</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="13">
+            <X F="Width*0.779780">0.8772525000000001</X>
+            <Y F="Width*0.434879">0.4892390000000001</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="14">
+            <X F="Width*0.770639">0.8669691130000522</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="15">
+            <X F="Width*0.241576">0.2717734974828636</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <TextBlock>
+            <LeftMargin>0.0694444</LeftMargin>
+            <RightMargin>0.0694444</RightMargin>
+            <VerticalAlign>1</VerticalAlign>
+            <DefaultTabStop>0</DefaultTabStop>
+          </TextBlock>
+          <Char IX="0">
+            <Font>0</Font>
+            <Color>0</Color>
+            <Style>0</Style>
+            <Size>0.166667</Size>
+            <ColorTrans>0</ColorTrans>
+          </Char>
+          <Para IX="0">
+            <IndFirst>0</IndFirst>
+            <IndLeft>0</IndLeft>
+            <IndRight>-0</IndRight>
+            <SpLine>-1.2</SpLine>
+            <SpBefore>0</SpBefore>
+            <HorzAlign>1</HorzAlign>
+          </Para>
+          <Text><cp IX="0"/><pp IX="0"/>Nokia5110</Text>
+        </Shape>
+        <Shape ID="17" Type="Shape" Name="Rectangle Fill:Chalk.17">
+          <XForm>
+            <Angle>-0</Angle>
+            <PinX>3.712106439802382</PinX>
+            <PinY>7.174649907482995</PinY>
+            <Width>1.125</Width>
+            <Height>0.5</Height>
+            <LocPinX>0.5625</LocPinX>
+            <LocPinY>0.25</LocPinY>
+          </XForm>
+          <TextXForm>
+            <TxtPinX F="Width*0.000000">0</TxtPinX>
+            <TxtPinY F="Height*0.000000">0</TxtPinY>
+            <TxtWidth F="Width*1.000000">1.125</TxtWidth>
+            <TxtHeight F="Height*1.000000">0.5</TxtHeight>
+            <TxtLocPinX>0</TxtLocPinX>
+            <TxtLocPinY>0</TxtLocPinY>
+          </TextXForm>
+          <Misc>
+            <ObjType>1</ObjType>
+          </Misc>
+          <Line>
+            <LinePattern>1</LinePattern>
+            <LineWeight>0.0138889</LineWeight>
+            <LineColor>0</LineColor>
+            <LineColorTrans>0</LineColorTrans>
+            <Rounding>0</Rounding>
+            <LineCap>0</LineCap>
+          </Line>
+          <Fill>
+            <FillPattern>1</FillPattern>
+            <FillForegnd>#ffffff</FillForegnd>
+            <FillForegndTrans>0</FillForegndTrans>
+            <ShdwPattern>0</ShdwPattern>
+            <ShdwForegnd>0</ShdwForegnd>
+            <ShdwForegndTrans>0.5</ShdwForegndTrans>
+            <ShapeShdwType>1</ShapeShdwType>
+            <ShapeShdwOffsetX>0</ShapeShdwOffsetX>
+            <ShapeShdwOffsetY>-0.0277778</ShapeShdwOffsetY>
+          </Fill>
+          <Geom IX="0">
+            <NoFill>0</NoFill>
+            <NoLine>0</NoLine>
+            <MoveTo IX="1">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </MoveTo>
+            <LineTo IX="2">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+            <LineTo IX="3">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="4">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="5">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+          </Geom>
+          <LayerMem>
+            <LayerMember>0</LayerMember>
+          </LayerMem>
+          <Connection ID="0">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="1">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="2">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="3">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="4">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="5">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="6">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="7">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="8">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.326008">0.3667590000000003</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="9">
+            <X F="Width*0.008558">0.009627749999999935</X>
+            <Y F="Width*0.106639">0.1199685000000004</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="10">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.320418">0.3604703441802499</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="11">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.105143">0.1182855863921214</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="12">
+            <X F="Width*0.225690">0.25390125</X>
+            <Y F="Width*0.432901">0.4870140000000001</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="13">
+            <X F="Width*0.779780">0.8772524999999997</X>
+            <Y F="Width*0.434879">0.4892390000000001</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="14">
+            <X F="Width*0.770639">0.8669691130000522</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="15">
+            <X F="Width*0.241576">0.2717734974828636</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <TextBlock>
+            <LeftMargin>0.0694444</LeftMargin>
+            <RightMargin>0.0694444</RightMargin>
+            <VerticalAlign>1</VerticalAlign>
+            <DefaultTabStop>0</DefaultTabStop>
+          </TextBlock>
+          <Char IX="0">
+            <Font>0</Font>
+            <Color>0</Color>
+            <Style>0</Style>
+            <Size>0.166667</Size>
+            <ColorTrans>0</ColorTrans>
+          </Char>
+          <Para IX="0">
+            <IndFirst>0</IndFirst>
+            <IndLeft>0</IndLeft>
+            <IndRight>-0</IndRight>
+            <SpLine>-1.2</SpLine>
+            <SpBefore>0</SpBefore>
+            <HorzAlign>1</HorzAlign>
+          </Para>
+          <Text><cp IX="0"/><pp IX="0"/>HAIS50P</Text>
+        </Shape>
+        <Shape ID="18" Type="Shape" Name="Rectangle Fill:Chalk.18">
+          <XForm>
+            <Angle>-0</Angle>
+            <PinX>5.28690963321262</PinX>
+            <PinY>7.174649907482995</PinY>
+            <Width>1.125</Width>
+            <Height>0.5</Height>
+            <LocPinX>0.5625</LocPinX>
+            <LocPinY>0.25</LocPinY>
+          </XForm>
+          <TextXForm>
+            <TxtPinX F="Width*0.000000">0</TxtPinX>
+            <TxtPinY F="Height*0.000000">0</TxtPinY>
+            <TxtWidth F="Width*1.000000">1.125</TxtWidth>
+            <TxtHeight F="Height*1.000000">0.5</TxtHeight>
+            <TxtLocPinX>0</TxtLocPinX>
+            <TxtLocPinY>0</TxtLocPinY>
+          </TextXForm>
+          <Misc>
+            <ObjType>1</ObjType>
+          </Misc>
+          <Line>
+            <LinePattern>1</LinePattern>
+            <LineWeight>0.0138889</LineWeight>
+            <LineColor>0</LineColor>
+            <LineColorTrans>0</LineColorTrans>
+            <Rounding>0</Rounding>
+            <LineCap>0</LineCap>
+          </Line>
+          <Fill>
+            <FillPattern>1</FillPattern>
+            <FillForegnd>#ffffff</FillForegnd>
+            <FillForegndTrans>0</FillForegndTrans>
+            <ShdwPattern>0</ShdwPattern>
+            <ShdwForegnd>0</ShdwForegnd>
+            <ShdwForegndTrans>0.5</ShdwForegndTrans>
+            <ShapeShdwType>1</ShapeShdwType>
+            <ShapeShdwOffsetX>0</ShapeShdwOffsetX>
+            <ShapeShdwOffsetY>-0.0277778</ShapeShdwOffsetY>
+          </Fill>
+          <Geom IX="0">
+            <NoFill>0</NoFill>
+            <NoLine>0</NoLine>
+            <MoveTo IX="1">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </MoveTo>
+            <LineTo IX="2">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+            <LineTo IX="3">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="4">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="5">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+          </Geom>
+          <LayerMem>
+            <LayerMember>0</LayerMember>
+          </LayerMem>
+          <Connection ID="0">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="1">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="2">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="3">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="4">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="5">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="6">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="7">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="8">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.326008">0.3667590000000003</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="9">
+            <X F="Width*0.008558">0.009627749999999935</X>
+            <Y F="Width*0.106639">0.1199685000000004</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="10">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.320418">0.3604703441802499</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="11">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.105143">0.1182855863921214</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="12">
+            <X F="Width*0.225690">0.25390125</X>
+            <Y F="Width*0.432901">0.4870140000000001</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="13">
+            <X F="Width*0.779780">0.8772524999999997</X>
+            <Y F="Width*0.434879">0.4892390000000001</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="14">
+            <X F="Width*0.770639">0.8669691130000522</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="15">
+            <X F="Width*0.241576">0.2717734974828632</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <TextBlock>
+            <LeftMargin>0.0694444</LeftMargin>
+            <RightMargin>0.0694444</RightMargin>
+            <VerticalAlign>1</VerticalAlign>
+            <DefaultTabStop>0</DefaultTabStop>
+          </TextBlock>
+          <Char IX="0">
+            <Font>0</Font>
+            <Color>0</Color>
+            <Style>0</Style>
+            <Size>0.166667</Size>
+            <ColorTrans>0</ColorTrans>
+          </Char>
+          <Para IX="0">
+            <IndFirst>0</IndFirst>
+            <IndLeft>0</IndLeft>
+            <IndRight>-0</IndRight>
+            <SpLine>-1.2</SpLine>
+            <SpBefore>0</SpBefore>
+            <HorzAlign>1</HorzAlign>
+          </Para>
+          <Text><cp IX="0"/><pp IX="0"/>uLCD28PT</Text>
+        </Shape>
+        <Shape ID="19" Type="Shape" Name="Rectangle Fill:Chalk.19">
+          <XForm>
+            <Angle>-0</Angle>
+            <PinX>2.137303246392144</PinX>
+            <PinY>6.387248310777876</PinY>
+            <Width>1.125</Width>
+            <Height>0.5</Height>
+            <LocPinX>0.5625</LocPinX>
+            <LocPinY>0.25</LocPinY>
+          </XForm>
+          <TextXForm>
+            <TxtPinX F="Width*0.000000">0</TxtPinX>
+            <TxtPinY F="Height*0.000000">0</TxtPinY>
+            <TxtWidth F="Width*1.000000">1.125</TxtWidth>
+            <TxtHeight F="Height*1.000000">0.5</TxtHeight>
+            <TxtLocPinX>0</TxtLocPinX>
+            <TxtLocPinY>0</TxtLocPinY>
+          </TextXForm>
+          <Misc>
+            <ObjType>1</ObjType>
+          </Misc>
+          <Line>
+            <LinePattern>1</LinePattern>
+            <LineWeight>0.0138889</LineWeight>
+            <LineColor>0</LineColor>
+            <LineColorTrans>0</LineColorTrans>
+            <Rounding>0</Rounding>
+            <LineCap>0</LineCap>
+          </Line>
+          <Fill>
+            <FillPattern>1</FillPattern>
+            <FillForegnd>#ffffff</FillForegnd>
+            <FillForegndTrans>0</FillForegndTrans>
+            <ShdwPattern>0</ShdwPattern>
+            <ShdwForegnd>0</ShdwForegnd>
+            <ShdwForegndTrans>0.5</ShdwForegndTrans>
+            <ShapeShdwType>1</ShapeShdwType>
+            <ShapeShdwOffsetX>0</ShapeShdwOffsetX>
+            <ShapeShdwOffsetY>-0.0277778</ShapeShdwOffsetY>
+          </Fill>
+          <Geom IX="0">
+            <NoFill>0</NoFill>
+            <NoLine>0</NoLine>
+            <MoveTo IX="1">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </MoveTo>
+            <LineTo IX="2">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+            <LineTo IX="3">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="4">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="5">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+          </Geom>
+          <LayerMem>
+            <LayerMember>0</LayerMember>
+          </LayerMem>
+          <Connection ID="0">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="1">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="2">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="3">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="4">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="5">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="6">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="7">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="8">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.326008">0.3667590000000003</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="9">
+            <X F="Width*0.008558">0.009627749999999935</X>
+            <Y F="Width*0.106639">0.1199685000000004</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="10">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.320418">0.3604703441802499</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="11">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.105143">0.1182855863921214</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="12">
+            <X F="Width*0.225690">0.25390125</X>
+            <Y F="Width*0.432901">0.4870139999999997</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="13">
+            <X F="Width*0.779780">0.8772525000000001</X>
+            <Y F="Width*0.434879">0.4892390000000001</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="14">
+            <X F="Width*0.770639">0.8669691130000522</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="15">
+            <X F="Width*0.241576">0.2717734974828636</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <TextBlock>
+            <LeftMargin>0.0694444</LeftMargin>
+            <RightMargin>0.0694444</RightMargin>
+            <VerticalAlign>1</VerticalAlign>
+            <DefaultTabStop>0</DefaultTabStop>
+          </TextBlock>
+          <Char IX="0">
+            <Font>0</Font>
+            <Color>0</Color>
+            <Style>0</Style>
+            <Size>0.166667</Size>
+            <ColorTrans>0</ColorTrans>
+          </Char>
+          <Para IX="0">
+            <IndFirst>0</IndFirst>
+            <IndLeft>0</IndLeft>
+            <IndRight>-0</IndRight>
+            <SpLine>-1.2</SpLine>
+            <SpBefore>0</SpBefore>
+            <HorzAlign>1</HorzAlign>
+          </Para>
+          <Text><cp IX="0"/><pp IX="0"/>Button</Text>
+        </Shape>
+        <Shape ID="20" Type="Shape" Name="Rectangle Fill:Chalk.20">
+          <XForm>
+            <Angle>-0</Angle>
+            <PinX>3.712106439802382</PinX>
+            <PinY>6.387248310777876</PinY>
+            <Width>1.125</Width>
+            <Height>0.5</Height>
+            <LocPinX>0.5625</LocPinX>
+            <LocPinY>0.25</LocPinY>
+          </XForm>
+          <TextXForm>
+            <TxtPinX F="Width*0.000000">0</TxtPinX>
+            <TxtPinY F="Height*0.000000">0</TxtPinY>
+            <TxtWidth F="Width*1.000000">1.125</TxtWidth>
+            <TxtHeight F="Height*1.000000">0.5</TxtHeight>
+            <TxtLocPinX>0</TxtLocPinX>
+            <TxtLocPinY>0</TxtLocPinY>
+          </TextXForm>
+          <Misc>
+            <ObjType>1</ObjType>
+          </Misc>
+          <Line>
+            <LinePattern>1</LinePattern>
+            <LineWeight>0.0138889</LineWeight>
+            <LineColor>0</LineColor>
+            <LineColorTrans>0</LineColorTrans>
+            <Rounding>0</Rounding>
+            <LineCap>0</LineCap>
+          </Line>
+          <Fill>
+            <FillPattern>1</FillPattern>
+            <FillForegnd>#ffffff</FillForegnd>
+            <FillForegndTrans>0</FillForegndTrans>
+            <ShdwPattern>0</ShdwPattern>
+            <ShdwForegnd>0</ShdwForegnd>
+            <ShdwForegndTrans>0.5</ShdwForegndTrans>
+            <ShapeShdwType>1</ShapeShdwType>
+            <ShapeShdwOffsetX>0</ShapeShdwOffsetX>
+            <ShapeShdwOffsetY>-0.0277778</ShapeShdwOffsetY>
+          </Fill>
+          <Geom IX="0">
+            <NoFill>0</NoFill>
+            <NoLine>0</NoLine>
+            <MoveTo IX="1">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </MoveTo>
+            <LineTo IX="2">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+            <LineTo IX="3">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="4">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="5">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+          </Geom>
+          <LayerMem>
+            <LayerMember>0</LayerMember>
+          </LayerMem>
+          <Connection ID="0">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="1">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="2">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="3">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="4">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="5">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="6">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="7">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="8">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.326008">0.3667590000000003</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="9">
+            <X F="Width*0.008558">0.009627749999999935</X>
+            <Y F="Width*0.106639">0.1199685000000004</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="10">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.320418">0.3604703441802499</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="11">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.105143">0.1182855863921214</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="12">
+            <X F="Width*0.225690">0.25390125</X>
+            <Y F="Width*0.432901">0.4870139999999997</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="13">
+            <X F="Width*0.779780">0.8772524999999997</X>
+            <Y F="Width*0.434879">0.4892390000000001</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="14">
+            <X F="Width*0.770639">0.8669691130000522</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="15">
+            <X F="Width*0.241576">0.2717734974828636</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <TextBlock>
+            <LeftMargin>0.0694444</LeftMargin>
+            <RightMargin>0.0694444</RightMargin>
+            <VerticalAlign>1</VerticalAlign>
+            <DefaultTabStop>0</DefaultTabStop>
+          </TextBlock>
+          <Char IX="0">
+            <Font>0</Font>
+            <Color>0</Color>
+            <Style>0</Style>
+            <Size>0.166667</Size>
+            <ColorTrans>0</ColorTrans>
+          </Char>
+          <Para IX="0">
+            <IndFirst>0</IndFirst>
+            <IndLeft>0</IndLeft>
+            <IndRight>-0</IndRight>
+            <SpLine>-1.2</SpLine>
+            <SpBefore>0</SpBefore>
+            <HorzAlign>1</HorzAlign>
+          </Para>
+          <Text><cp IX="0"/><pp IX="0"/>LED</Text>
+        </Shape>
+        <Shape ID="21" Type="Shape" Name="Rectangle Fill:Chalk.21">
+          <XForm>
+            <Angle>-0</Angle>
+            <PinX>2.137303246392144</PinX>
+            <PinY>5.206145915720198</PinY>
+            <Width>1.125</Width>
+            <Height>0.5</Height>
+            <LocPinX>0.5625</LocPinX>
+            <LocPinY>0.25</LocPinY>
+          </XForm>
+          <TextXForm>
+            <TxtPinX F="Width*0.000000">0</TxtPinX>
+            <TxtPinY F="Height*0.000000">0</TxtPinY>
+            <TxtWidth F="Width*1.000000">1.125</TxtWidth>
+            <TxtHeight F="Height*1.000000">0.5</TxtHeight>
+            <TxtLocPinX>0</TxtLocPinX>
+            <TxtLocPinY>0</TxtLocPinY>
+          </TextXForm>
+          <Misc>
+            <ObjType>1</ObjType>
+          </Misc>
+          <Line>
+            <LinePattern>1</LinePattern>
+            <LineWeight>0.0138889</LineWeight>
+            <LineColor>0</LineColor>
+            <LineColorTrans>0</LineColorTrans>
+            <Rounding>0</Rounding>
+            <LineCap>0</LineCap>
+          </Line>
+          <Fill>
+            <FillPattern>1</FillPattern>
+            <FillForegnd>#ffffff</FillForegnd>
+            <FillForegndTrans>0</FillForegndTrans>
+            <ShdwPattern>0</ShdwPattern>
+            <ShdwForegnd>0</ShdwForegnd>
+            <ShdwForegndTrans>0.5</ShdwForegndTrans>
+            <ShapeShdwType>1</ShapeShdwType>
+            <ShapeShdwOffsetX>0</ShapeShdwOffsetX>
+            <ShapeShdwOffsetY>-0.0277778</ShapeShdwOffsetY>
+          </Fill>
+          <Geom IX="0">
+            <NoFill>0</NoFill>
+            <NoLine>0</NoLine>
+            <MoveTo IX="1">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </MoveTo>
+            <LineTo IX="2">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+            <LineTo IX="3">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="4">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="5">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+          </Geom>
+          <LayerMem>
+            <LayerMember>0</LayerMember>
+          </LayerMem>
+          <Connection ID="0">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="1">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="2">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="3">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="4">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="5">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="6">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="7">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="8">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.326008">0.3667590000000003</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="9">
+            <X F="Width*0.008558">0.009627749999999935</X>
+            <Y F="Width*0.106639">0.1199685000000004</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="10">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.320418">0.3604703441802499</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="11">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.105143">0.1182855863921214</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="12">
+            <X F="Width*0.225690">0.25390125</X>
+            <Y F="Width*0.432901">0.4870139999999997</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="13">
+            <X F="Width*0.779780">0.8772525000000001</X>
+            <Y F="Width*0.434879">0.4892390000000001</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="14">
+            <X F="Width*0.770639">0.8669691130000522</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="15">
+            <X F="Width*0.241576">0.2717734974828636</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <TextBlock>
+            <LeftMargin>0.0694444</LeftMargin>
+            <RightMargin>0.0694444</RightMargin>
+            <VerticalAlign>1</VerticalAlign>
+            <DefaultTabStop>0</DefaultTabStop>
+          </TextBlock>
+          <Char IX="0">
+            <Font>0</Font>
+            <Color>0</Color>
+            <Style>0</Style>
+            <Size>0.166667</Size>
+            <ColorTrans>0</ColorTrans>
+          </Char>
+          <Para IX="0">
+            <IndFirst>0</IndFirst>
+            <IndLeft>0</IndLeft>
+            <IndRight>-0</IndRight>
+            <SpLine>-1.2</SpLine>
+            <SpBefore>0</SpBefore>
+            <HorzAlign>1</HorzAlign>
+          </Para>
+          <Text><cp IX="0"/><pp IX="0"/>SPI</Text>
+        </Shape>
+        <Shape ID="22" Type="Shape" Name="Rectangle Fill:Chalk.22">
+          <XForm>
+            <Angle>-0</Angle>
+            <PinX>2.137303246392144</PinX>
+            <PinY>4.418744319015079</PinY>
+            <Width>1.125</Width>
+            <Height>0.5</Height>
+            <LocPinX>0.5625</LocPinX>
+            <LocPinY>0.25</LocPinY>
+          </XForm>
+          <TextXForm>
+            <TxtPinX F="Width*0.000000">0</TxtPinX>
+            <TxtPinY F="Height*0.000000">0</TxtPinY>
+            <TxtWidth F="Width*1.000000">1.125</TxtWidth>
+            <TxtHeight F="Height*1.000000">0.5</TxtHeight>
+            <TxtLocPinX>0</TxtLocPinX>
+            <TxtLocPinY>0</TxtLocPinY>
+          </TextXForm>
+          <Misc>
+            <ObjType>1</ObjType>
+          </Misc>
+          <Line>
+            <LinePattern>1</LinePattern>
+            <LineWeight>0.0138889</LineWeight>
+            <LineColor>0</LineColor>
+            <LineColorTrans>0</LineColorTrans>
+            <Rounding>0</Rounding>
+            <LineCap>0</LineCap>
+          </Line>
+          <Fill>
+            <FillPattern>1</FillPattern>
+            <FillForegnd>#ffffff</FillForegnd>
+            <FillForegndTrans>0</FillForegndTrans>
+            <ShdwPattern>0</ShdwPattern>
+            <ShdwForegnd>0</ShdwForegnd>
+            <ShdwForegndTrans>0.5</ShdwForegndTrans>
+            <ShapeShdwType>1</ShapeShdwType>
+            <ShapeShdwOffsetX>0</ShapeShdwOffsetX>
+            <ShapeShdwOffsetY>-0.0277778</ShapeShdwOffsetY>
+          </Fill>
+          <Geom IX="0">
+            <NoFill>0</NoFill>
+            <NoLine>0</NoLine>
+            <MoveTo IX="1">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </MoveTo>
+            <LineTo IX="2">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+            <LineTo IX="3">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="4">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="5">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+          </Geom>
+          <LayerMem>
+            <LayerMember>0</LayerMember>
+          </LayerMem>
+          <Connection ID="0">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="1">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="2">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="3">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="4">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="5">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="6">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="7">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="8">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.326008">0.3667590000000003</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="9">
+            <X F="Width*0.008558">0.009627749999999935</X>
+            <Y F="Width*0.106639">0.1199685000000004</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="10">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.320418">0.3604703441802499</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="11">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.105143">0.1182855863921214</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="12">
+            <X F="Width*0.225690">0.25390125</X>
+            <Y F="Width*0.432901">0.4870139999999997</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="13">
+            <X F="Width*0.779780">0.8772525000000001</X>
+            <Y F="Width*0.434879">0.4892390000000001</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="14">
+            <X F="Width*0.770639">0.8669691130000522</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="15">
+            <X F="Width*0.241576">0.2717734974828636</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <TextBlock>
+            <LeftMargin>0.0694444</LeftMargin>
+            <RightMargin>0.0694444</RightMargin>
+            <VerticalAlign>1</VerticalAlign>
+            <DefaultTabStop>0</DefaultTabStop>
+          </TextBlock>
+          <Char IX="0">
+            <Font>0</Font>
+            <Color>0</Color>
+            <Style>0</Style>
+            <Size>0.166667</Size>
+            <ColorTrans>0</ColorTrans>
+          </Char>
+          <Para IX="0">
+            <IndFirst>0</IndFirst>
+            <IndLeft>0</IndLeft>
+            <IndRight>-0</IndRight>
+            <SpLine>-1.2</SpLine>
+            <SpBefore>0</SpBefore>
+            <HorzAlign>1</HorzAlign>
+          </Para>
+          <Text><cp IX="0"/><pp IX="0"/>Can</Text>
+        </Shape>
+        <Shape ID="23" Type="Shape" Name="Rectangle Fill:Chalk.23">
+          <XForm>
+            <Angle>-0</Angle>
+            <PinX>5.28690963321262</PinX>
+            <PinY>5.206145915720198</PinY>
+            <Width>1.125</Width>
+            <Height>0.5</Height>
+            <LocPinX>0.5625</LocPinX>
+            <LocPinY>0.25</LocPinY>
+          </XForm>
+          <TextXForm>
+            <TxtPinX F="Width*0.000000">0</TxtPinX>
+            <TxtPinY F="Height*0.000000">0</TxtPinY>
+            <TxtWidth F="Width*1.000000">1.125</TxtWidth>
+            <TxtHeight F="Height*1.000000">0.5</TxtHeight>
+            <TxtLocPinX>0</TxtLocPinX>
+            <TxtLocPinY>0</TxtLocPinY>
+          </TextXForm>
+          <Misc>
+            <ObjType>1</ObjType>
+          </Misc>
+          <Line>
+            <LinePattern>1</LinePattern>
+            <LineWeight>0.0138889</LineWeight>
+            <LineColor>0</LineColor>
+            <LineColorTrans>0</LineColorTrans>
+            <Rounding>0</Rounding>
+            <LineCap>0</LineCap>
+          </Line>
+          <Fill>
+            <FillPattern>1</FillPattern>
+            <FillForegnd>#ffffff</FillForegnd>
+            <FillForegndTrans>0</FillForegndTrans>
+            <ShdwPattern>0</ShdwPattern>
+            <ShdwForegnd>0</ShdwForegnd>
+            <ShdwForegndTrans>0.5</ShdwForegndTrans>
+            <ShapeShdwType>1</ShapeShdwType>
+            <ShapeShdwOffsetX>0</ShapeShdwOffsetX>
+            <ShapeShdwOffsetY>-0.0277778</ShapeShdwOffsetY>
+          </Fill>
+          <Geom IX="0">
+            <NoFill>0</NoFill>
+            <NoLine>0</NoLine>
+            <MoveTo IX="1">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </MoveTo>
+            <LineTo IX="2">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+            <LineTo IX="3">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="4">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="5">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+          </Geom>
+          <LayerMem>
+            <LayerMember>0</LayerMember>
+          </LayerMem>
+          <Connection ID="0">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="1">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="2">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="3">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="4">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="5">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="6">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="7">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="8">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.326008">0.3667590000000003</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="9">
+            <X F="Width*0.008558">0.009627749999999935</X>
+            <Y F="Width*0.106639">0.1199685000000004</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="10">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.320418">0.3604703441802499</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="11">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.105143">0.1182855863921214</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="12">
+            <X F="Width*0.225690">0.25390125</X>
+            <Y F="Width*0.432901">0.4870139999999997</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="13">
+            <X F="Width*0.779780">0.8772524999999997</X>
+            <Y F="Width*0.434879">0.4892390000000001</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="14">
+            <X F="Width*0.770639">0.8669691130000522</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="15">
+            <X F="Width*0.241576">0.2717734974828632</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <TextBlock>
+            <LeftMargin>0.0694444</LeftMargin>
+            <RightMargin>0.0694444</RightMargin>
+            <VerticalAlign>1</VerticalAlign>
+            <DefaultTabStop>0</DefaultTabStop>
+          </TextBlock>
+          <Char IX="0">
+            <Font>0</Font>
+            <Color>0</Color>
+            <Style>0</Style>
+            <Size>0.166667</Size>
+            <ColorTrans>0</ColorTrans>
+          </Char>
+          <Para IX="0">
+            <IndFirst>0</IndFirst>
+            <IndLeft>0</IndLeft>
+            <IndRight>-0</IndRight>
+            <SpLine>-1.2</SpLine>
+            <SpBefore>0</SpBefore>
+            <HorzAlign>1</HorzAlign>
+          </Para>
+          <Text><cp IX="0"/><pp IX="0"/>OneWire</Text>
+        </Shape>
+        <Shape ID="24" Type="Shape" Name="Rectangle Fill:Chalk.24">
+          <XForm>
+            <Angle>-0</Angle>
+            <PinX>3.712106439802382</PinX>
+            <PinY>5.206145915720198</PinY>
+            <Width>1.125</Width>
+            <Height>0.5</Height>
+            <LocPinX>0.5625</LocPinX>
+            <LocPinY>0.25</LocPinY>
+          </XForm>
+          <TextXForm>
+            <TxtPinX F="Width*0.000000">0</TxtPinX>
+            <TxtPinY F="Height*0.000000">0</TxtPinY>
+            <TxtWidth F="Width*1.000000">1.125</TxtWidth>
+            <TxtHeight F="Height*1.000000">0.5</TxtHeight>
+            <TxtLocPinX>0</TxtLocPinX>
+            <TxtLocPinY>0</TxtLocPinY>
+          </TextXForm>
+          <Misc>
+            <ObjType>1</ObjType>
+          </Misc>
+          <Line>
+            <LinePattern>1</LinePattern>
+            <LineWeight>0.0138889</LineWeight>
+            <LineColor>0</LineColor>
+            <LineColorTrans>0</LineColorTrans>
+            <Rounding>0</Rounding>
+            <LineCap>0</LineCap>
+          </Line>
+          <Fill>
+            <FillPattern>1</FillPattern>
+            <FillForegnd>#ffffff</FillForegnd>
+            <FillForegndTrans>0</FillForegndTrans>
+            <ShdwPattern>0</ShdwPattern>
+            <ShdwForegnd>0</ShdwForegnd>
+            <ShdwForegndTrans>0.5</ShdwForegndTrans>
+            <ShapeShdwType>1</ShapeShdwType>
+            <ShapeShdwOffsetX>0</ShapeShdwOffsetX>
+            <ShapeShdwOffsetY>-0.0277778</ShapeShdwOffsetY>
+          </Fill>
+          <Geom IX="0">
+            <NoFill>0</NoFill>
+            <NoLine>0</NoLine>
+            <MoveTo IX="1">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </MoveTo>
+            <LineTo IX="2">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+            <LineTo IX="3">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="4">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="5">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+          </Geom>
+          <LayerMem>
+            <LayerMember>0</LayerMember>
+          </LayerMem>
+          <Connection ID="0">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="1">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="2">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="3">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="4">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="5">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="6">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="7">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="8">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.326008">0.3667590000000003</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="9">
+            <X F="Width*0.008558">0.009627749999999935</X>
+            <Y F="Width*0.106639">0.1199685000000004</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="10">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.320418">0.3604703441802499</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="11">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.105143">0.1182855863921214</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="12">
+            <X F="Width*0.225690">0.25390125</X>
+            <Y F="Width*0.432901">0.4870139999999997</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="13">
+            <X F="Width*0.779780">0.8772524999999997</X>
+            <Y F="Width*0.434879">0.4892390000000001</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="14">
+            <X F="Width*0.770639">0.8669691130000522</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="15">
+            <X F="Width*0.241576">0.2717734974828636</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <TextBlock>
+            <LeftMargin>0.0694444</LeftMargin>
+            <RightMargin>0.0694444</RightMargin>
+            <VerticalAlign>1</VerticalAlign>
+            <DefaultTabStop>0</DefaultTabStop>
+          </TextBlock>
+          <Char IX="0">
+            <Font>0</Font>
+            <Color>0</Color>
+            <Style>0</Style>
+            <Size>0.166667</Size>
+            <ColorTrans>0</ColorTrans>
+          </Char>
+          <Para IX="0">
+            <IndFirst>0</IndFirst>
+            <IndLeft>0</IndLeft>
+            <IndRight>-0</IndRight>
+            <SpLine>-1.2</SpLine>
+            <SpBefore>0</SpBefore>
+            <HorzAlign>1</HorzAlign>
+          </Para>
+          <Text><cp IX="0"/><pp IX="0"/>Serial</Text>
+        </Shape>
+        <Shape ID="25" Type="Shape" Name="Rectangle Fill:Chalk.25">
+          <XForm>
+            <Angle>-0</Angle>
+            <PinX>3.712106439802382</PinX>
+            <PinY>3.63134272230996</PinY>
+            <Width>1.125</Width>
+            <Height>0.5</Height>
+            <LocPinX>0.5625</LocPinX>
+            <LocPinY>0.25</LocPinY>
+          </XForm>
+          <TextXForm>
+            <TxtPinX F="Width*0.000000">0</TxtPinX>
+            <TxtPinY F="Height*0.000000">0</TxtPinY>
+            <TxtWidth F="Width*1.000000">1.125</TxtWidth>
+            <TxtHeight F="Height*1.000000">0.5</TxtHeight>
+            <TxtLocPinX>0</TxtLocPinX>
+            <TxtLocPinY>0</TxtLocPinY>
+          </TextXForm>
+          <Misc>
+            <ObjType>1</ObjType>
+          </Misc>
+          <Line>
+            <LinePattern>1</LinePattern>
+            <LineWeight>0.0138889</LineWeight>
+            <LineColor>0</LineColor>
+            <LineColorTrans>0</LineColorTrans>
+            <Rounding>0</Rounding>
+            <LineCap>0</LineCap>
+          </Line>
+          <Fill>
+            <FillPattern>1</FillPattern>
+            <FillForegnd>#ffffff</FillForegnd>
+            <FillForegndTrans>0</FillForegndTrans>
+            <ShdwPattern>0</ShdwPattern>
+            <ShdwForegnd>0</ShdwForegnd>
+            <ShdwForegndTrans>0.5</ShdwForegndTrans>
+            <ShapeShdwType>1</ShapeShdwType>
+            <ShapeShdwOffsetX>0</ShapeShdwOffsetX>
+            <ShapeShdwOffsetY>-0.0277778</ShapeShdwOffsetY>
+          </Fill>
+          <Geom IX="0">
+            <NoFill>0</NoFill>
+            <NoLine>0</NoLine>
+            <MoveTo IX="1">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </MoveTo>
+            <LineTo IX="2">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+            <LineTo IX="3">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="4">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="5">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+          </Geom>
+          <LayerMem>
+            <LayerMember>0</LayerMember>
+          </LayerMem>
+          <Connection ID="0">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="1">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="2">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="3">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="4">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="5">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="6">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="7">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="8">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.326008">0.3667590000000003</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="9">
+            <X F="Width*0.008558">0.009627749999999935</X>
+            <Y F="Width*0.106639">0.1199685000000004</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="10">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.320418">0.3604703441802507</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="11">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.105143">0.1182855863921222</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="12">
+            <X F="Width*0.225690">0.25390125</X>
+            <Y F="Width*0.432901">0.4870139999999997</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="13">
+            <X F="Width*0.779780">0.8772524999999997</X>
+            <Y F="Width*0.434879">0.4892390000000001</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="14">
+            <X F="Width*0.770639">0.8669691130000522</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="15">
+            <X F="Width*0.241576">0.2717734974828648</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <TextBlock>
+            <LeftMargin>0.0694444</LeftMargin>
+            <RightMargin>0.0694444</RightMargin>
+            <VerticalAlign>1</VerticalAlign>
+            <DefaultTabStop>0</DefaultTabStop>
+          </TextBlock>
+          <Char IX="0">
+            <Font>0</Font>
+            <Color>0</Color>
+            <Style>0</Style>
+            <Size>0.166667</Size>
+            <ColorTrans>0</ColorTrans>
+          </Char>
+          <Para IX="0">
+            <IndFirst>0</IndFirst>
+            <IndLeft>0</IndLeft>
+            <IndRight>-0</IndRight>
+            <SpLine>-1.2</SpLine>
+            <SpBefore>0</SpBefore>
+            <HorzAlign>1</HorzAlign>
+          </Para>
+          <Text><cp IX="0"/><pp IX="0"/>Pin</Text>
+        </Shape>
+        <Shape ID="26" Type="Shape" Name="Rectangle Fill:Chalk.26">
+          <XForm>
+            <Angle>-0</Angle>
+            <PinX>3.712106439802382</PinX>
+            <PinY>4.418744319015079</PinY>
+            <Width>1.125</Width>
+            <Height>0.5</Height>
+            <LocPinX>0.5625</LocPinX>
+            <LocPinY>0.25</LocPinY>
+          </XForm>
+          <TextXForm>
+            <TxtPinX F="Width*0.000000">0</TxtPinX>
+            <TxtPinY F="Height*0.000000">0</TxtPinY>
+            <TxtWidth F="Width*1.000000">1.125</TxtWidth>
+            <TxtHeight F="Height*1.000000">0.5</TxtHeight>
+            <TxtLocPinX>0</TxtLocPinX>
+            <TxtLocPinY>0</TxtLocPinY>
+          </TextXForm>
+          <Misc>
+            <ObjType>1</ObjType>
+          </Misc>
+          <Line>
+            <LinePattern>1</LinePattern>
+            <LineWeight>0.0138889</LineWeight>
+            <LineColor>0</LineColor>
+            <LineColorTrans>0</LineColorTrans>
+            <Rounding>0</Rounding>
+            <LineCap>0</LineCap>
+          </Line>
+          <Fill>
+            <FillPattern>1</FillPattern>
+            <FillForegnd>#ffffff</FillForegnd>
+            <FillForegndTrans>0</FillForegndTrans>
+            <ShdwPattern>0</ShdwPattern>
+            <ShdwForegnd>0</ShdwForegnd>
+            <ShdwForegndTrans>0.5</ShdwForegndTrans>
+            <ShapeShdwType>1</ShapeShdwType>
+            <ShapeShdwOffsetX>0</ShapeShdwOffsetX>
+            <ShapeShdwOffsetY>-0.0277778</ShapeShdwOffsetY>
+          </Fill>
+          <Geom IX="0">
+            <NoFill>0</NoFill>
+            <NoLine>0</NoLine>
+            <MoveTo IX="1">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </MoveTo>
+            <LineTo IX="2">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+            <LineTo IX="3">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="4">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="5">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+          </Geom>
+          <LayerMem>
+            <LayerMember>0</LayerMember>
+          </LayerMem>
+          <Connection ID="0">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="1">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="2">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="3">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="4">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="5">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="6">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="7">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="8">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.326008">0.3667590000000003</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="9">
+            <X F="Width*0.008558">0.009627749999999935</X>
+            <Y F="Width*0.106639">0.1199685000000004</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="10">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.320418">0.3604703441802499</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="11">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.105143">0.1182855863921214</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="12">
+            <X F="Width*0.225690">0.25390125</X>
+            <Y F="Width*0.432901">0.4870139999999997</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="13">
+            <X F="Width*0.779780">0.8772524999999997</X>
+            <Y F="Width*0.434879">0.4892390000000001</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="14">
+            <X F="Width*0.770639">0.8669691130000522</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="15">
+            <X F="Width*0.241576">0.2717734974828636</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <TextBlock>
+            <LeftMargin>0.0694444</LeftMargin>
+            <RightMargin>0.0694444</RightMargin>
+            <VerticalAlign>1</VerticalAlign>
+            <DefaultTabStop>0</DefaultTabStop>
+          </TextBlock>
+          <Char IX="0">
+            <Font>0</Font>
+            <Color>0</Color>
+            <Style>0</Style>
+            <Size>0.166667</Size>
+            <ColorTrans>0</ColorTrans>
+          </Char>
+          <Para IX="0">
+            <IndFirst>0</IndFirst>
+            <IndLeft>0</IndLeft>
+            <IndRight>-0</IndRight>
+            <SpLine>-1.2</SpLine>
+            <SpBefore>0</SpBefore>
+            <HorzAlign>1</HorzAlign>
+          </Para>
+          <Text><cp IX="0"/><pp IX="0"/>DigitalIn: Pin</Text>
+        </Shape>
+        <Shape ID="27" Type="Shape" Name="Rectangle Fill:Chalk.27">
+          <XForm>
+            <Angle>-0</Angle>
+            <PinX>5.28690963321262</PinX>
+            <PinY>4.418744319015079</PinY>
+            <Width>1.125</Width>
+            <Height>0.5</Height>
+            <LocPinX>0.5625</LocPinX>
+            <LocPinY>0.25</LocPinY>
+          </XForm>
+          <TextXForm>
+            <TxtPinX F="Width*0.000000">0</TxtPinX>
+            <TxtPinY F="Height*0.000000">0</TxtPinY>
+            <TxtWidth F="Width*1.000000">1.125</TxtWidth>
+            <TxtHeight F="Height*1.000000">0.5</TxtHeight>
+            <TxtLocPinX>0</TxtLocPinX>
+            <TxtLocPinY>0</TxtLocPinY>
+          </TextXForm>
+          <Misc>
+            <ObjType>1</ObjType>
+          </Misc>
+          <Line>
+            <LinePattern>1</LinePattern>
+            <LineWeight>0.0138889</LineWeight>
+            <LineColor>0</LineColor>
+            <LineColorTrans>0</LineColorTrans>
+            <Rounding>0</Rounding>
+            <LineCap>0</LineCap>
+          </Line>
+          <Fill>
+            <FillPattern>1</FillPattern>
+            <FillForegnd>#ffffff</FillForegnd>
+            <FillForegndTrans>0</FillForegndTrans>
+            <ShdwPattern>0</ShdwPattern>
+            <ShdwForegnd>0</ShdwForegnd>
+            <ShdwForegndTrans>0.5</ShdwForegndTrans>
+            <ShapeShdwType>1</ShapeShdwType>
+            <ShapeShdwOffsetX>0</ShapeShdwOffsetX>
+            <ShapeShdwOffsetY>-0.0277778</ShapeShdwOffsetY>
+          </Fill>
+          <Geom IX="0">
+            <NoFill>0</NoFill>
+            <NoLine>0</NoLine>
+            <MoveTo IX="1">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </MoveTo>
+            <LineTo IX="2">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+            <LineTo IX="3">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="4">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="5">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+          </Geom>
+          <LayerMem>
+            <LayerMember>0</LayerMember>
+          </LayerMem>
+          <Connection ID="0">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="1">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="2">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="3">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="4">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="5">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="6">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="7">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="8">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.326008">0.3667590000000003</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="9">
+            <X F="Width*0.008558">0.009627749999999935</X>
+            <Y F="Width*0.106639">0.1199685000000004</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="10">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.320418">0.3604703441802499</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="11">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.105143">0.1182855863921214</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="12">
+            <X F="Width*0.225690">0.25390125</X>
+            <Y F="Width*0.432901">0.4870139999999997</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="13">
+            <X F="Width*0.779780">0.8772524999999997</X>
+            <Y F="Width*0.434879">0.4892390000000001</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="14">
+            <X F="Width*0.770639">0.8669691130000522</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="15">
+            <X F="Width*0.241576">0.2717734974828632</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <TextBlock>
+            <LeftMargin>0.0694444</LeftMargin>
+            <RightMargin>0.0694444</RightMargin>
+            <VerticalAlign>1</VerticalAlign>
+            <DefaultTabStop>0</DefaultTabStop>
+          </TextBlock>
+          <Char IX="0">
+            <Font>0</Font>
+            <Color>0</Color>
+            <Style>0</Style>
+            <Size>0.166667</Size>
+            <ColorTrans>0</ColorTrans>
+          </Char>
+          <Para IX="0">
+            <IndFirst>0</IndFirst>
+            <IndLeft>0</IndLeft>
+            <IndRight>-0</IndRight>
+            <SpLine>-1.2</SpLine>
+            <SpBefore>0</SpBefore>
+            <HorzAlign>1</HorzAlign>
+          </Para>
+          <Text><cp IX="0"/><pp IX="0"/>DigitalOut: Pin</Text>
+        </Shape>
+        <Shape ID="28" Type="Shape" Name="Rectangle Fill:Chalk.28">
+          <XForm>
+            <Angle>-0</Angle>
+            <PinX>2.137303246392144</PinX>
+            <PinY>3.63134272230996</PinY>
+            <Width>1.125</Width>
+            <Height>0.5</Height>
+            <LocPinX>0.5625</LocPinX>
+            <LocPinY>0.25</LocPinY>
+          </XForm>
+          <TextXForm>
+            <TxtPinX F="Width*0.000000">0</TxtPinX>
+            <TxtPinY F="Height*0.000000">0</TxtPinY>
+            <TxtWidth F="Width*1.000000">1.125</TxtWidth>
+            <TxtHeight F="Height*1.000000">0.5</TxtHeight>
+            <TxtLocPinX>0</TxtLocPinX>
+            <TxtLocPinY>0</TxtLocPinY>
+          </TextXForm>
+          <Misc>
+            <ObjType>1</ObjType>
+          </Misc>
+          <Line>
+            <LinePattern>1</LinePattern>
+            <LineWeight>0.0138889</LineWeight>
+            <LineColor>0</LineColor>
+            <LineColorTrans>0</LineColorTrans>
+            <Rounding>0</Rounding>
+            <LineCap>0</LineCap>
+          </Line>
+          <Fill>
+            <FillPattern>1</FillPattern>
+            <FillForegnd>#ffffff</FillForegnd>
+            <FillForegndTrans>0</FillForegndTrans>
+            <ShdwPattern>0</ShdwPattern>
+            <ShdwForegnd>0</ShdwForegnd>
+            <ShdwForegndTrans>0.5</ShdwForegndTrans>
+            <ShapeShdwType>1</ShapeShdwType>
+            <ShapeShdwOffsetX>0</ShapeShdwOffsetX>
+            <ShapeShdwOffsetY>-0.0277778</ShapeShdwOffsetY>
+          </Fill>
+          <Geom IX="0">
+            <NoFill>0</NoFill>
+            <NoLine>0</NoLine>
+            <MoveTo IX="1">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </MoveTo>
+            <LineTo IX="2">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+            <LineTo IX="3">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="4">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="5">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+          </Geom>
+          <LayerMem>
+            <LayerMember>0</LayerMember>
+          </LayerMem>
+          <Connection ID="0">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="1">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="2">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="3">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="4">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="5">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="6">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="7">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="8">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.326008">0.3667590000000003</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="9">
+            <X F="Width*0.008558">0.009627749999999935</X>
+            <Y F="Width*0.106639">0.1199685000000004</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="10">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.320418">0.3604703441802491</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="11">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.105143">0.1182855863921222</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="12">
+            <X F="Width*0.225690">0.25390125</X>
+            <Y F="Width*0.432901">0.4870139999999997</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="13">
+            <X F="Width*0.779780">0.8772525000000001</X>
+            <Y F="Width*0.434879">0.4892390000000001</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="14">
+            <X F="Width*0.770639">0.8669691130000522</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="15">
+            <X F="Width*0.241576">0.2717734974828648</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <TextBlock>
+            <LeftMargin>0.0694444</LeftMargin>
+            <RightMargin>0.0694444</RightMargin>
+            <VerticalAlign>1</VerticalAlign>
+            <DefaultTabStop>0</DefaultTabStop>
+          </TextBlock>
+          <Char IX="0">
+            <Font>0</Font>
+            <Color>0</Color>
+            <Style>0</Style>
+            <Size>0.166667</Size>
+            <ColorTrans>0</ColorTrans>
+          </Char>
+          <Para IX="0">
+            <IndFirst>0</IndFirst>
+            <IndLeft>0</IndLeft>
+            <IndRight>-0</IndRight>
+            <SpLine>-1.2</SpLine>
+            <SpBefore>0</SpBefore>
+            <HorzAlign>1</HorzAlign>
+          </Para>
+          <Text><cp IX="0"/><pp IX="0"/>AnalogIn: Pin</Text>
+        </Shape>
+        <Shape ID="29" Type="Shape" Name="Rectangle Fill:Chalk.29">
+          <XForm>
+            <Angle>-0</Angle>
+            <PinX>2.137303286128574</PinX>
+            <PinY>2.462051020728217</PinY>
+            <Width>1.125</Width>
+            <Height>0.5</Height>
+            <LocPinX>0.5625</LocPinX>
+            <LocPinY>0.25</LocPinY>
+          </XForm>
+          <TextXForm>
+            <TxtPinX F="Width*0.000000">0</TxtPinX>
+            <TxtPinY F="Height*0.000000">0</TxtPinY>
+            <TxtWidth F="Width*1.000000">1.125</TxtWidth>
+            <TxtHeight F="Height*1.000000">0.5</TxtHeight>
+            <TxtLocPinX>0</TxtLocPinX>
+            <TxtLocPinY>0</TxtLocPinY>
+          </TextXForm>
+          <Misc>
+            <ObjType>1</ObjType>
+          </Misc>
+          <Line>
+            <LinePattern>1</LinePattern>
+            <LineWeight>0.0138889</LineWeight>
+            <LineColor>0</LineColor>
+            <LineColorTrans>0</LineColorTrans>
+            <Rounding>0</Rounding>
+            <LineCap>0</LineCap>
+          </Line>
+          <Fill>
+            <FillPattern>1</FillPattern>
+            <FillForegnd>#ffffff</FillForegnd>
+            <FillForegndTrans>0</FillForegndTrans>
+            <ShdwPattern>0</ShdwPattern>
+            <ShdwForegnd>0</ShdwForegnd>
+            <ShdwForegndTrans>0.5</ShdwForegndTrans>
+            <ShapeShdwType>1</ShapeShdwType>
+            <ShapeShdwOffsetX>0</ShapeShdwOffsetX>
+            <ShapeShdwOffsetY>-0.0277778</ShapeShdwOffsetY>
+          </Fill>
+          <Geom IX="0">
+            <NoFill>0</NoFill>
+            <NoLine>0</NoLine>
+            <MoveTo IX="1">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </MoveTo>
+            <LineTo IX="2">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+            <LineTo IX="3">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="4">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="5">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+          </Geom>
+          <LayerMem>
+            <LayerMember>0</LayerMember>
+          </LayerMem>
+          <Connection ID="0">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="1">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="2">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="3">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="4">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="5">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="6">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="7">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="8">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.326008">0.3667590000000003</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="9">
+            <X F="Width*0.008558">0.009627749999999935</X>
+            <Y F="Width*0.106639">0.1199685000000004</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="10">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.320418">0.3604703441802491</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="11">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.105143">0.1182855863921222</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="12">
+            <X F="Width*0.225690">0.25390125</X>
+            <Y F="Width*0.432901">0.4870140000000005</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="13">
+            <X F="Width*0.779780">0.8772525000000001</X>
+            <Y F="Width*0.434879">0.4892389999999993</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="14">
+            <X F="Width*0.770639">0.8669691130000522</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="15">
+            <X F="Width*0.241576">0.2717734974828648</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <TextBlock>
+            <LeftMargin>0.0694444</LeftMargin>
+            <RightMargin>0.0694444</RightMargin>
+            <VerticalAlign>1</VerticalAlign>
+            <DefaultTabStop>0</DefaultTabStop>
+          </TextBlock>
+          <Char IX="0">
+            <Font>0</Font>
+            <Color>0</Color>
+            <Style>0</Style>
+            <Size>0.166667</Size>
+            <ColorTrans>0</ColorTrans>
+          </Char>
+          <Para IX="0">
+            <IndFirst>0</IndFirst>
+            <IndLeft>0</IndLeft>
+            <IndRight>-0</IndRight>
+            <SpLine>-1.2</SpLine>
+            <SpBefore>0</SpBefore>
+            <HorzAlign>1</HorzAlign>
+          </Para>
+          <Text><cp IX="0"/><pp IX="0"/>PlatformSPI</Text>
+        </Shape>
+        <Shape ID="30" Type="Shape" Name="Rectangle Fill:Chalk.30">
+          <XForm>
+            <Angle>-0</Angle>
+            <PinX>3.712106532520718</PinX>
+            <PinY>2.462051020728217</PinY>
+            <Width>1.125</Width>
+            <Height>0.5</Height>
+            <LocPinX>0.5625</LocPinX>
+            <LocPinY>0.25</LocPinY>
+          </XForm>
+          <TextXForm>
+            <TxtPinX F="Width*0.000000">0</TxtPinX>
+            <TxtPinY F="Height*0.000000">0</TxtPinY>
+            <TxtWidth F="Width*1.000000">1.125</TxtWidth>
+            <TxtHeight F="Height*1.000000">0.5</TxtHeight>
+            <TxtLocPinX>0</TxtLocPinX>
+            <TxtLocPinY>0</TxtLocPinY>
+          </TextXForm>
+          <Misc>
+            <ObjType>1</ObjType>
+          </Misc>
+          <Line>
+            <LinePattern>1</LinePattern>
+            <LineWeight>0.0138889</LineWeight>
+            <LineColor>0</LineColor>
+            <LineColorTrans>0</LineColorTrans>
+            <Rounding>0</Rounding>
+            <LineCap>0</LineCap>
+          </Line>
+          <Fill>
+            <FillPattern>1</FillPattern>
+            <FillForegnd>#ffffff</FillForegnd>
+            <FillForegndTrans>0</FillForegndTrans>
+            <ShdwPattern>0</ShdwPattern>
+            <ShdwForegnd>0</ShdwForegnd>
+            <ShdwForegndTrans>0.5</ShdwForegndTrans>
+            <ShapeShdwType>1</ShapeShdwType>
+            <ShapeShdwOffsetX>0</ShapeShdwOffsetX>
+            <ShapeShdwOffsetY>-0.0277778</ShapeShdwOffsetY>
+          </Fill>
+          <Geom IX="0">
+            <NoFill>0</NoFill>
+            <NoLine>0</NoLine>
+            <MoveTo IX="1">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </MoveTo>
+            <LineTo IX="2">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+            <LineTo IX="3">
+              <X F="Width*1.000000">1.125</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="4">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*0.000000">0</Y>
+            </LineTo>
+            <LineTo IX="5">
+              <X F="Width*0.000000">0</X>
+              <Y F="Height*1.000000">0.5</Y>
+            </LineTo>
+          </Geom>
+          <LayerMem>
+            <LayerMember>0</LayerMember>
+          </LayerMem>
+          <Connection ID="0">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="1">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="2">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="3">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="4">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="5">
+            <X F="Width*0.500000">0.5625</X>
+            <Y F="Width*0.444444">0.5</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="6">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="7">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.222222">0.25</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="8">
+            <X F="Width*0.000000">0</X>
+            <Y F="Width*0.326008">0.3667590000000003</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="9">
+            <X F="Width*0.008558">0.009627749999999935</X>
+            <Y F="Width*0.106639">0.1199685000000004</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="10">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.320418">0.3604703441802507</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="11">
+            <X F="Width*1.000000">1.125</X>
+            <Y F="Width*0.105143">0.1182855863921222</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="12">
+            <X F="Width*0.225690">0.25390125</X>
+            <Y F="Width*0.432901">0.4870140000000005</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="13">
+            <X F="Width*0.779780">0.8772524999999997</X>
+            <Y F="Width*0.434879">0.4892389999999993</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="14">
+            <X F="Width*0.770639">0.8669691130000522</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <Connection ID="15">
+            <X F="Width*0.241576">0.2717734974828648</X>
+            <Y F="Width*0.000000">0</Y>
+            <Type>0</Type>
+          </Connection>
+          <TextBlock>
+            <LeftMargin>0.0694444</LeftMargin>
+            <RightMargin>0.0694444</RightMargin>
+            <VerticalAlign>1</VerticalAlign>
+            <DefaultTabStop>0</DefaultTabStop>
+          </TextBlock>
+          <Char IX="0">
+            <Font>0</Font>
+            <Color>0</Color>
+            <Style>0</Style>
+            <Size>0.166667</Size>
+            <ColorTrans>0</ColorTrans>
+          </Char>
+          <Para IX="0">
+            <IndFirst>0</IndFirst>
+            <IndLeft>0</IndLeft>
+            <IndRight>-0</IndRight>
+            <SpLine>-1.2</SpLine>
+            <SpBefore>0</SpBefore>
+            <HorzAlign>1</HorzAlign>
+          </Para>
+          <Text><cp IX="0"/><pp IX="0"/>PlatformPin</Text>
+        </Shape>
+        <Shape ID="31" Type="Shape" Name="Circle Fill:Chalk Fill:Chalk.31">
+          <XForm>
+            <Angle>-0</Angle>
+            <PinX>5.224409778912862</PinX>
+            <PinY>2.462051020728217</PinY>
+            <Width>1</Width>
+            <Height>0.5</Height>
+            <LocPinX>0.5</LocPinX>
+            <LocPinY>0.25</LocPinY>
+          </XForm>
+          <TextXForm>
+            <TxtPinX F="Width*0.100000">0.09999999999999984</TxtPinX>
+            <TxtPinY F="Height*0.150000">0.07500000000000033</TxtPinY>
+            <TxtWidth F="Width*0.800000">0.8</TxtWidth>
+            <TxtHeight F="Height*0.700000">0.35</TxtHeight>
+            <TxtLocPinX>0</TxtLocPinX>
+            <TxtLocPinY>0</TxtLocPinY>
+          </TextXForm>
+          <Misc>
+            <ObjType>1</ObjType>
+          </Misc>
+          <Line>
+            <LinePattern>3</LinePattern>
+            <LineWeight>0.0138889</LineWeight>
+            <LineColor>0</LineColor>
+            <LineColorTrans>0</LineColorTrans>
+            <Rounding>0</Rounding>
+            <LineCap>1</LineCap>
+          </Line>
+          <Fill>
+            <FillPattern>1</FillPattern>
+            <FillForegnd>#ffffff</FillForegnd>
+            <FillForegndTrans>0</FillForegndTrans>
+            <ShdwPattern>0</ShdwPattern>
+            <ShdwForegnd>0</ShdwForegnd>
+            <ShdwForegndTrans>0.5</ShdwForegndTrans>
+            <ShapeShdwType>1</ShapeShdwType>
+            <ShapeShdwOffsetX>0</ShapeShdwOffsetX>
+            <ShapeShdwOffsetY>-0.0277778</ShapeShdwOffsetY>
+          </Fill>
+          <Geom IX="0">
+            <NoFill>0</NoFill>
+            <NoLine>0</NoLine>
+            <MoveTo IX="1">
+              <X F="Width*0.853553">0.8535530000000003</X>
+              <Y F="Height*0.853553">0.4267764999999994</Y>
+            </MoveTo>
+            <NURBSTo IX="2">
+              <X F="Width*0.853553">0.8535530000000003</X>
+              <Y F="Height*0.146447">0.07322350000000061</Y>
+              <A>0</A>
+              <B>1</B>
+              <C>0</C>
+              <D>1</D>
+              <E Unit="NURBS" F="NURBS(1, 3, 0, 0, 1.048816,0.658291,0,1, 1.048816,0.341709,0,1)">NURBS(1, 3, 0, 0, 1.048816,0.658291,0,1, 1.048816,0.341709,0,1)</E>
+            </NURBSTo>
+            <NURBSTo IX="3">
+              <X F="Width*0.146447">0.1464469999999996</X>
+              <Y F="Height*0.146447">0.07322350000000061</Y>
+              <A>0</A>
+              <B>1</B>
+              <C>0</C>
+              <D>1</D>
+              <E Unit="NURBS" F="NURBS(1, 3, 0, 0, 0.658291,-0.048816,0,1, 0.341709,-0.048816,0,1)">NURBS(1, 3, 0, 0, 0.658291,-0.048816,0,1, 0.341709,-0.048816,0,1)</E>
+            </NURBSTo>
+            <NURBSTo IX="4">
+              <X F="Width*0.146447">0.1464469999999996</X>
+              <Y F="Height*0.853553">0.4267764999999994</Y>
+              <A>0</A>
+              <B>1</B>
+              <C>0</C>
+              <D>1</D>
+              <E Unit="NURBS" F="NURBS(1, 3, 0, 0, -0.048816,0.341709,0,1, -0.048816,0.658291,0,1)">NURBS(1, 3, 0, 0, -0.048816,0.341709,0,1, -0.048816,0.658291,0,1)</E>
+            </NURBSTo>
+            <NURBSTo IX="5">
+              <X F="Width*0.853553">0.8535530000000003</X>
+              <Y F="Height*0.853553">0.4267764999999994</Y>
+              <A>0</A>
+              <B>1</B>
+              <C>0</C>
+              <D>1</D>
+              <E Unit="NURBS" F="NURBS(1, 3, 0, 0, 0.341709,1.048816,0,1, 0.658291,1.048816,0,1)">NURBS(1, 3, 0, 0, 0.341709,1.048816,0,1, 0.658291,1.048816,0,1)</E>
+            </NURBSTo>
+          </Geom>
+          <LayerMem>
+            <LayerMember>0</LayerMember>
+          </LayerMem>
+          <TextBlock>
+            <LeftMargin>0.0694444</LeftMargin>
+            <RightMargin>0.0694444</RightMargin>
+            <VerticalAlign>1</VerticalAlign>
+            <DefaultTabStop>0</DefaultTabStop>
+          </TextBlock>
+          <Char IX="0">
+            <Font>0</Font>
+            <Color>0</Color>
+            <Style>0</Style>
+            <Size>0.166667</Size>
+            <ColorTrans>0</ColorTrans>
+          </Char>
+          <Para IX="0">
+            <IndFirst>0</IndFirst>
+            <IndLeft>0</IndLeft>
+            <IndRight>-0</IndRight>
+            <SpLine>-1.2</SpLine>
+            <SpBefore>0</SpBefore>
+            <HorzAlign>1</HorzAlign>
+          </Para>
+          <Text><cp IX="0"/><pp IX="0"/>etc</Text>
+        </Shape>
+      </Shapes>
+      <Connects/>
+    </Page>
+  </Pages>
+  <Windows>
+    <Window ID="0" WindowType="Drawing" ViewScale="1.039999961853027" WindowState="134217744" ContainerType="Page" Page="0" ViewCenterX="3.898771645019991" ViewCenterY="5.542201057987579">
+      <ShowRulers>1</ShowRulers>
+      <ShowGrid>1</ShowGrid>
+      <ShowPageBreaks>0</ShowPageBreaks>
+      <ShowConnectionPoints>0</ShowConnectionPoints>
+      <GlueSettings>12</GlueSettings>
+      <SnapSettings>54</SnapSettings>
+      <TabSplitterPos>0.5</TabSplitterPos>
+    </Window>
+  </Windows>
+</VisioDocument>
