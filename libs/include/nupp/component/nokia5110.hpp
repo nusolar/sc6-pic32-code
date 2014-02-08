@@ -54,7 +54,7 @@ namespace nu {
 		/**
 		 * Goto column x, line y. 84 columns, 6 lines.
 		 */
-		INLINE void goto_xy(const uint8_t x, const uint8_t y) {
+		void goto_xy(const uint8_t x, const uint8_t y) {
 			cmd_set_ram_x_addr(x);
 			cmd_set_ram_y_addr(y);
 		}
@@ -65,7 +65,7 @@ namespace nu {
 		 * 'y_row' is the row that the pixel is in.
 		 * 'y_pix' is the pixel in that row we want to enable/disable
 		 */
-		UNUSED INLINE void set_pixel(const uint8_t x, const uint8_t y) {
+		UNUSED void set_pixel(const uint8_t x, const uint8_t y) {
 			if (x >= lcd_x || y >= lcd_y) return;
 
 			uint8_t y_row = (uint8_t)(y >> 3);          // >>3 divides by 8
@@ -76,7 +76,7 @@ namespace nu {
 			write_data(val);
 		}
 
-		INLINE void lcd_clear(){
+		void lcd_clear(){
 			goto_xy(0, 0);
 			for (uint32_t ui = 0; ui < (lcd_x * 6); ui++) // WARNING
 				write_data(0x88); // Clear with 2 dots to prevent fading
@@ -84,18 +84,18 @@ namespace nu {
 		}
 
 	private:
-		INLINE void write_cmd(const uint8_t cmd) {
+		void write_cmd(const uint8_t cmd) {
 			dc.low();
 			tx(&cmd, 1);
 		}
-		INLINE void write_data(const uint8_t data) {
+		void write_data(const uint8_t data) {
 			dc.high();
 			tx(&data, 1);
 		}
 
 		void cmd_func_set(const cmd_func_set_options opts);
 		void cmd_set_vop(const uint8_t vop);
-		INLINE void cmd_set_contrast(const uint8_t vop) {cmd_set_vop(vop);}
+		void cmd_set_contrast(const uint8_t vop) {cmd_set_vop(vop);}
 		void cmd_set_temp_coeff(const cmd_func_set_options coeff);
 		void cmd_set_bias(const uint8_t bias);
 		void cmd_set_disp_mode(const cmd_func_set_options mode);

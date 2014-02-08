@@ -47,20 +47,20 @@ namespace nu {
 		} search_state;
 		static_assert(sizeof(search_state.romcode_crc) == 8, "nu::OneWire::rcrc packing");
 
-		INLINE void high()	{set();}
-		INLINE void low()		{clear();}
+		void high()	{set();}
+		void low()		{clear();}
 
-		INLINE OneWire(Pin _p): AbstractPin(_p), search_state() {
+		OneWire(Pin _p): AbstractPin(_p), search_state() {
 			set_digital_out();
 			low();
 		}
 
-		INLINE void power_bus() {
+		void power_bus() {
 			set_digital_out();
 			high();
 		}
 
-		INLINE void tx_bit(bool b) {
+		void tx_bit(bool b) {
 			low();
 			if (b) {
 				timer::delay_us(6);
@@ -72,30 +72,30 @@ namespace nu {
 				timer::delay_us(10);
 			}
 		}
-		INLINE void tx_byte(uint8_t byte) {
+		void tx_byte(uint8_t byte) {
 			for (uint8_t i=0; i<8; i++) {
 				tx_bit(byte>>i & 1);
 			}
 		}
 		/** @warning check for ENULPTR */
-		INLINE void tx(const void *src, size_t n) {
+		void tx(const void *src, size_t n) {
 			for (unsigned i=0; i<n; i++) {
 				tx_byte(*((uint8_t *)src + i));
 			}
 		}
 
-		INLINE void tx_byte_with_crc(uint8_t byte) {
+		void tx_byte_with_crc(uint8_t byte) {
 			tx_byte(byte);
 			tx_byte(crc(&byte, 1));
 		}
 
-		INLINE void tx_with_crc(const void *src, size_t n) {
+		void tx_with_crc(const void *src, size_t n) {
 			uint8_t the_crc = crc(src, sizeof(src));
 			tx(src, n);
 			tx_byte(the_crc);
 		}
 
-		INLINE bool rx_bit() {
+		bool rx_bit() {
 			low();
 			timer::delay_us(6);
 			high();
@@ -112,7 +112,7 @@ namespace nu {
 			return read_digital();
 		}
 
-		INLINE uint8_t rx_byte() {
+		uint8_t rx_byte() {
 			uint8_t byte = 0x00;
 			for (unsigned j=0; j<8; j++) {
 				byte |= (uint8_t)(rx_bit() << j);
@@ -120,7 +120,7 @@ namespace nu {
 			return byte;
 		}
 
-		INLINE void rx(void *dest, size_t n) {
+		void rx(void *dest, size_t n) {
 			uint8_t *bytes = (uint8_t *)dest; // WARNING Pointer
 			memset(bytes, 0, n);
 			for (unsigned i=0; i<n; i++) {
@@ -128,13 +128,13 @@ namespace nu {
 			}
 		}
 
-		INLINE int32_t rx_check_crc(void *dest, size_t n) {
+		int32_t rx_check_crc(void *dest, size_t n) {
 			rx(dest, n);
 			uint8_t _crc = rx_byte();
 			return (_crc == crc(dest, n))? 0: -error::ECRC;
 		}
 
-		INLINE int32_t reset() {
+		int32_t reset() {
 			low();
 			timer::delay_us(480);
 			high();
@@ -145,7 +145,7 @@ namespace nu {
 			return (devices_present? 1: -error::ENODEV);
 		}
 
-		INLINE void reset_search_state() {
+		void reset_search_state() {
 			search_state.prev_search_was_last_dev	= false;
 			search_state.last_discrep_bit			= 0;
 			search_state.last_family_discrep_bit	= 0;
@@ -157,7 +157,7 @@ namespace nu {
 		 * search_direction is 1 if ____
 		 * search_direction is 0 if ____
 		 */
-		INLINE int32_t get_next_bit(const uint32_t id_bit_number, uint32_t &last_zero_discrep_bit) {
+		int32_t get_next_bit(const uint32_t id_bit_number, uint32_t &last_zero_discrep_bit) {
 			bool id_bit = rx_bit(); // all devices send the bit
 			bool id_bit_complement = rx_bit(); // ..then send the bit's complement
 			if ((1 == id_bit) && (1 == id_bit_complement)) {
@@ -188,7 +188,7 @@ namespace nu {
 		}
 
 		/** The Search ROM algorithm, see www.maxim-ic.com/ibuttonbook */
-		INLINE bool search_rom(romcode &dest, const uint8_t search_rom_cmd) {
+		bool search_rom(romcode &dest, const uint8_t search_rom_cmd) {
 			uint32_t id_bit_number = 1; // 1-64
 			// bit # of last 0 where there was a discrepency. 1-64, or 0 if none
 			uint32_t last_zero_discrep_bit = 0;
@@ -225,23 +225,23 @@ namespace nu {
 			return true;
 		}
 
-		INLINE void match_rom(const romcode &code) {
+		void match_rom(const romcode &code) {
 			tx_byte_with_crc(MATCH_ROM);
 			tx_with_crc(&code, sizeof(code));
 		}
 
-		INLINE void skip_rom() {
+		void skip_rom() {
 			tx_byte_with_crc(SKIP_ROM);
 		}
 
-		INLINE void read_scratch(void *dest, size_t n) {
+		void read_scratch(void *dest, size_t n) {
 			tx_byte_with_crc(READ_SCRATCH);
 			rx(dest, n);
 		}
 
 
 		static const uint32_t crc_table[];
-		INLINE uint32_t crc(const void *data, size_t n) {
+		uint32_t crc(const void *data, size_t n) {
 			if (!data)
 				return 0xFFFFFFFF;
 			return n;

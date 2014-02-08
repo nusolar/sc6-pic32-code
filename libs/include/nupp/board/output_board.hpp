@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   output_board.hpp
  * Author: alex
  *
@@ -28,11 +28,11 @@ namespace nu {
 			relay(PIN(B,0), false), uart(UART(2)) {
 		}
 
-		INLINE void recv_serial() {
+		void recv_serial() {
 			// get line
 			Array<char, 51> msg;
 			size_t length = uart.read_line(msg, msg.size()-1);
-			
+
 			// terminate string with NULL character
 			msg[length] = '\0';
 
@@ -59,11 +59,11 @@ namespace nu {
 			}
 		}
 
-		INLINE void send_serial() {
+		void send_serial() {
 			uart << TTY_UNIT << "status" << TTY_RECORD << status << TTY_UNIT << nu::end;;
 		}
 
-		INLINE NORETURN void run_loop() {
+		NORETURN void run_loop() {
 			while (true) {
 				this->recv_serial();
 				relay.set(status);
@@ -71,7 +71,7 @@ namespace nu {
 			}
 		}
 
-		INLINE void emergency_shutoff() {
+		void emergency_shutoff() {
 			status = false;
 		}
 

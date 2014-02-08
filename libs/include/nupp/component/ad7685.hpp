@@ -47,7 +47,7 @@ namespace nu {
          * @param _convert Used to control AD7685. Identical to CS in some configurations.
          * @param _opts
          */
-		INLINE AD7685(Pin _cs, uint8_t _channel, Pin _convert, options _opts):
+		AD7685(Pin _cs, uint8_t _channel, Pin _convert, options _opts):
 			SPI(_cs, Spi(_channel, 100000, SPI_OPEN_CKE_REV|SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON)),
 			convert(_convert), opts(_opts)
 		{
@@ -59,7 +59,7 @@ namespace nu {
 		/**
 		 * Gets the actual voltage reading(s) (not raw data).
 		 */
-		INLINE void convert_read_uv(Array<uint32_t, num_devices> &values){
+		void convert_read_uv(Array<uint32_t, num_devices> &values){
 			if (FOUR_WIRE & opt && BUSY_INDICATOR & opt)
 				cs.high();
 
@@ -99,7 +99,7 @@ namespace nu {
 		 * Compute compute the actual reading in microvolts
 		 * Max value is 0xffff --> 4999923 uV
 		 */
-		INLINE uint32_t convert_uv(uint16_t val){
+		uint32_t convert_uv(uint16_t val){
 			return (uint32_t)((5000000 * (uint64_t)val)>>16);
 		}
 
@@ -107,7 +107,7 @@ namespace nu {
 		/**
 		 * Read SPI data from AD7685 into buffer, and byteswap.
          */
-		INLINE void read_raw(Array<uint16_t, num_devices> &buffer){
+		void read_raw(Array<uint16_t, num_devices> &buffer){
 			rx(buffer, buffer.size());
 			for (unsigned int iCurrent=0; iCurrent < num_devices; ++iCurrent) {
 				// swap byte order

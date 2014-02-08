@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   lowpassfilter.hpp
  * Author: alex
  *
@@ -13,9 +13,9 @@
 namespace nu {
 	struct LowPassFilter {
 		float _x, _alpha;
-		INLINE LowPassFilter(float x0, float alpha): _x(x0), _alpha(alpha) {}
+		LowPassFilter(float x0, float alpha): _x(x0), _alpha(alpha) {}
 
-		INLINE float next(float xp) {
+		float next(float xp) {
 			return (_x = _alpha*_x + (1-_alpha)*xp);
 		}
 	};

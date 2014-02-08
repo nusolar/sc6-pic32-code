@@ -89,20 +89,20 @@ namespace nu {
 				   CAN_MODULE_FEATURES features = (CAN_MODULE_FEATURES)0);
 			operator CAN_MODULE() const {return mod;}
 
-			INLINE Channel& channel(size_t num) {
+			Channel& channel(size_t num) {
 				return *(Channel *) (channel_buf + num*sizeof(Channel));
 			}
 
-			INLINE Channel& in () {return channel(0);}
-			INLINE Channel& out() {return channel(1);}
-			INLINE Channel& err() {return channel(2);}
-			INLINE Channel& in1() {return channel(3);}
+			Channel& in () {return channel(0);}
+			Channel& out() {return channel(1);}
+			Channel& err() {return channel(2);}
+			Channel& in1() {return channel(3);}
 
 		private:
 			size_t channel_buf[32 * sizeof(Channel)];
 			friend struct Channel;
-			INLINE int32_t normal_mode() {return switch_mode(CAN_NORMAL_OPERATION, 1);}
-			INLINE int32_t config_mode() {return switch_mode(CAN_CONFIGURATION, 1);}
+			int32_t normal_mode() {return switch_mode(CAN_NORMAL_OPERATION, 1);}
+			int32_t config_mode() {return switch_mode(CAN_CONFIGURATION, 1);}
 			int32_t switch_mode(CAN_OP_MODE op_mode, uint32_t timeout_ms);
 			int32_t change_features(CAN_MODULE_FEATURES features, BOOL en);
 		};

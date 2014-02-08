@@ -34,22 +34,22 @@ namespace nu {
          * @param oflags
          * @param _opt
          */
-		INLINE SPI(Pin _cs, SpiModule _mod, tx_options _opt = (tx_options)(TX_WAIT_START|TX_WAIT_END)):
+		SPI(Pin _cs, SpiModule _mod, tx_options _opt = (tx_options)(TX_WAIT_START|TX_WAIT_END)):
 			OStream(), SpiModule(_mod), cs(_cs, true), opt(_opt) {}
 		NOINLINE virtual ~SPI() {};
 
-		INLINE void rx(void *dst, size_t n) {
+		void rx(void *dst, size_t n) {
 			SpiModule::rx(dst,n);
 		}
 
-		INLINE void tx(const void *src, size_t n) {
+		void tx(const void *src, size_t n) {
 			if (!(opt & TX_DISABLE_AUTO_CS))
 				cs.low();
 			if (opt & TX_WAIT_START)
 				wait_busy();
 
 			SpiModule::tx(src,n);
-			
+
 			if (opt & TX_WAIT_END)
 				wait_busy();
 			if (!(opt & TX_DISABLE_AUTO_CS))

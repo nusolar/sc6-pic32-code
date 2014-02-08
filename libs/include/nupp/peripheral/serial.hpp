@@ -20,16 +20,16 @@ namespace nu {
 		Serial(UARTModule _module): OStream(), UARTModule(_module) {}
 		virtual ~Serial() {}
 
-		INLINE int rx(void *dst, size_t n)		{return UARTModule::rx(dst, n);}
-		INLINE void tx(const void *src, size_t n)	{UARTModule::tx(src, n);}
-		
+		int rx(void *dst, size_t n)		{return UARTModule::rx(dst, n);}
+		void tx(const void *src, size_t n)	{UARTModule::tx(src, n);}
+
 		/** Required to implement OStream: */
-		INLINE virtual void puts(const char *str) {
+		virtual void puts(const char *str) {
 			tx(str, strlen(str));
 		}
 
 		/** Returns # of bytes copied. */
-		INLINE size_t read_line(void *dst, size_t n) {
+		size_t read_line(void *dst, size_t n) {
 			for (size_t ui=0; ui < n; ++ui) {
 				uint8_t buffer = 0;
 				int error = UARTModule::rx(&buffer, 1);

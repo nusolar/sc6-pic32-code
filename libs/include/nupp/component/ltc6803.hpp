@@ -29,7 +29,7 @@ namespace nu {
 	 *
 	 * HOWEVER, like the class LTC6804, class LTC6803 receives and returns voltages
 	 * in multiples of 100uV, as UInt16's.
-	 * 
+	 *
 	 * Call read_volts() to synchronously poll & get readings.
 	 */
 	template <uint32_t num_devices>
@@ -203,19 +203,19 @@ namespace nu {
          * @param _cs The Chip Select pin for the LTC6803.
          * @param _chn The SPI Channel for the LTC6803.
          */
-		INLINE LTC6803(Pin _cs, uint8_t _channel):
+		LTC6803(Pin _cs, uint8_t _channel):
 			SPI(_cs, Spi(_channel, 100000, SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON),
 			    (SPI::tx_options)(TX_WAIT_START|TX_WAIT_END|TX_DISABLE_AUTO_CS)),
 			mismatch_pecs(0), is_openwire(false) {}
 
-		INLINE void write_configs(Array<Configuration, num_devices> &config) {
+		void write_configs(Array<Configuration, num_devices> &config) {
 			write_cmd_tx(WRITECFGS, config, sizeof(Configuration));
 			confirm_configs(config);
 		}
-		INLINE void start_voltage_conversion() {write_cmd_solo(STCVAD); is_openwire=false;}
-		INLINE void start_openwire_conversion() {write_cmd_solo(STOWAD); is_openwire=true;}
+		void start_voltage_conversion() {write_cmd_solo(STCVAD); is_openwire=false;}
+		void start_openwire_conversion() {write_cmd_solo(STOWAD); is_openwire=true;}
 		/* Outputs in 100uV multiples */
-		INLINE void read_volts(Array<uint16_t, total_cells> &rx_rv) {
+		void read_volts(Array<uint16_t, total_cells> &rx_rv) {
 			Array<RawVoltages, num_devices> rv;
 			read_volts_raw(rv);
 
@@ -232,34 +232,34 @@ namespace nu {
 		}
 
 		/* Inputs and Outputs in 100uV multiples. Equations from Datasheet p24-p25 */
-		PURE INLINE BYTE convert_uv_limit(float vuv) {return (BYTE) ((vuv/(16*15)) + 31);}
-		PURE INLINE BYTE convert_ov_limit(float vov) {return (BYTE) ((vov/(16*15)) + 32);}
-		PURE INLINE uint16_t convert_ref_to_v(float ref) {return (((float)ref - 0x200) * 15);}
-		PURE INLINE uint16_t convert_voltage(uint16_t raw) {return (raw - 0x200)*15;}
+		PURE BYTE convert_uv_limit(float vuv) {return (BYTE) ((vuv/(16*15)) + 31);}
+		PURE BYTE convert_ov_limit(float vov) {return (BYTE) ((vov/(16*15)) + 32);}
+		PURE uint16_t convert_ref_to_v(float ref) {return (((float)ref - 0x200) * 15);}
+		PURE uint16_t convert_voltage(uint16_t raw) {return (raw - 0x200)*15;}
 
 	private:
-		INLINE bool confirm_configs(Array<Configuration, num_devices> &config) {
+		bool confirm_configs(Array<Configuration, num_devices> &config) {
 			Array<Configuration, num_devices> rx_config;
 			read_configs(rx_config);
 			uint32_t result = config.byte_compare(rx_config);
 			return result;
 		}
-		INLINE void read_diags(Array<Diagnostic, num_devices> &diag) {
+		void read_diags(Array<Diagnostic, num_devices> &diag) {
 			write_cmd(DAGN);
 			timer::delay_ms(25);
 			write_cmd_tx(READ_DAGN, &diag[0], sizeof(Diagnostic));
 		}
-		INLINE void check_open_wire(u16 *open_wire, const float *voltages){}
-		INLINE void read_configs(Array<Configuration, num_devices> &config) {write_cmd_rx(RDCFGS, config, sizeof(Configuration));}
-		INLINE void read_volts_raw(Array<RawVoltages, num_devices> &rx_rv) {write_cmd_rx(RDCV, rx_rv, sizeof(RawVoltages));}
+		void check_open_wire(u16 *open_wire, const float *voltages){}
+		void read_configs(Array<Configuration, num_devices> &config) {write_cmd_rx(RDCFGS, config, sizeof(Configuration));}
+		void read_volts_raw(Array<RawVoltages, num_devices> &rx_rv) {write_cmd_rx(RDCV, rx_rv, sizeof(RawVoltages));}
 
-		INLINE void write_cmd_solo(const command c) {
+		void write_cmd_solo(const command c) {
 			cs.low();
 			write_cmd(c);
 			cs.high();
 		}
 
-		INLINE uint32_t write_cmd_rx(const command c, void *dest, size_t one_element){
+		uint32_t write_cmd_rx(const command c, void *dest, size_t one_element){
 			cs.low();
 			write_cmd(c);
 
@@ -281,7 +281,7 @@ namespace nu {
 		}
 
 		/** Deals an array of data of size==one_element to all devices */
-		INLINE void write_cmd_tx(const command c, const void *data, size_t one_element) {
+		void write_cmd_tx(const command c, const void *data, size_t one_element) {
 			cs.low();
 			write_cmd(c);
 			for (unsigned i=0; i<num_devices; i++) {
@@ -290,18 +290,18 @@ namespace nu {
 			cs.high();
 		}
 
-		INLINE void write_cmd(const command c) {
+		void write_cmd(const command c) {
 			tx_with_pec(&c, 1);
 		}
 
-		INLINE void tx_with_pec(const void *src, size_t n) {
+		void tx_with_pec(const void *src, size_t n) {
 			long pec = (long)crc::_8_ccitt(src, n); // WARNING type?
 			tx(src, n); // WARNING check pointers / tx errors
 			tx(&pec, 1);
 		}
 
 		/** @todo error reporting */
-		INLINE void post() {
+		void post() {
 			write_cmd(STCVAD_SELFTEST1);
 			timer::delay_ms(25);
 

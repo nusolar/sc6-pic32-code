@@ -25,13 +25,13 @@ namespace nu {
 		ALWAYSINLINE void set_analog_out()	{Pin::set_analog_out();}
 		ALWAYSINLINE void set_analog_in()	{Pin::set_analog_in();}
 
-		INLINE void set()		{Pin::set();}
-		INLINE void clear()		{Pin::clear();}
-		INLINE void toggle()	{Pin::toggle();}
+		void set()		{Pin::set();}
+		void clear()		{Pin::clear();}
+		void toggle()	{Pin::toggle();}
 
 		/** A subclass may call EITHER read_digital() OR read_analog(). */
-		INLINE reg_t read_digital()	{return Pin::read_digital();} // returns 0 or non-0
-		INLINE reg_t read_analog()	{return Pin::read_analog();}
+		reg_t read_digital()	{return Pin::read_digital();} // returns 0 or non-0
+		reg_t read_analog()	{return Pin::read_analog();}
 	};
 
 

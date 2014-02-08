@@ -52,17 +52,17 @@ namespace nu {
 		 * @param _port For PIC32MX795F512L, A-G. AnalogIn MUST be B.
 		 * @param _bit For PIC32MX795F512L, 0-9.
 		 */
-		INLINE Pin(Port _port = D, uint8_t _bit = 0): port(_port), bit(_bit) {}
+		Pin(Port _port = D, uint8_t _bit = 0): port(_port), bit(_bit) {}
 		NOINLINE virtual ~Pin() {}
 
 	protected:
 		/**
 		 * Call one of these four setters from your subclass constructor.
 		 */
-		virtual INLINE void set_digital_out()	{PORTSetPinsDigitalOut(ltr(), num());}
-		virtual INLINE void set_digital_in()	{PORTSetPinsDigitalIn(ltr(), num());}
-		virtual INLINE void set_analog_out()	{PORTSetPinsAnalogOut(ltr(), num());}
-		virtual INLINE void set_analog_in()		{
+		virtual void set_digital_out()	{PORTSetPinsDigitalOut(ltr(), num());}
+		virtual void set_digital_in()	{PORTSetPinsDigitalIn(ltr(), num());}
+		virtual void set_analog_out()	{PORTSetPinsAnalogOut(ltr(), num());}
+		virtual void set_analog_in()		{
 			CloseADC10(); // ERROR: Only open 2 channels?
 			SetChanADC10(ADC_CH0_NEG_SAMPLEA_NVREF|ADC_CH0_POS_SAMPLEA_AN0);
 
@@ -86,13 +86,13 @@ namespace nu {
 			EnableADC10();
 		}
 
-		virtual INLINE void set()		{PORTSetBits(ltr(), num());}
-		virtual INLINE void clear()		{PORTClearBits(ltr(), num());}
-		virtual INLINE void toggle()	{PORTToggleBits(ltr(), num());}
+		virtual void set()		{PORTSetBits(ltr(), num());}
+		virtual void clear()		{PORTClearBits(ltr(), num());}
+		virtual void toggle()	{PORTToggleBits(ltr(), num());}
 
 		/** A subclass may call EITHER read() OR read_analog(). */
-		virtual INLINE reg_t read_digital()		{return PORTReadBits(ltr(), num());} // returns 0 or any non-0
-		virtual INLINE reg_t read_analog(){
+		virtual reg_t read_digital()		{return PORTReadBits(ltr(), num());} // returns 0 or any non-0
+		virtual reg_t read_analog(){
 			while (!mAD1GetIntFlag()) Nop();
 			reg_t val = ReadADC10(bit);
 			mAD1ClearIntFlag();

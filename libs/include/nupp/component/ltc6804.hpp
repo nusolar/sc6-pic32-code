@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   ltc6804.hpp
  * Author: alex
  *
@@ -145,23 +145,23 @@ namespace nu {
 		uint32_t mismatch_pecs;
 		bool is_openwire;
 
-		INLINE LTC6804(Pin _cs, uint8_t _channel):
+		LTC6804(Pin _cs, uint8_t _channel):
 			SPI(_cs, Spi(_channel, 100000, SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON),
 			    (SPI::tx_options)(TX_WAIT_START|TX_WAIT_END|TX_DISABLE_AUTO_CS)),
 			mismatch_pecs(0), is_openwire(false) {}
 
 		/* LTC Routines */
 
-		INLINE void write_configs(Array<Configuration, N_DEVICES> &config) {
+		void write_configs(Array<Configuration, N_DEVICES> &config) {
 			write_cmd_tx(WRCFG, config, sizeof(Configuration));
 			confirm_configs(config);
 		}
 
-		INLINE void start_voltage_conversion() {
+		void start_voltage_conversion() {
 			write_cmd_solo((command)(ADCV|MD_2|DCP_1));
 		}
 
-		INLINE void read_volts(Array<uint16_t, total_cells> &rx_rv) {
+		void read_volts(Array<uint16_t, total_cells> &rx_rv) {
 			Array<VoltageRegisterGroup, N_DEVICES> vr[4];
 
 			write_cmd_rx(RDCVA, vr[0], sizeof(VoltageRegisterGroup));
@@ -180,39 +180,39 @@ namespace nu {
 		}
 
 		/** Input in multiple of 100 microVolts !! */
-		PURE INLINE uint16_t convert_uv_limit(uint32_t huV) {return (uint16_t) (huV/16 - 1);}
-		PURE INLINE uint16_t convert_ov_limit(uint32_t huV) {return (uint16_t) (huV/16);}
+		PURE uint16_t convert_uv_limit(uint32_t huV) {return (uint16_t) (huV/16 - 1);}
+		PURE uint16_t convert_ov_limit(uint32_t huV) {return (uint16_t) (huV/16);}
 
 	private:
 		/* LTC6804 low-level COMMANDS */
 
-		INLINE bool confirm_configs(Array<Configuration, N_DEVICES> &config) {
+		bool confirm_configs(Array<Configuration, N_DEVICES> &config) {
 			Array<Configuration, N_DEVICES> rx_config;
 			read_configs(rx_config);
 			bool result = config.byte_compare(rx_config);
 			return result;
 		}
-		
-		INLINE void read_configs(Array<Configuration, N_DEVICES> &config) {
+
+		void read_configs(Array<Configuration, N_DEVICES> &config) {
 			write_cmd_rx(RDCFG, config, sizeof(Configuration));
 		}
 
 		/* LTC6804 COMMUNICATION PROTOCOL */
 
-		INLINE void write_cmd_solo(const command c) {
+		void write_cmd_solo(const command c) {
 			cs.low();
 			write_cmd(c);
 			cs.high();
 		}
 
-		INLINE uint32_t write_cmd_rx(const command c, void *dest, size_t one_element) {
+		uint32_t write_cmd_rx(const command c, void *dest, size_t one_element) {
 			cs.low();
 			write_cmd(c);
 
 			mismatch_pecs = 0;
 //			BYTE recv_buffer[one_element + 2]; // +2 bytes for pec
 			BYTE recv_buffer[100];
-			
+
 			for (unsigned i=0; i<N_DEVICES; i++) {
 				// RX 8 bytes: 6 data + 2 PEC
 				rx(recv_buffer, one_element + 2);
@@ -236,7 +236,7 @@ namespace nu {
 		/**
 		 * Deals an array of data of size==one_element to all devices
 		 */
-		INLINE void write_cmd_tx(const command c, const void *data, size_t one_element) {
+		void write_cmd_tx(const command c, const void *data, size_t one_element) {
 			cs.low();
 			write_cmd(c);
 			for (unsigned i=0; i<N_DEVICES; i++) {
@@ -249,13 +249,13 @@ namespace nu {
 		 * Compute PEC, byteswap command, and TX 4 bytes.
          * @param c the command
          */
-		INLINE void write_cmd(const command c) {
+		void write_cmd(const command c) {
 			uint16_t cmd = (uint16_t)c;
 			uint16_t swapped_cmd = (uint16_t)(((0xFF & cmd) << 8) | ((0xFF00 & cmd) >> 8));
 			tx_with_pec(&swapped_cmd, 2);
 		}
 
-		INLINE void tx_with_pec(const void *src, size_t n) {
+		void tx_with_pec(const void *src, size_t n) {
 			uint16_t pec = (uint16_t)crc::_15_can(src, n);
 			tx(src, n); // WARNING check pointers / tx errors
 			tx(&pec, 2);

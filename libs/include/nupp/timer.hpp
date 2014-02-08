@@ -45,7 +45,7 @@ namespace nu {
 
 
 		/** A timer interval, the units, and whether it arms now */
-		INLINE Timer(uint64_t _tick_interval, Unit _unit, bool arm_now):
+		Timer(uint64_t _tick_interval, Unit _unit, bool arm_now):
 			tick_interval(0),
 			unit(Timer::s),
 			start_tick(0),
@@ -59,7 +59,7 @@ namespace nu {
 			}
 		}
 
-		INLINE void set_interval(uint64_t _tick_interval, Unit _unit)
+		void set_interval(uint64_t _tick_interval, Unit _unit)
 		{
 			this->tick_interval = _tick_interval;
 			this->unit = _unit;
@@ -76,19 +76,19 @@ namespace nu {
 			}
 		}
 
-		INLINE void reset()
+		void reset()
 		{
 			this->start_tick = timer::ticks();
 			this->expiration_tick = this->start_tick + this->tick_interval;
 			this->is_running = true;
 		}
 
-		INLINE void kill()
+		void kill()
 		{
 			this->is_running = false;
 		}
 
-		INLINE bool has_expired()
+		bool has_expired()
 		{
 			if (this->is_running)
 			{

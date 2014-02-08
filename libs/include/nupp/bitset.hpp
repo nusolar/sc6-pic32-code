@@ -28,36 +28,36 @@ namespace nu {
 			friend class Bitset;
 			Bitset &par;
 			size_t pos;
-			INLINE bit(Bitset &_par, size_t _pos): par(_par), pos(_pos) {};
+			bit(Bitset &_par, size_t _pos): par(_par), pos(_pos) {};
 		public:
 			~bit() {};
-			INLINE operator bool() const {
+			operator bool() const {
 				return par.bits.array[pos/8] & (1 << pos%8);
 			}
 			/** EVIL BIT ARITHMETIC LOOK AWAY */
-			INLINE bit& operator= (bool rvalue) {
+			bit& operator= (bool rvalue) {
 				par.bits.array[pos/8] ^= (uint8_t)(((par.bits.array[pos/8]>>pos%8 & 1) != rvalue) << pos%8);
 				return *this;
 			}
 
-			INLINE bit& operator|= (bool rvalue) {
+			bit& operator|= (bool rvalue) {
 				par.bits.array[pos/8] |= (uint8_t)((uint8_t)rvalue << pos%8);
 				return *this;
 			}
 		};
 
-		INLINE Bitset& operator&= (uint64_t rvalue) {
+		Bitset& operator&= (uint64_t rvalue) {
 			bits.ulong &= rvalue;
 			return *this;
 		}
 
-		INLINE operator uint64_t() const {return bits.ulong;}
-		INLINE bool operator[] (size_t pos) const {return (bool)bit(*this,pos);}
-		INLINE bit operator[] (size_t pos) {return bit(*this,pos);}
-		INLINE size_t size() const {return N;}
-		
-		INLINE Bitset(): bits() {bits.array = {0};}
-		INLINE Bitset(uint64_t l): bits() {bits.array = {0}; bits.ulong = l;}
+		operator uint64_t() const {return bits.ulong;}
+		bool operator[] (size_t pos) const {return (bool)bit(*this,pos);}
+		bit operator[] (size_t pos) {return bit(*this,pos);}
+		size_t size() const {return N;}
+
+		Bitset(): bits() {bits.array = {0};}
+		Bitset(uint64_t l): bits() {bits.array = {0}; bits.ulong = l;}
 	};
 }
 

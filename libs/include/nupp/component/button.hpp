@@ -21,17 +21,17 @@ namespace nu {
 		bool was_pressed;
 
 	public:
-		INLINE Button(Pin btn = Pin(), uint8_t _debounce_max = 10, uint8_t _thresh = 5):
+		Button(Pin btn = Pin(), uint8_t _debounce_max = 10, uint8_t _thresh = 5):
 			DigitalIn(Pin(btn)), debounce(0), debounce_max(_debounce_max), thresh(_thresh), was_pressed(false) {}
 
 		/** Get whether button is pressed, according to update()'s counter. */
-		INLINE bool pressed()		{return debounce >= thresh;}
-		INLINE operator bool()	{return debounce >= thresh;}
+		bool pressed()		{return debounce >= thresh;}
+		operator bool()	{return debounce >= thresh;}
 
 		/**
 		 * For non-interrupt buttons, call OFTEN to debounce button value.
 		 */
-		INLINE void update() {
+		void update() {
 			debounce += (read()? 1: -1);
 			if (debounce < 0) debounce = 0;
 			if (debounce > debounce_max) debounce = debounce_max;
@@ -42,7 +42,7 @@ namespace nu {
 		 * once while button is pressed, then once while released;
          * @warning Interrupts
          */
-		INLINE bool toggled() {
+		bool toggled() {
 			if (was_pressed != pressed()) {
 				return !(was_pressed = !was_pressed);
 			}

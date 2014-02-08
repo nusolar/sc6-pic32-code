@@ -16,26 +16,26 @@ namespace nu {
 		bool _led_status;
 
 	public:
-		INLINE Led(Pin led = Pin()): DigitalOut(Pin(led)), _led_status(false) {
+		Led(Pin led = Pin()): DigitalOut(Pin(led)), _led_status(false) {
 			set_digital_out();
 			off();
 		}
-		INLINE void off()		{Pin::set(); _led_status = false;}
-		INLINE void on()		{Pin::clear(); _led_status = true;}
-		INLINE void toggle()	{Pin::toggle(); _led_status = !_led_status;}
+		void off()		{Pin::set(); _led_status = false;}
+		void on()		{Pin::clear(); _led_status = true;}
+		void toggle()	{Pin::toggle(); _led_status = !_led_status;}
 
 		/** Get whether LED is on or off. */
-		INLINE bool status()		{return _led_status;}
-		INLINE operator bool()	{return _led_status;}
+		bool status()		{return _led_status;}
+		operator bool()	{return _led_status;}
 
 		/** Turn LED [on/off] by assigning it to [true/false] respectively. */
-		INLINE Led& operator= (const bool rhs) {
+		Led& operator= (const bool rhs) {
 			if (rhs) on();
 			else off();
 			return *this;
 		}
 
-		INLINE void set(const bool rhs) {
+		void set(const bool rhs) {
 			(rhs? on(): off());
 		}
 	};

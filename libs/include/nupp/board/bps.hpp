@@ -48,7 +48,7 @@ namespace nu
 		Mode modes[6];
 		int current_mode;
 
-		INLINE BpsMode(): current_mode(Off) {
+		BpsMode(): current_mode(Off) {
 			modes[Off] = {Off,
 				false, false, false,
 				EmptyCharging, Discharging, NOTHING};
@@ -69,7 +69,7 @@ namespace nu
 				Drive, EmptyCharging, Charging};
 		}
 
-		INLINE void traverse_mode(bool health, bool can_discharge, bool can_charge, bool drive) {
+		void traverse_mode(bool health, bool can_discharge, bool can_charge, bool drive) {
 			if (!health) {
 				current_mode = Off;
 			} else {
@@ -168,7 +168,7 @@ namespace nu
 			Precharge precharging;
 			int8_t disabled_module;
 
-			INLINE State(): cc_battery(0), cc_array(0), wh_battery(0), wh_array(0),
+			State(): cc_battery(0), cc_array(0), wh_battery(0), wh_array(0),
 				uptime(0),
 				error(NOERR), error_value(0), last_error(0), last_error_value(0),
 				trip_code(NONE), trip_data(0),
@@ -204,7 +204,7 @@ namespace nu
 			this->read_ins();
 		}
 
-		INLINE void read_ins()
+		void read_ins()
 		{
 			// debounce bypass button
 			for (unsigned i=0; i<10; i++) {
@@ -223,7 +223,7 @@ namespace nu
 			temp_sensor.read();
 		}
 
-		INLINE void recv_can()
+		void recv_can()
 		{
 			Can::Packet pkt(0);
 			uint32_t id;
@@ -249,7 +249,7 @@ namespace nu
 			}
 		}
 
-		INLINE void check_trip_conditions()
+		void check_trip_conditions()
 		{
 			TripCode trip_code = NONE;
 			int8_t trip_data = -1;
@@ -287,7 +287,7 @@ namespace nu
 			state.trip_data = trip_data;
 		}
 
-		INLINE void check_mode_safety()
+		void check_mode_safety()
 		{
 			if (state.trip_code != NONE)
 			{
@@ -305,7 +305,7 @@ namespace nu
 		 *
 		 * If state.mode is not valid, sets state.error.
 		 */
-		INLINE void set_relays()
+		void set_relays()
 		{
 			bool has_error = false;
 
@@ -407,7 +407,7 @@ namespace nu
 			}
 		}
 
-		INLINE void send_can()
+		void send_can()
 		{
 			/*
 			if (this->can_timer.has_expired())
@@ -420,7 +420,7 @@ namespace nu
 			*/
 		}
 
-		INLINE void draw_lcd()
+		void draw_lcd()
 		{
 			if (this->lcd_timer.has_expired())
 			{
@@ -446,7 +446,7 @@ namespace nu
 			}
 		}
 
-		INLINE void emergency_shutoff()
+		void emergency_shutoff()
 		{
 			main_relay.low();
 			array_relay.low();
@@ -457,7 +457,7 @@ namespace nu
 		/**
 		 * The main run loop.
 		 */
-		INLINE NORETURN void run_loop()
+		NORETURN void run_loop()
 		{
 			while (true) {
 				WDT::clear();

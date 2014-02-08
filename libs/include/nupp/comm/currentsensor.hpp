@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   currentsensor.hpp
  * Author: alex
  *
@@ -26,7 +26,7 @@ namespace nu
 		AD7685<2> current_adc; // 2 ADCs
 		Array<int16_t, 2> currents; // centiamps
 
-		INLINE CurrentSensor():
+		CurrentSensor():
 			current_adc(
 				AD7685<2>(PIN(F, 12), SPI_CHANNEL4, PIN(F, 12), // Convert & CS are same pin
 				AD7685<2>::CHAIN_MODE_NO_BUSY)),

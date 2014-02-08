@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   voltagesensor.hpp
  * Author: alex
  *
@@ -22,7 +22,7 @@ namespace nu
 		Timer openwire_timer;
 		bool has_configured_ltcs;
 
-		INLINE VoltageSensor():
+		VoltageSensor():
 			voltage_sensor(PIN(D, 9), SPI_CHANNEL1),
 			voltages(0),
 			voltage_measuring_timer(NU_BPS_LTC6803_MEASURE_INT_MS, Timer::ms, false),
@@ -52,7 +52,7 @@ namespace nu
 			cfgs = cfg0;
 			voltage_sensor.write_configs(cfgs);
 			 */
-			
+
 			LTC6803<3>::Configuration cfg0;
 			memset(cfg0.bytes, 0, sizeof(cfg0.bytes));
 			cfg0.bits.cdc = LTC6803<3>::CDC_MSMTONLY;

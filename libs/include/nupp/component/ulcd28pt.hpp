@@ -18,22 +18,22 @@ namespace nu {
 	 */
 	class uLCD28PT: protected Serial {
 		template <class V>
-		INLINE void write_key_val(const char *key, V value) {
+		void write_key_val(const char *key, V value) {
 			OStream::operator<< (TTY_RECORD) << (key) <<  (TTY_UNIT) << (value) << (TTY_RECORD) << (end);
 		}
 
 	public:
-		INLINE uLCD28PT(UARTModule mod): Serial(mod) {}
+		uLCD28PT(UARTModule mod): Serial(mod) {}
 
-		INLINE uLCD28PT& operator << (const Can::Addr::ws20::tx::motor_velocity& x) {
+		uLCD28PT& operator << (const Can::Addr::ws20::tx::motor_velocity& x) {
 			write_key_val<float>("velo", x.frame().vehicleVelocity);
 			return *this;
 		}
-		INLINE uLCD28PT& operator << (const Can::Addr::ws20::tx::current_vector& x) {
+		uLCD28PT& operator << (const Can::Addr::ws20::tx::current_vector& x) {
 			write_key_val<float>("curr", x.frame().currentRe);
 			return *this;
 		}
-		INLINE uLCD28PT& operator << (const char * x) {
+		uLCD28PT& operator << (const char * x) {
 			write_key_val<const char *>("text", x);
 			return *this;
 		}

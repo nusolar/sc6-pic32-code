@@ -37,19 +37,19 @@ namespace nu {
 		};
 		static_assert(sizeof(scratch) == 9, "nu::DS18X20::scratch packing");
 
-		INLINE DS18X20(Pin _p): OneWire(_p) {}
+		DS18X20(Pin _p): OneWire(_p) {}
 
-		INLINE void convert_t() {
+		void convert_t() {
 			this->tx_byte_with_crc( this->CONVERT_T );
 		}
 
-		INLINE void perform_temperature_conversion() {
+		void perform_temperature_conversion() {
 			this->reset();
 			this->skip_rom();
 			this->convert_t();
 		}
 
-		INLINE void read_temperature(const typename OneWire::romcode &code, scratch &scr) {
+		void read_temperature(const typename OneWire::romcode &code, scratch &scr) {
 			this->reset();
 			this->match_rom(code);
 			this->read_scratch(&scr, sizeof(scr));
@@ -60,7 +60,7 @@ namespace nu {
 			return (int16_t)(temp*10/16);
 		}
 
-		INLINE void update_temperatures(Array<int16_t, num_devices> &values) {
+		void update_temperatures(Array<int16_t, num_devices> &values) {
 			Array<scratch, num_devices> scratches;
 			for (unsigned i=0; i<num_devices; i++) {
 				this->read_temperature(this->roms[i], scratches[i]);

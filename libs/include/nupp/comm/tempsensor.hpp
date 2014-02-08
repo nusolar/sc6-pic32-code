@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   tempsensor.hpp
  * Author: alex
  *
@@ -20,7 +20,7 @@ namespace nu
 		Timer temp_measuring_clock;
 		bool has_configured_ds;
 
-		INLINE TempSensor():
+		TempSensor():
 			temp_sensor(PIN(A, 0)),
 			temperatures(),
 			temp_measuring_clock(NU_BPS_DS18X20_MEASURE_INT_MS, Timer::ms, false),
@@ -39,7 +39,7 @@ namespace nu
 				{
 					this->has_configured_ds = true;
 				}
-				
+
 				this->temp_sensor.perform_temperature_conversion();
 				this->temp_measuring_clock.reset();
 			}
