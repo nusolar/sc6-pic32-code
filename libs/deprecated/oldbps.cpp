@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 Alex Chandel. All rights reserved.
 //
 
-#include "nupp/board/oldbps.hpp"
+#include "nuxx/board/oldbps.hpp"
 #include <new>
 
 using namespace nu;

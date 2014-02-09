@@ -1,5 +1,5 @@
 #include "nu/common_pragmas.h"
-#include "nupp/board/bps.hpp"
+#include "nuxx/board/bps.hpp"
 #include <cstdint>
 
 #define CLASS nu::BPS

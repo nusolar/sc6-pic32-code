@@ -1,5 +1,5 @@
 #include "nu/common_pragmas.h"
-#include "nupp/board/pedals.hpp"
+#include "nuxx/board/pedals.hpp"
 #include <cstdint>
 
 #define CLASS nu::Pedals

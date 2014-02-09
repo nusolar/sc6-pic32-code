@@ -486,11 +486,9 @@ can_def = [
 				'name': 'tx',
 				'base': 0x210,
 				'contents': [
-					['heartbeat',	Layout.Status,	['bms_str', 'uptime_s']],
-					['errors',		Layout.Int16x4,		['error', 'error_value',
-														 'last_error', 'last_error_value']],
+					['heartbeat',	Layout.Status,		['bmsId', 'uptime_s']],
 					['bps_status',	Layout.UInt16x4,	['mode', 'disabled_module',
-														 'reserved', 'reserved1']],
+														 'last_error', 'last_error_value']],
 					['current',		Layout.UInt16x4,	['array', 'battery',
 														 'reserved', 'reserved1']],
 					['voltage_temp', Layout.UInt16x4,	['module', 'voltage',
@@ -504,9 +502,11 @@ can_def = [
 					['Wh_mppt1',	Layout.Float64x1,	['count', ]],
 					['Wh_mppt2',	Layout.Float64x1,	['count', ]],
 					['Wh_mppt3',	Layout.Float64x1,	['count', ]],
-					['trip_pt',		Layout.Trip,	['trip_code', 'module',
-													 'low_current', 'high_current']],
-					['trip_pt_voltage_temp',	Layout.UInt16x4,
+					# ['last_error',	Layout.Int16x4,		['last_error', 'last_error_value',
+					# 									 'reserved', 'reserved1']],
+					['last_trip',	Layout.Trip,		['trip_code', 'module',
+														 'low_current', 'high_current']],
+					['last_trip_voltage_temp',	Layout.UInt16x4,
 						['low_volt', 'high_volt', 'low_temp', 'high_temp']],
 				]
 			}

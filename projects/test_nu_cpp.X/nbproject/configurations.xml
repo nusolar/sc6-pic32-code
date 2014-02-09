@@ -37,20 +37,20 @@
         <linkerTool>
           <linkerLibItems>
             <linkerLibProjectItem>
-              <makeArtifact PL="../../libs/nupp.X"
+              <makeArtifact PL="../../libs/nuxx.X"
                             CT="3"
                             CN="debug"
                             AC="true"
                             BL="true"
-                            WD="../../libs/nupp.X"
+                            WD="../../libs/nuxx.X"
                             BC="${MAKE}  -j 8 -f Makefile CONF=debug"
                             DBC="${MAKE}  -j 8 -f Makefile CONF=debug TYPE_IMAGE=DEBUG_RUN"
                             CC="rm -rf &quot;build/debug&quot; &quot;dist/debug&quot;"
-                            OP="dist/debug/production/nupp.X.a"
-                            DOP="dist/debug/debug/nupp.X.a"
-                            FL="dist/debug/production/nupp.X.a"
-                            PD="dist/debug/production/nupp.X."
-                            DD="dist/debug/debug/nupp.X.">
+                            OP="dist/debug/production/nuxx.X.a"
+                            DOP="dist/debug/debug/nuxx.X.a"
+                            FL="dist/debug/production/nuxx.X.a"
+                            PD="dist/debug/production/nuxx.X."
+                            DD="dist/debug/debug/nuxx.X.">
               </makeArtifact>
             </linkerLibProjectItem>
           </linkerLibItems>

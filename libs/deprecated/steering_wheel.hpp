@@ -1,14 +1,14 @@
-#ifndef NUPP_STEERING_WHEEL_HPP
-#define NUPP_STEERING_WHEEL_HPP 1
+#ifndef NUXX_STEERING_WHEEL_HPP
+#define NUXX_STEERING_WHEEL_HPP 1
 
-#include "nupp/board/nu32.hpp"
-#include "nupp/component/ulcd28pt.hpp" // MAXIMUM WARNING MAXIMUM ERROR MUST COME BEFORE PIC32
-#include "nupp/component/button.hpp"
-#include "nupp/component/led.hpp"
-#include "nupp/can.hpp"
-#include "nupp/wdt.hpp"
-#include "nupp/timer.hpp"
-#include "nupp/bitset.hpp"
+#include "nuxx/board/nu32.hpp"
+#include "nuxx/component/ulcd28pt.hpp" // MAXIMUM WARNING MAXIMUM ERROR MUST COME BEFORE PIC32
+#include "nuxx/component/button.hpp"
+#include "nuxx/component/led.hpp"
+#include "nuxx/can.hpp"
+#include "nuxx/wdt.hpp"
+#include "nuxx/timer.hpp"
+#include "nuxx/bitset.hpp"
 #include "nu/compiler.h"
 #include <cstdio>
 

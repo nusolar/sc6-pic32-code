@@ -8,8 +8,8 @@
  *       deallocations fail unless performed in the precise reverse order.
  */
 
-#ifndef NUPP_ALLOCATOR_HPP
-#define	NUPP_ALLOCATOR_HPP
+#ifndef NUXX_ALLOCATOR_HPP
+#define	NUXX_ALLOCATOR_HPP
 
 #include "nu/compiler.h"
 #include <alloca.h>
@@ -117,5 +117,5 @@ namespace nu {
 		}
 	};
 }
-#endif	/* NUPP_ALLOCATOR_HPP */
+#endif	/* NUXX_ALLOCATOR_HPP */
 

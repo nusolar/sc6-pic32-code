@@ -24,16 +24,16 @@ Turn on boards
 MPLAB Projects
 ----
 ### Library
-NU++ provides a stack-based standard C++ library for embedded systems, C++ interfaces for common circuitry (e.g. digital outputs), class implementations for devices that use these (e.g. LEDs, Buttons, Pedals), C++ interfaces for common communication protocols like CAN, SPI, UART, and 1-Wire, and class implementations for devices that use these (e.g. voltage/current/temperature sensors).
+NUXX provides a stack-based standard C++ library for embedded systems, C++ interfaces for common circuitry (e.g. digital outputs), class implementations for devices that use these (e.g. LEDs, Buttons, Pedals), C++ interfaces for common communication protocols like CAN, SPI, UART, and 1-Wire, and class implementations for devices that use these (e.g. voltage/current/temperature sensors).
 
-Moreover, due to optimization issues, NU++ also includes classes for our boards.
+Moreover, due to optimization issues, NUXX also includes classes for our boards.
 
-* `libs/nupp.X` — Optimized C++ library for microcontroller development.
+* `libs/nuxx.X` — Optimized C++ library for microcontroller development.
 
 * `libs/nu.X` — C library for microcontroller development, with Object-Oriented-emulation.
 
 ### Main PCB projects
-An MPLAB compiler bug prevents optimization of any C or C++ main project, so the heavily-optimized library project `libs/nupp.X` contains nearly all board-functionality. Each board's main project simply calls into the corresponding library static "main" function.
+An MPLAB compiler bug prevents optimization of any C or C++ main project, so the heavily-optimized library project `libs/nuxx.X` contains nearly all board-functionality. Each board's main project simply calls into the corresponding library static "main" function.
 
 * `car_bms_cpp.X` — calls `nu::BMS::main()`, [detailed below](#Boards).
 
@@ -47,7 +47,7 @@ An MPLAB compiler bug prevents optimization of any C or C++ main project, so the
 
 * `mppt_upload.X` — Utility to upload the MPPT `.hex` binary blob.
 
-NU++ API
+NUXX API
 ----
 In `namespace nu`.
 

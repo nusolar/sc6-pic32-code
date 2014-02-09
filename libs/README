@@ -2,7 +2,7 @@ NUSolar libraries
 =====
 
 This folder contains the micro-controller library. It's broken into
-3 static libraries, `nu`, `nupp`, and `USB`. These correspond to the (small) C
+3 static libraries, `nu`, `nuxx`, and `USB`. These correspond to the (small) C
 layer, the primary C++ layer, and the USB stack.
 
 

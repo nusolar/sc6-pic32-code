@@ -6,19 +6,19 @@
 //  Copyright (c) 2013 Alex Chandel. All rights reserved.
 //
 
-#ifndef NUPP_OLDBMS_HPP
-#define NUPP_OLDBMS_HPP 1
+#ifndef NUXX_OLDBMS_HPP
+#define NUXX_OLDBMS_HPP 1
 
-#include "nupp/board/nu32.hpp"
-#include "nupp/comm/voltagesensor.hpp"
-#include "nupp/comm/currentsensor.hpp"
-#include "nupp/comm/tempsensor.hpp"
-#include "nupp/component/nokia5110.hpp"
-#include "nupp/peripheral/can.hpp"
-#include "nupp/peripheral/pinctl.hpp"
-#include "nupp/timer.hpp"
-#include "nupp/wdt.hpp"
-#include "nupp/errorcodes.hpp"
+#include "nuxx/board/nu32.hpp"
+#include "nuxx/comm/voltagesensor.hpp"
+#include "nuxx/comm/currentsensor.hpp"
+#include "nuxx/comm/tempsensor.hpp"
+#include "nuxx/component/nokia5110.hpp"
+#include "nuxx/peripheral/can.hpp"
+#include "nuxx/peripheral/pinctl.hpp"
+#include "nuxx/timer.hpp"
+#include "nuxx/wdt.hpp"
+#include "nuxx/errorcodes.hpp"
 #include "nu/compiler.h"
 #include <cstdint>
 
@@ -415,4 +415,4 @@ namespace nu {
 	};
 }
 
-#endif /* defined(NUPP_OLDBMS_HPP) */
+#endif /* defined(NUXX_OLDBMS_HPP) */

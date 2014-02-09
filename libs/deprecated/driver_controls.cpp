@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 Alex Chandel. All rights reserved.
 //
 
-#include "nupp/board/driver_controls.hpp"
+#include "nuxx/board/driver_controls.hpp"
 
 using namespace nu;
 

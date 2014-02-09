@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   main.cpp
  * Author: alex
  *
@@ -6,10 +6,10 @@
  */
 
 #include "nu/platform/common_pragmas.h"
-#include "nupp/nu32.hpp"
-#include "nupp/timer.hpp"
+#include "nuxx/nu32.hpp"
+#include "nuxx/timer.hpp"
 #include "nu/compiler.h"
-#include "nupp/nokia5110.hpp"
+#include "nuxx/nokia5110.hpp"
 #include <plib.h>
 
 extern "C" {
@@ -151,7 +151,7 @@ int main() {
 		lcd.goto_xy(0,2);
 		lcd << (isCAN1MsgReceived) << " " << (message != NULL) << end;
 		if (isCAN1MsgReceived != FALSE || message != NULL) {
-			
+
 			unsigned int sid = message->msgSID.SID; // THIS LINE FAILS
 			if (sid < 0x400) {
 				nu32.led2.off();

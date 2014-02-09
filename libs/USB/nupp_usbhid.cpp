@@ -1,19 +1,19 @@
 /**
- * @file This file implements the NU++ header nupp/usbhid.hpp, which specifies
+ * @file This file implements the NU++ header nuxx/usbhid.hpp, which specifies
  * an interface for USB-HID-Custom-class devices.
  */
 
-#include "nupp/usbhid.hpp"
+#include "nuxx/usbhid.hpp"
 #include "nu/platform.h"
 #include "nu/compiler.h"
 #include <cstdint>
 
 
 #if NU_PLATFORM==NU_PLATFORM_UNKNOWN
-#error "Unknown NU_PLATFORM in USB/nupp_usbhid.hpp!"
+#error "Unknown NU_PLATFORM in USB/nuxx_usbhid.hpp!"
 
 #elif NU_PLATFORM==NU_PLATFORM_GENERIC /* Generic USB-HID code */
-#error "No GENERIC USB code in USB/nupp_usbhid.hpp!"
+#error "No GENERIC USB code in USB/nuxx_usbhid.hpp!"
 
 #elif NU_PLATFORM==NU_PLATFORM_PIC32MX /* PIC32MX-specific USB-HID code */
 
