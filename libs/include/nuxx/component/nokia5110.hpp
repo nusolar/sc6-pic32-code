@@ -47,6 +47,8 @@ namespace nu {
 
 		Nokia5110(Pin _cs, uint8_t _channel, Pin _reset, Pin _dc);
 
+		void reconfigure();
+
 		void put_c(const uint8_t c);
 		void puts(const char *str);
 //		DEPRECATED void PRINTF(2,3) printf(const char *fmt, ...);

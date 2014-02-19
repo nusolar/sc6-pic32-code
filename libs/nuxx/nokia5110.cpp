@@ -159,6 +159,11 @@ Nokia5110::Nokia5110(Pin _cs, uint8_t _channel, Pin _reset, Pin _dc):
 	SPI(_cs, Spi(_channel, 2000000, SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON)),
 	reset(_reset), dc(_dc)
 {
+	this->reconfigure();
+}
+
+void Nokia5110::reconfigure()
+{
 	reset.low();
 	reset.high();
 
