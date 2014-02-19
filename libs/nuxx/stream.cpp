@@ -7,11 +7,11 @@ nu::OStream& nu::end(nu::OStream& os) {
 }
 
 void nu::OStream::printf(const char *fmt, ...) {
-	char buffer[72];
+	char buffer[96];
 	va_list fmtargs;
 	va_start(fmtargs, fmt);
 	if (likely(vsnprintf(NULL, 0, fmt, fmtargs) >= 0)) {
-		vsprintf(buffer, fmt, fmtargs);
+		vsnprintf(buffer, (sizeof(buffer)/sizeof(buffer[0])), fmt, fmtargs);
 		puts((char *)buffer);
 	}
 	va_end(fmtargs);
