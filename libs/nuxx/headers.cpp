@@ -1,6 +1,7 @@
 // printed circuit boards
 #include "nuxx/board/bps.hpp"
 #include "nuxx/board/pedals.hpp"
+#include "nuxx/board/test.hpp"
 #include "nuxx/board/output_board.hpp"
 #include "nuxx/board/nu32.hpp"
 
