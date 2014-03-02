@@ -1,12 +1,15 @@
 #include "nu/common_pragmas.h"
-#include "nuxx/board/bps.hpp"
+#include "nuxx/board/pedals.hpp"
+//#include "nuxx/board/bps.hpp"
+//#include "nuxx/board/test.hpp"
 #include <cstdint>
 
-#define CLASS nu::BPS
+#define CLASS nu::Pedals
 #define div_roundup(DIVIDEND, DIVISOR) ((long long)((DIVIDEND)/(DIVISOR)) + (((DIVIDEND)%(DIVISOR)>0)? 1: 0))
 
 // Allocate the size of CLASS, rounding up.
 uint64_t arena[div_roundup(sizeof(CLASS), 8)] ALIGNED(__BIGGEST_ALIGNMENT__);
+CLASS *arena_ptr = (CLASS *)arena;
 
 // Exception handling, copy-pasted directly from MicroChip's example code.
 extern "C"
@@ -61,4 +64,15 @@ int main()
 {
 	CLASS::main((CLASS *)arena);
     return 0;
+}
+
+void debugger(const char *fmt, ...) {
+	char buffer[96];
+	va_list fmtargs;
+	va_start(fmtargs, fmt);
+	if (likely(vsnprintf(NULL, 0, fmt, fmtargs) >= 0)) {
+		vsnprintf(buffer, (sizeof(buffer)/sizeof(buffer[0])), fmt, fmtargs);
+		((CLASS *)arena)->serial1.puts((char *)buffer);
+	}
+	va_end(fmtargs);
 }
