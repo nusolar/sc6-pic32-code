@@ -183,7 +183,7 @@ namespace nu {
 				unsigned v1 :12;
 				unsigned v2 :12;
 			} voltages;
-			struct bytes_t {
+			struct PACKED bytes_t {
 				uint8_t b0, b1, b2;
 			} bytes;
 		};
