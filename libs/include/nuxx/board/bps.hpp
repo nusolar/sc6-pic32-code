@@ -90,7 +90,7 @@ namespace nu
 		}
 	};*/
 
- 	struct BPS: protected Nu32
+ 	struct BPS: Nu32
  	{
 		enum TripCode
 		{
@@ -129,7 +129,7 @@ namespace nu
 
 		DigitalOut main_relay, array_relay, precharge_relay, motor_relay;
 		Button bypass_button;
-		Serial com;
+//		Serial com;
 		Can::Module common_can;
 		Nokia5110 lcd1, lcd2;
 
@@ -180,7 +180,7 @@ namespace nu
 			precharge_relay	(PIN(D, 3), false),
 			motor_relay		(PIN(D, 4), false),
 			bypass_button	(PIN(B, 7)),
-			com				(UART(1)),
+//			com				(UART(1)),
 			common_can		(CAN1),
 			lcd1			(PIN(G, 9), SPI_CHANNEL2, PIN(A, 9),  PIN(E, 9)),
 			lcd2			(PIN(E, 8), SPI_CHANNEL2, PIN(A, 10), PIN(E, 9)),
@@ -214,8 +214,8 @@ namespace nu
 			// increment disabled module if it's pressed
 			if (bypass_button.toggled()) {
 				++state.disabled_module;
-				if (state.disabled_module > (int8_t)NU_BPS_N_MODULES) {
-					state.disabled_module = 0;
+				if (state.disabled_module >= (int8_t)NU_BPS_N_MODULES) {
+					state.disabled_module = -1;
 				}
 			}
 
@@ -284,8 +284,8 @@ namespace nu
 				trip_data = 0;
 			}
 
-			state.trip_code = trip_code;
-			state.trip_data = trip_data;
+			this->state.trip_code = trip_code;
+			this->state.trip_data = trip_data;
 		}
 
 		void check_mode_safety()
@@ -425,7 +425,8 @@ namespace nu
 				this->common_can.out().tx(status_pkt);
 				this->common_can.out().tx(current_pkt);
 				this->common_can.out().tx(voltage_temp_pkt);
-				this->can_module_i++;
+				++this->can_module_i %= NU_BPS_N_MODULES;
+				this->can_timer.reset();
 			}
 		}
 
@@ -434,21 +435,24 @@ namespace nu
 			if (this->lcd_timer.has_expired())
 			{
 				uint8_t module_i = state.uptime % NU_BPS_N_MODULES; // next module index
-
+				
+				if (module_i)
+					lcd1.reconfigure();
 				lcd1.lcd_clear();
-				lcd1 << "ZELDA " << module_i << end;
+				lcd1.printf("ZELDA %hhu", module_i);
 				lcd1.goto_xy(0, 1);
-				lcd1 << "V: " << this->voltage_sensor.voltages[module_i] << end;
+				lcd1.printf("V: %hu", this->voltage_sensor.voltages[module_i]);
 				lcd1.goto_xy(0, 2);
-				lcd1 << "T: " << this->temp_sensor.temperatures[module_i] << end;
+				lcd1.printf("T: %hi", this->temp_sensor.temperatures[module_i]);
 				lcd1.goto_xy(0, 3);
-				lcd1 << "I0: " <<  this->current_sensor.currents[0] << end;
+				lcd1.printf("I0: %X", this->current_sensor.currents[0]);
 				lcd1.goto_xy(0, 4);
-				lcd1 << "Off: " << state.disabled_module << end;
+				lcd1.printf("Off: %hhi", state.disabled_module);
 				lcd1.goto_xy(0, 5);
-				lcd1 << "R: " << main_relay.status() << "-" << array_relay.status() <<
-						"-" << precharge_relay.status() << "-" << motor_relay.status() << end;
+				lcd1.printf("R: %hhu-%hhu-%hhu-%hhu", main_relay.status(), array_relay.status(), precharge_relay.status(), motor_relay.status());
 				led1.toggle();
+//				this->serial1.printf("ZELDA %hhu\nV: %hu\nT: %hi\nI0: %X\nOff: %hhi\n",
+//					module_i, this->voltage_sensor.voltages[module_i], this->temp_sensor.temperatures[module_i], this->current_sensor.currents[0], state.disabled_module);
 
 				++state.uptime; // increase uptime by 1 second
 				this->lcd_timer.reset(); // reset LCD update clock
@@ -468,7 +472,8 @@ namespace nu
 		 */
 		NORETURN void run_loop()
 		{
-			while (true) {
+			while (true)
+			{
 				WDT::clear();
 				this->recv_can();
 				this->read_ins();
