@@ -8,6 +8,8 @@
 #ifndef NUXX_PEDALS_HPP
 #define	NUXX_PEDALS_HPP
 
+#include "nuxx/board/nu32.hpp"
+#include "nuxx/component/nokia5110.hpp"
 #include "nuxx/peripheral/pinctl.hpp"
 #include "nuxx/peripheral/can.hpp"
 #include "nuxx/wdt.hpp"
@@ -17,7 +19,7 @@
 
 namespace nu
 {
-	struct Pedals
+	struct Pedals: Nu32
 	{
 		Can::Module common_can;
 		AnalogIn regen_pedal, accel_pedal;
@@ -29,8 +31,11 @@ namespace nu
 		DigitalOut headlights; // D2
 		DigitalOut lights_brake; // D3
 
+		Nokia5110 lcd;
+
 		Timer ws20_timer;
 		Timer os_timer;
+		Timer lcd_timer;
 
 		struct state_t
 		{
@@ -46,6 +51,7 @@ namespace nu
 		} state;
 
 		Pedals():
+			Nu32(Nu32::V2011),
 			common_can(CAN1),
 			regen_pedal(PIN(B, 0)),
 			accel_pedal(PIN(B, 1)),
@@ -55,14 +61,16 @@ namespace nu
 			lights_l(PIN(D, 1)),
 			headlights(PIN(D, 2)),
 			lights_brake(PIN(D, 3)),
+			lcd(PIN(G, 9), SPI_CHANNEL2, PIN(A, 9), PIN(E, 9)),
 			ws20_timer(NU_PEDALS_WS20_TIMEOUT_MS, Timer::ms, false),
 			os_timer(NU_PEDALS_OS_TIMEOUT_MS, Timer::ms, false),
+			lcd_timer(1, Timer::s, false),
 			state()
 		{
 			WDT::clear();
 #warning "Need to receive BPS packets too!"
 			common_can.in().setup_rx();
-			common_can.in().add_filter(CAN_FILTER0, CAN_SID, Can::Addr::os::tx::user_cmds_k,
+			common_can.in().add_filter(CAN_FILTER0, CAN_SID, Can::Addr::os::tx::user_cmds::_id,
 				CAN_FILTER_MASK0, CAN_FILTER_MASK_IDE_TYPE, 0x7FF);
 			common_can.out().setup_tx(CAN_HIGH_MEDIUM_PRIORITY);
 		}
@@ -74,12 +82,12 @@ namespace nu
 
 			common_can.in().rx(incoming, id);
 			switch (id) {
-				case (uint32_t)Can::Addr::bps::tx::bps_status_k: {
+				case Can::Addr::bps::tx::bps_status::_id: {
 					Can::Addr::bps::tx::bps_status pkt(incoming);
 					this->state.bps_drive = pkt.frame().mode | 1<<1;
 					break;
 				}
-				case (uint32_t)Can::Addr::os::tx::user_cmds_k: {
+				case Can::Addr::os::tx::user_cmds::_id: {
 					// KEEP IN SYNC with flags in /driver-server/SolarCar/DataAggregator.cs
 					Can::Addr::os::tx::user_cmds pkt(incoming);
 					this->state.gear = pkt.frame().gearFlags | 1<<0;
@@ -180,6 +188,20 @@ namespace nu
 			}
 		}
 
+		void draw_lcd()
+		{
+			if (lcd_timer.has_expired())
+			{
+				this->led1.toggle();
+				this->lcd.lcd_clear();
+				this->lcd.printf("ZELDA");
+				this->lcd.goto_xy(0, 1);
+				this->lcd.printf("%hu-%hhu", this->state.accel_raw, this->state.brake_en);
+				this->serial1.printf("ZELDA\n%hu-%hhu\n", this->state.accel_raw, this->state.brake_en);
+				this->lcd_timer.reset();
+			}
+		}
+
 		NORETURN void run_loop()
 		{
 			while (true)
@@ -189,6 +211,7 @@ namespace nu
 				this->read_ins();
 				this->set_signals();
 				this->send_can();
+				this->draw_lcd();
 			}
 		}
 
