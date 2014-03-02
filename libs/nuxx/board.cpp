@@ -5,10 +5,12 @@
 #include <new>
 unsigned int debug = 0;
 
-void nu::Pedals::main(nu::Pedals *arena) {
+void nu::Pedals::main(nu::Pedals *self)
+{
 	nu::WDT::disable();
-	new (arena) Pedals();
-	arena->run_loop();
+	new (self) nu::Pedals();
+	// start run loop, never return:
+	self->run_loop();
 }
 
 
