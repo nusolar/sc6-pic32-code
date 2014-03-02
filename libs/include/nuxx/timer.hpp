@@ -19,7 +19,7 @@ namespace nu {
 		static INLINE u64 ms()	{return (int64_t)nu__Timer__ticks()*2000/NU_HZ;}
 		static INLINE u64 us()	{return (((int64_t)nu__Timer__ticks())<<1)/NU_MHZ;}
 		static INLINE u64 ns()	{return (int64_t)nu__Timer__ticks()*2000/NU_MHZ;}
-		static INLINE u64 ticks()	{return nu__Timer__ticks();}
+		static INLINE u64 ticks()	{return (int64_t) nu__Timer__ticks();}
 
 		static INLINE void delay_ticks(tick_t ticks)	{nu__Timer__delay_ticks(ticks);}
 		static INLINE void delay_s (u64 s)	{delay_ticks((tick_t)(s*param::Hz()/2));}
@@ -37,20 +37,18 @@ namespace nu {
 		};
 
 		uint64_t tick_interval;
-		Unit unit;
-
 		uint64_t start_tick;
 		uint64_t expiration_tick;
 		bool is_running;
+		Unit unit;
 
-
-		/** A timer interval, the units, and whether it arms now */
+		/** Timer takes a timer interval, a unit, and whether it starts immediately */
 		Timer(uint64_t _tick_interval, Unit _unit, bool arm_now):
 			tick_interval(0),
-			unit(Timer::s),
 			start_tick(0),
 			expiration_tick(0),
-			is_running(false)
+			is_running(false),
+			unit(Timer::s)
 		{
 			this->set_interval(_tick_interval, _unit);
 			if (arm_now)
@@ -66,13 +64,17 @@ namespace nu {
 			switch (this->unit)
 			{
 				case s:
-					this->tick_interval =  timer::s_to_ticks(_tick_interval)*param::timer_hz();
+					this->tick_interval =  timer::s_to_ticks(_tick_interval);
+					break;
 				case ms:
-					this->tick_interval = timer::ms_to_ticks(_tick_interval)*param::timer_hz();
+					this->tick_interval = timer::ms_to_ticks(_tick_interval);
+					break;
 				case us:
-					this->tick_interval = timer::us_to_ticks(_tick_interval)*param::timer_hz();
+					this->tick_interval = timer::us_to_ticks(_tick_interval);
+					break;
 				case ns:
-					this->tick_interval = timer::ns_to_ticks(_tick_interval)*param::timer_hz();
+					this->tick_interval = timer::ns_to_ticks(_tick_interval);
+					break;
 			}
 		}
 
