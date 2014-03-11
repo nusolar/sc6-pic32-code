@@ -78,21 +78,24 @@ nb-configuration.xml
 nbactions.xml
 nbbuild/
 nbdist/
-nbproject/private/
-libs/*/nbproject/
-projects/*/nbproject/private/
-projects/*/nbproject/private/*
-*/*/nbproject/private/*
-*.mk
-*.properties
+Makefile-*
 Makefile-default.mk
 Makefile-local-default.mk
 Makefile-genesis.properties
 Makefile-impl.mk
+Package-*
+Package-default.bash
+nbproject/private/
+nbproject/private/*
+libs/*/nbproject/private/
+libs/*/nbproject/private/*
+projects/*/nbproject/private/
+projects/*/nbproject/private/*
+*.mk
+*.properties
 !configurations.xml
 !Makefile
 !project.xml
-Package-default.bash
 
 #Sublime Text 2
 *.sublime-project
@@ -137,3 +140,7 @@ Package-default.bash
 *.deb
 *.rpm
 
+# Exclude doxygen-generated docs
+html/
+latex/
+rtf/
