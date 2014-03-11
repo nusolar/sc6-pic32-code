@@ -13,7 +13,7 @@ void nu::Pedals::main(nu::Pedals *self)
 	self->run_loop();
 }
 
-
+#if 0
 void nu::BPS::main(nu::BPS *self)
 {
 	nu::WDT::disable();
@@ -29,3 +29,4 @@ void nu::TestBoard::main(nu::TestBoard *self)
 	// start run loop, never return:
 	self->run_loop();
 }
+#endif

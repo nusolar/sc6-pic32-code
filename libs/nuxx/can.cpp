@@ -33,11 +33,13 @@ CAN_BIT_CONFIG Module::default_cfg = {
 };
 #endif
 
-nu::Can::Module::Module(CAN_MODULE _mod, uint32_t bus_speed,
-			   CAN_BIT_CONFIG *timings,
-			   CAN_MODULE_EVENT interrupts,
-			   INT_PRIORITY int_priority,
-			   CAN_MODULE_FEATURES features): mod(_mod)
+nu::Can::Module::Module(CAN_MODULE _mod,
+						uint32_t bus_speed,
+						CAN_BIT_CONFIG *timings,
+						CAN_MODULE_EVENT interrupts,
+						INT_PRIORITY int_priority,
+						CAN_MODULE_FEATURES features):
+	mod(_mod)
 {
 	CANEnableModule(mod, TRUE);
 
@@ -116,7 +118,8 @@ nu::Can::Channel::Channel(Module &_mod, CAN_CHANNEL _chn, uint32_t _msg_size, CA
  * @return Error code
  * @todo Allow Interrupts!
  */
-int32_t nu::Can::Channel::setup_rx(CAN_RX_DATA_MODE _data_mode) {
+int32_t nu::Can::Channel::setup_rx(CAN_RX_DATA_MODE _data_mode)
+{
 	data_mode = _data_mode;
 
 	int32_t err = mod.config_mode();
@@ -139,7 +142,8 @@ int32_t nu::Can::Channel::setup_rx(CAN_RX_DATA_MODE _data_mode) {
  * @return Error code
  * @todo Allow interrupts!
  */
-int32_t nu::Can::Channel::setup_tx(CAN_TXCHANNEL_PRIORITY _priority, CAN_TX_RTR _rtr_en) {
+int32_t nu::Can::Channel::setup_tx(CAN_TXCHANNEL_PRIORITY _priority, CAN_TX_RTR _rtr_en)
+{
 	priority = _priority;
 	rtr_en = _rtr_en;
 
@@ -162,7 +166,8 @@ int32_t nu::Can::Channel::setup_tx(CAN_TXCHANNEL_PRIORITY _priority, CAN_TX_RTR 
  * @param (out) the ID of CAN message.
  * @return Number of bytes read copied.
  */
-int32_t nu::Can::Channel::rx(void *dest, uint32_t &id) {
+int32_t nu::Can::Channel::rx(void *dest, uint32_t &id)
+{
 	if (config != RX) return -error::EINVAL;
 
 	CANRxMessageBuffer *buffer = CANGetRxMessage(mod, chn);
@@ -178,13 +183,15 @@ int32_t nu::Can::Channel::rx(void *dest, uint32_t &id) {
 	return len;
 }
 
-int32_t nu::Can::Channel::rx(Packet &p, uint32_t &id) {
-	return rx((void *)p.bytes(), id);
+int32_t nu::Can::Channel::rx(Packet &p, uint32_t &id)
+{
+	return rx((void *)p.frame().bytes, id);
 }
 
 
 /**
- * Transmit a message over the CAN Channel.
+ * Transmit a message over the CAN Channel. Fails if all CAN Tx Buffers are full.
+ *
  * @param data Pointer to the message data to be copied.
  * @param num_bytes Number of bytes to copy.
  * @param std_id The SID portion of the ID. Ranges from [0x000, 0x7FF].
@@ -192,7 +199,8 @@ int32_t nu::Can::Channel::rx(Packet &p, uint32_t &id) {
  * @param type Whether message is SID or EID. If SID, then ext_id should be 0.
  * @return Error code.
  */
-int32_t nu::Can::Channel::tx(const void *data, size_t num_bytes, uint16_t std_id, uint32_t ext_id, id_type type) {
+int32_t nu::Can::Channel::tx(const void *data, size_t num_bytes, uint16_t std_id, uint32_t ext_id, id_type type)
+{
 	if (config != TX) return -error::EINVAL; // WARNING error code for wrong config?
 	if (num_bytes > 8) return -error::EINVAL; // Maximum of 8 data bytes in CAN frame
 
@@ -200,7 +208,8 @@ int32_t nu::Can::Channel::tx(const void *data, size_t num_bytes, uint16_t std_id
 	if (err < 0) return err;
 
 	CANTxMessageBuffer *msg = CANGetTxMessageBuffer(mod, chn);
-	if (msg == NULL) return -error::ENULPTR;
+	if (msg == NULL)
+		return -error::ENULPTR; // All CAN Tx Buffers are full.
 
 	memset(msg, 0, sizeof(CANTxMessageBuffer));
 	msg->msgEID.IDE = (EXTENDED_ID == type); // EID is indicated by IDTypeExtended = 1
@@ -211,18 +220,29 @@ int32_t nu::Can::Channel::tx(const void *data, size_t num_bytes, uint16_t std_id
 		msg->msgEID.EID = BITFIELD_CAST(ext_id, 18); // 18 bits
 
 	if (num_bytes) memcpy(msg->data, (const char *)data, num_bytes);
+	for (unsigned i=0; i<num_bytes; i++)
+	{
+		debugger("%X-", ((const uint8_t *)data)[i]);
+	}
+	debugger("\n");
 
 	CANUpdateChannel(mod, chn);
 	CANFlushTxChannel(mod, chn);
 	return 0;
 }
 
-int32_t nu::Can::Channel::tx(const Packet &p) {
-	return tx((const void *)p.bytes(), (size_t)8, (uint16_t)p.id());
+int32_t nu::Can::Channel::tx(const Packet &p)
+{
+	debugger("about to can: id=0x%X,  data=%llu\n", p.id(), p.frame().data);
+	int32_t status = tx((const void *)p.frame().bytes, (size_t)8, (uint16_t)p.id());
+	debugger("end can [0]: %hu, %i\n", p.frame().bytes[0], status);
+	return status;
 }
 
+#warning "Need to break up FilterMask from Filter"
 int32_t nu::Can::Channel::add_filter(CAN_FILTER filter, CAN_ID_TYPE _id_type, uint32_t id,
-							CAN_FILTER_MASK mask, CAN_FILTER_MASK_TYPE mide, uint32_t mask_bits) {
+							CAN_FILTER_MASK mask, CAN_FILTER_MASK_TYPE mide, uint32_t mask_bits)
+{
 	if (config != RX) return -error::EINVAL; // WARNING should fail if not RX?
 
 	int32_t err = mod.config_mode();

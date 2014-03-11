@@ -12,7 +12,6 @@
 *.elf
 
 *.bak
-nppBackup/
 
 # linux
 .*

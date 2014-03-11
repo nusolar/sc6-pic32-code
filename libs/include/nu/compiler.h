@@ -87,6 +87,6 @@ static ALWAYSINLINE T volatile &access_once(T &t) {
 # define ACCESS_ONCE(x) access_once(x)
 #endif
 
-//extern void debugger(const char *fmt, ...);
+extern void debugger(const char *fmt, ...);
 
 #endif

@@ -36,16 +36,27 @@ class Layout:
 		'UInt32'
 	]
 
-	Int32x2 = [
-		'Int32',
-		'Int32'
-	]
-
 	UInt16x4 = [
 		'UInt16',
 		'UInt16',
 		'UInt16',
 		'UInt16'
+	]
+
+	UInt8x8 = [
+		'Byte',
+		'Byte',
+		'Byte',
+		'Byte',
+		'Byte',
+		'Byte',
+		'Byte',
+		'Byte'
+	]
+
+	Int32x2 = [
+		'Int32',
+		'Int32'
 	]
 
 	Int16x4 = [
@@ -74,33 +85,33 @@ class CanPacketBaseClass:
 	cpp_class_packet = """\
 	struct Packet
 	{
-		union frame_t
+		static const uint32_t _id = 0;
+		union PACKED frame_t
 		{
 			uint64_t data;
 			uint8_t bytes[8];
 		};
 
 	private:
-		static const uint32_t _id = 0;
 		frame_t _frame;
 
+	protected:
+		uint32_t __id;
+
 	public:
-		virtual uint32_t id() const {return _id;}
+		uint32_t id() const {return __id;}
 		frame_t &frame() {return _frame;}
 		frame_t frame() const {return _frame;}
 
-		uint64_t &data() {return frame().data;}
-		uint64_t data() const {return frame().data;}
-
-		uint8_t *bytes() {return frame().bytes;}
-		const uint8_t *bytes() const {return frame().bytes;}
+		//uint64_t data() const {return frame().data;}
+		//const uint8_t *bytes() const {return frame().bytes;}
+		//uint8_t *bytes() const {return frame().bytes;}
 
 		virtual ~Packet() {}
-		Packet(): _frame{0} {}
-		Packet(const uint64_t _data): _frame{_data} {}
-		Packet(const Packet& p): _frame{p.data()} {}
-		Packet& operator= (const uint64_t _data) {data() = _data; return *this;}
-		Packet& operator= (const Packet& p) {data() = p.data(); return *this;}
+		Packet(): _frame{0}, __id(_id) {}
+		Packet(const uint64_t _data): _frame{_data}, __id(_id) {}
+		Packet(const Packet& p): _frame{p.frame().data}, __id(_id) {}
+		Packet& operator= (const Packet& p) {frame().data = p.frame().data; return *this;}
 	};"""
 	cpp_class_packet = dedent(cpp_class_packet)
 
@@ -283,7 +294,7 @@ class CanPacketDerivedClass:
 	struct %(name)s: Packet
 	{
 		static const uint32_t _id = %(id)s;
-		union layout_t
+		union PACKED layout_t
 		{
 			uint64_t data;
 			uint8_t bytes[8];
@@ -292,12 +303,11 @@ class CanPacketDerivedClass:
 	%(indented_fields)s
 			};
 		};
-		uint32_t id() const {return _id;}
 		layout_t &frame() {return *(layout_t *)&Packet::frame();}
 		layout_t frame() const {frame_t f=Packet::frame(); return *(layout_t*)&f;}
-		%(name)s(): Packet(0) {}
-		%(name)s(const uint64_t _i): Packet(_i) {}
-		%(name)s(const Packet& p): Packet(p.data()) {}
+		%(name)s(): Packet(0) {__id = _id;}
+		%(name)s(const uint64_t _i): Packet(_i) {__id = _id;}
+		%(name)s(const Packet& p): Packet(p.frame().data) {__id = _id;}
 	};"""
 	cpp_class_template = dedent(cpp_class_template)
 
@@ -530,50 +540,11 @@ can_def = [
 	},
 	{
 		'type': 'can_namespace',
-		'name': 'bms0',
-		'base': 0x600,
+		'name': 'os',
+		'base': 0x310,
 		'contents': [
-			# V in mV, T in 1/10 degree Celcius
-			['heartbeat', Layout.UInt32x2,	['bmsId', 'serialNo']],
-			['cmu1_status',	Layout.Int16x4,	['serialNo0', 'serialNo1', 'pcb_temp', 'cell_temp']],
-			['cmu1_volts0',	Layout.Int16x4,	['cell0', 'cell1', 'cell2', 'cell3']],
-			['cmu1_volts1', Layout.Int16x4, ['cell4', 'cell5', 'cell6', 'cell7']],
-			['cmu2_status',	Layout.Int16x4,	['serialNo0', 'serialNo1', 'pcb_temp', 'cell_temp']],
-			['cmu2_volts0',	Layout.Int16x4,	['cell0', 'cell1', 'cell2', 'cell3']],
-			['cmu2_volts1', Layout.Int16x4, ['cell4', 'cell5', 'cell6', 'cell7']],
-			['cmu3_status',	Layout.Int16x4,	['serialNo0', 'serialNo1', 'pcb_temp', 'cell_temp']],
-			['cmu3_volts0',	Layout.Int16x4,	['cell0', 'cell1', 'cell2', 'cell3']],
-			['cmu3_volts1', Layout.Int16x4, ['cell4', 'cell5', 'cell6', 'cell7']],
-			['cmu4_status',	Layout.Int16x4,	['serialNo0', 'serialNo1', 'pcb_temp', 'cell_temp']],
-			['cmu4_volts0',	Layout.Int16x4,	['cell0', 'cell1', 'cell2', 'cell3']],
-			['cmu4_volts1', Layout.Int16x4, ['cell4', 'cell5', 'cell6', 'cell7']],
-			# MAX = 0x6EF
-		]
-	},
-	{
-		'type': 'can_namespace',
-		'name': 'bms1',
-		'base': 0x6F0,
-		'contents': [
-			['reserved0',		Layout.Empty], # for Tritium's factory configuration
-			['reserved1',		Layout.Empty],
-			['reserved2',		Layout.Empty],
-			['reserved3',		Layout.Empty],
-			['pack_soc',		Layout.Float32x2,	['soc_Ah', 'soc_percentage']],
-			['pack_bal_soc',	Layout.Float32x2,	['soc_Ah', 'soc_percentage']],
-			['charger_cmd',		Layout.Int16x4,		['charging_mV_err', 'temp_margin',
-													 'discharging_mV_err', 'pack_capacity_Ah']],
-			['precharge',		Layout.UInt16x4,	['precharge_flags', 'unused0',
-													 'unused1', 'precharge_timer_flags']],
-			['max_min_volts',	Layout.Empty],
-			['max_min_temps',	Layout.Empty],
-			['pack_volt_curr',	Layout.Int32x2,		['pack_voltage', 'pack_current']],
-			['pack_status',		Layout.UInt16x4,	['thresh_rising', 'thresh_falling',
-													 'pack_flags', 'firmwareNo']],
-			['fan_status',		Layout.UInt16x4,	['fan0_rpm', 'fan1_rpm',
-													 'fans_relays_mA', 'cmus_mA']],
-			['extended_status',	Layout.UInt16x4,	['pack_flags0', 'pack_flags1',
-													 'hardware_model_id', 'unused0']]
+			['user_cmds', Layout.UInt16x4, ['power', 'gearFlags', 'signalFlags', 'reserved']],
+			['cruise_cmd', Layout.Float32x2, ['velocity', 'current']],
 		]
 	},
 	{
@@ -623,11 +594,52 @@ can_def = [
 	},
 	{
 		'type': 'can_namespace',
-		'name': 'os',
-		'base': 0x310,
+		'name': 'bms0',
+		'base': 0x600,
 		'contents': [
-			['user_cmds', Layout.UInt16x4, ['power', 'gearFlags', 'signalFlags', 'reserved']],
-			['cruise_cmd', Layout.Float32x2, ['velocity', 'current']],
+			# V in mV, T in 1/10 degree Celcius
+			['heartbeat',	Layout.UInt32x2,['bmsId', 'serialNo']],
+			['cmu1_status',	Layout.Int16x4,	['serialNo0', 'serialNo1', 'pcb_temp', 'cell_temp']],
+			['cmu1_volts0',	Layout.Int16x4,	['cell0', 'cell1', 'cell2', 'cell3']],
+			['cmu1_volts1', Layout.Int16x4, ['cell4', 'cell5', 'cell6', 'cell7']],
+			['cmu2_status',	Layout.Int16x4,	['serialNo0', 'serialNo1', 'pcb_temp', 'cell_temp']],
+			['cmu2_volts0',	Layout.Int16x4,	['cell0', 'cell1', 'cell2', 'cell3']],
+			['cmu2_volts1', Layout.Int16x4, ['cell4', 'cell5', 'cell6', 'cell7']],
+			['cmu3_status',	Layout.Int16x4,	['serialNo0', 'serialNo1', 'pcb_temp', 'cell_temp']],
+			['cmu3_volts0',	Layout.Int16x4,	['cell0', 'cell1', 'cell2', 'cell3']],
+			['cmu3_volts1', Layout.Int16x4, ['cell4', 'cell5', 'cell6', 'cell7']],
+			['cmu4_status',	Layout.Int16x4,	['serialNo0', 'serialNo1', 'pcb_temp', 'cell_temp']],
+			['cmu4_volts0',	Layout.Int16x4,	['cell0', 'cell1', 'cell2', 'cell3']],
+			['cmu4_volts1', Layout.Int16x4, ['cell4', 'cell5', 'cell6', 'cell7']],
+			# MAX = 0x6EF
+		]
+	},
+	{
+		'type': 'can_namespace',
+		'name': 'bms1',
+		'base': 0x6F0,
+		'contents': [
+			['reserved0',		Layout.Empty], # for Tritium's factory configuration
+			['reserved1',		Layout.Empty],
+			['reserved2',		Layout.Empty],
+			['reserved3',		Layout.Empty],
+			['pack_soc',		Layout.Float32x2,	['soc_Ah', 'soc_percentage']],
+			['pack_bal_soc',	Layout.Float32x2,	['soc_Ah', 'soc_percentage']],
+			['charger_cmd',		Layout.Int16x4,		['charging_mV_err', 'temp_margin',
+													 'discharging_mV_err', 'pack_capacity_Ah']],
+			['precharge',		Layout.UInt8x8,		['precharge_flags', 'precharge_state',
+													 'unused0', 'unused1', 'unused2', 'unused3',
+													 'precharge_timer_flags',
+													 'precharge_timer_10ms']],
+			['max_min_volts',	Layout.Empty],
+			['max_min_temps',	Layout.Empty],
+			['pack_volt_curr',	Layout.Int32x2,		['pack_voltage', 'pack_current']],
+			['pack_status',		Layout.UInt16x4,	['thresh_rising', 'thresh_falling',
+													 'pack_flags', 'firmwareNo']],
+			['fan_status',		Layout.UInt16x4,	['fan0_rpm', 'fan1_rpm',
+													 'fans_relays_mA', 'cmus_mA']],
+			['extended_status',	Layout.UInt16x4,	['pack_flags0', 'pack_flags1',
+													 'hardware_model_id', 'unused0']]
 		]
 	},
 	{
@@ -773,7 +785,7 @@ def main():
 		raise RuntimeError("Error: Must specify an output language.")
 
 	if args.file is not None:
-		with open(args.file, 'w+') as file:
+		with open(args.file, 'w') as file:
 			file.write(source + '\n')
 
 	if args.stdout:

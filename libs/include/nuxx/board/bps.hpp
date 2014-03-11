@@ -439,7 +439,7 @@ namespace nu
 				if (module_i)
 					lcd1.reconfigure();
 				lcd1.lcd_clear();
-				lcd1.printf("ZELDA %hhu", module_i);
+				lcd1.printf("ZELDA %hu", module_i);
 				lcd1.goto_xy(0, 1);
 				lcd1.printf("V: %hu", this->voltage_sensor.voltages[module_i]);
 				lcd1.goto_xy(0, 2);
@@ -447,9 +447,9 @@ namespace nu
 				lcd1.goto_xy(0, 3);
 				lcd1.printf("I0: %X", this->current_sensor.currents[0]);
 				lcd1.goto_xy(0, 4);
-				lcd1.printf("Off: %hhi", state.disabled_module);
+				lcd1.printf("Off: %hi", state.disabled_module);
 				lcd1.goto_xy(0, 5);
-				lcd1.printf("R: %hhu-%hhu-%hhu-%hhu", main_relay.status(), array_relay.status(), precharge_relay.status(), motor_relay.status());
+				lcd1.printf("R: %hu-%hu-%hu-%hu", main_relay.status(), array_relay.status(), precharge_relay.status(), motor_relay.status());
 				led1.toggle();
 //				this->serial1.printf("ZELDA %hhu\nV: %hu\nT: %hi\nI0: %X\nOff: %hhi\n",
 //					module_i, this->voltage_sensor.voltages[module_i], this->temp_sensor.temperatures[module_i], this->current_sensor.currents[0], state.disabled_module);
