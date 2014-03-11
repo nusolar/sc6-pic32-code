@@ -25,11 +25,11 @@ namespace nu {
 	public:
 		uLCD28PT(UARTModule mod): Serial(mod) {}
 
-		uLCD28PT& operator << (const Can::Addr::ws20::tx::motor_velocity& x) {
+		uLCD28PT& operator << (const Can::Addr::ws20::motor_velocity& x) {
 			write_key_val<float>("velo", x.frame().vehicleVelocity);
 			return *this;
 		}
-		uLCD28PT& operator << (const Can::Addr::ws20::tx::current_vector& x) {
+		uLCD28PT& operator << (const Can::Addr::ws20::current_vector& x) {
 			write_key_val<float>("curr", x.frame().currentRe);
 			return *this;
 		}

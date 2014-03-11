@@ -68,10 +68,11 @@ namespace nu
 			state()
 		{
 			WDT::clear();
-#warning "Need to receive BPS packets too!"
 			common_can.in().setup_rx();
-			common_can.in().add_filter(CAN_FILTER0, CAN_SID, Can::Addr::os::tx::user_cmds::_id,
+			common_can.in().add_filter(CAN_FILTER0, CAN_SID, Can::Addr::os::user_cmds::_id,
 				CAN_FILTER_MASK0, CAN_FILTER_MASK_IDE_TYPE, 0x7FF);
+			common_can.in().add_filter(CAN_FILTER1, CAN_SID, Can::Addr::bps_tx::bps_status::_id,
+				CAN_FILTER_MASK1, CAN_FILTER_MASK_IDE_TYPE, 0x7FF);
 			common_can.out().setup_tx(CAN_HIGH_MEDIUM_PRIORITY);
 		}
 
@@ -82,14 +83,14 @@ namespace nu
 
 			common_can.in().rx(incoming, id);
 			switch (id) {
-				case Can::Addr::bps::tx::bps_status::_id: {
-					Can::Addr::bps::tx::bps_status pkt(incoming);
+				case Can::Addr::bps_tx::bps_status::_id: {
+					Can::Addr::bps_tx::bps_status pkt(incoming);
 					this->state.bps_drive = pkt.frame().mode | 1<<1;
 					break;
 				}
-				case Can::Addr::os::tx::user_cmds::_id: {
+				case Can::Addr::os::user_cmds::_id: {
 					// KEEP IN SYNC with flags in /driver-server/SolarCar/DataAggregator.cs
-					Can::Addr::os::tx::user_cmds pkt(incoming);
+					Can::Addr::os::user_cmds pkt(incoming);
 					this->state.gear = pkt.frame().gearFlags | 1<<0;
 					this->state.reverse_en = pkt.frame().gearFlags | 1<<1;
 
@@ -145,10 +146,10 @@ namespace nu
 		{
 			WDT::clear();
 
-			if (ws20_timer.has_expired())
+			if (this->ws20_timer.has_expired())
 			{
 				// Initialize Drive Command with zero [current, velocity]
-				Can::Addr::ws20::rx::drive_cmd drive(0);
+				Can::Addr::dc::drive_cmd drive(0);
 				// need clearance from BPS & OS to drive
 				if (state.bps_drive && state.gear)
 				{
@@ -178,19 +179,27 @@ namespace nu
 						drive.frame().motorVelocity *= -1;
 					}
 				}
-				common_can.out().tx(drive);
+				this->common_can.out().tx(drive);
+
+				// Also send a BMS packet
+				Can::Addr::dc::switches switches(0);
+				switches.frame().switchFlags = (uint16_t)(1<<4);
+				if (state.gear == true)
+					switches.frame().switchFlags |= (uint16_t)(1<<5); // Run
+				if (false)
+					switches.frame().switchFlags |= (uint16_t)(1<<6); // Start
 
 				// Also send a pedals update
-				Can::Addr::pedals::tx::pedals report(0);
+				Can::Addr::dc::pedals report(0);
 				report.frame().accel_pedal = (this->state.accel_raw) | 0x3ff;
 				report.frame().brake_pedal = this->state.brake_en;
-				common_can.out().tx(report);
+				this->common_can.out().tx(report);
 			}
 		}
 
 		void draw_lcd()
 		{
-			if (lcd_timer.has_expired())
+			if (this->lcd_timer.has_expired())
 			{
 				this->led1.toggle();
 				this->lcd.lcd_clear();
@@ -217,8 +226,8 @@ namespace nu
 
 		void emergency_shutoff()
 		{
-			Can::Addr::ws20::rx::drive_cmd drive(0);
-			common_can.out().tx(drive);
+			Can::Addr::dc::drive_cmd drive(0);
+			this->common_can.out().tx(drive);
 		}
 
 		static NORETURN void main(Pedals *arena);

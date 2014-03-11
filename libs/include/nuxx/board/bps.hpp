@@ -232,8 +232,8 @@ namespace nu
 
 			switch (id)
 			{
-				case Can::Addr::os::tx::user_cmds_k: {
-					Can::Addr::os::tx::user_cmds data(pkt);
+				case Can::Addr::os::user_cmds::_id: {
+					Can::Addr::os::user_cmds data(pkt);
 					state.mode = (Modes)data.frame().power;
 					this->mode_timeout_clock.reset();
 					break;
@@ -412,9 +412,9 @@ namespace nu
 		{
 			if (this->can_timer.has_expired())
 			{
-				Can::Addr::bps::tx::bps_status status_pkt(0);
-				Can::Addr::bps::tx::current current_pkt(0);
-				Can::Addr::bps::tx::voltage_temp voltage_temp_pkt(0);
+				Can::Addr::bps_tx::bps_status status_pkt(0);
+				Can::Addr::bps_tx::current current_pkt(0);
+				Can::Addr::bps_tx::voltage_temp voltage_temp_pkt(0);
 				status_pkt.frame().mode				= this->state.mode;
 				status_pkt.frame().disabled_module	= this->state.disabled_module;
 				current_pkt.frame().battery			= this->current_sensor.currents[0];
