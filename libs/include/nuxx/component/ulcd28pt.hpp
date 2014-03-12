@@ -25,7 +25,7 @@ namespace nu {
 //			base.printf("%c%s%c%f%c", (TTY_RECORD), (key), (TTY_UNIT), (value), (TTY_RECORD));
 //		}
 		void write_key_val(const char *key, float value) {
-			base.printf("%c%s%c%f%c", (TTY_RECORD), (key), (TTY_UNIT), (value), (TTY_RECORD));
+			base.printf("%c%s%c%f%c", (TTY_RECORD), (key), (TTY_UNIT), (double)(value), (TTY_RECORD));
 		}
 		void write_key_val(const char *key, const char * value) {
 			base.printf("%c%s%c%s%c", (TTY_RECORD), (key), (TTY_UNIT), (value), (TTY_RECORD));

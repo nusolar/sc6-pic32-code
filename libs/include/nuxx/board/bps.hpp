@@ -206,7 +206,10 @@ namespace nu
 			motor_relay.setup();
 			bypass_button.setup();
 			common_can.setup();
+			common_can.setup_mask(CAN_FILTER_MASK0, 0x7ff);
+			common_can.setup_filter(CAN_FILTER0, Can::Addr::os::user_cmds::_id);
 			common_can.in().setup_rx();
+			common_can.in().link_filter(CAN_FILTER0, CAN_FILTER_MASK0);
 			common_can.out().setup_tx(CAN_HIGH_MEDIUM_PRIORITY);
 			common_can.err().setup_tx(CAN_LOWEST_PRIORITY);
 			lcd1.setup();

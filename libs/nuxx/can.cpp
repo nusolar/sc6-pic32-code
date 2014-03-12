@@ -92,9 +92,12 @@ int32_t nu::Can::Module::setup(CAN_BIT_CONFIG* timings,
 
 ALWAYSINLINE
 int32_t nu::Can::Module::switch_mode(CAN_OP_MODE op_mode, uint32_t timeout_ms) {
-	uint32_t start = (uint32_t)timer::us();
+	if (CANGetOperatingMode(mod) == op_mode)
+		return 0;
+	
+	Timer changing_mode_timer = Timer(timeout_ms, Timer::ms, true);
 	CANSetOperatingMode(mod, op_mode);
-	while (timer::us() - start < timeout_ms*1000)
+	while (!changing_mode_timer.has_expired())
 		if (CANGetOperatingMode(mod) == op_mode)
 			return 0;
 	return -error::ETIMEOUT;
@@ -113,8 +116,30 @@ int32_t nu::Can::Module::change_features(CAN_MODULE_FEATURES features, BOOL en) 
 }
 
 
-nu::Can::Channel::Channel(Module &_mod, CAN_CHANNEL _chn, CAN_CHANNEL_EVENT _inter):
-	config(UNCONFIGURED), module(_mod), chn(_chn), interrupts(_inter), rtr_en(CAN_TX_RTR_DISABLED) {}
+int32_t nu::Can::Module::setup_mask(CAN_FILTER_MASK mask, uint32_t mask_bits, CAN_ID_TYPE _id_type, CAN_FILTER_MASK_TYPE mide)
+{
+	int32_t _err = this->config_mode();
+	if (_err != 0) {
+		this->normal_mode();
+		return _err;
+	}
+
+	CANConfigureFilterMask(this->mod, mask, mask_bits, _id_type, mide);
+	return 0;
+}
+
+
+int32_t nu::Can::Module::setup_filter(CAN_FILTER filter, uint32_t id, CAN_ID_TYPE _id_type)
+{
+	int32_t _err = this->config_mode();
+	if (_err != 0) {
+		this->normal_mode();
+		return _err;
+	}
+
+	CANConfigureFilter(this->mod, filter, id, _id_type);
+	return 0;
+}
 
 
 /**
@@ -133,7 +158,6 @@ int32_t nu::Can::Channel::setup_rx(CAN_RX_DATA_MODE _data_mode, uint32_t num_mes
 	CANConfigureChannelForRx(this->module.mod, this->chn, num_messages, _data_mode);
 	CANEnableChannelEvent(this->module.mod, this->chn, this->interrupts, TRUE);
 	this->config = RX;
-	if ((err = this->module.normal_mode()) < 0) return err;
 	return 0;
 }
 
@@ -157,7 +181,6 @@ int32_t nu::Can::Channel::setup_tx(CAN_TXCHANNEL_PRIORITY _priority, CAN_TX_RTR 
 	CANConfigureChannelForTx(this->module.mod, this->chn, num_messages, this->rtr_en, _priority);
 	CANEnableChannelEvent(this->module.mod, this->chn, this->interrupts, TRUE);
 	this->config = TX;
-	if ((err = this->module.normal_mode()) < 0) return err;
 	return 0;
 }
 
@@ -171,6 +194,8 @@ int32_t nu::Can::Channel::setup_tx(CAN_TXCHANNEL_PRIORITY _priority, CAN_TX_RTR 
 int32_t nu::Can::Channel::rx(void *dest, uint32_t &id)
 {
 	if (this->config != RX) return -error::EINVAL;
+	int32_t err = this->module.normal_mode();
+	if (err != 0) return err;
 
 	CANRxMessageBuffer *buffer = CANGetRxMessage(this->module.mod, this->chn);
 	if (buffer == NULL) return -error::ENODATA;
@@ -205,9 +230,8 @@ int32_t nu::Can::Channel::tx(const void *data, size_t num_bytes, uint16_t std_id
 {
 	if (this->config != TX) return -error::EINVAL; // WARNING error code for wrong config?
 	if (num_bytes > 8) return -error::EINVAL; // Maximum of 8 data bytes in CAN frame
-
 	int32_t err = this->module.normal_mode();
-	if (err < 0) return err;
+	if (err != 0) return err;
 
 	CANTxMessageBuffer *msg = CANGetTxMessageBuffer(this->module.mod, this->chn);
 	if (msg == NULL)
@@ -222,43 +246,30 @@ int32_t nu::Can::Channel::tx(const void *data, size_t num_bytes, uint16_t std_id
 		msg->msgEID.EID = BITFIELD_CAST(ext_id, 18); // 18 bits
 
 	if (num_bytes) memcpy(msg->data, (const char *)data, num_bytes);
-	for (unsigned i=0; i<num_bytes; i++)
-	{
-		debugger("%X-", ((const uint8_t *)data)[i]);
-	}
-	debugger("\n");
 
 	CANUpdateChannel(this->module.mod, this->chn);
 	CANFlushTxChannel(this->module.mod, this->chn);
 	return 0;
 }
 
+
 int32_t nu::Can::Channel::tx(const Packet &p)
 {
-	debugger("about to can: id=0x%X,  data=%llu\n", p.id(), p.frame().data);
-	int32_t status = tx((const void *)p.frame().bytes, (size_t)8, (uint16_t)p.id());
-	debugger("end can [0]: %hu, %i\n", p.frame().bytes[0], status);
-	return status;
+	return tx((const void *)p.frame().bytes, (size_t)8, (uint16_t)p.id());
 }
 
-#warning "Need to break up FilterMask from Filter"
-int32_t nu::Can::Channel::add_filter(CAN_FILTER filter, CAN_ID_TYPE _id_type, uint32_t id,
-							CAN_FILTER_MASK mask, CAN_FILTER_MASK_TYPE mide, uint32_t mask_bits)
+
+int32_t nu::Can::Channel::link_filter(CAN_FILTER filter, CAN_FILTER_MASK mask)
 {
 	if (this->config != RX) return -error::EINVAL; // WARNING should fail if not RX?
-
 	int32_t err = this->module.config_mode();
 	if (err < 0) {
 		this->module.normal_mode();
 		return err;
 	}
 
-	CANConfigureFilter(this->module.mod, filter, id, _id_type);
-	CANConfigureFilterMask(this->module.mod, mask, mask_bits, _id_type, mide);
 	CANLinkFilterToChannel(this->module.mod, filter, mask, this->chn);
 	CANEnableFilter(this->module.mod, filter, TRUE);
-
-	if ((err = this->module.normal_mode()) < 0) return err;
 	return 0;
 }
 

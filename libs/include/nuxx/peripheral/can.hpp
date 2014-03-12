@@ -11,6 +11,7 @@ extern "C" {
 
 namespace nu {
 	namespace Can {
+		struct Channel;
 		struct Module;
 
 		/**
@@ -23,7 +24,7 @@ namespace nu {
 				EXTENDED_ID
 			};
 			enum config_type {
-				UNCONFIGURED = 0,
+				NOT_CONFIGURED = 0,
 				RX,
 				TX
 			} config;
@@ -33,9 +34,11 @@ namespace nu {
 			CAN_CHANNEL_EVENT interrupts;
 			CAN_TX_RTR rtr_en;
 
-			Channel(Module &_mod, CAN_CHANNEL _chn = CAN_CHANNEL0, CAN_CHANNEL_EVENT _inter = (CAN_CHANNEL_EVENT)0);
-			Channel(const Channel &a): config(a.config), module(a.module), chn(a.chn), interrupts(a.interrupts), rtr_en(a.rtr_en){}
-			virtual ~Channel() {}
+			Channel(Module &_mod, CAN_CHANNEL _chn = CAN_CHANNEL0, CAN_CHANNEL_EVENT _inter = (CAN_CHANNEL_EVENT)0):
+				config(NOT_CONFIGURED), module(_mod), chn(_chn), interrupts(_inter), rtr_en(CAN_TX_RTR_DISABLED) {}
+			Channel(const Channel &a):
+				config(a.config), module(a.module), chn(a.chn), interrupts(a.interrupts), rtr_en(a.rtr_en){}
+			//virtual ~Channel() {}
 			Channel &operator= (const Channel &a) {
 				if (this != &a){
 					this->~Channel();
@@ -45,14 +48,11 @@ namespace nu {
 
 			int32_t setup_rx(CAN_RX_DATA_MODE _data_mode = CAN_RX_FULL_RECEIVE, uint32_t num_messages = 8);
 			int32_t setup_tx(CAN_TXCHANNEL_PRIORITY _priority, CAN_TX_RTR _rtr = CAN_TX_RTR_DISABLED, uint32_t num_messages = 8);
-			int32_t add_filter(CAN_FILTER filter, CAN_ID_TYPE f_type, uint32_t id,
-								CAN_FILTER_MASK mask, CAN_FILTER_MASK_TYPE mide,
-								uint32_t mask_bits);
+			int32_t link_filter(CAN_FILTER filter, CAN_FILTER_MASK mask);
 
 			int32_t rx(void *dest, uint32_t &id);
 			int32_t rx(Packet &p, uint32_t &id);
-			int32_t tx(const void *data, size_t num_bytes, uint16_t std_id,
-					uint32_t ext_id = 0, id_type type = STANDARD_ID);
+			int32_t tx(const void *data, size_t num_bytes, uint16_t std_id, uint32_t ext_id = 0, id_type type = STANDARD_ID);
 			int32_t tx(const Packet &p);
 		};
 
@@ -79,9 +79,9 @@ namespace nu {
 			Module(CAN_MODULE _mod = CAN1, uint32_t _bus_speed = DEFAULT_BUS_SPEED_HZ);
 
 			int32_t setup(CAN_BIT_CONFIG *timings = &default_cfg,
-					   CAN_MODULE_EVENT interrupts = (CAN_MODULE_EVENT)0,
-					   INT_PRIORITY int_priority = INT_PRIORITY_DISABLED,
-					   CAN_MODULE_FEATURES features = (CAN_MODULE_FEATURES)0);
+						CAN_MODULE_EVENT interrupts = (CAN_MODULE_EVENT)0,
+						INT_PRIORITY int_priority = INT_PRIORITY_DISABLED,
+						CAN_MODULE_FEATURES features = (CAN_MODULE_FEATURES)0);
 
 			Channel& channel(size_t num) {
 				return *(Channel *) (this->channel_buf + num*sizeof(Channel));
@@ -89,6 +89,14 @@ namespace nu {
 			Channel& in () {return this->channel(0);}
 			Channel& out() {return this->channel(1);}
 			Channel& err() {return this->channel(2);}
+
+			int32_t setup_mask(CAN_FILTER_MASK mask,
+							   uint32_t mask_bits,
+							   CAN_ID_TYPE _id_type = CAN_SID,
+							   CAN_FILTER_MASK_TYPE mide = CAN_FILTER_MASK_IDE_TYPE);
+			int32_t setup_filter(CAN_FILTER filter,
+								 uint32_t id,
+								 CAN_ID_TYPE _id_type = CAN_SID);
 
 		private:
 			char buf[32*32*CAN_TX_RX_MESSAGE_SIZE_BYTES]; // WARNING CAN Message Buffer

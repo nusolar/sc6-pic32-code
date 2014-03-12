@@ -22,8 +22,9 @@ namespace nu
 	struct Pedals
 	{
 		Nu32 nu32;
-		
+
 		Can::Module common_can;
+
 		AnalogIn regen_pedal, accel_pedal; // B0, B1
 		DigitalIn brake_pedal; // B2
 
@@ -64,6 +65,19 @@ namespace nu
 			float vehicle_velocity;
 		} state;
 
+#if 0 //INTERFACE
+		Pedals();
+		void setup();
+		void recv_can();
+		void read_ins();
+		void set_signals();
+		void send_can();
+		void draw_lcd();
+		void run_loop();
+		void emergency_shutoff();
+		static void main(Pedals *arena);
+#endif
+
 		Pedals():
 			nu32		(Nu32::V2011),
 			common_can	(CAN1),
@@ -91,15 +105,16 @@ namespace nu
 		void setup()
 		{
 			WDT::clear();
-			this->nu32.setup();
+			nu32.setup();
 			common_can.setup();
+			common_can.setup_mask(CAN_FILTER_MASK0, 0x7ff);
+			common_can.setup_filter(CAN_FILTER0, Can::Addr::os::user_cmds::_id);
+			common_can.setup_filter(CAN_FILTER1, Can::Addr::bms1::precharge::_id);
+			common_can.setup_filter(CAN_FILTER2, Can::Addr::ws20::motor_velocity::_id);
 			common_can.in().setup_rx();
-			common_can.in().add_filter(CAN_FILTER0, CAN_SID, Can::Addr::os::user_cmds::_id,
-				CAN_FILTER_MASK0, CAN_FILTER_MASK_IDE_TYPE, 0x7FF);
-			common_can.in().add_filter(CAN_FILTER1, CAN_SID, Can::Addr::bms1::precharge::_id,
-				CAN_FILTER_MASK1, CAN_FILTER_MASK_IDE_TYPE, 0x7FF);
-			common_can.in().add_filter(CAN_FILTER1, CAN_SID, Can::Addr::ws20::motor_velocity::_id,
-				CAN_FILTER_MASK2, CAN_FILTER_MASK_IDE_TYPE, 0x7FF);
+			common_can.in().link_filter(CAN_FILTER0, CAN_FILTER_MASK0);
+			common_can.in().link_filter(CAN_FILTER1, CAN_FILTER_MASK0);
+			common_can.in().link_filter(CAN_FILTER2, CAN_FILTER_MASK0);
 			common_can.out().setup_tx(CAN_HIGH_MEDIUM_PRIORITY);
 			common_can.channel(2).setup_tx(CAN_LOW_MEDIUM_PRIORITY);
 			common_can.channel(3).setup_tx(CAN_LOWEST_PRIORITY);
@@ -170,7 +185,7 @@ namespace nu
 		{
 			WDT::clear();
 			// read raw inputs
-			this->state.accel_raw = (uint16_t) this->accel_pedal.read();
+			this->state.accel_raw = (uint16_t)(this->accel_pedal.read() & 0x3ff); // only 10 meaningful bits returned
 			this->state.brake_en = (bool) this->brake_pedal.read();
 			// process analog pedals
 			this->state.accel_motor = ((float)this->state.accel_raw)/1024;
@@ -179,6 +194,7 @@ namespace nu
 			this->state.hardware_switch = (bool) this->sw_drive.read();
 			if (this->state.hardware_switch)
 			{
+				this->state.bms_ready	= true; // WARNING DEBUG
 				this->state.battery_en	= true; // no switch --> always assumed
 				this->state.drive_en	= this->state.hardware_switch;
 				this->state.reverse_en	= this->sw_reverse.read();
@@ -191,7 +207,7 @@ namespace nu
 		void set_signals()
 		{
 			WDT::clear();
-			this->lights_brake.set(state.brake_en);
+			this->lights_brake.set(state.brake_en || state.reverse_en);
 			this->horn.set(state.horn);
 			this->lights_head.set(state.lt_heads);
 
@@ -210,7 +226,7 @@ namespace nu
 				// Initialize Drive Command with zero [velocity, current]
 				Can::Addr::dc::drive_cmd drive(0);
 				// if BMS is precharged & User is in Drive Gear
-				if (state.drive_en)// (state.bms_ready && state.drive_en)
+				if (state.drive_en && state.bms_ready)
 				{
 					if (state.brake_en)
 					{
@@ -245,7 +261,7 @@ namespace nu
 
 				// Also send a pedals update
 				Can::Addr::dc::pedals report(0);
-				report.frame().accel_pedal = (this->state.accel_raw) & 0x3ff;
+				report.frame().accel_pedal = this->state.accel_raw;
 				report.frame().brake_pedal = this->state.brake_en;
 				this->common_can.channel(3).tx(report);
 
@@ -267,7 +283,7 @@ namespace nu
 				this->lcd.printf("%hu-%hu-%hu%hu%hu",
 					this->state.accel_raw, this->state.brake_en, this->state.bms_ready, this->state.drive_en, this->state.reverse_en);
 				this->lcd.goto_xy(0, 3);
-				this->lcd.printf("vel=%2.1f", this->state.vehicle_velocity);
+				this->lcd.printf("vel=%2.1f", (double)this->state.vehicle_velocity);
 				this->lcd.goto_xy(0, 4);
 				this->lcd.printf("LRHHd-%hu%hu%hu%hu",
 					this->state.lt_left, this->state.lt_right, this->state.horn, this->state.lt_heads);

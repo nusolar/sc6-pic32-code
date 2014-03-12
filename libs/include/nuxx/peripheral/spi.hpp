@@ -135,8 +135,7 @@ namespace nu {
          */
 		Spi(PlatformPin _cs, PlatformSpi _mod, tx_options _opt = (tx_options)(TX_WAIT_START|TX_WAIT_END)):
 			OStream(), base(_mod), cs(_cs, true), opt(_opt) {}
-		NOINLINE virtual ~Spi() {};
-
+		
 		void setup()
 		{
 			this->base.setup();
@@ -149,17 +148,17 @@ namespace nu {
 
 		void tx(const void *src, size_t n)
 		{
-			if (!(opt & TX_DISABLE_AUTO_CS))
-				cs.low();
-			if (opt & TX_WAIT_START)
+			if (!(this->opt & TX_DISABLE_AUTO_CS))
+				this->cs.low();
+			if (this->opt & TX_WAIT_START)
 				this->base.wait_busy();
 
 			this->base.tx(src, n);
 
-			if (opt & TX_WAIT_END)
+			if (this->opt & TX_WAIT_END)
 				this->base.wait_busy();
-			if (!(opt & TX_DISABLE_AUTO_CS))
-				cs.high();
+			if (!(this->opt & TX_DISABLE_AUTO_CS))
+				this->cs.high();
 		}
 
 		void puts(const char *str)	{this->tx(str, strlen(str));}

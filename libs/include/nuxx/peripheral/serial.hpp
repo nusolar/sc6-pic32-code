@@ -120,7 +120,6 @@ namespace nu {
 		PlatformUart base;
 
 		Serial(PlatformUart _module): OStream(), base(_module) {}
-
 		void setup()	{this->base.setup();}
 
 		int rx(void *dst, size_t n)		{return this->base.rx(dst, n);}

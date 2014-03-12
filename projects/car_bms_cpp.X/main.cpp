@@ -2,6 +2,7 @@
 #include "nuxx/board/pedals.hpp"
 //#include "nuxx/board/bps.hpp"
 //#include "nuxx/board/test.hpp"
+#include "nu/compiler.h"
 #include <cstdint>
 
 #define CLASS nu::Pedals
@@ -36,7 +37,7 @@ extern "C"
 	static unsigned int _excep_addr;
 
 	// this function overrides the normal _weak_ generic handler
-	void _general_exception_handler(void)
+	NORETURN void _general_exception_handler(void)
 	{
 		asm volatile("mfc0 %0,$13" : "=r" (_excep_code));
 		asm volatile("mfc0 %0,$14" : "=r" (_excep_addr));

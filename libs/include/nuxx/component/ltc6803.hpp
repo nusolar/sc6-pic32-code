@@ -227,7 +227,7 @@ namespace nu {
 			for (unsigned iDevice=0; iDevice<num_devices; iDevice++) {
 				for (unsigned iPair=0; iPair<voltage_pairs_per_dev; iPair++) {
 					RawVoltagePair &pair = rv[iDevice].voltage_pair[iPair];
-#warning "Averaging is for crude low-pass filtering"
+					// Averaging is used for simple low-pass filtering
 					rx_rv[iDevice*cells_per_device+iPair*2]	=
 							(uint16_t)(pair.voltages.v1/2 + rx_rv[iDevice*cells_per_device+iPair*2]/2);
 					rx_rv[iDevice*cells_per_device+iPair*2+1] =
