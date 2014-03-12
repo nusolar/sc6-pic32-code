@@ -37,7 +37,7 @@ namespace nu {
 	 * A reading of 0x80E8 (33,000 decimal) indicates a measurement of 3.3V.
 	 */
 	template <uint32_t N_DEVICES>
-	struct LTC6804: public SPI {
+	struct LTC6804: public Spi {
 		/**
 		 * These flags are for ADC commands (listed below).
 		 * They should be bitwise-OR'd with the ADC commands, as needed.
@@ -145,9 +145,9 @@ namespace nu {
 		uint32_t mismatch_pecs;
 		bool is_openwire;
 
-		LTC6804(Pin _cs, uint8_t _channel):
-			SPI(_cs, Spi(_channel, 100000, SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON),
-			    (SPI::tx_options)(TX_WAIT_START|TX_WAIT_END|TX_DISABLE_AUTO_CS)),
+		LTC6804(PlatformPin _cs, uint8_t _channel):
+			Spi(_cs, SPI(_channel, 100000, SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON),
+			    (Spi::tx_options)(TX_WAIT_START|TX_WAIT_END|TX_DISABLE_AUTO_CS)),
 			mismatch_pecs(0), is_openwire(false) {}
 
 		/* LTC Routines */

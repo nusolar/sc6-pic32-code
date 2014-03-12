@@ -28,29 +28,23 @@ namespace nu {
 				TX
 			} config;
 
-			Module &mod; // reference to parent, after setup(Module&)
+			Module &module; // reference to parent, after setup(Module&)
 			CAN_CHANNEL chn;
-			uint32_t msg_size;
 			CAN_CHANNEL_EVENT interrupts;
-
-			CAN_RX_DATA_MODE data_mode;
-			CAN_TXCHANNEL_PRIORITY priority;
 			CAN_TX_RTR rtr_en;
 
-			Channel(Module &_mod, CAN_CHANNEL _chn = CAN_ALL_CHANNELS, uint32_t _msg_size = 8, // WARNING size
-					CAN_CHANNEL_EVENT _inter = (CAN_CHANNEL_EVENT)0);
-			Channel(const Channel &a): config(a.config), mod(a.mod), chn(a.chn), msg_size(a.msg_size),
-				interrupts(a.interrupts), data_mode(a.data_mode), priority(a.priority), rtr_en(a.rtr_en){}
-			virtual ~Channel() {};
+			Channel(Module &_mod, CAN_CHANNEL _chn = CAN_CHANNEL0, CAN_CHANNEL_EVENT _inter = (CAN_CHANNEL_EVENT)0);
+			Channel(const Channel &a): config(a.config), module(a.module), chn(a.chn), interrupts(a.interrupts), rtr_en(a.rtr_en){}
+			virtual ~Channel() {}
 			Channel &operator= (const Channel &a) {
 				if (this != &a){
-					this->Channel::~Channel();
+					this->~Channel();
 					new (this) Channel(a); // Could use memcpy() instead
 				} return *this;
 			}
 
-			int32_t setup_rx(CAN_RX_DATA_MODE _data_mode = CAN_RX_FULL_RECEIVE);
-			int32_t setup_tx(CAN_TXCHANNEL_PRIORITY _priority, CAN_TX_RTR _rtr = CAN_TX_RTR_DISABLED);
+			int32_t setup_rx(CAN_RX_DATA_MODE _data_mode = CAN_RX_FULL_RECEIVE, uint32_t num_messages = 8);
+			int32_t setup_tx(CAN_TXCHANNEL_PRIORITY _priority, CAN_TX_RTR _rtr = CAN_TX_RTR_DISABLED, uint32_t num_messages = 8);
 			int32_t add_filter(CAN_FILTER filter, CAN_ID_TYPE f_type, uint32_t id,
 								CAN_FILTER_MASK mask, CAN_FILTER_MASK_TYPE mide,
 								uint32_t mask_bits);
@@ -76,35 +70,34 @@ namespace nu {
 				ONE_TIME,
 				THREE_TIMES
 			};
-			static const uint32_t DEFAULT_BUS_SPEED_HZ = 1000000;
 			static CAN_BIT_CONFIG default_cfg;
-
+			static const uint32_t DEFAULT_BUS_SPEED_HZ = 1000000;
+			
 			CAN_MODULE mod;
-			char buf[32*32*CAN_TX_RX_MESSAGE_SIZE_BYTES]; // WARNING CAN Message Buffer
+			uint32_t bus_speed;
+			
+			Module(CAN_MODULE _mod = CAN1, uint32_t _bus_speed = DEFAULT_BUS_SPEED_HZ);
 
-			Module(CAN_MODULE _mod = CAN1, uint32_t bus_speed = DEFAULT_BUS_SPEED_HZ,
-				   CAN_BIT_CONFIG *timings = &default_cfg,
-				   CAN_MODULE_EVENT interrupts = (CAN_MODULE_EVENT)0,
-				   INT_PRIORITY int_priority = INT_PRIORITY_DISABLED,
-				   CAN_MODULE_FEATURES features = (CAN_MODULE_FEATURES)0);
-			operator CAN_MODULE() const {return mod;}
+			int32_t setup(CAN_BIT_CONFIG *timings = &default_cfg,
+					   CAN_MODULE_EVENT interrupts = (CAN_MODULE_EVENT)0,
+					   INT_PRIORITY int_priority = INT_PRIORITY_DISABLED,
+					   CAN_MODULE_FEATURES features = (CAN_MODULE_FEATURES)0);
 
-			ALWAYSINLINE
 			Channel& channel(size_t num) {
-				return *(Channel *) (channel_buf + num*sizeof(Channel));
+				return *(Channel *) (this->channel_buf + num*sizeof(Channel));
 			}
-
-			Channel& in () {return channel(0);}
-			Channel& out() {return channel(1);}
-			Channel& err() {return channel(2);}
-
+			Channel& in () {return this->channel(0);}
+			Channel& out() {return this->channel(1);}
+			Channel& err() {return this->channel(2);}
 
 		private:
+			char buf[32*32*CAN_TX_RX_MESSAGE_SIZE_BYTES]; // WARNING CAN Message Buffer
 			size_t channel_buf[32 * sizeof(Channel)];
 			friend struct Channel;
+			
+			int32_t switch_mode(CAN_OP_MODE op_mode, uint32_t timeout_ms);
 			int32_t normal_mode() {return switch_mode(CAN_NORMAL_OPERATION, 1);}
 			int32_t config_mode() {return switch_mode(CAN_CONFIGURATION, 1);}
-			int32_t switch_mode(CAN_OP_MODE op_mode, uint32_t timeout_ms);
 			int32_t change_features(CAN_MODULE_FEATURES features, BOOL en);
 		};
 	}

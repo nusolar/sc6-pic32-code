@@ -33,24 +33,32 @@ CAN_BIT_CONFIG Module::default_cfg = {
 };
 #endif
 
-nu::Can::Module::Module(CAN_MODULE _mod,
-						uint32_t bus_speed,
-						CAN_BIT_CONFIG *timings,
-						CAN_MODULE_EVENT interrupts,
-						INT_PRIORITY int_priority,
-						CAN_MODULE_FEATURES features):
-	mod(_mod)
+nu::Can::Module::Module(CAN_MODULE _mod, uint32_t _bus_speed):
+	mod(_mod),
+	bus_speed(_bus_speed)
 {
-	CANEnableModule(mod, TRUE);
+	for (size_t i=0; i<32; i++)
+	{
+		this->channel(i) = Channel(*this, (CAN_CHANNEL)i);
+	}
+}
 
-	int32_t err_num = config_mode();
+
+int32_t nu::Can::Module::setup(CAN_BIT_CONFIG* timings,
+					   CAN_MODULE_EVENT interrupts,
+					   INT_PRIORITY int_priority,
+					   CAN_MODULE_FEATURES features)
+{
+	CANEnableModule(this->mod, TRUE);
+
+	int32_t err_num = this->config_mode();
 	if (err_num < 0) {
-		normal_mode();
-//		return err_num; // WARNING
+		this->normal_mode();
+		return err_num;
 	}
 
-	CANSetSpeed(mod, timings, NU_HZ, bus_speed);
-	CANAssignMemoryBuffer(mod, buf, sizeof(buf));
+	CANSetSpeed(this->mod, timings, NU_HZ, this->bus_speed);
+	CANAssignMemoryBuffer(this->mod, this->buf, sizeof(this->buf));
 
 	if (interrupts) {
 		INT_VECTOR int_vec;
@@ -58,7 +66,7 @@ nu::Can::Module::Module(CAN_MODULE _mod,
 
         CANEnableModuleEvent(CAN1, interrupts, TRUE);
 
-        switch (mod) {
+        switch (this->mod) {
 			case CAN1:
 				int_vec = INT_CAN_1_VECTOR;
 				int_src = INT_CAN1;
@@ -69,7 +77,7 @@ nu::Can::Module::Module(CAN_MODULE _mod,
 				break;
 			case CAN_NUMBER_OF_MODULES:
 			default:
-				return /*-EINVAL*/; // WARNING
+				return -EINVAL;
         }
 
         INTSetVectorPriority(int_vec, int_priority);
@@ -77,11 +85,8 @@ nu::Can::Module::Module(CAN_MODULE _mod,
         INTEnable(int_src, INT_ENABLED);
 	}
 	change_features(features, TRUE);
-	if ((err_num = normal_mode()) < 0) return /*err_num*/; // WARNING
-
-	for (size_t i=0; i<32; i++) {
-		channel(i) = Channel(*this, (CAN_CHANNEL)i);
-	}
+	if ((err_num = this->normal_mode()) < 0) return err_num;
+	return 0;
 }
 
 
@@ -103,13 +108,13 @@ int32_t nu::Can::Module::change_features(CAN_MODULE_FEATURES features, BOOL en) 
 		normal_mode();
 		return err_num;
 	}
-	CANEnableFeature(mod, features, en);
+	CANEnableFeature(this->mod, features, en);
 	return 0;
 }
 
 
-nu::Can::Channel::Channel(Module &_mod, CAN_CHANNEL _chn, uint32_t _msg_size, CAN_CHANNEL_EVENT _inter):
-	config(UNCONFIGURED), mod(_mod), chn(_chn), msg_size(_msg_size), interrupts(_inter), data_mode(CAN_RX_FULL_RECEIVE), priority(CAN_LOWEST_PRIORITY), rtr_en(CAN_TX_RTR_DISABLED) {}
+nu::Can::Channel::Channel(Module &_mod, CAN_CHANNEL _chn, CAN_CHANNEL_EVENT _inter):
+	config(UNCONFIGURED), module(_mod), chn(_chn), interrupts(_inter), rtr_en(CAN_TX_RTR_DISABLED) {}
 
 
 /**
@@ -118,19 +123,17 @@ nu::Can::Channel::Channel(Module &_mod, CAN_CHANNEL _chn, uint32_t _msg_size, CA
  * @return Error code
  * @todo Allow Interrupts!
  */
-int32_t nu::Can::Channel::setup_rx(CAN_RX_DATA_MODE _data_mode)
+int32_t nu::Can::Channel::setup_rx(CAN_RX_DATA_MODE _data_mode, uint32_t num_messages)
 {
-	data_mode = _data_mode;
-
-	int32_t err = mod.config_mode();
+	int32_t err = this->module.config_mode();
 	if (err < 0) {
-		mod.normal_mode();
+		this->module.normal_mode();
 		return err;
 	}
-	CANConfigureChannelForRx(mod, chn, msg_size, data_mode);
-	CANEnableChannelEvent(mod, chn, interrupts, TRUE);
+	CANConfigureChannelForRx(this->module.mod, this->chn, num_messages, _data_mode);
+	CANEnableChannelEvent(this->module.mod, this->chn, this->interrupts, TRUE);
 	this->config = RX;
-	if ((err = mod.normal_mode()) < 0) return err;
+	if ((err = this->module.normal_mode()) < 0) return err;
 	return 0;
 }
 
@@ -142,20 +145,19 @@ int32_t nu::Can::Channel::setup_rx(CAN_RX_DATA_MODE _data_mode)
  * @return Error code
  * @todo Allow interrupts!
  */
-int32_t nu::Can::Channel::setup_tx(CAN_TXCHANNEL_PRIORITY _priority, CAN_TX_RTR _rtr_en)
+int32_t nu::Can::Channel::setup_tx(CAN_TXCHANNEL_PRIORITY _priority, CAN_TX_RTR _rtr_en, uint32_t num_messages)
 {
-	priority = _priority;
-	rtr_en = _rtr_en;
+	this->rtr_en = _rtr_en;
 
-	int32_t err = mod.config_mode();
+	int32_t err = this->module.config_mode();
 	if (err < 0) {
-		mod.normal_mode();
+		this->module.normal_mode();
 		return err;
 	}
-	CANConfigureChannelForTx(mod, chn, msg_size, rtr_en, priority);
-	CANEnableChannelEvent(mod, chn, interrupts, TRUE);
+	CANConfigureChannelForTx(this->module.mod, this->chn, num_messages, this->rtr_en, _priority);
+	CANEnableChannelEvent(this->module.mod, this->chn, this->interrupts, TRUE);
 	this->config = TX;
-	if ((err = mod.normal_mode()) < 0) return err;
+	if ((err = this->module.normal_mode()) < 0) return err;
 	return 0;
 }
 
@@ -168,9 +170,9 @@ int32_t nu::Can::Channel::setup_tx(CAN_TXCHANNEL_PRIORITY _priority, CAN_TX_RTR 
  */
 int32_t nu::Can::Channel::rx(void *dest, uint32_t &id)
 {
-	if (config != RX) return -error::EINVAL;
+	if (this->config != RX) return -error::EINVAL;
 
-	CANRxMessageBuffer *buffer = CANGetRxMessage(mod, chn);
+	CANRxMessageBuffer *buffer = CANGetRxMessage(this->module.mod, this->chn);
 	if (buffer == NULL) return -error::ENODATA;
 
 	id = (buffer->msgEID.IDE == STANDARD_ID)?
@@ -178,7 +180,7 @@ int32_t nu::Can::Channel::rx(void *dest, uint32_t &id)
 
 	size_t len = buffer->msgEID.DLC;
 	memcpy(dest, buffer->data, len);
-	CANUpdateChannel(mod, chn);
+	CANUpdateChannel(this->module.mod, this->chn);
 
 	return len;
 }
@@ -201,13 +203,13 @@ int32_t nu::Can::Channel::rx(Packet &p, uint32_t &id)
  */
 int32_t nu::Can::Channel::tx(const void *data, size_t num_bytes, uint16_t std_id, uint32_t ext_id, id_type type)
 {
-	if (config != TX) return -error::EINVAL; // WARNING error code for wrong config?
+	if (this->config != TX) return -error::EINVAL; // WARNING error code for wrong config?
 	if (num_bytes > 8) return -error::EINVAL; // Maximum of 8 data bytes in CAN frame
 
-	int32_t err = mod.normal_mode();
+	int32_t err = this->module.normal_mode();
 	if (err < 0) return err;
 
-	CANTxMessageBuffer *msg = CANGetTxMessageBuffer(mod, chn);
+	CANTxMessageBuffer *msg = CANGetTxMessageBuffer(this->module.mod, this->chn);
 	if (msg == NULL)
 		return -error::ENULPTR; // All CAN Tx Buffers are full.
 
@@ -215,7 +217,7 @@ int32_t nu::Can::Channel::tx(const void *data, size_t num_bytes, uint16_t std_id
 	msg->msgEID.IDE = (EXTENDED_ID == type); // EID is indicated by IDTypeExtended = 1
 	msg->msgSID.SID = BITFIELD_CAST(std_id, 11); // 11 bits
 	msg->msgEID.DLC = BITFIELD_CAST(num_bytes, 4); // 4 bits
-	msg->msgEID.RTR = BITFIELD_CAST(!rtr_en, 1); // 1 bit; 1 = remote transmission rqst enabled
+	msg->msgEID.RTR = BITFIELD_CAST(!this->rtr_en, 1); // 1 bit; 1 = remote transmission rqst enabled
 	if (EXTENDED_ID == type)
 		msg->msgEID.EID = BITFIELD_CAST(ext_id, 18); // 18 bits
 
@@ -226,8 +228,8 @@ int32_t nu::Can::Channel::tx(const void *data, size_t num_bytes, uint16_t std_id
 	}
 	debugger("\n");
 
-	CANUpdateChannel(mod, chn);
-	CANFlushTxChannel(mod, chn);
+	CANUpdateChannel(this->module.mod, this->chn);
+	CANFlushTxChannel(this->module.mod, this->chn);
 	return 0;
 }
 
@@ -243,20 +245,20 @@ int32_t nu::Can::Channel::tx(const Packet &p)
 int32_t nu::Can::Channel::add_filter(CAN_FILTER filter, CAN_ID_TYPE _id_type, uint32_t id,
 							CAN_FILTER_MASK mask, CAN_FILTER_MASK_TYPE mide, uint32_t mask_bits)
 {
-	if (config != RX) return -error::EINVAL; // WARNING should fail if not RX?
+	if (this->config != RX) return -error::EINVAL; // WARNING should fail if not RX?
 
-	int32_t err = mod.config_mode();
+	int32_t err = this->module.config_mode();
 	if (err < 0) {
-		mod.normal_mode();
+		this->module.normal_mode();
 		return err;
 	}
 
-	CANConfigureFilter(mod, filter, id, _id_type);
-	CANConfigureFilterMask(mod, mask, mask_bits, _id_type, mide);
-	CANLinkFilterToChannel(mod, filter, mask, chn);
-	CANEnableFilter(mod, filter, TRUE);
+	CANConfigureFilter(this->module.mod, filter, id, _id_type);
+	CANConfigureFilterMask(this->module.mod, mask, mask_bits, _id_type, mide);
+	CANLinkFilterToChannel(this->module.mod, filter, mask, this->chn);
+	CANEnableFilter(this->module.mod, filter, TRUE);
 
-	if ((err = mod.normal_mode()) < 0) return err;
+	if ((err = this->module.normal_mode()) < 0) return err;
 	return 0;
 }
 

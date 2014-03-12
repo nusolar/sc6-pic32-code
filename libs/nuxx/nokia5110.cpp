@@ -155,17 +155,17 @@ union PACKED ALIGNED(1) instructions {
 	do {memset(&a, 0, 1); a.fixed = 1;} while(0)
 
 
-Nokia5110::Nokia5110(Pin _cs, uint8_t _channel, Pin _reset, Pin _dc):
-	SPI(_cs, Spi(_channel, 2000000, SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON)),
-	reset(_reset), dc(_dc)
+Nokia5110::Nokia5110(PlatformPin _cs, uint8_t _channel, PlatformPin _reset, PlatformPin _dc):
+	base(_cs, SPI(_channel, 2000000, SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON)),
+	reset(_reset),
+	dc(_dc)
 {
-	this->reconfigure();
 }
 
 void Nokia5110::reconfigure()
 {
-	reset.low();
-	reset.high();
+	this->reset.low();
+	this->reset.high();
 
 	/*cmd_func_set((cmd_func_set_options)(ADDRESSING_HORIZONTAL|ACTIVE|INSTRUCTIONS_EXTENDED));
 	cmd_set_contrast(57);

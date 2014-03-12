@@ -9,7 +9,7 @@
 #define	NUXX_OUTPUT_BOARD_HPP
 
 #include "nuxx/peripheral/serial.hpp"
-#include "nuxx/peripheral/pinctl.hpp"
+#include "nuxx/peripheral/pin.hpp"
 #include "nuxx/timer.hpp"
 #include "nuxx/array.hpp"
 #include "nu/compiler.h"

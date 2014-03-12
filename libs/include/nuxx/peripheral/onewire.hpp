@@ -1,7 +1,7 @@
 #ifndef ONEWIRE_HPP
 #define	ONEWIRE_HPP 1
 
-#include "nuxx/peripheral/pinctl.hpp"
+#include "nuxx/peripheral/pin.hpp"
 #include "nuxx/timer.hpp"
 #include "nuxx/errorcodes.hpp"
 #include "nu/crc.h"
@@ -9,7 +9,7 @@
 
 
 namespace nu {
-	struct OneWire: protected AbstractPin {
+	struct OneWire {
 		enum command {
 			SEARCH_ROM = 0xF0,
 			READ_ROM = 0x33,
@@ -26,7 +26,7 @@ namespace nu {
 
 		union PACKED romcode {
 			uint8_t bytes[7];
-			struct {
+			struct PACKED {
 				uint8_t family;
 				uint8_t serial[6];
 			};
@@ -34,30 +34,37 @@ namespace nu {
 		};
 		static_assert(sizeof(romcode) == 7, "nu::OneWire::romcode packing");
 
-		struct search_state {
+		struct PACKED search_state {
 			uint32_t last_discrep_bit, last_family_discrep_bit;
 			bool	prev_search_was_last_dev;
-			union romcode_crc {
+			union PACKED romcode_crc {
 				uint8_t bytes[8];
-				struct {
+				struct PACKED {
 					romcode rc;
 					uint8_t crc;
 				};
 			} romcode_crc;
-		} search_state;
-		static_assert(sizeof(search_state.romcode_crc) == 8, "nu::OneWire::rcrc packing");
+		};
+		static_assert(sizeof(((search_state*)NULL)->romcode_crc) == 8, "nu::OneWire::rcrc packing");
 
-		void high()	{set();}
-		void low()		{clear();}
+		Pin base;
+		struct search_state search_state;
 
-		OneWire(Pin _p): AbstractPin(_p), search_state() {
-			set_digital_out();
-			low();
+		void high()	{base.set();}
+		void low()		{base.clear();}
+
+		OneWire(PlatformPin _p):
+			base(_p),
+			search_state() {}
+
+		void setup() {
+			this->base.setup_digital_out();
+			this->low();
 		}
 
 		void power_bus() {
-			set_digital_out();
-			high();
+			this->base.setup_digital_out();
+			this->high();
 		}
 
 		void tx_bit(bool b) {
@@ -109,7 +116,7 @@ namespace nu {
 			 * asserting a bit.
 			 */
 			timer::delay_us(4);
-			return read_digital();
+			return (bool)(this->base.read_digital());
 		}
 
 		uint8_t rx_byte() {
@@ -139,7 +146,7 @@ namespace nu {
 			timer::delay_us(480);
 			high();
 			timer::delay_us(70);
-			bool devices_present = !read_digital();
+			bool devices_present = !(this->base.read_digital());
 			timer::delay_us(410);
 			/*high();*/
 			return (devices_present? 1: -error::ENODEV);

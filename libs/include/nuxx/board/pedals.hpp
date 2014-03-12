@@ -10,7 +10,7 @@
 
 #include "nuxx/board/nu32.hpp"
 #include "nuxx/component/nokia5110.hpp"
-#include "nuxx/peripheral/pinctl.hpp"
+#include "nuxx/peripheral/pin.hpp"
 #include "nuxx/peripheral/can.hpp"
 #include "nuxx/wdt.hpp"
 #include "nuxx/timer.hpp"
@@ -19,8 +19,10 @@
 
 namespace nu
 {
-	struct Pedals: Nu32
+	struct Pedals
 	{
+		Nu32 nu32;
+		
 		Can::Module common_can;
 		AnalogIn regen_pedal, accel_pedal; // B0, B1
 		DigitalIn brake_pedal; // B2
@@ -63,7 +65,7 @@ namespace nu
 		} state;
 
 		Pedals():
-			Nu32		(Nu32::V2011),
+			nu32		(Nu32::V2011),
 			common_can	(CAN1),
 			regen_pedal	(PIN(B, 0)),
 			accel_pedal	(PIN(B, 1)),
@@ -84,7 +86,13 @@ namespace nu
 			lcd_timer	(500, Timer::ms, false),
 			state		()
 		{
+		}
+
+		void setup()
+		{
 			WDT::clear();
+			this->nu32.setup();
+			common_can.setup();
 			common_can.in().setup_rx();
 			common_can.in().add_filter(CAN_FILTER0, CAN_SID, Can::Addr::os::user_cmds::_id,
 				CAN_FILTER_MASK0, CAN_FILTER_MASK_IDE_TYPE, 0x7FF);
@@ -95,6 +103,20 @@ namespace nu
 			common_can.out().setup_tx(CAN_HIGH_MEDIUM_PRIORITY);
 			common_can.channel(2).setup_tx(CAN_LOW_MEDIUM_PRIORITY);
 			common_can.channel(3).setup_tx(CAN_LOWEST_PRIORITY);
+			regen_pedal.setup();
+			accel_pedal.setup();
+			brake_pedal.setup();
+			horn.setup();
+			lights_r.setup();
+			lights_l.setup();
+			lights_head.setup();
+			lights_brake.setup();
+			sw_drive.setup();
+			sw_reverse.setup();
+			sw_left.setup();
+			sw_right.setup();
+			sw_horn.setup();
+			lcd.setup();
 		}
 
 		void recv_can()
@@ -130,7 +152,7 @@ namespace nu
 					break;
 				}
 			}
-			
+
 			// Kill things if OS times-out.
 			if (this->os_timer.has_expired() && !this->state.hardware_switch)
 			{
@@ -203,7 +225,7 @@ namespace nu
 						drive.frame().motorVelocity = 100; // Max 100m/s
 						drive.frame().motorCurrent = state.accel_motor; // accel percent
 					}
-					
+
 					if (state.reverse_en)
 					{
 						drive.frame().motorVelocity *= -1;
@@ -236,7 +258,7 @@ namespace nu
 			WDT::clear();
 			if (this->lcd_timer.has_expired())
 			{
-				this->led1.toggle();
+				this->nu32.led1.toggle();
 				this->lcd.lcd_clear();
 				this->lcd.printf("ZELDA");
 				this->lcd.goto_xy(0, 1);
@@ -249,8 +271,8 @@ namespace nu
 				this->lcd.goto_xy(0, 4);
 				this->lcd.printf("LRHHd-%hu%hu%hu%hu",
 					this->state.lt_left, this->state.lt_right, this->state.horn, this->state.lt_heads);
-//				this->serial1.printf("ZELDA\nAc-Br-PcGr\n%hu-%hu-%hu-%hu\nvel=%2.1f\n",
-//					this->state.accel_raw, this->state.brake_en, this->state.bms_run, this->state.gear,
+//				this->nu32.serial_usb1.printf("ZELDA\nAc-Br-PcGr\n%hu-%hu-%hu-%hu\nvel=%2.1f\n",
+//					this->state.accel_raw, this->state.brake_en, this->state.bms_ready, this->state.drive_en,
 //					this->state.vehicle_velocity);
 				this->lcd_timer.reset();
 			}

@@ -11,32 +11,35 @@
 #include "nuxx/wdt.hpp"
 #include "nuxx/param.hpp"
 #include "nu/compiler.h"
+#include "nu/platform.h"
+#include <cstdint>
+
 
 #if NU_PLATFORM==NU_PLATFORM_PIC32MX /* PIC32MX-specific Serial code */
-
 extern "C" {
 #include <plib.h>
 }
 
 // To specify a UART, use UART(NUMBER)
-#define UART(N) UARTModule(UART##N, 115200)
+#define UART(N) PlatformUart(UART##N, 115200)
 
 namespace nu {
 	/**
 	 * Initialize with UART(N) macro.
 	 */
-	struct UARTModule {
+	struct PlatformUart {
 		UART_MODULE module;
 		uint32_t baud;
 
-		UARTModule(UART_MODULE _mod, uint32_t _baud,
-				   bool use_interrupt = false,
+		PlatformUart(UART_MODULE _mod, uint32_t _baud):
+			module(_mod), baud(_baud) {}
+
+		void setup(bool use_interrupt = false,
 				   INT_PRIORITY int_priority = INT_PRIORITY_DISABLED,
 				   UART_CONFIGURATION uart_config = (UART_CONFIGURATION)UART_ENABLE_PINS_TX_RX_ONLY,
 				   UART_FIFO_MODE interrupt_modes = (UART_FIFO_MODE)0,
 				   UART_LINE_CONTROL_MODE line_control_modes = (UART_LINE_CONTROL_MODE)(UART_DATA_SIZE_8_BITS|UART_PARITY_NONE|UART_STOP_BITS_1),
-				   UART_ENABLE_MODE enable_modes = (UART_ENABLE_MODE)(UART_PERIPHERAL|UART_RX|UART_TX)):
-			module(_mod), baud(_baud)
+				   UART_ENABLE_MODE enable_modes = (UART_ENABLE_MODE)(UART_PERIPHERAL|UART_RX|UART_TX))
 		{
 			UARTConfigure(module, uart_config);
 			UARTSetFifoMode(module, interrupt_modes);
@@ -82,7 +85,7 @@ namespace nu {
 			}
 		}
 
-		virtual ~UARTModule() {}
+		virtual ~PlatformUart() {}
 
 		void tx(const void *src, size_t n) {
 			size_t ui;
@@ -107,8 +110,7 @@ namespace nu {
 		}
 	};
 }
-
-#endif /* NU_PLATFORM switch code */
+#endif /* End PLATFORM specific code */
 
 #endif	/* NU_PLATFORM_SERIAL_HPP */
 

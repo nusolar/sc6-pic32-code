@@ -6,8 +6,8 @@
 //  Copyright (c) 2013 Alex Chandel. All rights reserved.
 //
 
-#include "nuxx/peripheral/pinctl.hpp"
+#include "nuxx/peripheral/pin.hpp"
 
 using namespace nu;
 
-uint16_t Pin::enabled_ADCs = 0;
+uint16_t PlatformPin::enabled_ADCs = 0;

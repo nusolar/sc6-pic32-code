@@ -34,6 +34,12 @@ namespace nu
 		{
 		}
 
+		/** Setup hardware registers. */
+		void setup()
+		{
+			current_adc.setup();
+		}
+
 		void read()
 		{
 			// Store 32bit microvoltages, 0-5V, in buffer. Max value 4999923uV

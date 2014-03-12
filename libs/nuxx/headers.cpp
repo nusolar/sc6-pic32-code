@@ -2,7 +2,6 @@
 #include "nuxx/board/bps.hpp"
 #include "nuxx/board/pedals.hpp"
 #include "nuxx/board/test.hpp"
-#include "nuxx/board/output_board.hpp"
 #include "nuxx/board/nu32.hpp"
 
 // Automotives systems
@@ -27,7 +26,7 @@
 #include "nuxx/peripheral/serial.hpp"
 #include "nuxx/peripheral/spi.hpp"
 #include "nuxx/peripheral/usbhid.hpp"
-#include "nuxx/peripheral/pinctl.hpp"
+#include "nuxx/peripheral/pin.hpp"
 
 // basic system services
 #include "nuxx/crc.hpp"

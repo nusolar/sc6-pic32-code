@@ -2,7 +2,7 @@
 #define NUXX_AD7685_HPP 1
 
 #include "nuxx/peripheral/spi.hpp"
-#include "nuxx/peripheral/pinctl.hpp"
+#include "nuxx/peripheral/pin.hpp"
 #include "nuxx/array.hpp"
 #include "nuxx/timer.hpp"
 #include "nuxx/errorcodes.hpp"
@@ -25,7 +25,7 @@ namespace nu {
 	 * Call convert_read_uv() to synchronously poll & return readings.
 	 */
 	template <uint32_t num_devices>
-	struct AD7685: protected SPI {
+	struct AD7685 {
 		enum options {
 			NONE = 0,
 			THREE_WIRE = 0,
@@ -37,6 +37,7 @@ namespace nu {
 			CHAIN_MODE_NO_BUSY = CHAIN_MODE|NO_BUSY_INDICATOR
 		};
 
+		Spi base;
 		DigitalOut convert; // ERROR same as CS pin?
 		options opts;
 
@@ -47,43 +48,50 @@ namespace nu {
          * @param _convert Used to control AD7685. Identical to CS in some configurations.
          * @param _opts
          */
-		AD7685(Pin _cs, uint8_t _channel, Pin _convert, options _opts):
-			SPI(_cs, Spi(_channel, 100000, SPI_OPEN_CKE_REV|SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON)),
-			convert(_convert), opts(_opts)
+		AD7685(PlatformPin _cs, uint8_t _channel, PlatformPin _convert, options _opts):
+			base(_cs, SPI(_channel, 100000, SPI_OPEN_CKE_REV|SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON)),
+			convert(_convert),
+			opts(_opts)
 		{
-			if ((FOUR_WIRE & opt && NO_BUSY_INDICATOR & opt) ||
-				(CHAIN_MODE & opt && BUSY_INDICATOR & opt))
+			if ((FOUR_WIRE & opts && NO_BUSY_INDICATOR & opts) ||
+				(CHAIN_MODE & opts && BUSY_INDICATOR & opts))
 				return /*-EINVAL*/; // TODO: C errors
+		}
+
+		void setup()
+		{
+			base.setup();
+			convert.setup();
 		}
 
 		/**
 		 * Gets the actual voltage reading(s) (not raw data).
 		 */
 		void convert_read_uv(Array<uint32_t, num_devices> &values){
-			if (FOUR_WIRE & opt && BUSY_INDICATOR & opt)
-				cs.high();
+			if (FOUR_WIRE & opts && BUSY_INDICATOR & opts)
+				this->base.cs.high();
 
 			// start conversion
 			convert.high();
 			timer::delay_ns(100);  // .1 us
 
-			if (BUSY_INDICATOR & opt) {
-				if (THREE_WIRE & opt)
+			if (BUSY_INDICATOR & opts) {
+				if (THREE_WIRE & opts)
 					convert.low();
-				else if (FOUR_WIRE & opt)
-					cs.high();
+				else if (FOUR_WIRE & opts)
+					this->base.cs.high();
 			}
 
 			// 2.3 us
 			timer::delay_us(2);
 			timer::delay_ns(300);
 
-			if (THREE_WIRE & opt && NO_BUSY_INDICATOR & opt)
-				cs.low();
+			if (THREE_WIRE & opts && NO_BUSY_INDICATOR & opts)
+				this->base.cs.low();
 
 			// read in the actual voltage reading(s) over SPI
 			Array<uint16_t, num_devices> buffer;
-			read_raw(buffer);
+			this->read_raw(buffer);
 
 			// populate values
 			for (unsigned iCurrent=0; iCurrent<num_devices; ++iCurrent)
@@ -91,7 +99,7 @@ namespace nu {
 				values[iCurrent] = convert_uv(buffer[iCurrent]);
 			}
 
-			cs.low();
+			this->base.cs.low();
 			timer::delay_us(5);
 		}
 
@@ -108,7 +116,7 @@ namespace nu {
 		 * Read SPI data from AD7685 into buffer, and byteswap.
          */
 		void read_raw(Array<uint16_t, num_devices> &buffer){
-			rx(buffer, buffer.size());
+			this->base.rx(buffer, buffer.size());
 			for (unsigned int iCurrent=0; iCurrent < num_devices; ++iCurrent) {
 				// swap byte order
 				// buf[ui] = bswap_u16(buf[ui]);

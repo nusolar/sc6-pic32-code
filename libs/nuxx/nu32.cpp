@@ -6,7 +6,7 @@ extern "C" {
 
 using namespace nu;
 
-Nu32Init::Nu32Init(const uint32_t _hz) {
+void Nu32::PlatformNu32Init(uint32_t _hz) {
 	param::Hz() = _hz;
 
 	SYSTEMConfig(param::Hz(), SYS_CFG_ALL);

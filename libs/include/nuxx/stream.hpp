@@ -15,15 +15,23 @@
 #include <cstdint>
 #include <cstdio>
 
+
+#define NU_OSTREAM_OPERATORS 0
+
 namespace nu {
 	class OStream {
+	public:
+		virtual ~OStream() {}
+		virtual void puts(const char *){}
+		void PRINTF(2,3) printf(const char *fmt, ...);
+
+#if NU_OSTREAM_OPERATORS
+	private:
 		String _str;
 		char _buffer[72];
 
 	public:
 		ALWAYSINLINE OStream(): _str("") {}
-		virtual ~OStream() {}
-		virtual void puts(const char *){}
 
 		ALWAYSINLINE OStream& operator<< (const double val) {
 			if (likely(snprintf(NULL, 0, "%f", val) <= 72)) {
@@ -83,9 +91,12 @@ namespace nu {
 		}
 
 		friend OStream& end(OStream& os);
-		void PRINTF(2,3) printf(const char *fmt, ...);
+#endif
 	};
 
+#if NU_OSTREAM_OPERATORS
 	OStream& end(OStream& os);
+#endif
+	
 }
 #endif	/* NU_BUFFER_HPP */

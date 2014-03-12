@@ -15,24 +15,30 @@
 
 namespace nu
 {
-	struct TestBoard: Nu32
+	struct TestBoard
 	{
+		Nu32 base;
 		Timer one_second;
 
 		TestBoard():
-			Nu32(Nu32::V2011),
+			base(Nu32::V2011),
 			one_second(1, Timer::s, true) {}
+
+		void setup()
+		{
+			this->base.setup();
+		}
 
 		NORETURN void run_loop()
 		{
-			this->led1.off();
-			this->led2.on();
+			this->base.led1.off();
+			this->base.led2.on();
 			while (true)
 			{
 				if (one_second.has_expired())
 				{
-					this->led1.toggle();
-					this->led2.toggle();
+					this->base.led1.toggle();
+					this->base.led2.toggle();
 					this->one_second.reset();
 				}
 			}

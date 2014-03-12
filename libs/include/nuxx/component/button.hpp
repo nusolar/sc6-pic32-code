@@ -6,7 +6,7 @@
  * Wrapper for buttons, with debouncing.
  */
 
-#include "nuxx/peripheral/pinctl.hpp"
+#include "nuxx/peripheral/pin.hpp"
 
 namespace nu {
 	/**
@@ -14,25 +14,30 @@ namespace nu {
 	 * call update() often to "debounce" the value.
 	 *
 	 */
-	class Button: protected DigitalIn {
+	class Button {
+		DigitalIn base;
 		int32_t debounce;
 		uint8_t debounce_max;
 		uint8_t thresh;
 		bool was_pressed;
 
 	public:
-		Button(Pin btn = Pin(), uint8_t _debounce_max = 10, uint8_t _thresh = 5):
-			DigitalIn(Pin(btn)), debounce(0), debounce_max(_debounce_max), thresh(_thresh), was_pressed(false) {}
+		Button(PlatformPin btn = PlatformPin(), uint8_t _debounce_max = 10, uint8_t _thresh = 5):
+			base(PlatformPin(btn)), debounce(0), debounce_max(_debounce_max), thresh(_thresh), was_pressed(false) {}
+
+		void setup()
+		{
+			this->base.setup();
+		}
 
 		/** Get whether button is pressed, according to update()'s counter. */
-		bool pressed()		{return debounce >= thresh;}
-		operator bool()	{return debounce >= thresh;}
+		bool pressed()	{return debounce >= thresh;}
 
 		/**
 		 * For non-interrupt buttons, call OFTEN to debounce button value.
 		 */
 		void update() {
-			debounce += (read()? 1: -1);
+			debounce += (this->base.read()? 1: -1);
 			if (debounce < 0) debounce = 0;
 			if (debounce > debounce_max) debounce = debounce_max;
 		}

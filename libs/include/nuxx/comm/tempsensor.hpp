@@ -28,6 +28,11 @@ namespace nu
 		{
 		}
 
+		void setup()
+		{
+			this->temp_sensor.setup();
+		}
+
 		void read()
 		{
 			if (this->temp_measuring_clock.has_expired()) {

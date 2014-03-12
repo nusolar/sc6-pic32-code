@@ -6,27 +6,33 @@
  * Little wrapper for LEDs
  */
 
-#include "nuxx/peripheral/pinctl.hpp"
+#include "nuxx/peripheral/pin.hpp"
 
 namespace nu {
 	/**
 	 * Wrap Led setup, clarify Pin function names.
 	 */
-	class Led: protected DigitalOut {
+	class Led {
+		DigitalOut base;
 		bool _led_status;
 
 	public:
-		Led(Pin led = Pin()): DigitalOut(Pin(led)), _led_status(false) {
-			set_digital_out();
-			off();
+		Led(PlatformPin led = PlatformPin()): base(PlatformPin(led)), _led_status(false)
+		{
 		}
-		void off()		{Pin::set(); _led_status = false;}
-		void on()		{Pin::clear(); _led_status = true;}
-		void toggle()	{Pin::toggle(); _led_status = !_led_status;}
+
+		void setup()
+		{
+			this->base.setup();
+			this->off();
+		}
+
+		void off()		{this->base.high(); _led_status = false;}
+		void on()		{this->base.low(); _led_status = true;}
+		void toggle()	{this->base.toggle(); _led_status = !_led_status;}
 
 		/** Get whether LED is on or off. */
-		bool status()		{return _led_status;}
-		operator bool()	{return _led_status;}
+		bool status()	{return _led_status;}
 
 		/** Turn LED [on/off] by assigning it to [true/false] respectively. */
 		Led& operator= (const bool rhs) {

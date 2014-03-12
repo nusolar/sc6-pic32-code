@@ -16,7 +16,7 @@ namespace nu {
 	 *  LCD 8-LED		----->	330 ohm	----->	5V
 	 *  (8-LED for backlight only if desired)
 	 ************************************/
-	struct Nokia5110: public SPI {
+	struct Nokia5110: public OStream {
 		enum cmd_func_set_options {
 			DC_DATA                = 0,
 			DC_COMMAND             = 1<<0,
@@ -41,11 +41,13 @@ namespace nu {
 			TEMP_COEFF_3           = 1<<7 | 1<<6
 		};
 
+		Spi base;
 		DigitalOut reset, dc;
 		static const uint16_t lcd_x = 84;
 		static const uint16_t lcd_y = 48;
 
-		Nokia5110(Pin _cs, uint8_t _channel, Pin _reset, Pin _dc);
+		Nokia5110(PlatformPin _cs, uint8_t _channel, PlatformPin _reset, PlatformPin _dc);
+		void setup() {this->base.setup(); this->reconfigure();}
 
 		void reconfigure();
 
@@ -88,11 +90,11 @@ namespace nu {
 	private:
 		void write_cmd(const uint8_t cmd) {
 			dc.low();
-			tx(&cmd, 1);
+			this->base.tx(&cmd, 1);
 		}
 		void write_data(const uint8_t data) {
 			dc.high();
-			tx(&data, 1);
+			this->base.tx(&data, 1);
 		}
 
 		void cmd_func_set(const cmd_func_set_options opts);

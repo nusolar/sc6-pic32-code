@@ -23,7 +23,6 @@
       <logicalFolder name="f1" displayName="nuxx" projectFiles="true">
         <logicalFolder name="f2" displayName="board" projectFiles="true">
           <itemPath>../include/nuxx/board/bps.hpp</itemPath>
-          <itemPath>../include/nuxx/board/output_board.hpp</itemPath>
           <itemPath>../include/nuxx/board/nu32.hpp</itemPath>
           <itemPath>../include/nuxx/board/pedals.hpp</itemPath>
           <itemPath>../include/nuxx/board/test.hpp</itemPath>
@@ -48,16 +47,10 @@
           <itemPath>../include/nuxx/peripheral/can.hpp</itemPath>
           <itemPath>../include/nuxx/peripheral/can_def.hpp</itemPath>
           <itemPath>../include/nuxx/peripheral/onewire.hpp</itemPath>
-          <itemPath>../include/nuxx/peripheral/pinctl.hpp</itemPath>
           <itemPath>../include/nuxx/peripheral/serial.hpp</itemPath>
           <itemPath>../include/nuxx/peripheral/spi.hpp</itemPath>
           <itemPath>../include/nuxx/peripheral/usbhid.hpp</itemPath>
-        </logicalFolder>
-        <logicalFolder name="f1" displayName="platform" projectFiles="true">
-          <itemPath>../include/nuxx/platform/spi.hpp</itemPath>
-          <itemPath>../include/nuxx/platform/param.hpp</itemPath>
-          <itemPath>../include/nuxx/platform/pin.hpp</itemPath>
-          <itemPath>../include/nuxx/platform/serial.hpp</itemPath>
+          <itemPath>../include/nuxx/peripheral/pin.hpp</itemPath>
         </logicalFolder>
         <itemPath>../include/nuxx/enum.hpp</itemPath>
         <itemPath>../include/nuxx/errorcodes.hpp</itemPath>
@@ -92,7 +85,6 @@
         <itemPath>../nuxx/nu32.cpp</itemPath>
         <itemPath>../nuxx/stream.cpp</itemPath>
         <itemPath>../nuxx/pin.cpp</itemPath>
-        <itemPath>../nuxx/output_board.cpp</itemPath>
         <itemPath>../nuxx/onewire.cpp</itemPath>
         <itemPath>../nuxx/board.cpp</itemPath>
       </logicalFolder>

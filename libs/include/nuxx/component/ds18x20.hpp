@@ -22,7 +22,7 @@ namespace nu {
 	 * Class DS18X20 returns its temperatures in deciCelcius.
 	 */
 	template <size_t num_devices>
-	struct DS18X20: public OneWire {
+	struct DS18X20 {
 		static const typename OneWire::romcode roms[32];
 		union scratch {
 			uint8_t bytes[9];
@@ -37,22 +37,28 @@ namespace nu {
 		};
 		static_assert(sizeof(scratch) == 9, "nu::DS18X20::scratch packing");
 
-		DS18X20(Pin _p): OneWire(_p) {}
+		OneWire base;
+
+		DS18X20(PlatformPin _p): base(_p) {}
+
+		void setup() {
+			this->base.setup();
+		}
 
 		void convert_t() {
-			this->tx_byte_with_crc( this->CONVERT_T );
+			this->base.tx_byte_with_crc( this->base.CONVERT_T );
 		}
 
 		void perform_temperature_conversion() {
-			this->reset();
-			this->skip_rom();
+			this->base.reset();
+			this->base.skip_rom();
 			this->convert_t();
 		}
 
 		void read_temperature(const typename OneWire::romcode &code, scratch &scr) {
-			this->reset();
-			this->match_rom(code);
-			this->read_scratch(&scr, sizeof(scr));
+			this->base.reset();
+			this->base.match_rom(code);
+			this->base.read_scratch(&scr, sizeof(scr));
 		}
 
 		/** Convert temperature from 1/16th C to 1/10th C */

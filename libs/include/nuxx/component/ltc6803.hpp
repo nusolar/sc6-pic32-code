@@ -9,7 +9,7 @@
 #define	LTC6803_HPP 1
 
 #include "nuxx/peripheral/spi.hpp"
-#include "nuxx/peripheral/pinctl.hpp"
+#include "nuxx/peripheral/pin.hpp"
 #include "nuxx/errorcodes.hpp"
 #include "nuxx/timer.hpp"
 #include "nuxx/crc.hpp"
@@ -33,7 +33,7 @@ namespace nu {
 	 * Call read_volts() to synchronously poll & get readings.
 	 */
 	template <uint32_t num_devices>
-	struct LTC6803: public SPI {
+	struct LTC6803 {
 		enum command {
 			WRITECFGS   = 0x01, // Write config registers
 			RDCFGS,				// Read config registers
@@ -175,7 +175,7 @@ namespace nu {
 
 		#define voltage_pairs_per_dev 6
 		#define cells_per_device (voltage_pairs_per_dev*2)
-		#define total_cells (cells_per_device * num_devices)
+		#define total_cells_6803 (cells_per_device * num_devices)
 
 		union PACKED RawVoltagePair {
 			unsigned val :24;
@@ -195,6 +195,7 @@ namespace nu {
 		};
 		static_assert(sizeof(RawVoltages)==3*voltage_pairs_per_dev, "nu::LTC6803::RawVoltages packing");
 
+		Spi base;
 		uint32_t mismatch_pecs;
 		bool is_openwire;
 
@@ -203,10 +204,14 @@ namespace nu {
          * @param _cs The Chip Select pin for the LTC6803.
          * @param _chn The SPI Channel for the LTC6803.
          */
-		LTC6803(Pin _cs, uint8_t _channel):
-			SPI(_cs, Spi(_channel, 100000, SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON),
-			    (SPI::tx_options)(TX_WAIT_START|TX_WAIT_END|TX_DISABLE_AUTO_CS)),
+		LTC6803(PlatformPin _cs, uint8_t _channel):
+			base(_cs, SPI(_channel, 100000, SPI_OPEN_MSTEN|SPI_OPEN_MODE8|SPI_OPEN_ON),
+			    (Spi::tx_options)(Spi::TX_WAIT_START|Spi::TX_WAIT_END|Spi::TX_DISABLE_AUTO_CS)),
 			mismatch_pecs(0), is_openwire(false) {}
+
+		void setup() {
+			this->base.setup();
+		}
 
 		void write_configs(Array<Configuration, num_devices> &config) {
 			write_cmd_tx(WRITECFGS, config, sizeof(Configuration));
@@ -215,7 +220,7 @@ namespace nu {
 		void start_voltage_conversion() {write_cmd_solo(STCVAD); is_openwire=false;}
 		void start_openwire_conversion() {write_cmd_solo(STOWAD); is_openwire=true;}
 		/* Outputs in 100uV multiples */
-		void read_volts(Array<uint16_t, total_cells> &rx_rv) {
+		void read_volts(Array<uint16_t, total_cells_6803> &rx_rv) {
 			Array<RawVoltages, num_devices> rv;
 			read_volts_raw(rv);
 
@@ -254,20 +259,20 @@ namespace nu {
 		void read_volts_raw(Array<RawVoltages, num_devices> &rx_rv) {write_cmd_rx(RDCV, rx_rv, sizeof(RawVoltages));}
 
 		void write_cmd_solo(const command c) {
-			cs.low();
+			this->base.cs.low();
 			write_cmd(c);
-			cs.high();
+			this->base.cs.high();
 		}
 
 		uint32_t write_cmd_rx(const command c, void *dest, size_t one_element){
-			cs.low();
+			this->base.cs.low();
 			write_cmd(c);
 
 			mismatch_pecs = 0;
 //			BYTE recv_buffer[one_element + 1]; // +1 byte for pec
 			BYTE recv_buffer[100];
 			for (unsigned i=0; i<num_devices; i++) {
-				rx(recv_buffer, one_element + 1);
+				this->base.rx(recv_buffer, one_element + 1);
 				memcpy((BYTE *)dest + i*one_element, recv_buffer, one_element);
 
 				BYTE pec = recv_buffer[sizeof(recv_buffer) - 1]; // last byte
@@ -276,18 +281,18 @@ namespace nu {
 					mismatch_pecs |= (uint32_t)(1<<i);
 				}
 			}
-			cs.high();
+			this->base.cs.high();
 			return mismatch_pecs? -ECRC: 0; // WARNING should use error_reporting
 		}
 
 		/** Deals an array of data of size==one_element to all devices */
 		void write_cmd_tx(const command c, const void *data, size_t one_element) {
-			cs.low();
+			this->base.cs.low();
 			write_cmd(c);
 			for (unsigned i=0; i<num_devices; i++) {
 				tx_with_pec((const BYTE *)data + i*one_element, one_element); // WARNING pec order
 			}
-			cs.high();
+			this->base.cs.high();
 		}
 
 		void write_cmd(const command c) {
@@ -296,8 +301,8 @@ namespace nu {
 
 		void tx_with_pec(const void *src, size_t n) {
 			long pec = (long)crc::_8_ccitt(src, n); // WARNING type?
-			tx(src, n); // WARNING check pointers / tx errors
-			tx(&pec, 1);
+			this->base.tx(src, n); // WARNING check pointers / tx errors
+			this->base.tx(&pec, 1);
 		}
 
 		/** @todo error reporting */

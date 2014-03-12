@@ -17,7 +17,7 @@
 #include "nuxx/peripheral/serial.hpp"
 #include "nuxx/peripheral/spi.hpp"
 #include "nuxx/peripheral/can.hpp"
-#include "nuxx/peripheral/pinctl.hpp"
+#include "nuxx/peripheral/pin.hpp"
 #include "nuxx/timer.hpp"
 #include "nuxx/wdt.hpp"
 #include "nuxx/array.hpp"
@@ -180,7 +180,6 @@ namespace nu
 			precharge_relay	(PIN(D, 3), false),
 			motor_relay		(PIN(D, 4), false),
 			bypass_button	(PIN(B, 7)),
-//			com				(UART(1)),
 			common_can		(CAN1),
 			lcd1			(PIN(G, 9), SPI_CHANNEL2, PIN(A, 9),  PIN(E, 9)),
 			lcd2			(PIN(E, 8), SPI_CHANNEL2, PIN(A, 10), PIN(E, 9)),
@@ -196,11 +195,22 @@ namespace nu
 		// and data
 			state()
 		{
+		}
+
+		void setup()
+		{
 			WDT::clear();
+			main_relay.setup();
+			array_relay.setup();
+			precharge_relay.setup();
+			motor_relay.setup();
+			bypass_button.setup();
+			common_can.setup();
 			common_can.in().setup_rx();
 			common_can.out().setup_tx(CAN_HIGH_MEDIUM_PRIORITY);
 			common_can.err().setup_tx(CAN_LOWEST_PRIORITY);
-
+			lcd1.setup();
+			lcd2.setup();
 			// Initialize sensors,
 			this->read_ins();
 		}
@@ -435,7 +445,7 @@ namespace nu
 			if (this->lcd_timer.has_expired())
 			{
 				uint8_t module_i = state.uptime % NU_BPS_N_MODULES; // next module index
-				
+
 				if (module_i)
 					lcd1.reconfigure();
 				lcd1.lcd_clear();

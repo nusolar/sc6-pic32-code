@@ -1,12 +1,13 @@
-/*
- * File:   pin.hpp
- * Author: alex
- *
- * Created on July 6, 2013, 6:33 PM
- */
+#ifndef NUXX_PINCTL_HPP
+#define NUXX_PINCTL_HPP 1
 
-#ifndef NU_PLATFORM_PIN_HPP
-#define	NU_PLATFORM_PIN_HPP
+
+
+
+/**
+ * @file
+ * Simple pin wrapper. To specify a pin, use PIN(LETTER, NUMBER)
+ */
 
 #include "nu/compiler.h"
 #include "nu/platform.h"
@@ -17,25 +18,23 @@
 
 #elif NU_PLATFORM==NU_PLATFORM_GENERIC /* Generic Pin code */
 namespace nu {
-	struct Pin {
-
+	struct PlatformPin {
 	};
 }
-
 #elif NU_PLATFORM==NU_PLATFORM_PIC32MX /* PIC32MX-specific Pin code */
 extern "C" {
 #include <peripheral/adc10.h>
 #include <peripheral/ports.h>
 }
 
-#define PIN(L, N) Pin(Pin::L, N) // To specify a pin, use PIN(LETTER, NUMBER)
+#define PIN(L, N) PlatformPin(PlatformPin::L, N) // To specify a pin, use PIN(LETTER, NUMBER)
 
 namespace nu {
 	/**
 	 * Encapsulate a PIC32 I/O pin. They are addressed by a (letter, number)
 	 * combination, represented by an (IoPortId, BIT_X) type combination.
 	 */
-	struct Pin {
+	struct PlatformPin {
 		enum Port {A, B, C, D, E, F, G};
 
 		Port port;
@@ -48,21 +47,21 @@ namespace nu {
 		/**
 		 * Construct with Pin's (letter, number) combination.
 		 * DO NOT CALL THIS CONSTRUCTOR DIRECTLY FROM YOUR CODE!!!
-		 * USE THE MACRO PIN(L,N)
+		 * USE THE MACRO --->   PIN(L,N)
 		 * @param _port For PIC32MX795F512L, A-G. AnalogIn MUST be B.
 		 * @param _bit For PIC32MX795F512L, 0-9.
 		 */
-		Pin(Port _port = D, uint8_t _bit = 0): port(_port), bit(_bit) {}
-		NOINLINE virtual ~Pin() {}
+		PlatformPin(Port _port = D, uint8_t _bit = 0): port(_port), bit(_bit) {}
+		NOINLINE virtual ~PlatformPin() {}
 
 	protected:
 		/**
 		 * Call one of these four setters from your subclass constructor.
 		 */
-		virtual void set_digital_out()	{PORTSetPinsDigitalOut(ltr(), num());}
-		virtual void set_digital_in()	{PORTSetPinsDigitalIn(ltr(), num());}
-		virtual void set_analog_out()	{PORTSetPinsAnalogOut(ltr(), num());}
-		virtual void set_analog_in()		{
+		virtual void setup_digital_out()	{PORTSetPinsDigitalOut(ltr(), num());}
+		virtual void setup_digital_in()	{PORTSetPinsDigitalIn(ltr(), num());}
+		virtual void setup_analog_out()	{PORTSetPinsAnalogOut(ltr(), num());}
+		virtual void setup_analog_in()		{
 			CloseADC10(); // ERROR: Only open 2 channels?
 			SetChanADC10(ADC_CH0_NEG_SAMPLEA_NVREF|ADC_CH0_POS_SAMPLEA_AN0);
 
@@ -100,7 +99,67 @@ namespace nu {
 		}
 	};
 }
-#endif /* PLATFORM code */
+#endif /* End PLATFORM specific code */
 
-#endif	/* NU_PLATFORM_PIN_HPP */
 
+
+
+namespace nu {
+	/**
+	 * The common interface for a Microcontroller Pin. It inherits from a
+	 * platform-specific Pin class, which does the PLIB work.
+	 */
+	struct Pin: protected PlatformPin {
+		ALWAYSINLINE Pin(PlatformPin p = PlatformPin()): PlatformPin(p) {}
+		NOINLINE virtual ~Pin() {}
+
+		ALWAYSINLINE void setup_digital_out()	{PlatformPin::setup_digital_out();}
+		ALWAYSINLINE void setup_digital_in()	{PlatformPin::setup_digital_in();}
+		ALWAYSINLINE void setup_analog_out()	{PlatformPin::setup_analog_out();}
+		ALWAYSINLINE void setup_analog_in()		{PlatformPin::setup_analog_in();}
+
+		void set()		{PlatformPin::set();}
+		void clear()	{PlatformPin::clear();}
+		void toggle()	{PlatformPin::toggle();}
+
+		/** A subclass may call EITHER read_digital() OR read_analog(). */
+		reg_t read_digital()	{return PlatformPin::read_digital();} // returns 0 or non-0
+		reg_t read_analog()	{return PlatformPin::read_analog();}
+	};
+
+
+	struct DigitalIn: protected Pin {
+		ALWAYSINLINE DigitalIn(PlatformPin p = PlatformPin()): Pin(p) {}
+		ALWAYSINLINE void setup()	{setup_digital_in();}
+		ALWAYSINLINE reg_t read()	{return PlatformPin::read_digital();} // returns 0 or some non-0
+	};
+
+	/** An Analog input Pin, wrapped with an ADC. */
+	struct AnalogIn: protected Pin {
+		ALWAYSINLINE AnalogIn(PlatformPin p = PlatformPin()): Pin(p) {}
+		ALWAYSINLINE void setup()	{setup_analog_in();}
+		ALWAYSINLINE reg_t read()	{return PlatformPin::read_analog();}
+	};
+
+
+	class DigitalOut: protected Pin {
+		bool _status;
+
+	public:
+		ALWAYSINLINE DigitalOut(PlatformPin p = PlatformPin(), bool init = false): Pin(p), _status(init) {
+			if (init) high();
+			else low();
+		}
+		ALWAYSINLINE void setup()	{setup_digital_out();}
+		ALWAYSINLINE void high()	{Pin::set(); _status = true;}
+		ALWAYSINLINE void low()		{clear(); _status = false;}
+		ALWAYSINLINE void toggle()	{toggle(); _status = !_status;}
+		ALWAYSINLINE bool status()	{return _status;}
+		ALWAYSINLINE void set(bool rhs) {
+			if (rhs) Pin::set();
+			else clear();
+		}
+	};
+}
+
+#endif

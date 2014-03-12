@@ -15,7 +15,7 @@
 #include "nuxx/comm/tempsensor.hpp"
 #include "nuxx/component/nokia5110.hpp"
 #include "nuxx/peripheral/can.hpp"
-#include "nuxx/peripheral/pinctl.hpp"
+#include "nuxx/peripheral/pin.hpp"
 #include "nuxx/timer.hpp"
 #include "nuxx/wdt.hpp"
 #include "nuxx/errorcodes.hpp"

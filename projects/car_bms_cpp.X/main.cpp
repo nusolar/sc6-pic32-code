@@ -72,7 +72,7 @@ void debugger(const char *fmt, ...) {
 	va_start(fmtargs, fmt);
 	if (likely(vsnprintf(NULL, 0, fmt, fmtargs) >= 0)) {
 		vsnprintf(buffer, (sizeof(buffer)/sizeof(buffer[0])), fmt, fmtargs);
-		((CLASS *)arena)->serial1.puts((char *)buffer);
+		((CLASS *)arena)->nu32.serial_usb1.puts((char *)buffer);
 	}
 	va_end(fmtargs);
 }

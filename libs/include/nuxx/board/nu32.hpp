@@ -13,16 +13,11 @@
 
 #include "nuxx/component/led.hpp"
 #include "nuxx/peripheral/serial.hpp"
-#include "nuxx/peripheral/pinctl.hpp"
+#include "nuxx/peripheral/pin.hpp"
 #include "nuxx/param.hpp"
 #include <cstdint>
 
 namespace nu {
-	struct Nu32Init {
-		Nu32Init(uint32_t _hz);
-		virtual ~Nu32Init() {}
-	};
-
 	/**
 	 * NU32 is the Northwestern University PIC32 development board.
 	 *
@@ -32,7 +27,7 @@ namespace nu {
 	 * serial1 is for general communication.
 	 * serial2 is for programming the Nu32 with Nick Marchuck's utility.
 	 */
-	struct Nu32: public Nu32Init {
+	struct Nu32 {
 		enum V2010_t {V2010};
 		enum V2011_t {V2011};
 
@@ -43,28 +38,41 @@ namespace nu {
 
 		Led led1, led2;
 		DigitalIn switch1;
-		Serial serial1, serial2;
+		Serial serial_usb1, serial_usb2;
 
 		/**
 		 * NECESSARILY call this before anything else!
 		 * Do all setups from derived class's constructor!
 		 * Pass V2010 for Nu32v10, V2011 for Nu32v2011.
 		 */
-		Nu32(V2010_t, uint32_t _hz = param::default_hz()): Nu32Init(_hz), version(v2010),
+		Nu32(V2010_t): version(v2010),
 			led1(PIN(G, 12)),
 			led2(PIN(G, 13)),
 			switch1(PIN(G, 6)),
-			serial1(UART(1)),
-			serial2(UART(3)) {}
+			serial_usb1(UART(1)),
+			serial_usb2(UART(3)) {}
 
-		Nu32(V2011_t, uint32_t _hz = param::default_hz()): Nu32Init(_hz), version(v2011),
+		Nu32(V2011_t): version(v2011),
 			led1(PIN(A, 4)),
 			led2(PIN(A, 5)),
 			switch1(PIN(C, 13)),
-			serial1(UART(1)),
-			serial2(UART(3)) {}
+			serial_usb1(UART(1)),
+			serial_usb2(UART(3)) {}
 
 		virtual ~Nu32() {}
+
+		/** CALL BEFORE ANY OTHER SETUP */
+		static void PlatformNu32Init(uint32_t _hz = param::default_hz());
+
+		void setup()
+		{
+			this->PlatformNu32Init();
+			this->led1.setup();
+			this->led2.setup();
+			this->switch1.setup();
+			this->serial_usb1.setup();
+			this->serial_usb2.setup();
+		}
 	};
 }
 

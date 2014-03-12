@@ -31,6 +31,11 @@ namespace nu
 		{
 		}
 
+		void setup()
+		{
+			this->voltage_sensor.setup();
+		}
+
 		void configure()
 		{
 			/* LTC6804

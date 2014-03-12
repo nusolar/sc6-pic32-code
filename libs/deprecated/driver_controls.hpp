@@ -12,7 +12,7 @@
 #include "nuxx/board/nu32.hpp"
 #include "nuxx/component/nokia5110.hpp"// MAXIMUM WARNING MAXIMUM ERROR MUST COME BEFORE NU32
 #include "nuxx/timer.hpp"
-#include "nuxx/pinctl.hpp"
+#include "nuxx/pin.hpp"
 #include "nuxx/can.hpp"
 #include "nuxx/wdt.hpp"
 #include "nu/compiler.h"
