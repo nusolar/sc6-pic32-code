@@ -124,20 +124,20 @@ namespace nu {
 
 		/** A subclass may call EITHER read_digital() OR read_analog(). */
 		reg_t read_digital()	{return PlatformPin::read_digital();} // returns 0 or non-0
-		reg_t read_analog()	{return PlatformPin::read_analog();}
+		reg_t read_analog()		{return PlatformPin::read_analog();}
 	};
 
 
 	struct DigitalIn: protected Pin {
 		ALWAYSINLINE DigitalIn(PlatformPin p = PlatformPin()): Pin(p) {}
-		ALWAYSINLINE void setup()	{setup_digital_in();}
+		ALWAYSINLINE void setup()	{Pin::setup_digital_in();}
 		ALWAYSINLINE reg_t read()	{return PlatformPin::read_digital();} // returns 0 or some non-0
 	};
 
 	/** An Analog input Pin, wrapped with an ADC. */
 	struct AnalogIn: protected Pin {
 		ALWAYSINLINE AnalogIn(PlatformPin p = PlatformPin()): Pin(p) {}
-		ALWAYSINLINE void setup()	{setup_analog_in();}
+		ALWAYSINLINE void setup()	{Pin::setup_analog_in();}
 		ALWAYSINLINE reg_t read()	{return PlatformPin::read_analog();}
 	};
 
@@ -150,10 +150,10 @@ namespace nu {
 			if (init) high();
 			else low();
 		}
-		ALWAYSINLINE void setup()	{setup_digital_out();}
+		ALWAYSINLINE void setup()	{Pin::setup_digital_out();}
 		ALWAYSINLINE void high()	{Pin::set(); _status = true;}
-		ALWAYSINLINE void low()		{clear(); _status = false;}
-		ALWAYSINLINE void toggle()	{toggle(); _status = !_status;}
+		ALWAYSINLINE void low()		{Pin::clear(); _status = false;}
+		ALWAYSINLINE void toggle()	{Pin::toggle(); _status = !_status;}
 		ALWAYSINLINE bool status()	{return _status;}
 		ALWAYSINLINE void set(bool rhs) {
 			if (rhs) Pin::set();

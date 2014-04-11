@@ -4,6 +4,7 @@
 #include "nuxx/wdt.hpp"
 #include <new>
 
+#if 1
 void nu::Pedals::main(nu::Pedals *self)
 {
 	nu::WDT::disable();			// enable watchdog timer
@@ -11,6 +12,7 @@ void nu::Pedals::main(nu::Pedals *self)
 	self->setup();				// setup hardware
 	self->run_loop();			// start run loop, never return.
 }
+#endif
 
 #if 0
 void nu::BPS::main(nu::BPS *self)

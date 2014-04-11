@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   config.h
  * Author: alex
  *
@@ -31,10 +31,13 @@ extern "C"
 #define NU_BPS_DS18X20_MEASURE_INT_MS	150	// ms
 #define NU_BPS_CAN_TIMER_MS				20	// ms - 32 modules + 3 other ~= 700ms cycles
 
-#define NU_PEDALS_WS20_TIMEOUT_MS	50	// ms - Tritium recommends 50-100ms. MUST BE <250ms or WS20 will shut down.
-#define NU_PEDALS_OS_TIMEOUT_MS		100	// ms
-#define NU_PEDALS_REGEN_PROPORTION	0.2
-#define NU_PEDALS_ACCEL_SENSITIVITY	0.05 // Must be non-zero or high-current tripping happens
+#define NU_PEDALS_WS20_TX_TIMER_MS		50		// ms - Tritium recommends every 50-100ms. MUST BE <250ms or WS20 will shut down.
+#define NU_PEDALS_BMS_TIMEOUT_MS		100		// ms - kill motor if Tritium BMS stops talking
+#define NU_PEDALS_OS_TIMEOUT_MS			100		// ms - kill everything if OS stops talking
+#define NU_PEDALS_REGEN_PROPORTION		0.2
+#define NU_PEDALS_ACCEL_SENSITIVITY		0.05	// must be non-zero or high-current tripping occurs
+#define NU_PEDALS_OVERRIDE_BMS			true	// override BMS, FOR LEAD ACID BATTERIES ONLY!!!
+#define NU_PEDALS_OVERRIDE_BMS_ACCEL_LIMIT		0.40	// maximum accel/current, if BMS is Overridden
 
 #ifdef	__cplusplus
 }
