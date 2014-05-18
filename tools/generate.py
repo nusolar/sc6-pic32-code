@@ -116,7 +116,7 @@ class CanPacketBaseClass:
 	cpp_class_packet = dedent(cpp_class_packet)
 
 	cs_class_packet = """\
-	class Packet
+	public class Packet
 	{
 		[StructLayout(LayoutKind.Explicit)]
 		public struct UInt64x1
@@ -619,7 +619,7 @@ can_def = [
 		'name': 'bms1',
 		'base': 0x6F0,
 		'contents': [
-			['reserved0',		Layout.Empty], # for Tritium's factory configuration
+			['reserved0',		Layout.Empty],  # for Tritium's factory configuration
 			['reserved1',		Layout.Empty],
 			['reserved2',		Layout.Empty],
 			['reserved3',		Layout.Empty],

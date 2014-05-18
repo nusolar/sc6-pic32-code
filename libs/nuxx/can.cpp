@@ -33,16 +33,6 @@ CAN_BIT_CONFIG Module::default_cfg = {
 };
 #endif
 
-nu::Can::Module::Module(CAN_MODULE _mod, uint32_t _bus_speed):
-	mod(_mod),
-	bus_speed(_bus_speed)
-{
-	for (size_t i=0; i<32; i++)
-	{
-		this->channel(i) = Channel(*this, (CAN_CHANNEL)i);
-	}
-}
-
 
 int32_t nu::Can::Module::setup(CAN_BIT_CONFIG* timings,
 					   CAN_MODULE_EVENT interrupts,

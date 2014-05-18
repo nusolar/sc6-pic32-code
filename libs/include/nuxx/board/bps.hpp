@@ -131,6 +131,8 @@ namespace nu
 		Button bypass_button;
 //		Serial com;
 		Can::Module common_can;
+		Can::Channel common_can_in;
+		Can::Channel common_can_out, common_can_err;
 		Nokia5110 lcd1, lcd2;
 
 		VoltageSensor voltage_sensor; //on D9, SPI Chn 1
@@ -181,6 +183,9 @@ namespace nu
 			motor_relay		(PIN(D, 4), false),
 			bypass_button	(PIN(B, 7)),
 			common_can		(CAN1),
+			common_can_in	(common_can, CAN_CHANNEL0),
+			common_can_out	(common_can, CAN_CHANNEL1),
+			common_can_err	(common_can, CAN_CHANNEL2),
 			lcd1			(PIN(G, 9), SPI_CHANNEL2, PIN(A, 9),  PIN(E, 9)),
 			lcd2			(PIN(E, 8), SPI_CHANNEL2, PIN(A, 10), PIN(E, 9)),
 			voltage_sensor	(),
@@ -208,10 +213,10 @@ namespace nu
 			common_can.setup();
 			common_can.setup_mask(CAN_FILTER_MASK0, 0x7ff);
 			common_can.setup_filter(CAN_FILTER0, Can::Addr::os::user_cmds::_id);
-			common_can.in().setup_rx();
-			common_can.in().link_filter(CAN_FILTER0, CAN_FILTER_MASK0);
-			common_can.out().setup_tx(CAN_HIGH_MEDIUM_PRIORITY);
-			common_can.err().setup_tx(CAN_LOWEST_PRIORITY);
+			common_can_in.setup_rx();
+			common_can_in.link_filter(CAN_FILTER0, CAN_FILTER_MASK0);
+			common_can_out.setup_tx(CAN_HIGH_MEDIUM_PRIORITY);
+			common_can_err.setup_tx(CAN_LOWEST_PRIORITY);
 			lcd1.setup();
 			lcd2.setup();
 			// Initialize sensors,
@@ -222,32 +227,32 @@ namespace nu
 		{
 			// debounce bypass button
 			for (unsigned i=0; i<10; i++) {
-				bypass_button.update();
+				this->bypass_button.update();
 			}
 			// increment disabled module if it's pressed
-			if (bypass_button.toggled()) {
-				++state.disabled_module;
-				if (state.disabled_module >= (int8_t)NU_BPS_N_MODULES) {
-					state.disabled_module = -1;
+			if (this->bypass_button.toggled()) {
+				++this->state.disabled_module;
+				if (this->state.disabled_module >= (int8_t)NU_BPS_N_MODULES) {
+					this->state.disabled_module = -1;
 				}
 			}
 
-			voltage_sensor.read();
-			current_sensor.read();
-			temp_sensor.read();
+			this->voltage_sensor.read();
+			this->current_sensor.read();
+			this->temp_sensor.read();
 		}
 
 		void recv_can()
 		{
 			Can::Packet pkt(0);
 			uint32_t id;
-			common_can.in().rx(pkt,id);
+			this->common_can_in.rx(pkt,id);
 
 			switch (id)
 			{
 				case Can::Addr::os::user_cmds::_id: {
 					Can::Addr::os::user_cmds data(pkt);
-					state.mode = (Modes)data.frame().power;
+					this->state.mode = (Modes)data.frame().power;
 					this->mode_timeout_clock.reset();
 					break;
 				}
@@ -259,7 +264,7 @@ namespace nu
 			if (this->mode_timeout_clock.has_expired())
 			{
 				this->mode_timeout_clock.kill();
-				state.mode = OFF;
+				this->state.mode = OFF;
 			}
 		}
 
@@ -270,7 +275,7 @@ namespace nu
 
 			for (uint8_t i=0; i<NU_BPS_N_MODULES; ++i)
 			{
-				if (i == state.disabled_module) {
+				if (i == this->state.disabled_module) {
 					continue;
 				}
 				if (this->voltage_sensor.voltages[i] > NU_BPS_MAX_VOLTAGE) {
@@ -303,9 +308,9 @@ namespace nu
 
 		void check_mode_safety()
 		{
-			if (state.trip_code != NONE)
+			if (this->state.trip_code != NONE)
 			{
-				state.mode = OFF;
+				this->state.mode = OFF;
 			}
 		}
 
@@ -425,20 +430,92 @@ namespace nu
 		{
 			if (this->can_timer.has_expired())
 			{
-				Can::Addr::bps_tx::bps_status status_pkt(0);
-				Can::Addr::bps_tx::current current_pkt(0);
-				Can::Addr::bps_tx::voltage_temp voltage_temp_pkt(0);
-				status_pkt.frame().mode				= this->state.mode;
-				status_pkt.frame().disabled_module	= this->state.disabled_module;
-				current_pkt.frame().battery			= this->current_sensor.currents[0];
-				current_pkt.frame().array			= this->current_sensor.currents[1];
-				voltage_temp_pkt.frame().module		= this->can_module_i;
-				voltage_temp_pkt.frame().voltage	= this->voltage_sensor.voltages[this->can_module_i];
-				voltage_temp_pkt.frame().temp		= this->temp_sensor.temperatures[this->can_module_i];
-				this->common_can.out().tx(status_pkt);
-				this->common_can.out().tx(current_pkt);
-				this->common_can.out().tx(voltage_temp_pkt);
-				++this->can_module_i %= NU_BPS_N_MODULES;
+				switch (this->can_module_i)
+				{
+					case 0: {
+						Can::Addr::bms0::cmu1_volts0 pkt0(0);
+						pkt0.frame().cell0 = this->voltage_sensor.voltages[0];
+						pkt0.frame().cell1 = this->voltage_sensor.voltages[1];
+						pkt0.frame().cell2 = this->voltage_sensor.voltages[2];
+						pkt0.frame().cell3 = this->voltage_sensor.voltages[3];
+						this->common_can_out.tx(pkt0);
+						Can::Addr::bms0::cmu1_volts1 pkt1(0);
+						pkt1.frame().cell4 = this->voltage_sensor.voltages[4];
+						pkt1.frame().cell5 = this->voltage_sensor.voltages[5];
+						pkt1.frame().cell6 = this->voltage_sensor.voltages[6];
+						pkt1.frame().cell7 = this->voltage_sensor.voltages[7];
+						this->common_can_out.tx(pkt1);
+						break;
+					}
+					case 1: {
+						Can::Addr::bms0::cmu2_volts0 pkt0(0);
+						pkt0.frame().cell0 = this->voltage_sensor.voltages[8];
+						pkt0.frame().cell1 = this->voltage_sensor.voltages[9];
+						pkt0.frame().cell2 = this->voltage_sensor.voltages[10];
+						pkt0.frame().cell3 = this->voltage_sensor.voltages[11];
+						this->common_can_out.tx(pkt0);
+						Can::Addr::bms0::cmu2_volts1 pkt1(0);
+						pkt1.frame().cell4 = this->voltage_sensor.voltages[12];
+						pkt1.frame().cell5 = this->voltage_sensor.voltages[13];
+						pkt1.frame().cell6 = this->voltage_sensor.voltages[14];
+						pkt1.frame().cell7 = this->voltage_sensor.voltages[15];
+						this->common_can_out.tx(pkt1);
+						break;
+					}
+					case 2: {
+						Can::Addr::bms0::cmu3_volts0 pkt0(0);
+						pkt0.frame().cell0 = this->voltage_sensor.voltages[16];
+						pkt0.frame().cell1 = this->voltage_sensor.voltages[17];
+						pkt0.frame().cell2 = this->voltage_sensor.voltages[18];
+						pkt0.frame().cell3 = this->voltage_sensor.voltages[19];
+						this->common_can_out.tx(pkt0);
+						Can::Addr::bms0::cmu3_volts1 pkt1(0);
+						pkt1.frame().cell4 = this->voltage_sensor.voltages[20];
+						pkt1.frame().cell5 = this->voltage_sensor.voltages[21];
+						pkt1.frame().cell6 = this->voltage_sensor.voltages[22];
+						pkt1.frame().cell7 = this->voltage_sensor.voltages[23];
+						this->common_can_out.tx(pkt1);
+						break;
+					}
+					case 3: {
+						Can::Addr::bms0::cmu4_volts0 pkt0(0);
+						pkt0.frame().cell0 = this->voltage_sensor.voltages[24];
+						pkt0.frame().cell1 = this->voltage_sensor.voltages[25];
+						pkt0.frame().cell2 = this->voltage_sensor.voltages[26];
+						pkt0.frame().cell3 = this->voltage_sensor.voltages[27];
+						this->common_can_out.tx(pkt0);
+						Can::Addr::bms0::cmu4_volts1 pkt1(0);
+						pkt1.frame().cell4 = this->voltage_sensor.voltages[28];
+						pkt1.frame().cell5 = this->voltage_sensor.voltages[29];
+						pkt1.frame().cell6 = this->voltage_sensor.voltages[30];
+						pkt1.frame().cell7 = this->voltage_sensor.voltages[31];
+						this->common_can_out.tx(pkt1);
+						break;
+					}
+					case 4: {
+						Can::Addr::bms1::pack_soc soc_pkt(0);
+						soc_pkt.frame().soc_Ah				= 0;
+						soc_pkt.frame().soc_percentage		= 0;
+						this->common_can_out.tx(soc_pkt);
+						Can::Addr::bps_tx::bps_status status_pkt(0); // precharge
+						status_pkt.frame().mode				= this->state.mode;
+						status_pkt.frame().disabled_module	= this->state.disabled_module;
+						this->common_can_out.tx(status_pkt);
+					}
+					case 5: {
+						// min max volts temps
+						Can::Addr::bms1::pack_volt_curr pack_volt_curr_pkt(0);
+						for (uint8_t i=0; i<NU_BPS_N_MODULES; ++i)
+						{
+							pack_volt_curr_pkt.frame().pack_voltage += this->voltage_sensor.voltages[i];
+						}
+						pack_volt_curr_pkt.frame().pack_current = this->current_sensor.currents[0];
+						this->common_can_out.tx(pack_volt_curr_pkt);
+						// statuses
+					}
+				}
+
+				++this->can_module_i %= 4;
 				this->can_timer.reset();
 			}
 		}
@@ -447,7 +524,7 @@ namespace nu
 		{
 			if (this->lcd_timer.has_expired())
 			{
-				uint8_t module_i = state.uptime % NU_BPS_N_MODULES; // next module index
+				uint8_t module_i = this->state.uptime % NU_BPS_N_MODULES; // next module index
 
 				if (module_i)
 					lcd1.reconfigure();
@@ -460,24 +537,24 @@ namespace nu
 				lcd1.goto_xy(0, 3);
 				lcd1.printf("I0: %X", this->current_sensor.currents[0]);
 				lcd1.goto_xy(0, 4);
-				lcd1.printf("Off: %hi", state.disabled_module);
+				lcd1.printf("Off: %hi", this->state.disabled_module);
 				lcd1.goto_xy(0, 5);
-				lcd1.printf("R: %hu-%hu-%hu-%hu", main_relay.status(), array_relay.status(), precharge_relay.status(), motor_relay.status());
+				lcd1.printf("R: %hu-%hu-%hu-%hu", this->main_relay.status(), this->array_relay.status(), this->precharge_relay.status(), this->motor_relay.status());
 				led1.toggle();
 //				this->serial1.printf("ZELDA %hhu\nV: %hu\nT: %hi\nI0: %X\nOff: %hhi\n",
 //					module_i, this->voltage_sensor.voltages[module_i], this->temp_sensor.temperatures[module_i], this->current_sensor.currents[0], state.disabled_module);
 
-				++state.uptime; // increase uptime by 1 second
+				++this->state.uptime; // increase uptime by 1 second
 				this->lcd_timer.reset(); // reset LCD update clock
 			}
 		}
 
 		void emergency_shutoff()
 		{
-			main_relay.low();
-			array_relay.low();
-			motor_relay.low();
-			precharge_relay.low();
+			this->main_relay.low();
+			this->array_relay.low();
+			this->motor_relay.low();
+			this->precharge_relay.low();
 		}
 
 		/**

@@ -36,13 +36,13 @@ namespace nu {
 
 			Channel(Module &_mod, CAN_CHANNEL _chn = CAN_CHANNEL0, CAN_CHANNEL_EVENT _inter = (CAN_CHANNEL_EVENT)0):
 				config(NOT_CONFIGURED), module(_mod), chn(_chn), interrupts(_inter), rtr_en(CAN_TX_RTR_DISABLED) {}
-			Channel(const Channel &a):
-				config(a.config), module(a.module), chn(a.chn), interrupts(a.interrupts), rtr_en(a.rtr_en){}
+			//Channel(const Channel &a):
+			//	config(a.config), module(a.module), chn(a.chn), interrupts(a.interrupts), rtr_en(a.rtr_en){}
 			//virtual ~Channel() {}
 			Channel &operator= (const Channel &a) {
 				if (this != &a){
 					this->~Channel();
-					new (this) Channel(a); // Could use memcpy() instead
+					new (this) Channel(a); // Would use memcpy() in C
 				} return *this;
 			}
 
@@ -76,20 +76,14 @@ namespace nu {
 			CAN_MODULE mod;
 			uint32_t bus_speed;
 			
-			Module(CAN_MODULE _mod = CAN1, uint32_t _bus_speed = DEFAULT_BUS_SPEED_HZ);
+			Module(CAN_MODULE _mod = CAN1, uint32_t _bus_speed = DEFAULT_BUS_SPEED_HZ):
+				mod(_mod),
+				bus_speed(_bus_speed) {}
 
 			int32_t setup(CAN_BIT_CONFIG *timings = &default_cfg,
 						CAN_MODULE_EVENT interrupts = (CAN_MODULE_EVENT)0,
 						INT_PRIORITY int_priority = INT_PRIORITY_DISABLED,
 						CAN_MODULE_FEATURES features = (CAN_MODULE_FEATURES)0);
-
-			Channel& channel(size_t num) {
-				return *(Channel *) (this->channel_buf + num*sizeof(Channel));
-			}
-			Channel& in () {return this->channel(0);}
-			Channel& out() {return this->channel(1);}
-			Channel& err() {return this->channel(2);}
-
 			int32_t setup_mask(CAN_FILTER_MASK mask,
 							   uint32_t mask_bits,
 							   CAN_ID_TYPE _id_type = CAN_SID,
@@ -99,14 +93,12 @@ namespace nu {
 								 CAN_ID_TYPE _id_type = CAN_SID);
 
 		private:
-			char buf[32*32*CAN_TX_RX_MESSAGE_SIZE_BYTES]; // WARNING CAN Message Buffer
-			size_t channel_buf[32 * sizeof(Channel)];
-			friend struct Channel;
-			
 			int32_t switch_mode(CAN_OP_MODE op_mode, uint32_t timeout_ms);
 			int32_t normal_mode() {return switch_mode(CAN_NORMAL_OPERATION, 1);}
 			int32_t config_mode() {return switch_mode(CAN_CONFIGURATION, 1);}
 			int32_t change_features(CAN_MODULE_FEATURES features, BOOL en);
+			char buf[32*32*CAN_TX_RX_MESSAGE_SIZE_BYTES]; // WARNING CAN Message Buffer
+			friend struct Channel;
 		};
 	}
 }

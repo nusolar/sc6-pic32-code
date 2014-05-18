@@ -29,6 +29,10 @@ namespace nu {
 
 	}
 
+	/**
+	 * A polling Timer.
+	 * Timer takes a time-interval, a unit, and whether it starts immediately.
+	 */
 	struct Timer
 	{
 		enum Unit
@@ -42,7 +46,7 @@ namespace nu {
 		bool is_running;
 		Unit unit;
 
-		/** Timer takes a timer interval, a unit, and whether it starts immediately */
+		/** Timer takes a time-interval, a unit, and whether it starts immediately */
 		Timer(uint64_t _tick_interval, Unit _unit, bool arm_now):
 			tick_interval(0),
 			start_tick(0),
