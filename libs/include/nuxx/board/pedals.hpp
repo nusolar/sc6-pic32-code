@@ -237,6 +237,7 @@ namespace nu
 					this->state.key_run		= pkt.frame().gearFlags & 1<<0;
 					this->state.drive_en	= pkt.frame().gearFlags & 1<<1;
 					this->state.reverse_en	= pkt.frame().gearFlags & 1<<2;
+					this->state.regen_en	= !(this->state.drive_en || this->state.reverse_en); // regen when neither
 					this->state.lt_left		= pkt.frame().signalFlags & 1<<0;
 					this->state.lt_right	= pkt.frame().signalFlags & 1<<1;
 					this->state.lt_heads	= pkt.frame().signalFlags & 1<<2;
@@ -306,7 +307,7 @@ namespace nu
 			{
 				this->state.drive_en	= this->sw_drive.read();
 				this->state.reverse_en	= this->sw_reverse.read();
-				this->state.regen_en	= !(this->state.drive_en || this->state.reverse_en);
+				this->state.regen_en	= !(this->state.drive_en || this->state.reverse_en); // regen when neither
 				this->state.lt_left		= this->sw_left.read();
 				this->state.lt_right	= this->sw_right.read();
 				this->state.horn		= this->sw_horn.read();
