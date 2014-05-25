@@ -40,7 +40,7 @@ extern "C"
 #define NU_PEDALS_OS_TIMEOUT_MS			250		// ms - kill everything if OS stops talking
 #define NU_PEDALS_ACCEL_SENSITIVITY		0.03	// must be non-zero or high-current tripping occurs
 #define NU_PEDALS_OVERRIDE_BMS			true	// override BMS, FOR LEAD ACID BATTERIES ONLY!!!
-#define NU_PEDALS_CURR_LIMIT			45.0f	// maximum motor current, if BMS is Overridden
+#define NU_PEDALS_CURR_LIMIT			50.0f	// maximum motor current, if BMS is Overridden
 #define NU_PEDALS_ACCEL_LIMIT			0.80f	// maximum accel/current, if BMS is Overridden
 
 

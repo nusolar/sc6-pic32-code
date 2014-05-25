@@ -289,11 +289,11 @@ namespace nu
 			this->state.accel_raw = (uint16_t)(this->accel_pedal.read() & 0x3ff); // only 10 meaningful bits returned
 			this->state.brake_en = (bool) this->brake_pedal.read();
 
-			// keep accel_raw from overcurrenting
+			// Anti-tripping: accel_raw from overcurrenting
 			// if Bus Current is safe, or else if accel_raw is lower, then update accel_raw
 			// if Bus Current isn't safe, NEVER increase accel_safe
-			if ((this->state.bus_current < NU_PEDALS_CURR_LIMIT-5 &&
-				 this->state.bus_current > -NU_PEDALS_CURR_LIMIT+5)
+			if ((this->state.bus_current < NU_PEDALS_CURR_LIMIT-10 &&
+				 this->state.bus_current > -NU_PEDALS_CURR_LIMIT+10)
 				|| this->state.accel_raw < this->state.accel_safe)
 			{
 				this->state.accel_safe = this->state.accel_raw;
@@ -332,30 +332,33 @@ namespace nu
 		{
 			// First, check Trip points if Running
 			if (this->state.bms_state == Precharge__Run &&
-					((this->state.bus_voltage > 60.0f &&
-					this->state.bus_voltage < 110.0f) ||
+					((this->state.bus_voltage > 70.0f &&
+					this->state.bus_voltage < 100.0f) ||
 					this->state.bus_current > NU_PEDALS_CURR_LIMIT ||
 					this->state.bus_current < -NU_PEDALS_CURR_LIMIT)
 				)
 			{
-				// If tripped, permanently set Error
+				// If tripped, set Error
 				this->state.bms_state = Precharge__Error;
 				this->precharge_timer.kill();
 				this->relay_motor.low();
+				if (this->relay_power.status() == true)
+					timer::delay_ms(10); // WAIT FOR MOTOR CONTROLLER TO GET OFFLINE
 				this->relay_power.low();
 				// Send a CAN packet ASAP with Trip values
 				this->send_can_timer.kill();
 			}
 			else if (this->state.bms_state == Precharge__Error &&
 					(
-						(this->state.bus_voltage < 60.0f ||
-						this->state.bus_voltage > 110.0f) &&
+						/*(this->state.bus_voltage < 70.0f ||
+						this->state.bus_voltage > 100.0f) &&*/
 						this->state.bus_current < NU_PEDALS_CURR_LIMIT &&
 						this->state.bus_current > -NU_PEDALS_CURR_LIMIT
 					)
 				)
 			{
 				this->state.bms_state = Precharge__Idle;
+				return; // wait one cycle
 			}
 
 			// Then, if health is OK, proceed
@@ -389,6 +392,8 @@ namespace nu
 				else
 				{
 					this->relay_motor.low();
+					if (this->relay_power.status() == true)
+						timer::delay_ms(10); // WAIT FOR MOTOR CONTROLLER TO GET OFFLINE
 					this->relay_power.low();
 					this->precharge_timer.kill();
 					this->state.bms_state = Precharge__Idle;
@@ -441,6 +446,14 @@ namespace nu
 				report.frame().accel_pedal = this->state.accel_raw;
 				report.frame().brake_pedal = this->state.brake_en;
 				this->can_out_dc.tx(report);
+
+				// send Precharge if OVERRIDING BMS
+				if (NU_PEDALS_OVERRIDE_BMS)
+				{
+					Can::Addr::bms1::precharge precharge(0);
+					precharge.frame().precharge_state = this->state.bms_state;
+					this->can_out_dc.tx(precharge);
+				}
 
 				this->send_can_timer.reset();
 			}
@@ -497,6 +510,12 @@ namespace nu
 			this->can_out_ws20.tx(drive);
 			Can::Addr::dc::switches switches(0);
 			this->can_out_dc.tx(switches);
+			if (NU_PEDALS_OVERRIDE_BMS)
+			{
+				this->relay_motor.low();
+				timer::delay_ms(10); // WAIT FOR MOTOR CONTROLLER TO GET OFFLINE
+				this->relay_power.low();
+			}
 		}
 
 		static NORETURN void main(Pedals *arena);
