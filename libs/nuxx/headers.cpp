@@ -29,10 +29,10 @@
 #include "nuxx/peripheral/pin.hpp"
 
 // basic system services
-#include "nuxx/crc.hpp"
 #include "nuxx/param.hpp"
 #include "nuxx/timer.hpp"
 #include "nuxx/wdt.hpp"
+#include "nuxx/crc.hpp"
 
 // stack-based Standard Library
 #include "nuxx/array.hpp"

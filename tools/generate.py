@@ -660,9 +660,18 @@ can_def = [
 		'base': 0b11101110000,  # 0x770-0x77F
 		'contents': [
 			['unused0', Layout.Empty],
-			['mppt1', Layout.UInt16x4, ['flags_Vin', 'flags_Iin', 'flags_Vout', 'flags_Tout']],
-			['mppt2', Layout.UInt16x4, ['flags_Vin', 'flags_Iin', 'flags_Vout', 'flags_Tout']],
-			['mppt3', Layout.UInt16x4, ['flags_Vin', 'flags_Iin', 'flags_Vout', 'flags_Tout']],
+			['mppt1', Layout.UInt8x8, ['Vin_MSB_flags', 'Vin_LSB',
+										'Iin_MSB', 'Iin_LSB',
+										'Vout_MSB', 'Vout_LSB',
+										'pcb_temp', 'unused0']],
+			['mppt2', Layout.UInt8x8, ['Vin_MSB_flags', 'Vin_LSB',
+										'Iin_MSB', 'Iin_LSB',
+										'Vout_MSB', 'Vout_LSB',
+										'pcb_temp', 'unused0']],
+			['mppt3', Layout.UInt8x8, ['Vin_MSB_flags', 'Vin_LSB',
+										'Iin_MSB', 'Iin_LSB',
+										'Vout_MSB', 'Vout_LSB',
+										'pcb_temp', 'unused0']],
 		]
 	}
 ]
@@ -754,7 +763,7 @@ class Deserializer:
 		return self.cpp_surrounding_file % {'contents': self.nu.get_cpp()}
 
 	def get_cs(self):
-		self.nu.name = "SolarCar"
+		self.nu.name = "Solar.Car"
 		return self.cs_surrounding_file % {'contents': self.nu.get_cs()}
 
 	def get_root_namespace(self):

@@ -12,6 +12,7 @@
 
 
 #include "nuxx/component/led.hpp"
+#include "nuxx/component/button.hpp"
 #include "nuxx/peripheral/serial.hpp"
 #include "nuxx/peripheral/pin.hpp"
 #include "nuxx/param.hpp"
@@ -37,7 +38,7 @@ namespace nu {
 		} version;
 
 		Led led1, led2;
-		DigitalIn switch1;
+		Button switch1;
 		Serial serial_usb1, serial_usb2;
 
 		/**
@@ -61,12 +62,8 @@ namespace nu {
 
 		virtual ~Nu32() {}
 
-		/** CALL BEFORE ANY OTHER SETUP */
-		static void PlatformNu32Init(uint32_t _hz = param::default_hz());
-
 		void setup()
 		{
-			this->PlatformNu32Init();
 			this->led1.setup();
 			this->led2.setup();
 			this->switch1.setup();

@@ -93,6 +93,12 @@ namespace nu {
 					elems[ui] = (uint8_t)SpiChnGetC(chn);
 				}
 			}
+
+			for (ui=0; ui<n; ui++)
+			{
+				debugger("%hX", ((uint8_t*)dst)[ui]);
+			}
+			debugger("\n");
 		}
 	};
 }

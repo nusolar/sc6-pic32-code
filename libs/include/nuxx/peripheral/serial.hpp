@@ -18,6 +18,7 @@ extern "C" {
 }
 
 // To specify a UART, use UART(NUMBER)
+#define UARTB(N,L) PlatformUart(UART##N, L)
 #define UART(N) PlatformUart(UART##N, 115200)
 
 namespace nu {

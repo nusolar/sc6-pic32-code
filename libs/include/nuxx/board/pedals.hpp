@@ -21,7 +21,7 @@
 
 namespace nu
 {
-	struct Pedals
+	struct DriverControls
 	{
 		/** Taken DIRECTLY from Tritium's BMS Communications Protocol PDF */
 		enum Precharge
@@ -70,7 +70,8 @@ namespace nu
 		DigitalIn extra_digi_pedal;	// B3
 
 		AnalogIn sw_extra_analog;	// B4
-		DigitalIn sw_extra_digital;	// B5 - using_hardware_switches
+		DigitalIn sw_extra_digital;	// B5
+									// B6&B7 should NEVER be used
 		DigitalIn sw_drive;			// B9 - HARDWARE DESIGNED BACKWARDS
 		DigitalIn sw_reverse;		// B8
 		DigitalIn sw_right;			// B10
@@ -91,9 +92,10 @@ namespace nu
 
 		Nokia5110 lcd;
 
+		Timer bms_can_timeout;
+		Timer os_can_timeout;
+
 		Timer send_can_timer;
-		Timer bms_can_timer;
-		Timer os_can_timer;
 		Timer debug_timer;
 		Timer precharge_timer;
 
@@ -123,7 +125,7 @@ namespace nu
 		} state;
 
 #if 0	//INTERFACE
-		Pedals();
+		DriverControls();
 		void setup();
 
 		void recv_can();
@@ -135,10 +137,10 @@ namespace nu
 
 		void run_loop();
 		void emergency_shutoff();
-		static void main(Pedals *arena);
+		static void main(DriverControls *arena);
 #endif
 
-		Pedals():
+		DriverControls():
 			nu32		(Nu32::V2011),
 			common_can	(CAN1),
 			can_in		(common_can, CAN_CHANNEL0),
@@ -148,6 +150,9 @@ namespace nu
 			regen_pedal	(PIN(B, 0)),
 			accel_pedal	(PIN(B, 1)),
 			brake_pedal	(PIN(B, 2)),
+			extra_digi_pedal	(PIN(B, 3)),
+			sw_extra_analog		(PIN(B, 4)),
+			sw_extra_digital	(PIN(B, 5)),
 			sw_drive	(PIN(B, 9)),
 			sw_reverse	(PIN(B, 8)),
 			sw_right	(PIN(B, 10)),
@@ -163,9 +168,9 @@ namespace nu
 			relay_motor		(PIN(D, 6)),
 			relay_extra		(PIN(D, 7)),
 			lcd				(PIN(G, 9), SPI_CHANNEL2, PIN(A, 9), PIN(E, 9)),
+			bms_can_timeout	(NU_PEDALS_BMS_TIMEOUT_MS, Timer::ms, false),
+			os_can_timeout	(NU_PEDALS_OS_TIMEOUT_MS, Timer::ms, false),
 			send_can_timer	(NU_PEDALS_CAN_TX_TIMER_MS, Timer::ms, false),
-			bms_can_timer	(NU_PEDALS_BMS_TIMEOUT_MS, Timer::ms, false),
-			os_can_timer	(NU_PEDALS_OS_TIMEOUT_MS, Timer::ms, false),
 			debug_timer		(1, Timer::s, false),
 			precharge_timer	(2, Timer::s, false),
 			state		()
@@ -227,7 +232,7 @@ namespace nu
 					// copy state of BMS
 					this->state.bms_state = (Precharge) pkt.frame().precharge_state;
 
-					this->bms_can_timer.reset();
+					this->bms_can_timeout.reset();
 					break;
 				}
 				case Can::Addr::os::user_cmds::_id: {
@@ -243,7 +248,7 @@ namespace nu
 					this->state.lt_heads	= pkt.frame().signalFlags & 1<<2;
 					this->state.horn		= pkt.frame().signalFlags & 1<<3;
 					this->state.using_hardware_switches = false;
-					this->os_can_timer.reset();
+					this->os_can_timeout.reset();
 					break;
 				}
 				case Can::Addr::ws20::motor_velocity::_id: {
@@ -260,13 +265,13 @@ namespace nu
 			}
 
 			// Kill things if BMS times-out.
-			if (this->bms_can_timer.has_expired() && !NU_PEDALS_OVERRIDE_BMS)
+			if (this->bms_can_timeout.has_expired() && !NU_PEDALS_OVERRIDE_BMS)
 			{
 				this->state.bms_state = Precharge__Error;
 			}
 
 			// Kill things if OS times-out.
-			if (this->os_can_timer.has_expired())
+			if (this->os_can_timeout.has_expired())
 			{
 				this->state.using_hardware_switches = true;
 				//Key stays in Run unless OS's CAN packet explicitly changes it!
@@ -289,18 +294,22 @@ namespace nu
 			this->state.accel_raw = (uint16_t)(this->accel_pedal.read() & 0x3ff); // only 10 meaningful bits returned
 			this->state.brake_en = (bool) this->brake_pedal.read();
 
-			// Anti-tripping: accel_raw from overcurrenting
-			// if Bus Current is safe, or else if accel_raw is lower, then update accel_raw
-			// if Bus Current isn't safe, NEVER increase accel_safe
-			if ((this->state.bus_current < NU_PEDALS_CURR_LIMIT-10 &&
-				 this->state.bus_current > -NU_PEDALS_CURR_LIMIT+10)
+			// Anti-tripping: push accel_raw down when it's near overcurrenting
+			// if Bus Current is ok, or if accel_raw < accel_safe, then use accel_raw
+			if ((this->state.bus_current < NU_PEDALS_ANTITRIP_CURR &&
+				 this->state.bus_current > -NU_PEDALS_ANTITRIP_CURR)
 				|| this->state.accel_raw < this->state.accel_safe)
 			{
 				this->state.accel_safe = this->state.accel_raw;
 			}
+			else // otherwise, decrease accel_safe
+			{
+				if (this->state.accel_safe > 128)
+					this->state.accel_safe = (uint16_t)(this->state.accel_safe-1); // WARNING decreases with unpredictable speed
+			}
 			
 			// process analog pedals
-			this->state.accel_motor = clamp(((float)this->state.accel_safe)/1024*NU_PEDALS_ACCEL_LIMIT, 0.0f, 1.0f);
+			this->state.accel_motor = clamp(((float)this->state.accel_safe)/1024, 0.0f, NU_PEDALS_ACCEL_LIMIT);
 			
 			// Use the hardware switches if OS is timed out
 			if (this->state.using_hardware_switches)
@@ -518,7 +527,7 @@ namespace nu
 			}
 		}
 
-		static NORETURN void main(Pedals *arena);
+		static NORETURN void main(DriverControls *arena);
 	};
 }
 

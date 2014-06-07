@@ -5,10 +5,11 @@
 #include <new>
 
 #if 1
-void nu::Pedals::main(nu::Pedals *self)
+void nu::DriverControls::main(nu::DriverControls *self)
 {
+	nu::param::Init();			// initialize microcontroller
 	nu::WDT::disable();			// enable watchdog timer
-	new (self) nu::Pedals();	// initialize variables
+	new (self) nu::DriverControls();	// initialize variables
 	self->setup();				// setup hardware
 	self->run_loop();			// start run loop, never return.
 }
@@ -17,6 +18,7 @@ void nu::Pedals::main(nu::Pedals *self)
 #if 0
 void nu::BPS::main(nu::BPS *self)
 {
+	nu::param::Init();			// initialize microcontroller
 	nu::WDT::disable();			// enable watchdog timer
 	new (self) nu::BPS();		// initialize variables
 	self->setup();				// setup hardware

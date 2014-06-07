@@ -11,7 +11,7 @@
 #include "nuxx/board/nu32.hpp"
 #include "nuxx/comm/voltagesensor.hpp"
 #include "nuxx/comm/currentsensor.hpp"
-#include "nuxx/comm/tempsensor.hpp"
+//#include "nuxx/comm/tempsensor.hpp"
 #include "nuxx/component/nokia5110.hpp"
 #include "nuxx/component/button.hpp"
 #include "nuxx/peripheral/serial.hpp"
@@ -92,6 +92,17 @@ namespace nu
 
  	struct BPS: Nu32
  	{
+		enum Trip
+		{
+			Trip__None			= 0,
+			Trip__OverVolt		= 0x01,
+			Trip__UnderVolt		= 0x02,
+			Trip__OverTemp		= 0x04,
+			Trip__OverCurrent	= 0x08,
+
+			Trip__Startup		= 0x40
+		};
+
 		enum TripCode
 		{
 			NONE = 0,
@@ -103,43 +114,31 @@ namespace nu
 			OVER_CURR_CHARGING
 		};
 
-		enum Errors
-		{
-			NOERR = 0,
-			BADMODE,
-			BADPC
-		};
-
-		enum Modes
-		{
-			OFF = 0,
-			DISCHARGING = 1,
-			DRIVE = 2|1,
-			EMPTY_CHARGING = 4,
-			CHARGING = 4|1,
-			CHARGING_DRIVE = 4|2|1
-		};
-
+		/** Taken DIRECTLY from Tritium's BMS Communications Protocol PDF */
 		enum Precharge
 		{
-			PC_OFF = 0,
-			PC_CHARGING = 1,
-			PC_CHARGED = 2
+			Precharge__Error = 0,
+			Precharge__Idle = 1,
+			Precharge__EnablePack = 5,
+			Precharge__Measure = 2,
+			Precharge__Precharge = 3,
+			Precharge__Run = 4
 		};
 
-		DigitalOut main_relay, array_relay, precharge_relay, motor_relay;
+		Nu32 nu32;
+
+		DigitalOut ground_relay, power_relay, motor_relay, array_relay;
 		Button bypass_button;
-//		Serial com;
 		Can::Module common_can;
 		Can::Channel common_can_in;
 		Can::Channel common_can_out, common_can_err;
-		Nokia5110 lcd1, lcd2;
+		// Nokia5110 lcd1, lcd2;
 
 		VoltageSensor voltage_sensor; //on D9, SPI Chn 1
 		CurrentSensor current_sensor; // on F12, SPI Chn 4
-		TempSensor temp_sensor; //on A0
+		// TempSensor temp_sensor; //on A0
 
-		Timer mode_timeout_clock;
+		Timer dc_can_timeout;
 		Timer precharge_timer;
 		Timer can_timer;
 		Timer lcd_timer;
@@ -157,42 +156,43 @@ namespace nu
 			uint32_t uptime; //s
 
 			// error data
-			Errors error;
-			int8_t error_value;
 			// Trip Code & data
-			TripCode trip_code;
-			int8_t trip_data;
+			Trip trip_code;
+			uint32_t trip_data;
+			int8_t error_value;
 
 			// Protection modes & timers
-			Modes mode;
-			Precharge precharging;
-			int8_t disabled_module;
+			bool dc_run, dc_start;
+			Precharge precharge;
+			uint32_t disabled_modules;
 
 			State(): cc_battery(0), cc_array(0), wh_battery(0), wh_array(0),
 				uptime(0),
-				error(NOERR), error_value(0), trip_code(NONE), trip_data(0),
-				mode(OFF), precharging(PC_OFF), disabled_module(-1) {}
+				trip_code(Trip__Startup), trip_data(0), error_value(0),
+				dc_run(0), dc_start(0),
+				precharge(Precharge__Error), disabled_modules(0) {}
 		} state;
 
 
 		BPS(): Nu32(Nu32::V2011),
 		// Initialize hardware
-			main_relay		(PIN(D, 1), false),
-			array_relay		(PIN(D, 2), false),
-			precharge_relay	(PIN(D, 3), false),
-			motor_relay		(PIN(D, 4), false),
-			bypass_button	(PIN(B, 7)),
+			nu32			(Nu32::V2011),
+			ground_relay	(PIN(D, 1), false),
+			power_relay		(PIN(D, 2), false),
+			motor_relay		(PIN(D, 3), false),
+			array_relay		(PIN(D, 4), false),
+			bypass_button	(PIN(B, 0)), // thru B5
 			common_can		(CAN1),
 			common_can_in	(common_can, CAN_CHANNEL0),
 			common_can_out	(common_can, CAN_CHANNEL1),
 			common_can_err	(common_can, CAN_CHANNEL2),
-			lcd1			(PIN(G, 9), SPI_CHANNEL2, PIN(A, 9),  PIN(E, 9)),
-			lcd2			(PIN(E, 8), SPI_CHANNEL2, PIN(A, 10), PIN(E, 9)),
+			// lcd1			(PIN(G, 9), SPI_CHANNEL2, PIN(A, 9),  PIN(E, 9)),
+			// lcd2			(PIN(E, 8), SPI_CHANNEL2, PIN(A, 10), PIN(E, 9)),
 			voltage_sensor	(),
 			current_sensor	(),
-			temp_sensor		(),
+			//temp_sensor		(),
 		// initialize timers
-			mode_timeout_clock	(NU_BPS_OS_TIMEOUT_INT_MS,	Timer::ms,	true),
+			dc_can_timeout		(NU_BPS_DC_TIMEOUT_INT_MS,	Timer::ms,	true),
 			precharge_timer		(NU_BPS_PRECHARGE_TIME_MS,	Timer::ms,	false),
 			can_timer			(NU_BPS_CAN_TIMER_MS,		Timer::ms,	true),
 			lcd_timer			(1,							Timer::s,	false),
@@ -205,9 +205,10 @@ namespace nu
 		void setup()
 		{
 			WDT::clear();
-			main_relay.setup();
+			nu32.setup();
+			power_relay.setup();
 			array_relay.setup();
-			precharge_relay.setup();
+			ground_relay.setup();
 			motor_relay.setup();
 			bypass_button.setup();
 			common_can.setup();
@@ -217,29 +218,19 @@ namespace nu
 			common_can_in.link_filter(CAN_FILTER0, CAN_FILTER_MASK0);
 			common_can_out.setup_tx(CAN_HIGH_MEDIUM_PRIORITY);
 			common_can_err.setup_tx(CAN_LOWEST_PRIORITY);
-			lcd1.setup();
-			lcd2.setup();
+			// lcd1.setup();
+			// lcd2.setup();
+			voltage_sensor.setup();
+			current_sensor.setup();
 			// Initialize sensors,
 			this->read_ins();
 		}
 
 		void read_ins()
 		{
-			// debounce bypass button
-			for (unsigned i=0; i<10; i++) {
-				this->bypass_button.update();
-			}
-			// increment disabled module if it's pressed
-			if (this->bypass_button.toggled()) {
-				++this->state.disabled_module;
-				if (this->state.disabled_module >= (int8_t)NU_BPS_N_MODULES) {
-					this->state.disabled_module = -1;
-				}
-			}
-
 			this->voltage_sensor.read();
 			this->current_sensor.read();
-			this->temp_sensor.read();
+			// this->temp_sensor.read();
 		}
 
 		void recv_can()
@@ -250,10 +241,10 @@ namespace nu
 
 			switch (id)
 			{
-				case Can::Addr::os::user_cmds::_id: {
-					Can::Addr::os::user_cmds data(pkt);
-					this->state.mode = (Modes)data.frame().power;
-					this->mode_timeout_clock.reset();
+				case Can::Addr::dc::switches::_id: {
+					Can::Addr::dc::switches switches(pkt);
+					this->state.dc_run = switches.frame().switchFlags & (1<<5);
+					this->state.dc_start = switches.frame().switchFlags & (1<<5);
 					break;
 				}
 				default: {
@@ -261,56 +252,80 @@ namespace nu
 			}
 
 			// If state.mode_timeout_clock isn't updated fast enough, turn OFF.
-			if (this->mode_timeout_clock.has_expired())
+			if (this->dc_can_timeout.has_expired())
 			{
-				this->mode_timeout_clock.kill();
-				this->state.mode = OFF;
+				this->dc_can_timeout.kill();
+				this->state.dc_run = false;
+				this->state.dc_start = false;
 			}
 		}
 
 		void check_trip_conditions()
 		{
-			TripCode trip_code = NONE;
-			int8_t trip_data = -1;
+			Trip trip_code = Trip__None;
+			uint32_t trip_data = 0;
 
 			for (uint8_t i=0; i<NU_BPS_N_MODULES; ++i)
 			{
-				if (i == this->state.disabled_module) {
+				if (this->state.disabled_modules & 1<<i) {
 					continue;
 				}
 				if (this->voltage_sensor.voltages[i] > NU_BPS_MAX_VOLTAGE) {
-					trip_code = OVER_VOLT;
+					trip_code = (Trip)(trip_code & Trip__OverVolt);
 				} else if (this->voltage_sensor.voltages[i] < NU_BPS_MIN_VOLTAGE) {
-					trip_code = UNDER_VOLT;
-				} else if (this->temp_sensor.temperatures[i] > NU_BPS_MAX_TEMP) {
-					trip_code = OVER_TEMP;
+					trip_code = (Trip)(trip_code & Trip__UnderVolt);
+				} /*else if (this->temp_sensor.temperatures[i] > NU_BPS_MAX_TEMP) {
+					trip_code = Trip__OverTemp;
 				} else if (this->temp_sensor.temperatures[i] < NU_BPS_MIN_TEMP) {
-					trip_code = UNDER_TEMP;
-				} else {
+					trip_code = Trip__OverTemp;
+				}*/ else {
 					continue;
 				}
 
-				trip_data = i;
+				trip_data |= 1<<i;
 				break;
 			}
 
 			if (this->current_sensor.currents[0] > NU_BPS_MAX_BATT_CURRENT_DISCHARGING) {
-				trip_code = OVER_CURR_DISCHARGING;
-				trip_data = 0;
+				trip_code = (Trip)(trip_code & Trip__OverCurrent);
 			} else if (this->current_sensor.currents[0] < NU_BPS_MAX_BATT_CURRENT_CHARGING) {
-				trip_code = OVER_CURR_CHARGING;
-				trip_data = 0;
+				trip_code = (Trip)(trip_code & Trip__OverCurrent);
 			}
 
 			this->state.trip_code = trip_code;
 			this->state.trip_data = trip_data;
 		}
 
-		void check_mode_safety()
+		void check_precharge()
 		{
-			if (this->state.trip_code != NONE)
+			// check errors
+			if (this->state.trip_code != Trip__None)
 			{
-				this->state.mode = OFF;
+				this->state.precharge = Precharge__Error;
+			}
+			else if (this->state.precharge == Precharge__Error)
+			{
+				this->state.precharge = Precharge__Idle;
+			}
+			// begin precharging
+			else if (this->state.precharge == Precharge__Idle
+				&& this->state.dc_run == true
+				&& this->state.dc_start == true)
+			{
+				this->precharge_timer.reset();
+				this->state.precharge = Precharge__Precharge;
+			}
+			else if (this->state.precharge == Precharge__Precharge)
+			{
+				if (this->precharge_timer.has_expired())
+				{
+					this->state.precharge = Precharge__Run;
+				}
+			}
+			// Run
+			else if (this->state.dc_run != true)
+			{
+				this->state.precharge = Precharge__Idle;
 			}
 		}
 
@@ -326,103 +341,29 @@ namespace nu
 		 */
 		void set_relays()
 		{
-			bool has_error = false;
-
-			switch (state.mode) {
-				default:
-					has_error = true;
-				case OFF: {
-					// FIRST: halt major drains
-					motor_relay.set(false);
-					precharge_relay.set(false);
-					// THEN: deactivate batteries
-					main_relay.set(false);
-					// FINALLY: disconnect array
-					array_relay.set(false);
+			switch (state.precharge)
+			{
+				case Precharge__Error:
+				case Precharge__Idle:
+				{
+					this->motor_relay.low();
+					this->power_relay.low();
 					break;
 				}
-				case DISCHARGING: {
-					// FIRST: ensure NOT charging
-					array_relay.set(false);
-					// THEN: not draining
-					motor_relay.set(false);
-					precharge_relay.set(false);
-					// FINALLY: discharge
-					main_relay.set(true);
+				case Precharge__EnablePack:
+				case Precharge__Measure:
+				case Precharge__Precharge:
+				{
+					this->motor_relay.low();
+					this->power_relay.high();
 					break;
 				}
-				case DRIVE: {
-					// FIRST: ensure NOT charging
-					array_relay.set(false);
-					// THEN: discharging
-					main_relay.set(true);
-					// THEN; precharge, & close motor relay when charged.
-					// SEE BELOW
-				}
-				/* CHARGING means batteries could be critically low, or just charging
-				 * during normal operation & discharge. */
-				case CHARGING: {
-					// FIRST: ensure NOT draining
-					motor_relay.set(false);
-					precharge_relay.set(false);
-					// THEN: allow charging
-					array_relay.set(true);
-					// FINALLY: charge
-					main_relay.set(true);
+				case Precharge__Run:
+				{
+					this->power_relay.high();
+					this->motor_relay.low();
 					break;
 				}
-				case CHARGING_DRIVE: {
-					// FIRST: allow charging
-					array_relay.set(true);
-					// THEN: charge
-					main_relay.set(true);
-					// FINALLY: precharge & close motor relays
-					// SEE BELOW
-					break;
-				}
-			}
-			// Set or remove Mode error, if needed.
-			if (has_error) {
-				if (state.error == NOERR)
-					state.error = BADMODE;
-			} else if (state.error == BADMODE)
-					state.error = NOERR;
-
-			// Now, reset or continue with the precharge sequence:
-			if (state.mode != DRIVE && state.mode != CHARGING_DRIVE) {
-				state.precharging = PC_OFF;
-			} else {
-				switch (state.precharging) {
-					default:
-						has_error = BADPC;
-					case PC_OFF: {
-						motor_relay.set(false);
-						precharge_relay.set(true);
-						this->precharge_timer.reset();
-						state.precharging = PC_CHARGING;
-						break;
-					}
-					case PC_CHARGING: {
-						motor_relay.set(false);
-						precharge_relay.set(true);
-						if (this->precharge_timer.has_expired()) {
-							state.precharging = PC_CHARGED;
-						}
-						break;
-					}
-					case PC_CHARGED: {
-						motor_relay.set(true);
-						precharge_relay.set(false);
-						break;
-					}
-				}
-				// Set or remove Precharge error, if needed.
-				if (has_error) {
-					if (state.error==NOERR)
-						state.error = BADPC;
-				} else if (state.error==BADPC)
-					state.error = NOERR;
-
 			}
 		}
 
@@ -497,13 +438,13 @@ namespace nu
 						soc_pkt.frame().soc_Ah				= 0;
 						soc_pkt.frame().soc_percentage		= 0;
 						this->common_can_out.tx(soc_pkt);
-						Can::Addr::bps_tx::bps_status status_pkt(0); // precharge
-						status_pkt.frame().mode				= this->state.mode;
-						status_pkt.frame().disabled_module	= this->state.disabled_module;
-						this->common_can_out.tx(status_pkt);
+						Can::Addr::bms1::precharge pcg_pkt(0); // precharge
+						pcg_pkt.frame().precharge_state		= this->state.precharge;
+						this->common_can_out.tx(pcg_pkt);
 					}
 					case 5: {
 						// min max volts temps
+						// pack volt current
 						Can::Addr::bms1::pack_volt_curr pack_volt_curr_pkt(0);
 						for (uint8_t i=0; i<NU_BPS_N_MODULES; ++i)
 						{
@@ -512,10 +453,13 @@ namespace nu
 						pack_volt_curr_pkt.frame().pack_current = this->current_sensor.currents[0];
 						this->common_can_out.tx(pack_volt_curr_pkt);
 						// statuses
+						Can::Addr::bms1::extended_status stat(0);
+						stat.frame().pack_flags0 = this->state.trip_code;
+						this->common_can_out.tx(stat);
 					}
 				}
 
-				++this->can_module_i %= 4;
+				++this->can_module_i %= 6;
 				this->can_timer.reset();
 			}
 		}
@@ -524,10 +468,8 @@ namespace nu
 		{
 			if (this->lcd_timer.has_expired())
 			{
-				uint8_t module_i = this->state.uptime % NU_BPS_N_MODULES; // next module index
-
-				if (module_i)
-					lcd1.reconfigure();
+				/*uint8_t module_i = this->state.uptime % NU_BPS_N_MODULES; // next module index
+				if (module_i) lcd1.reconfigure();
 				lcd1.lcd_clear();
 				lcd1.printf("ZELDA %hu", module_i);
 				lcd1.goto_xy(0, 1);
@@ -540,9 +482,15 @@ namespace nu
 				lcd1.printf("Off: %hi", this->state.disabled_module);
 				lcd1.goto_xy(0, 5);
 				lcd1.printf("R: %hu-%hu-%hu-%hu", this->main_relay.status(), this->array_relay.status(), this->precharge_relay.status(), this->motor_relay.status());
-				led1.toggle();
-//				this->serial1.printf("ZELDA %hhu\nV: %hu\nT: %hi\nI0: %X\nOff: %hhi\n",
-//					module_i, this->voltage_sensor.voltages[module_i], this->temp_sensor.temperatures[module_i], this->current_sensor.currents[0], state.disabled_module);
+				 */
+				
+				this->nu32.led1.toggle();
+				this->nu32.serial_usb1.printf(
+					"ZELDA\nV: %hu\nT: hi\nI0: %hX\nOff: %u\n",
+					this->voltage_sensor.voltages[0],
+					// this->temp_sensor.temperatures[module_i],
+					this->current_sensor.currents[0],
+					state.disabled_modules);
 
 				++this->state.uptime; // increase uptime by 1 second
 				this->lcd_timer.reset(); // reset LCD update clock
@@ -551,10 +499,10 @@ namespace nu
 
 		void emergency_shutoff()
 		{
-			this->main_relay.low();
+			this->power_relay.low();
 			this->array_relay.low();
 			this->motor_relay.low();
-			this->precharge_relay.low();
+			this->ground_relay.low();
 		}
 
 		/**
@@ -564,11 +512,11 @@ namespace nu
 		{
 			while (true)
 			{
-				WDT::clear();
+				nu::WDT::clear();
 				this->recv_can();
 				this->read_ins();
 				this->check_trip_conditions();
-				this->check_mode_safety();
+				this->check_precharge();
 				this->set_relays();
 				this->send_can();
 				this->draw_lcd();

@@ -3,7 +3,7 @@
     <type>com.microchip.mplab.nbide.embedded.makeproject</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/make-project/1">
-            <name>car_bms_cpp</name>
+            <name>car_any_cpp</name>
             <creation-uuid>bf5ffa7d-6225-4ecb-ac21-f3eecbe37c27</creation-uuid>
             <make-project-type>0</make-project-type>
             <c-extensions/>

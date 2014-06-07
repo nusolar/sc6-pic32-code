@@ -95,6 +95,8 @@ extern "C" {
 	#define nu__Timer__delay_us(us)    nu__Timer__delay_ticks(nu__Timer__us_to_ticks(us))
 	#define nu__Timer__delay_ns(ns)    nu__Timer__delay_ticks(nu__Timer__ns_to_ticks(ns))
 
+	extern uint32_t _nu__Timer__carry;
+
 #ifdef __cplusplus
 } /* extern "C" */
 #endif

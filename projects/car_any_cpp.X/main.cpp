@@ -5,7 +5,7 @@
 #include "nu/compiler.h"
 #include <cstdint>
 
-#define CLASS nu::Pedals
+#define CLASS nu::DriverControls
 #define div_roundup(DIVIDEND, DIVISOR) ((long long)((DIVIDEND)/(DIVISOR)) + (((DIVIDEND)%(DIVISOR)>0)? 1: 0))
 
 // Allocate the size of CLASS, rounding up.
