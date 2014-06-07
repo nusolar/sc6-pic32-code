@@ -19,8 +19,8 @@
         <logicalFolder name="f2" displayName="board" projectFiles="true">
           <itemPath>../include/nuxx/board/bps.hpp</itemPath>
           <itemPath>../include/nuxx/board/nu32.hpp</itemPath>
-          <itemPath>../include/nuxx/board/pedals.hpp</itemPath>
           <itemPath>../include/nuxx/board/test.hpp</itemPath>
+          <itemPath>../include/nuxx/board/DriverControls.hpp</itemPath>
         </logicalFolder>
         <logicalFolder name="f5" displayName="comm" projectFiles="true">
           <itemPath>../include/nuxx/comm/currentsensor.hpp</itemPath>
@@ -146,6 +146,7 @@
         <appendMe value="-std=gnu99  -fthread-jumps -fcrossjumping -foptimize-sibling-calls -fcse-follow-jumps -fcse-skip-blocks -fgcse -fgcse-lm -fexpensive-optimizations -fstrength-reduce -frerun-cse-after-loop -fschedule-insns -fschedule-insns2 -fsched-interblock -fsched-spec -fregmove -fstrict-aliasing -fdelete-null-pointer-checks -freorder-blocks -freorder-functions -falign-functions -falign-jumps -falign-loops -falign-labels -ftree-pre -ftree-vrp  -ftree-switch-conversion -finline-small-functions -findirect-inlining -fipa-sra -fcaller-saves -fpeephole2 -fstrict-overflow  -fdata-sections -ffunction-sections  -Wall -Wcast-align -Wcast-qual -Wconversion -Wdisabled-optimization -Wendif-labels -Wextra -Wfloat-equal -Winline -Winvalid-pch -Wmissing-format-attribute -Wmissing-noreturn -Wno-packed -Wno-padded -Wpointer-arith -Wredundant-decls -Wshadow -Wundef -Wunreachable-code -Wwrite-strings -Wno-unused-function  -pedantic --param max-inline-insns-single=2000 --param large-function-growth=200"/>
       </C32>
       <C32-AR>
+        <property key="additional-options-chop-files" value="false"/>
       </C32-AR>
       <C32-AS>
         <property key="assembler-symbols" value=""/>
@@ -224,6 +225,7 @@
         <appendMe value="-std=gnu++0x  -fthread-jumps -fcrossjumping -foptimize-sibling-calls -fcse-follow-jumps -fcse-skip-blocks -fgcse -fgcse-lm -fexpensive-optimizations -fstrength-reduce -frerun-cse-after-loop -fschedule-insns -fschedule-insns2 -fsched-interblock -fsched-spec -fregmove -fstrict-aliasing -fdelete-null-pointer-checks -freorder-blocks -freorder-functions -falign-functions -falign-jumps -falign-loops -falign-labels -ftree-pre -ftree-vrp  -ftree-switch-conversion -finline-small-functions -findirect-inlining -fipa-sra -fcaller-saves -fpeephole2 -fstrict-overflow  -fdata-sections -ffunction-sections  -Wall -Wcast-align -Wcast-qual -Wconversion -Wdisabled-optimization -Wendif-labels -Wextra -Wfloat-equal -Winline -Winvalid-pch -Wmissing-format-attribute -Wmissing-noreturn -Wno-packed -Wno-padded -Wpointer-arith -Wredundant-decls -Wshadow -Wundef -Wunreachable-code -Wwrite-strings -Wno-unused-function  -pedantic --param max-inline-insns-single=2000 --param large-function-growth=200 -Weffc++ "/>
       </C32CPP>
       <C32Global>
+        <property key="gp-relative-option" value=""/>
         <property key="legacy-libc" value="false"/>
         <property key="save-temps" value="false"/>
         <property key="wpo-lto" value="false"/>
@@ -287,6 +289,7 @@
         <property key="memories.programmemory.start" value="0x1d000000"/>
         <property key="poweroptions.powerenable" value="false"/>
         <property key="programmertogo.imagename" value=""/>
+        <property key="programoptions.donoteraseauxmem" value="false"/>
         <property key="programoptions.eraseb4program" value="true"/>
         <property key="programoptions.pgmspeed" value="2"/>
         <property key="programoptions.preserveeeprom" value="false"/>
